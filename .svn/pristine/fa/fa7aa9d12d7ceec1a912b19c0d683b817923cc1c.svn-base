@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.operations.OperationsMapper">
+
+	<select id="getEmpList" resultType="com.ezwel.admin.domain.entity.operations.OperationsData">
+		SELECT CLIENT_NM AS clientNm
+				,CLIENT_CD AS clientCd
+		FROM MIND_CLIENT
+		ORDER BY client_nm 
+	</select>
+
+	<select id="getAmountList" resultType="com.ezwel.admin.domain.entity.operations.OperationsData">
+		SELECT 
+			HIGH_CATEGORY_CD AS highCategoryCd
+			,CATEGORY_CD AS categoryCd
+			,CATEGORY_NM AS categoryNm
+			,P1 AS price01
+			,P2 AS price02
+			,P3 AS price03
+		FROM 
+			(SELECT 
+				MCC.HIGH_CATEGORY_CD
+				,MCC.CATEGORY_CD
+				,CATEGORY_NM
+				,IF(PRICE01 IS NULL, 0, PRICE01) P1
+				,IF(PRICE02 IS NULL, 0, PRICE02) P2
+				,IF(PRICE03 IS NULL, 0, PRICE03) P3
+			FROM MIND_COUNSEL_CATEGORY MCC  LEFT OUTER JOIN  MIND_COUNSEL_PRICE MCP
+			ON MCC.CATEGORY_CD = MCP.CATEGORY_CD
+			AND MCP.PRICE_TYPE = 'C'
+			AND MCP.CLIENT_CD = #{searchClientNm}
+			) A
+		WHERE HIGH_CATEGORY_CD != '0'
+		ORDER BY HIGH_CATEGORY_CD, CATEGORY_CD
+	</select>
+	
+	<select id="getBudget" resultType="com.ezwel.admin.domain.entity.operations.OperationsData">
+		SELECT  MCB.BUDGET_SEQ AS budSeq 
+				,MC.CLIENT_CD AS clientCd
+				,IF(MCB.ASSIGN_BUDGET IS NULL, 0, MCB.ASSIGN_BUDGET) AS assignBudget
+				,IF(MCB.RESERVE_BUDGET IS NULL, 0, MCB.RESERVE_BUDGET) AS reBudget
+		FROM MIND_CLIENT MC LEFT OUTER JOIN MIND_CLIENT_BUDGET MCB
+			ON MC.CLIENT_CD = MCB.CLIENT_CD
+		WHERE MC.CLIENT_CD = #{clientCd}
+		ORDER BY MCB.BUDGET_SEQ DESC
+		LIMIT 1
+	</select>
+	
+	<select id="countCategory" resultType="integer">
+		SELECT COUNT(*)
+		FROM MIND_COUNSEL_CATEGORY
+		WHERE HIGH_CATEGORY_CD != '0'
+	</select>
+	
+	<insert id="insertPrices" parameterType="com.ezwel.admin.service.operations.dto.OperationsDto">
+		INSERT INTO MIND_COUNSEL_PRICE
+			( CATEGORY_CD,
+			  CLIENT_CD,
+			  PRICE_TYPE,
+			  PRICE01,
+			  PRICE02,
+			  PRICE03 )
+			VALUES
+			(#{categotyCd},
+			 #{searchClientCd},
+			 #{priceType},
+			 #{price01},
+			 #{price02},
+			 #{price03})
+			ON DUPLICATE KEY 
+			UPDATE CATEGORY_CD = #{categotyCd},
+			       CLIENT_CD = #{searchClientCd},
+			       PRICE_TYPE = #{priceType},
+					 PRICE01 = #{price01},
+					 PRICE02 = #{price02},
+					 PRICE03 = #{price03}
+	</insert>
+	
+	<select id="getBudgetSeq" resultType="String">
+		SELECT MAX(BUDGET_SEQ)
+		FROM MIND_CLIENT_BUDGET
+		WHERE CLIENT_CD = #{searchClientCd}
+	</select>
+	
+	<insert id="insertBudget" parameterType="com.ezwel.admin.service.operations.dto.OperationsDto">
+		INSERT INTO MIND_CLIENT_BUDGET
+		( PERIOD_SEQ,
+		  CLIENT_CD,
+		  TOT_BUDGET,
+		  RESERVE_BUDGET,
+		  ASSIGN_BUDGET,
+		  STATUS,
+		  REG_DT,
+		  REG_ID )
+		VALUES(
+		(select max(period_seq) from mind_client_jedo_period where client_cd = #{searchClientCd}),
+		 #{searchClientCd},
+		 #{tbudget} + #{rbudget},
+		 #{rbudget},
+		 #{tbudget},
+		 #{status},
+		 DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'),
+		 #{userId})
+	</insert>
+	
+	<update id="updateBudget" parameterType="com.ezwel.admin.service.operations.dto.OperationsDto">
+		UPDATE MIND_CLIENT_BUDGET
+		SET  TOT_BUDGET = #{tbudget} + #{rbudget}
+		   , ASSIGN_BUDGET = #{tbudget}
+		   , RESERVE_BUDGET = #{rbudget}
+		WHERE BUDGET_SEQ = #{budgetSeq}
+	</update>
+	
+	<select id="getceiling" resultType="com.ezwel.admin.domain.entity.operations.OperationsData">
+		SELECT MCE.PERIOD_SEQ AS periodSeq
+				,MC.CLIENT_CD AS clientCd
+				,IF(CEILING_POINT IS NULL, 0, CEILING_POINT) AS ceilingPoint
+				,IF(MENTAL_POINT IS NULL, 0, MENTAL_POINT) AS mentalPoint
+		FROM MIND_CLIENT mc LEFT OUTER JOIN MIND_CEILING mce
+			on mc.client_cd = mce.client_cd
+		WHERE mc.CLIENT_CD = #{clientCd}
+	</select>
+	
+	<select id="getState" resultType="com.ezwel.admin.domain.entity.operations.OperationsData">
+		SELECT COMM_CD AS commCD
+				,COMM_NM AS commNm
+				,mccc.POINT_USE_YN AS useYn
+				,LOGIN_YN AS loginYn
+		FROM MIND_CLIENT mc LEFT OUTER JOIN MIND_CLIENT_COMM_CD	mccc
+			on mc.client_cd = mccc.client_cd
+		WHERE mc.CLIENT_CD = #{searchClientCd}
+			AND HIGH_COMM_CD = '100001'
+	</select>
+	
+	<update id="updateCeiling"  parameterType="com.ezwel.admin.service.operations.dto.OperationsDto">
+		UPDATE MIND_CEILING
+		SET		PERIOD_SEQ	=	#{periodSeq},
+				CLIENT_CD	=	#{searchClientCd},
+				CEILING_POINT	=  #{maxpoint},
+				MENTAL_POINT	=  #{mentalSel},     
+				USE_YN		=	'Y',
+				MODI_ID		=	#{userId},
+				MODI_DT 	=	DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE PERIOD_SEQ 	= #{periodSeq}
+			AND CLIENT_CD 	= #{searchClientCd} 
+	</update>
+	
+	<update id="updateStatus"  parameterType="com.ezwel.admin.service.operations.dto.OperationsDto">
+		UPDATE MIND_CLIENT_COMM_CD
+		 SET LOGIN_YN = #{loginYn}
+		 	,POINT_USE_YN = #{useYn}
+		WHERE COMM_CD = #{commCd}
+			AND CLIENT_CD = #{searchClientCd} 
+	</update>
+	
+	<select id="countComm" resultType="integer">
+		SELECT COUNT(*)
+		FROM MIND_CLIENT_COMM_CD 
+		WHERE CLIENT_CD= #{searchClientCd}
+			AND HIGH_COMM_CD = '100001'
+	</select>
+	
+	<select id="checkClientCd" resultType="integer">
+		SELECT COUNT(*)
+		FROM MIND_CLIENT
+		WHERE CLIENT_CD = #{searchClientCd}
+	</select>
+	
+	<select id="checkCeiling"  parameterType="com.ezwel.admin.service.operations.dto.OperationsDto" resultType="integer">
+		SELECT COUNT(*)
+		FROM MIND_CEILING
+		WHERE PERIOD_SEQ 	= #{periodSeq}
+			AND CLIENT_CD 	= #{searchClientCd} 
+	</select>
+	
+	
+	<select id="getClientJedoList" resultType="com.ezwel.admin.domain.entity.client.ClientJedoPeriod">
+		SELECT A.CLIENT_CD AS clientCd, 
+			A.PERIOD_SEQ AS periodSeq, 
+			A.PERIOD_NO AS periodNo, 
+			DATE_FORMAT(A.START_DD,'%Y-%m-%d') AS startDd,
+			DATE_FORMAT(A.END_DD,'%Y-%m-%d') AS endDd, 
+			IFNULL(FORMAT(C.CEILING_POINT, 0), 0) AS ceilingPoint, 
+			IFNULL(FORMAT(C.MENTAL_POINT, 0), 0) AS mentalPoint, 
+			IFNULL((SELECT FORMAT(SUM(ASSIGN_BUDGET), 0) FROM MIND_CLIENT_BUDGET WHERE CLIENT_CD = A.CLIENT_CD AND A.PERIOD_SEQ = PERIOD_SEQ), '0') AS assignBudget,
+			IFNULL(REPLACE((SELECT FORMAT(SUM(POINT), 0) FROM MIND_USER_POINT WHERE A.CLIENT_CD = CLIENT_CD AND A.PERIOD_SEQ = PERIOD_SEQ), '-', ''), '0') AS point 
+		FROM MIND_CLIENT_JEDO_PERIOD A LEFT OUTER JOIN MIND_CEILING C ON A.CLIENT_CD = C.CLIENT_CD AND A.PERIOD_SEQ = C.PERIOD_SEQ
+		WHERE 1=1 
+		<if test="isNotNull(searchClientCd)">
+			AND A.CLIENT_CD = #{searchClientCd}
+		</if>
+		<if test="isNotNull(useYn)">
+			AND now() between A.START_DD and A.END_DD
+		</if>
+		GROUP BY A.PERIOD_NO
+		ORDER BY A.PERIOD_NO DESC, A.CLIENT_CD 
+	</select>
+	
+	<select id="getSetPointList" resultType="com.ezwel.admin.domain.entity.client.ClientJedoPeriod">
+		SELECT 
+			BUDGET_SEQ as budgetSeq,
+			FORMAT(B.RESERVE_BUDGET, 0) AS reserveBudget,
+			FORMAT(B.ASSIGN_BUDGET, 0) AS assignBudget,
+			(SELECT USER_NM FROM MIND_MGR WHERE USER_ID = B.REG_ID) AS userNm,
+			DATE_FORMAT(B.REG_DT,'%Y-%m-%d')	AS regDt
+		FROM MIND_CLIENT_JEDO_PERIOD A, MIND_CLIENT_BUDGET B
+		WHERE 1=1 
+		<if test="isNotNull(searchClientCd)">
+			AND A.CLIENT_CD = #{searchClientCd}
+		</if>
+		<if test="isNotNull(periodNo)">
+			AND A.PERIOD_NO = #{periodNo}
+		</if>
+		AND A.CLIENT_CD = B.CLIENT_CD 
+		AND A.PERIOD_SEQ = B.PERIOD_SEQ 
+		ORDER BY A.PERIOD_NO DESC, A.CLIENT_CD 
+	</select>
+	
+	<insert id="insertCeiling"  parameterType="com.ezwel.admin.service.operations.dto.OperationsDto">
+		INSERT INTO MIND_CEILING
+				( PERIOD_SEQ,
+				  CLIENT_CD,
+				  CEILING_POINT,
+				  MENTAL_POINT,
+				  USE_YN,
+				  REG_ID,
+				  REG_DT )
+		VALUES
+				(#{periodSeq},
+				 #{clientCd},
+				 #{maxpoint},
+				 #{mentalSel},
+				 'Y',
+				 #{userId},
+				 DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'))
+	</insert>
+	
+	<insert id="insertJedo" keyProperty="periodSeq" useGeneratedKeys="true" parameterType="com.ezwel.admin.service.operations.dto.OperationsDto">
+		INSERT INTO MIND_CLIENT_JEDO_PERIOD
+				( PERIOD_SEQ,
+				  CLIENT_CD,
+				  PERIOD_NO,
+				  STATUS,
+				  START_DD,
+				  END_DD,
+				  REG_ID,
+				  REG_DT )
+		VALUES
+				((select ifnull(max(period_seq), 0) + 1 from mind_client_jedo_period ALIAS_FOR_SUBQUERY where client_cd = #{clientCd}),
+				 #{clientCd},
+				 (select ifnull(max(period_no), 0) + 1 from mind_client_jedo_period ALIAS_FOR_SUBQUERY where client_cd = #{clientCd}),
+				 'Y',
+				 #{startDd},
+				 #{endDd},
+				 #{userId},
+				 DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'))
+	</insert>
+	
+	<insert id="insertPoint"  parameterType="com.ezwel.admin.service.operations.dto.OperationsDto">
+		INSERT INTO MIND_CLIENT_BUDGET
+		( PERIOD_SEQ,
+		  CLIENT_CD,
+		  TOT_BUDGET,
+		  RESERVE_BUDGET,
+		  ASSIGN_BUDGET,
+		  STATUS,
+		  REG_DT,
+		  REG_ID )
+		VALUES
+		(#{periodSeq},
+		 #{searchClientCd},
+		 #{reserveBudget} + #{assignBudget},
+		 #{reserveBudget},
+		 #{assignBudget},
+		 #{status},
+		 DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'),
+		 #{userId})
+	</insert>
+	
+	<delete id="deletePoint"  parameterType="com.ezwel.admin.service.operations.dto.OperationsDto">
+		DELETE FROM MIND_CLIENT_BUDGET 
+			WHERE BUDGET_SEQ = ${budgetSeq}
+	</delete>
+	
+	<select id="getPointStatus" resultType="com.ezwel.admin.domain.entity.operations.OperationsData">
+		SELECT 
+			FORMAT(SUM(B.ASSIGN_BUDGET) + IFNULL((SELECT SUM(POINT) FROM MIND_USER_POINT WHERE A.CLIENT_CD = CLIENT_CD AND A.PERIOD_SEQ = PERIOD_SEQ), '0'), 0) AS rest, 
+			FORMAT(SUM(B.RESERVE_BUDGET+B.ASSIGN_BUDGET), 0) AS totBudget, 
+			FORMAT(SUM(B.RESERVE_BUDGET), 0) AS reserveBudget, 
+			FORMAT(SUM(B.ASSIGN_BUDGET), 0) AS assignBudget, 
+			IFNULL(REPLACE((SELECT FORMAT(SUM(POINT), 0) FROM MIND_USER_POINT WHERE A.CLIENT_CD = CLIENT_CD AND A.PERIOD_SEQ = PERIOD_SEQ), '-', ''), '0') AS point
+		FROM MIND_CLIENT_JEDO_PERIOD A, MIND_CLIENT_BUDGET B
+		WHERE 1=1 
+		<if test="isNotNull(searchClientCd)">
+			AND A.CLIENT_CD = #{searchClientCd}
+		</if>
+		<if test="isNotNull(periodNo)">
+			AND A.PERIOD_NO = #{periodNo}
+		</if>
+		AND A.CLIENT_CD = B.CLIENT_CD 
+		AND A.PERIOD_SEQ = B.PERIOD_SEQ 
+	</select>
+	
+	<select id="getClientJedoDateInfo" resultType="com.ezwel.admin.domain.entity.operations.OperationsData">
+		SELECT  
+			MIN(START_DD) 	AS minStartDd,
+			MAX(END_DD) 	AS maxEndDd,
+			STR_TO_DATE(MAX(END_DD), '%Y%m%d') as maxEndDate,
+			IF(DATEDIFF(STR_TO_DATE(MAX(END_DD), '%Y%m%d'), DATE_FORMAT(NOW(),'%Y%m%d')) > 30, 0, 1) as isWillEnd
+		FROM MIND_CLIENT_JEDO_PERIOD 
+		WHERE 1=1 
+		<if test="isNotNull(searchClientCd)">
+			AND CLIENT_CD = #{searchClientCd}
+		</if>
+	</select>
+	
+	<update id="updateJedo"  parameterType="com.ezwel.admin.service.operations.dto.OperationsDto">
+		UPDATE MIND_CLIENT_JEDO_PERIOD
+		SET		PERIOD_SEQ	=	#{periodSeq},
+				CLIENT_CD	=	#{searchClientCd},
+				PERIOD_NO	=  	#{periodNo},
+				STATUS		=  	'Y',     
+				START_DD	=	#{startDd},
+				END_DD		=	#{endDd},
+				MODI_ID		=	#{userId},
+				MODI_DT 	=	DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE PERIOD_SEQ 	= #{periodSeq}
+			AND CLIENT_CD 	= #{searchClientCd} 
+			AND PERIOD_NO	=  	#{periodNo}
+	</update>
+	
+	
+	<select id="getUserNowJedoInfo" parameterType="hashmap" resultType="hashmap">
+		select 	a.USER_NM as userNm,
+			   	b.CLIENT_NM as clientNm,
+			   	A.CLIENT_CD AS clientCd, 
+			   	c.PERIOD_SEQ AS periodSeq, 
+			   	c.PERIOD_NO AS periodNo, 
+			    DATE_FORMAT(c.START_DD,'%Y-%m-%d') AS startDd,
+				DATE_FORMAT(c.END_DD,'%Y-%m-%d') AS endDd, 
+				IFNULL(FORMAT(d.CEILING_POINT, 0), 0) AS ceilingPoint,
+				IFNULL((SELECT FORMAT(SUM(ASSIGN_BUDGET), 0) FROM MIND_CLIENT_BUDGET WHERE CLIENT_CD = A.CLIENT_CD AND c.PERIOD_SEQ = PERIOD_SEQ), '0') AS assignBudget,
+				IFNULL(REPLACE((SELECT FORMAT(SUM(POINT), 0) FROM MIND_USER_POINT WHERE A.CLIENT_CD = CLIENT_CD AND c.PERIOD_SEQ = PERIOD_SEQ), '-', ''), '0') AS point 
+		from mind_user a
+		inner join mind_client b
+		on a.CLIENT_CD=b.CLIENT_CD
+		left join MIND_CLIENT_JEDO_PERIOD c
+		on a.CLIENT_CD=c.client_cd 
+		AND c.START_DD &lt;= DATE_FORMAT(NOW(), '%Y%m%d')
+        AND c.END_DD >= DATE_FORMAT(NOW(), '%Y%m%d')
+		LEFT JOIN MIND_CEILING d
+		ON c.CLIENT_CD = d.CLIENT_CD AND c.PERIOD_SEQ = d.PERIOD_SEQ
+		where a.client_cd=#{clientCd}
+		and a.user_key=#{userKey}
+	</select>
+	
+	<select id="getAllClientJedo" resultType="com.ezwel.admin.domain.entity.client.ClientJedoPeriod">
+		SELECT A.CLIENT_CD, 
+		       B.CLIENT_NM, 
+		       IFNULL((SELECT SUM(ASSIGN_BUDGET) 
+		               FROM   MIND_CLIENT_BUDGET 
+		               WHERE  CLIENT_CD = A.CLIENT_CD 
+		                      AND A.PERIOD_SEQ = PERIOD_SEQ), '0') AS ASSIGN_BUDGET, 
+		       IFNULL(REPLACE(SUM(C.POINT), '-', ''), '0') AS POINT
+		FROM   MIND_CLIENT_JEDO_PERIOD A 
+		       INNER JOIN MIND_CLIENT B 
+		               ON A.CLIENT_CD = B.CLIENT_CD 
+		       LEFT JOIN MIND_USER_POINT C 
+		              ON A.CLIENT_CD = C.CLIENT_CD 
+		                 AND A.PERIOD_SEQ = C.PERIOD_SEQ 
+		WHERE A.CLIENT_CD NOT LIKE '%optum%'
+		AND A.CLIENT_CD NOT LIKE '%op_%'
+		AND NOW() BETWEEN A.START_DD AND A.END_DD  
+		GROUP BY A.CLIENT_CD, B.CLIENT_NM 
+		ORDER BY B.CLIENT_NM ASC
+	</select>	
+	
+	
+</mapper>
+

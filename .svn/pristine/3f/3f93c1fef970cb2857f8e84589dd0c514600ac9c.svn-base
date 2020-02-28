@@ -1,0 +1,1327 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/jsp/layout/inc/tags.jspf"%>
+<%
+ response.setHeader("Cache-Control","no-cache");
+ response.setHeader("Pragma","no-cache");
+ response.setDateHeader("Expires",0);
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>개인상담일지 상세</title>
+<script type="text/javascript" src="/resources/se2/js/HuskyEZCreator.js" charset="utf-8"></script>
+
+<script type="text/javascript">
+var oEditors = [];
+
+$(document).ready(function(){
+	
+	 if($("#recordStatusYn").val() == "N") {
+		 $("#subjectItemCd1").attr("disabled", true);
+		 $("#subjectItemCd2").attr("disabled", true);
+		 $("#subjectItemCd3").attr("disabled", true);
+		 
+		 $("#subjectItemCd1").css("background-color", "#bebebe");
+		 $("#subjectItemCd2").css("background-color", "#bebebe");
+		 $("#subjectItemCd3").css("background-color", "#bebebe");
+		 
+		 $("#subjectItemCd1").css("width", "");
+		 $("#subjectItemCd2").css("width", "");
+		 $("#subjectItemCd3").css("width", "");
+	 }
+
+	 // 상담주제 활성화를 위한 커맨드 구현
+	 var firstLeft = false;
+	 
+	 $(document).on("keydown", function(event) {
+		// 테스트용 <- + P 구현
+		if(event.keyCode == 35) {
+			firstLeft = true;
+		}
+		
+		if(firstLeft) {
+			if(event.keyCode == 80) {
+				 $("#subjectItemCd1").attr("disabled", false);
+				 $("#subjectItemCd2").attr("disabled", false);
+				 $("#subjectItemCd3").attr("disabled", false);
+				 
+				 $("#subjectItemCd1").css("background-color", "");
+				 $("#subjectItemCd2").css("background-color", "");
+				 $("#subjectItemCd3").css("background-color", "");
+			}
+		}
+	 });
+	
+	//상담이력 주석처리로 같이 주석
+//  	$(".pCounselorDtlModify").click(function(){
+//  		var counselUser = $(this).attr("value");
+// 		var paramArr = counselUser.split('&');
+
+//  		$.alert('임시 저장하지 않은 내용은 삭제됩니다. 진행하시겠습니까?',function(){
+
+//  			 location.href = "/partner/pCounselorMgr/pCounselorDateDetail?counselCd="+paramArr[0]+"&userKey="+paramArr[1];
+
+// 			 },function(){
+// 			 	return false;
+// 			 }
+//      	);
+// 		return false;
+//  	});
+	/*
+	//상담목표, 계획 회기에 상관없이 수정가능하도록 변경
+	var recordStatusYn = $("#recordStatusYn").val();
+	if(recordStatusYn == 'Y'){
+    	$("#finalGoal").attr("readOnly",false);
+    	$("#courseGoal").attr("readOnly",false);
+    	$("#counselPlan").attr("readOnly",false);
+	}else{
+		$("#finalGoal").attr("readOnly",true);
+    	$("#courseGoal").attr("readOnly",true);
+    	$("#counselPlan").attr("readOnly",true);
+	}
+	*/
+
+	//완료_종결상태인 경우
+	var status = $("#recordStatus").val();
+	//2018.07.03 개인상담일지 작성완료 저장 후, 수정 시 상담의 목표 및 계획 부분(전체 상담의 목표, 상담 계획) 부분만 수정 불가
+	/* if(status == "100692"){
+    	
+		$("#finalGoal").attr("readOnly",true);
+    	$("#courseGoal").attr("readOnly",true);
+    	$("#counselPlan").attr("readOnly",true);
+    	
+    	
+    	$("#subject").attr("readOnly",true);
+    	$("#mainIssue").attr("readOnly",true);
+    	$("#goal").attr("readOnly",true)
+    	$("#intervention").attr("readOnly",true);
+    	$("#feedback").attr("readOnly",true);
+
+    	$("#content1").attr("readOnly",true);
+    	$("#content2").attr("readOnly",true);
+    	$("#content3").attr("readOnly",true);
+    	$("#content4").attr("readOnly",true);
+    	$("#content5").attr("readOnly",true);
+    	$("#content6").attr("readOnly",true);
+
+    	$("#recordMemo").attr("readOnly",true);
+    	$("#file").attr("disabled",true);
+    	$("#risks1").attr("disabled",true);
+    	$("#risks2").attr("disabled",true);
+    	$("#risks3").attr("disabled",true);
+    	$("#risks4").attr("disabled",true);
+    	$("#risks5").attr("disabled",true);
+    	$("#risks6").attr("disabled",true);
+    	$("#riskReason").attr("readOnly",true);
+    	$("#callingIssue").attr("readOnly",true);
+    	
+	} */
+
+	$("#counselDtlInsert").validate({
+		onkeyup:false,
+		onclick:false,
+		onfocusout:false,
+		showErrors:function(errorMap, errorList){
+			if (this.numberOfInvalids()) {
+				alert(errorList[0].message);
+			}
+		},
+		rules : {
+			subject  : {required:true},
+			mainIssue : {required:true},
+			goal : {required:true},
+			intervention  : {required:true},
+			feedback : {required:true},
+			risks : {required:true},
+			riskReason : {required:true}
+		},
+		messages: {
+			subject  		: "상담의 주제(회기 주제)를 입력하세요",
+			mainIssue 		: "상담의 주제(회기 내 내담자의 주호소 문제 주제)를 입력하세요",
+			goal 			: "상담 과정(상담 목표)을 입력하세요",
+			intervention 	: "상담 과정(주요 개입)을 입력하세요",
+			feedback 		: "상담 과정(내담자 주요 반응)을 입력하세요",
+			risks 			: "사례 위험도를 선택하세요",
+			riskReason 		: "사례 위험도 선택/변경 이유를 입력하세요"
+		},
+		submitHandler: function(form) {
+			var recordStatusYn = $("#recordStatusYn").val(); //첫 회기이면서, 종결되지 않은 일지
+			var recordStatus = $("#recordStatus").val(); //상담일지상태
+			var insertGb = $("#insertGb").val(); //임시저장:T 종결:Y N/S처리:N
+			var counselType = $("#counselType").val(); //상담방법
+
+			var contCnt = 0;
+			/* var content1 = $.trim($("#content1").val());
+			var content2 = $.trim($("#content2").val());
+			var content3 = $.trim($("#content3").val());
+			var content4 = $.trim($("#content4").val());
+			var content5 = $.trim($("#content5").val());
+			var content6 = $.trim($("#content6").val()); */
+			var feedback = $.trim($("#feedback").val());
+
+			var subject = $.trim($("#subject").val());
+			var mainIssue = $.trim($("#mainIssue").val());
+			var goal = $.trim($("#goal").val());
+			var intervention = $.trim($("#intervention"));
+			var riskReason = $.trim($("#riskReason"));
+			var riskChk = "";
+
+			var clientCd = $.trim($("#clientCd").val());
+			var counselChannelType = $.trim($("#counselChannelType").val());
+			
+			if(recordStatusYn == "Y"){
+				var finalGoal = $.trim($("#finalGoal")); //최종목표
+				var courseGoal = $.trim($("#courseGoal")); //과정목표
+				var counselPlan = $.trim($("#counselPlan")); //상담계획
+				var subjectItemCd1 = $.trim($("#subjectItemCd1").val()); //상담 세부 분류
+				var subjectItemCd2 = $.trim($("#subjectItemCd2").val()); //상담 세부 분류
+				//var subjectItemCd3 = $.trim($("#subjectItemCd3").val()); //상담 세부 분류 
+
+				if(finalGoal.length == 0){
+					alert("최종목표를 입력하세요");
+					return false;
+				}
+				if(courseGoal.length == 0){
+					alert("과정목표를 입력하세요");
+					return false;
+				}
+				if(counselPlan.length == 0){
+					alert("상담계획을 입력하세요");
+					return false;
+				}
+				
+				/* if(subjectItemCd1 == "") {
+					alert("상담 주제 분류를 선택하세요.");
+					$("#subjectItemCd1").focus();
+					return false;
+				}
+				
+				if(subjectItemCd2 == "") {
+					alert("상담 주제 분류를 선택하세요.");
+					$("#subjectItemCd2").focus();
+					return false;
+				}
+				
+				if(subjectItemCd3 == "") {
+					alert("상담 주제 분류를 선택하세요.");
+					$("#subjectItemCd3").focus();
+					return false;
+				} */
+			}
+
+			/*
+			if(subject.length == 0){
+				alert("상담의 주제(회기 주제)를 입력하세요");
+				return false;
+			}
+			*/
+			if(mainIssue.length == 0){
+				alert("상담의 주제(회기 내 내담자의 주호소 문제 주제)를 입력하세요");
+				return false;
+			}
+			if(goal.length == 0){
+				alert("상담 과정(상담 목표)을 입력하세요");
+				return false;
+			}
+			if(intervention.length == 0){
+				alert("상담 과정(주요 개입)을 입력하세요");
+				return false;
+			}
+			
+			/*
+			if(feedback.length == 0){
+				alert("상담 과정(내담자 주요 반응)을 입력하세요");
+				return false;
+			}
+			*/
+
+			//소견 3건이상 등록 필수
+			/* if(content1.length > 0){
+				contCnt++;
+			}
+			if(content2.length > 0){
+				contCnt++;
+			}
+			if(content3.length > 0){
+				contCnt++;
+			}
+			if(content4.length > 0){
+				contCnt++;
+			}
+			if(content5.length > 0){
+				contCnt++;
+			}
+			if(content6.length > 0){
+				contCnt++;
+			}
+
+			if(contCnt < 3){
+				alert("상담에 대한 분석 및 소견을 3개 이상 입력하세요");
+				contCnt = 0;
+				return false;
+			}
+			if(content6.length == 0){
+				alert("상담에 대한 분석 및 소견(문제에 대한 상담자의 종합적 이해)을 입력하세요");
+				return false;
+			} */
+
+			$("input:checkbox:checked").each(function(){
+				riskChk = $(this).val();
+			});
+
+			if(riskChk.length == 0){
+				alert("사례 위험도를 선택하세요");
+				return false;
+			}
+			if(riskReason.length == 0){
+				alert("사례 위험도 선택/변경 이유를 입력하세요");
+				return false;
+			}
+
+			//20150915_리스트에서 넘겨준 상태값 확인필요_소명/NS처리
+			if(recordStatus == '100694' && $.trim($("#callingIssue")).length == 0){
+				alert("소명 사유를 입력하세요");
+				return false;
+			}
+
+			if($("#file").val().length > 0){
+				$("#fileUpYn").val("Y");
+			}
+
+			var time = $("#time1").val()+$("#time2").val();
+
+			if(counselType == '100434'){ //전화상담인 경우, 시간세팅
+				$("#time").val(time);
+			}
+
+			//저장 일지상태값 세팅
+			//임시저장은 기존 상태값 그대로
+// 			if(insertGb == "T"){
+// 				if(recordStatus == '100694'){ //소명일때
+// 					$("#recordStatus").val("100694"); //소명
+// 				}else{
+// 					$("#recordStatus").val("100697");
+// 				}
+
+// 			}else
+			if(insertGb == "Y"){ //종결하기
+				$("#recordStatus").val("100692");
+
+			}else if(insertGb == "N"){ //N/S처리
+				$("#recordStatus").val("100696");
+			}
+			
+			if( counselChannelType == '100002' ){
+				oEditors[0].exec("UPDATE_CONTENTS_FIELD", []);   // 에디터의 내용이 textarea에 적용된다.
+				// 저장작업 후에 값을 가져온다 
+				var counselFeedBack = $.trim($("#counselFeedBack").val());
+			}
+
+			
+			if(counselChannelType == '100002' && counselFeedBack.length <= 50){
+				alert("상담사가 내담자에게 전하는 메시지를 입력하세요.(최소 50자 이상)\n해당 내용은 내담자에게 SMS, e-mail이 전송되며 상담포유를 통해 확인 가능합니다.");
+				$("#counselFeedBack").focus();
+				return false;
+			}
+			
+			// 선택은 불가능하나 데이터는 송신해야함.
+			 $("#subjectItemCd1").attr("disabled", false);
+			 $("#subjectItemCd2").attr("disabled", false);
+			 $("#subjectItemCd3").attr("disabled", false);
+			
+			form.submit();
+		}
+	});
+
+	//종결하기 버튼 클릭
+	$("#endBtn").click(function(){
+
+		$.alert('해당 상담을 종결 하시겠습니까?',function(){
+
+			$("#insertGb").val("Y"); //임시저장:T 종결:Y N/S처리:N
+			$("#counselStatus").val("100884"); //종결일때 상담종결
+			$("#counselDtlInsert").submit();
+
+			 },function(){
+			 	return false;
+			 }
+     	);
+		return false;
+	});
+
+	//N/S처리 버튼 클릭
+	$("#nonBtn").click(function(){
+
+		var counselType = $("#counselType").val();
+		$("#counselStatus").val("100521"); // 상담완료
+
+		//게시판인 경우, N/S처리 못함.
+		if(counselType == '100433' || counselType == '100434'){ //전화나 대면인 경우 N/S처리 가능
+			$.alert('해당 상담을 N/S처리 하시겠습니까?',function(){
+
+				$("#insertGb").val("N"); //임시저장:T 종결:Y N/S처리:N
+				$("#counselDtlInsert").submit();
+
+				 },function(){
+				 	return false;
+				 }
+	     	);
+		}else{
+			alert("N/S처리 할 수 없습니다.");
+		}
+		return false;
+	});
+
+
+	//임시저장 버튼 클릭
+	$("#tempSave").click(function(){
+		if (confirm("저장 하시겠습니까?")) {
+			$("#counselStatus").val("100521"); //임시저장도 상담은 완료
+			$("#counselDtlInsert").submit();
+		}
+		return false;
+	});
+	
+	
+	//수정하기 버튼 클릭
+	$("#modefySave").click(function(){
+		if (confirm("수정 하시겠습니까?")) {
+			$("#counselStatus").val("${baseInfo_detail.status}"); // 완료되었을때 수정가능 (상담상태는 그대로, 내용만 수정)
+			$("#counselDtlInsert").submit();
+		}
+		return false;
+	});
+	
+	
+	// 연장하기 버튼 클릭
+	$("#extensionBtn").click(function(){
+		$.alert('해당 상담을 연장하시겠습니까?',function(){
+
+			$("#insertGb").val("Y"); //임시저장:T 종결, 연장:Y N/S처리:N
+			$("#extensionStatus").val("100931"); //연장일때 연장승인, 
+			$("#counselStatus").val("100521"); //연장일때 상담완료
+			$("#counselDtlInsert").submit();
+
+			 },function(){
+			 	return false;
+			 }
+     	);
+		return false;
+	});
+	
+	// 연장하기 버튼 클릭
+	$("#insertBtn").click(function(){		
+		var recordStatus = $("#recordStatus").val();
+		
+		if( recordStatus == '100692' || recordStatus == '100696' ){
+			if (confirm("상담 일지를 수정 하시겠습니까?")) {
+				$("#counselStatus").val("${baseInfo_detail.status}"); // 완료되었을때 수정가능 (상담상태는 그대로, 내용만 수정)
+				$("#counselDtlInsert").submit();
+			}
+		}else{
+			$.divPop('divAddFormPop', "상담일지 저장", $("#divAddFormTemplete"));
+		}
+		
+	});
+});
+
+//위험도 체크박스 선택
+function riskCheck(riskVal) {
+	 var obj = document.getElementsByName("risks");
+
+	 for(var i=0; i<obj.length; i++){
+       if(obj[i] != riskVal){
+           riskVal.checked = true; //선택한 위험도 체크
+           obj[i].checked = false; //기존 위험도 체크해제
+       }
+   }
+}
+
+j$(function(){
+	nhn.husky.EZCreator.createInIFrame({
+	    oAppRef: oEditors,
+	    elPlaceHolder: "counselFeedBack",
+	    sSkinURI: "/resources/se2/SmartEditor2Skin.html",
+	    htParams : {bUseToolbar : true,
+            fOnBeforeUnload : function(){},
+            fOnAppLoad : function(){}
+            //oEditors.getById["ir1"].exec("PASTE_HTML", ["로딩이 완료된 후에 본문에 삽입되는 text입니다."]);
+  		 },
+	    fCreator: "createSEditor2"
+	});
+});
+
+
+	function endCounsel() {
+		var endType = $(":input:radio[name=endType]:checked").val();
+		
+		if( endType == 'undefined' || endType == '' ){
+			alert( "상담일지 등록 타입을 선택해주세요." );
+			return;
+		}else{
+			if(endType == "ex"){
+				// 연장하기 100692
+				$.alert('해당 상담을 다음 회기로 연장하시겠습니까?',function(){
+
+					$("#insertGb").val("Y"); //임시저장:T 종결, 연장:Y N/S처리:N
+					$("#extensionStatus").val("100931"); //연장일때 연장승인, 
+					$("#counselStatus").val("100521"); //연장일때 상담완료
+					$("#counselDtlInsert").submit();
+
+					 },function(){
+					 	return;
+					 }
+		     	);
+				return;
+				
+			}else if(endType == "ns"){
+				// N/S처리 100696
+				var counselType = $("#counselType").val();
+				$("#counselStatus").val("100521"); // 상담완료
+
+				//게시판인 경우, N/S처리 못함.
+				if(counselType == '100433' || counselType == '100434'){ //전화나 대면인 경우 N/S처리 가능
+					$.alert('해당 상담을 No Show처리 하시겠습니까?',function(){
+
+						$("#insertGb").val("N"); //임시저장:T 종결:Y N/S처리:N
+						$("#counselDtlInsert").submit();
+
+						 },function(){
+						 	return;
+						 }
+			     	);
+				}else{
+					alert("N/S처리 할 수 없습니다.");
+				}
+				return;				
+				
+			}else if(endType == "end"){
+				// 종결하기 100692
+				$.alert('해당 상담(케이스)을 종결 하시겠습니까?',function(){
+
+					$("#insertGb").val("Y"); //임시저장:T 종결:Y N/S처리:N
+					$("#counselStatus").val("100884"); //종결일때 상담종결
+					$("#counselDtlInsert").submit();
+
+					 },function(){
+					 	return;
+					 }
+		     	);
+				return;
+				
+			}else{
+				alert("상담일지 등록 타입을 확인해주세요.");
+			}
+		}
+	 }
+	
+	function subjectItem1CdChange(){
+		$("select[name='subjectItemCd2'] option").remove();   
+		$("select[name='subjectItemCd3'] option").remove();
+		$("[name='subjectItemCd2']").append("<option value=''>==== 중주제 ====</option>");
+		$("[name='subjectItemCd3']").append("<option value=''>==== 소주제 ====</option>");
+		var name 	= "subjectItemCd1";
+		var setName = "subjectItemCd2";
+		var cnt = getCommClientCdList(name, setName);
+	}
+
+	function subjectItem2CdChange(){
+		j$("select[name='subjectItemCd3'] option").remove();
+		j$("[name='subjectItemCd3']").append("<option value=''>==== 소주제 ====</option>");
+		var name 	= "subjectItemCd2";
+		var setName = "subjectItemCd3";
+		var cnt = getCommClientCdList(name, setName);
+	}
+
+	function getCommClientCdList(name, setName) {
+		var result = 0;
+		if ($("[name='"+name+"']").val() != "" && $("[name='"+name+"']").val() != null) {
+			$.ajax({
+				url: "/partner/pCounselorMgr/getCommClientList?highCommCd=" + $("[name='"+name+"']").val() + "&clientCd=${record_detail.clientCd }",
+				dataType: 'json',
+				async: false,
+				success: function (response) {
+					var iter = response.list;
+					var element = "";
+					result = iter.length;
+					for (var i = 0; i < iter.length; i++) {
+						element += "<option value='" + iter[i].commCd + "'>" + iter[i].commNm + "</option>";
+					}
+					if (element != "") {
+						$("[name='"+setName+"']").append(element);
+					}
+				}
+			});
+		}
+		
+		return result;
+	}
+</script>
+</head>
+<body>
+<form id="counselDtlInsert" name="counselDtlInsert" action="/partner/pCounselorMgr/pCounselorDtlInsert" method="POST" enctype="multipart/form-data">
+<input type="hidden" id="counselCd" name="counselCd" value="${param.counselCd }" />
+<input type="hidden" id="recordCd" name="recordCd" value="${record_detail.recordCd }" />
+<input type="hidden" id="intakeCd" name="intakeCd" value="${record_detail.intakeCd }" />
+<input type="hidden" id="clientCd" name="clientCd" value="${record_detail.clientCd }" />
+<input type="hidden" id="centerSeq" name="centerSeq" value="${record_detail.centerSeq }" />
+<input type="hidden" id="userKey" name="userKey" value="${record_detail.userKey }" />
+<input type="hidden" id="recordStatusYn" name="recordStatusYn" value="${record_detail.recordStatusYn }" />
+<input type="hidden" id="recordStatus" name="recordStatus" value="${record_detail.recordStatus }" />
+<input type="hidden" id="counselorId" name="counselorId" value="${record_detail.counselorId }" />
+<input type="hidden" id="counselType" name="counselType" value="${record_detail.counselType }" />
+<input type="hidden" id="extensionStatus" name="extensionStatus" value="" /> <!-- 상담 연장여부 -->
+<input type="hidden" id="counselStatus" name="counselStatus" value="" /> <!-- 상담 상태 -->
+<input type="hidden" id="time" name="time" value="" />
+<input type="hidden" id="insertGb" name="insertGb" value="" />
+<input type="hidden" id="fileUpYn" name="fileUpYn" value="N" />
+<input type="hidden" id="counselChannelType" value="${intake_detail.channelType}" />
+
+<c:set var="birthYear" scope="page" value="${fn:split(intake_detail.rrn, '-')[0] }" />
+<c:set var="birthMonth" scope="page" value="${fn:split(intake_detail.rrn, '-')[1] }" />
+<c:set var="birthDay" scope="page" value="${fn:split(intake_detail.rrn, '-')[2] }" /> 
+<c:set var="scheduleYear" scope="page" value="${fn:split(baseInfo_detail.scheduleDt, '-')[0] }" />
+<c:set var="scheduleMonth" scope="page" value="${fn:split(baseInfo_detail.scheduleDt, '-')[1] }" />
+<c:set var="scheduleDay" scope="page" value="${fn:split(baseInfo_detail.scheduleDt, '-')[2] }" /> 
+<c:set var="ageOfUser" scope="page" value="${scheduleYear - birthYear }" />
+<c:if test="${birthMonth * 100 + birthDay > scheduleMonth * 100 + scheduleDay }">
+	<c:set var="ageOfUser" scope="page" value="${ageOfUser - 1 }" />
+</c:if> 
+
+<c:choose>
+	<c:when test="${ageOfUser < 13 }"> <%-- 만 13세 미만, 유아 --%>
+		<c:set var="groupOfUserAges" scope="page" value="102003" />
+	</c:when>
+	<c:when test="${ageOfUser < 20 }"> <%-- 13~20세, 청소년 --%>
+		<c:set var="groupOfUserAges" scope="page" value="102002" />
+	</c:when>
+	<c:otherwise> <%-- 둘 다 아닐경우 성인으로 간주함 --%>
+		<c:set var="groupOfUserAges" scope="page" value="102001" />
+	</c:otherwise>
+</c:choose>
+
+<table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
+	<tr>
+		<td valign="top" align="left">
+			<table cellpadding="0" cellspacing="0" border="0" width="90%">
+				<tr>
+					<td height="20px"></td>
+				</tr>
+				<tr>
+					<td>
+						<table cellpadding="5" cellspacing="0" border="0" width="100%" align="left" style="border-bottom: 1px solid silver;">
+							<tr>
+						    	<td align="left" class="subtitle">개인상담일지</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td height="20px"></td>
+				</tr>
+
+				<!-- 인테이크 테이블 -->
+				<tr>
+					<td>ㆍ인테이크</td>
+				</tr>
+				<tr>
+					<table cellpadding="5" cellspacing="0" border="1" width="90%" style="border-collapse:collapse;">
+						<tr align="left" height="30px" >
+							<th class="line" align="center" width="13%">상담 받을 분</th>
+							<td width="20%">
+								<input type="hidden" name="education" value="${intake_detail.relation }"/> <comm:commNmOut option="commCd" code="${intake_detail.relation } "/>
+							</td>
+							<th class="line" align="center" width="13%">생년월일</th>
+							<td width="15%">
+								<input type="hidden" name="rrn" value="${intake_detail.rrn }"/> ${intake_detail.rrn } 
+							</td>
+							<th class="line" align="center" width="13%">성별</th>
+							<td>
+								<input type="hidden" name="gender" value="${intake_detail.gender }"/> ${intake_detail.gender }
+							</td>
+						</tr>
+						<tr align="left" height="30px" >
+							<th class="line" align="center">성명</th>
+							<td>
+								<input type="hidden" name="userNm" value="${baseInfo_detail.counselNm}"/> ${empty baseInfo_detail.counselNm ? '-' : baseInfo_detail.counselNm}
+							</td>
+							<th class="line" align="center">학력/학년</th>
+							<td>
+								<input type="hidden" name="education" value="${intake_detail.education }"/> <comm:commNmOut option="commCd" code="${intake_detail.education } "/>
+
+								<c:if test="${not empty intake_detail.session }">
+									/
+									<input type="hidden" name="session" value="${intake_detail.session }"/> <comm:commNmOut option="commCd" code="${intake_detail.session } "/>
+								</c:if>
+							</td>
+							<th class="line" align="center">직업</th>
+							<td>
+								<c:if test="${not empty intake_detail.job }">
+									<input type="hidden" name="job" value="${intake_detail.job }"/> <comm:commNmOut option="commCd" code="${intake_detail.job }"/>
+								</c:if>
+								<c:if test="${empty intake_detail.job }">
+									<input type="hidden" name="job" value="${intake_detail.job }"/> -
+								</c:if>
+							</td>
+						</tr>
+						<tr align="left" height="30px" >
+							<th class="line" align="center">휴대전화</th>
+							<td>
+								<input type="hidden" name="mobile" value="${intake_detail.mobile }"/> ${intake_detail.mobile }
+							</td>
+							<th class="line" align="center">이메일</th>
+							<td>
+								<input type="hidden" name="email" value="${intake_detail.email }"/> ${intake_detail.email }
+							</td>
+							<th class="line" align="center">상담분야</th>
+							<td>
+								<input type="hidden" name="counselDiv" value="${intake_detail.counselDiv }"/>${intake_detail.counselDivNm }
+							</td>
+						</tr>
+						<tr align="left" height="30px" >
+							<th class="line" align="center">상담방법</th>
+							<td>
+								<input type="hidden" name="counselType" value="${intake_detail.counselType }"/><comm:commNmOut option="commCd" code="${intake_detail.counselType }"/>
+							</td>
+							<th class="line" align="center">상담 세부주제</th>
+							<td colspan="3">
+								<input type="hidden" name="cause" value="${intake_detail.cause }"/> ${intake_detail.cause }
+							</td>
+						</tr>
+						<tr align="left" height="30px" >
+							<th class="line" align="center">자유기술</th>
+							<td colspan="5">
+								<input type="hidden" name="memo" value="${intake_detail.memo }"/> ${empty intake_detail.memo ? '-' : intake_detail.memo}
+							</td>
+						</tr>
+					</table>
+				</tr>
+				<!-- 인테이크 테이블 끝-->
+
+				<tr>
+					<td height="20px"></td>
+				</tr>
+
+				<!-- 기본정보 테이블 -->
+				<tr>
+					<td>ㆍ기본정보</td>
+				</tr>
+				<tr>
+					<td>
+					<table cellpadding="5" cellspacing="0" border="1" width="90%" style="border-collapse:collapse;">
+						<tr align="left" height="30px" >
+							<th class="line" align="center" width="13%">상담일자</th>
+							<td width="20%">
+								<input type="hidden" name="ymdSelect" value="${baseInfo_detail.scheduleDt}"/>${baseInfo_detail.scheduleDt}
+							</td>
+							<th class="line" align="center" width="13%">전화상담시간</th>
+							<td width="15%">
+								<input type="hidden" name="timeSelect" value="${baseInfo_detail.time}"/>
+									<c:if test="${not empty baseInfo_detail.time }">
+										${baseInfo_detail.time.substring(0,2)}시간 ${baseInfo_detail.time.substring(2,4)}분
+									</c:if>
+							</td>
+							<th class="line" align="center" width="13%">일지 작성일자</th>
+							<td>
+								<input type="hidden" name="regDtSelect" value="${baseInfo_detail.regDt}"/>${baseInfo_detail.regDt}
+							</td>
+						</tr>
+						<tr align="left" height="30px" >
+							<th class="line" align="center">내담자명</th>
+							<td>
+								<input type="hidden" name="counselNmSelect" value="${baseInfo_detail.counselNm}"/>${baseInfo_detail.counselNm}
+							</td>
+							<th class="line" align="center">신청코드</th>
+							<td>
+								<input type="hidden" name="counselCdSelect" value="${baseInfo_detail.counselCd}"/>${baseInfo_detail.counselCd}
+							</td>
+							<th class="line" align="center">상담사명</th>
+							<td>
+								<input type="hidden" name="counselorNmSelect" value="${baseInfo_detail.counselorNm}"/>${baseInfo_detail.counselorNm}
+							</td>
+						</tr>
+						<tr align="left" height="30px" >
+							<th class="line" align="center">고객명</th>
+							<td>
+								<input type="hidden" name="userNmSelect" value="${baseInfo_detail.userNm}"/>${baseInfo_detail.userNm}
+							</td>
+							<th class="line" align="center">직원관의 관계</th>
+							<td>
+								<input type="hidden" name="relation" value="${baseInfo_detail.relation}"/><comm:commNmOut option="commCd" code="${baseInfo_detail.relation}"/>
+							</td>
+							<th class="line" align="center">고객사</th>
+							<td>
+								<input type="hidden" name="clientNm" value="${baseInfo_detail.clientCd}"/>${baseInfo_detail.clientCd}
+							</td>
+						</tr>
+						<tr align="left" height="30px" >
+							<th class="line" align="center">연락처</th>
+							<td>
+								<input type="hidden" name="mobile" value="${baseInfo_detail.mobile}"/>${baseInfo_detail.mobile}
+							</td>
+							<th class="line" align="center">사례위험도</th>
+							<td>
+								<input type="hidden" name="risksSelect" value="${baseInfo_detail.risks}"/>${baseInfo_detail.risks}
+							</td>
+							<th class="line" align="center">회기정보</th>
+							<td>
+								<input type="hidden" name="intakeNumSelect" value="${baseInfo_detail.extensionNum }"/>${baseInfo_detail.extensionNum }
+							</td>
+						</tr>
+					</table>
+					</td>
+				</tr>
+				<!-- 기본정보 테이블 끝-->
+				<tr>
+					<td height="20px"></td>
+				</tr>
+				<tr>
+					<td>ㆍ사례위험도</td>
+				</tr>
+				<tr>
+					<td>
+						<table cellpadding="5" cellspacing="0" border="1" width="90%" style="border-collapse:collapse;">
+							<tr>
+								<td rowspan="3" width="25%"> </td>
+							</tr>
+							<tr>
+								<th>다음 중 본 사례에 해당하는 위험도를 체크해 주십시오.<br></th>
+							</tr>
+							<tr>
+								<td>
+								<span style="font-weight:bold">[사례위험도 평가방법]</span><br>
+								1. 다축적 평가개념으로, 내담자의 개인적 측면, 조직/업무적 측면, 정신건강의학적 측면에 대하여 아래의 내용을 참고하여 평가합니다.<br>
+								2. 여러 단계에 <span style="font-weight:bold">중복 해당하는 경우 상위 단계</span>로 평가합니다.<br>
+								3. 판단기준에 <span style="font-weight:bold">영역별 1개라도 해당될 경우, 가장 높은 단계</span>로 평가합니다.<br>
+								4. 내담자가 <span style="font-weight:bold">다음의 직업군에 해당될 경우</span>, <u>위험도 판단을 더욱 엄격하게 적용</u>하여 주십시오.<br>
+									<table cellpadding="5" cellspacing="5" border="1" width="90%" style="border-collapse:collapse;">
+										<tr>
+											<td>
+												&nbsp;1) 타인의 생명 및 안전에 직접적인 영향을 미칠 수 있는 물품을 다루거나 소지하는 직업 : 경찰, 군인 등<br>
+												&nbsp;2) 업무수행 중 안전에 주의해야하는 직업군 : 운송업, 소방관 등<br>
+												&nbsp;3) 타인의 건강 및 위생에 직접적인 영향을 미칠 수 있는 물품을 다루는 직업 : 식품관련, 위생관련 등<br>
+												&nbsp;4) 트라우마 경험에 노출되기 쉬운 직업 : 경찰, 군인, 소방관, 경호업체 등<br>
+												&nbsp;5) 고객접점의 업무수행 직업 : 콜센터, 승무원, 민원창구 등				
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table cellpadding="5" cellspacing="0" border="1" width="90%" style="border-collapse:collapse;">
+							<tr>
+								<th>&nbsp;</th>
+								<c:forEach var="riskList" varStatus="i" begin="1" end="5">
+									<th><input type="checkbox" name="risks" id="risks${riskList}" onclick="riskCheck(this)" value="${riskList}" <c:if test="${riskList == record_detail.risks}">checked="checked"</c:if>/> ${riskList}단계
+									<c:choose>
+										<c:when test="${riskList == 1}">'<span style="color:GREEN">안전</span>'</c:when>
+										<c:when test="${riskList == 2}">'<span style="color:GREEN">관심</span>'</c:when>
+										<c:when test="${riskList == 3}">'<span style="color:ORANGE">주의</span>'</c:when>
+										<c:when test="${riskList == 4}">'<span style="color:RED">위험</span>'</c:when>
+										<c:otherwise>'<span style="color:RED">보호</span>'</c:otherwise>
+									</c:choose>
+									</th>
+								</c:forEach>
+							</tr> 
+							<tr>
+								<th width="25%"><h2><span style="color:BLUE">개인적 측면</span></h2><br>
+									1) 주호소(상담을 받고자 하는 이유, 보호자 보고문제의 내용<br>
+									2) 심리적 자원의 유무, 환경적 지지자원의 유무<br>
+								</th>
+								<td width="15%"> 흥미로 인한 서비스 신청, 자기 자신에 대한 이해 및 탐색 목적, 고민에 대한 조언 요구</td>
+								<td width="15%"> 개인의 삶에 영향을 주는 정도의 문제 경험	</td>
+								<td width="15%"> 개인의 삶에 영향을 주는 정도이며, 그 강도가 2단계보다 강함</td>
+								<td width="15%"> 심리상태가 불안정하며 내담자의 안위 및 생명영위와 관련하여 위험하다고 판단될 때</td>
+								<td width="15%" rowspan="3"> 가까운 시일 내에 자신 혹은 타인의 생명이나 안전을 위협하는 행동을 실제 시행할 가능성이 높다고 판단될 때	</td>
+							</tr>
+							<tr>
+								<th><h2><span style="color:BLUE">조직/업무적 측면</span></h2><br>
+									1) 직원의 심리적 상태가 업무의 질과 지속에 미치는 부정적인 영향<br>
+									2) 직원의 심리적 문제로 인하여 조직에 미치는 혹은 미칠 것으로 예상되는 부정적인 영향<br>
+									(ex. 집중력 저하, 주의력 저하, 관계 회피, 이직, 사직, presenteenism, 직원에 대한 폭언, 지속적인 지각 등)<br>
+								</th>
+								<td></td>
+								<td> 업무의 질 및 지속에 영향을 주는 경우(ex. 주의력 저하 등)<br>	</td>
+								<td> 직원의 심리적 상태가 업무의 질이나 지속에 영향을 주는 것이 분명한 경우 (ex. 심리적 문제로 인한 연차사용, 지속적 지각)<br>	</td>
+								<td> 직원의 심리적 상태가 조직에 미치는/미칠 것으로 예상되는 부정적인 영향이 분명한 경우(ex. 이직, presenteeism, 폭력행동)<br></td>
+							</tr>
+							<tr>
+								<th><h2><span style="color:BLUE">정신건강의학적 측면</span></h2><br>
+									1) 정신건강의학 관련 진료 및 약물치료 경험<br>
+									2) 알코올, 약물 및 도박 등 중독관련 문제<br>
+									3) 심리적 외상경험과 관련된 문제<bR>
+									4) 정신과적 관점에서 임상적 소견의 유무<br>									
+								</th>
+								<td></td>
+								<td></td>
+								<td> 최근 <span style="font-weight:bold">3년 이내</span>에 정신의학관련 진료 및 약물치료 경험이 있는 경우(전문가 판단 하에 단계조정 가능)<br><br>
+									   알코올 약물 및 도박 등에 대한 의수준의 문제<br><br>
+									   심리적 외상경험 혹은 정신과적 증상들로 인하여 심리적 어려움이 초래되는 경우<br>
+								</td>
+								<td> 최근 <span style="font-weight:bold">6개월 이내</span>에 정신의학관련 진료 및 약물치료 경험이 있는 경우(전문가 판단 하에 단계조정 가능)<br><br>
+									   알코올 약물 및 도박 등에 대한 의수준의 문제<br><br>
+									   심리적 외상경험 혹은 정신과적 증상들로 인하여 심리상태가 불안정하고, 내담자의 안위와 관련하여 위험하다고 판단될 경우<br>
+								</td>
+							</tr>
+							<tr>
+								<th colspan="8">사례위험도 선택/변경 이유</th>
+							</tr>
+							<tr>
+								<td colspan="8"><textarea rows="15" cols="50" style="width: 95%" name="riskReason" id="riskReason">${record_detail.riskReason }</textarea></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+
+				<tr>
+					<td height="20px"></td>
+				</tr>
+
+				<!-- 상담이력 가져오기_일단 주석  -->
+<!-- 				<tr> -->
+<!-- 					<td>ㆍ상담이력</td> -->
+<!-- 				</tr> -->
+<!-- 				<tr> -->
+<!-- 					<td> -->
+<!-- 						목록 -->
+<!-- 						<table class="" cellpadding="5" align="" id="" cellspacing="0" border="1" width="90%" style="text-align:center; border-collapse:collapse;"> -->
+<!-- 							<thead> -->
+<!-- 								<tr> -->
+<!-- 									<th width="4%" >순번</th> -->
+<!-- 									<th width="7%" >신청코드</th> -->
+<!-- 									<th width="10%">고객사</th> -->
+<!-- 									<th width="5%" >고객명</th> -->
+<!-- 									<th width="5%">내담자명</th> -->
+<!-- 									<th width="6%">상담분야</th> -->
+<!-- 									<th width="5%">상담방법</th> -->
+<!-- 									<th width="5%">상담사</th> -->
+<!-- 									<th width="3%">회기</th> -->
+<!-- 									<th width="4%">일지관리</th> -->
+<!-- 								</tr> -->
+<!-- 							</thead> -->
+
+<!-- 							<tbody> -->
+<%-- 							<c:forEach var="list" items="${paging.list}" varStatus="status"> --%>
+<!-- 								<tr align="" height="50px"> -->
+<!-- 									<td class="" width="" align="" bgcolor=""> -->
+<%-- 										${(paging.totalCount - ((paging.currentPage-1) * paging.pageSize)) - status.index} --%>
+<!-- 									</td> -->
+<%-- 									<td>${list.counselCd}</td> --%>
+<%-- 									<td>${list.clientNm}</td> --%>
+<%-- 									<td>${list.userNm}</td> --%>
+<%-- 									<td>${list.counselNm}</td> --%>
+<%-- 									<td><comm:commNmOut option="category" code="${list.counselDiv}"/></td> --%>
+<%-- 									<td><comm:commNmOut option="commCd" code="${list.counselType}"/></td> --%>
+<%-- 									<td>${list.counselorNm}</td> --%>
+<%-- 									<td>${(paging.totalCount - ((paging.currentPage-1) * paging.pageSize)) - status.index}</td> --%>
+<%-- 									<c:choose> --%>
+<%-- 										<c:when test="${list.recordStatus < 100695}"> --%>
+<%-- 											<td><a href="#" class="pCounselorDtlModify" value="${list.counselCd}&${list.userKey}" > --%>
+<%-- 												<strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></a> --%>
+<!-- 											</td> -->
+<%-- 										</c:when> --%>
+<%-- 										<c:when test="${list.recordStatus == 100696}"> --%>
+<%-- 											<td><a href="#" class="pCounselorDtlModify" value="${list.counselCd}&${list.userKey}" > --%>
+<%-- 												<strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></a> --%>
+<!-- 											</td> -->
+<%-- 										</c:when> --%>
+<%-- 										<c:when test="${list.recordStatus == 100697}"> --%>
+<%-- 											<td><a href="#" class="pCounselorDtlModify" value="${list.counselCd}&${list.userKey}" > --%>
+<%-- 												<strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></a> --%>
+<!-- 											</td> -->
+<%-- 										</c:when> --%>
+<%-- 										<c:otherwise> --%>
+<%-- 											<td><strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></td> --%>
+<%-- 										</c:otherwise> --%>
+<%-- 									</c:choose> --%>
+
+<!-- 								</tr> -->
+<%-- 								</c:forEach> --%>
+<!-- 							</tbody> -->
+<!-- 						</table> -->
+<!-- 						목록 끝 -->
+<!-- 						<br /> -->
+<!-- 					</td> -->
+<!-- 				</tr> -->
+
+	<!-- 상담이력 가져오기 끝 -->
+
+
+
+			</table>
+		</td>
+	</tr>
+
+	<!-- 	일지 등록 -->
+	<tr>
+		<td valign="top" align="left">
+			<table cellpadding="0" cellspacing="0" border="0" width="100%">
+				<tr>
+					<td height="20px"></td>
+				</tr>
+
+				<!-- 상담의 목표 및 계획 테이블_첫회기 이면서, 종결되지 않은 일지에만 등록가능! -->
+<%-- 				<c:if test="${record_detail.recordStatusYn eq 'Y'}"> --%>
+					<tr>
+						<td>
+							ㆍ상담의 목표 및 계획
+							<span style="color:RED; font-weight: bold;">* 1회기 작성내용 그대로 이후 회기에 자동으로 작성됩니다.</span>						
+						</td>
+					</tr>
+					<tr>
+						<td>
+						<table id="mytable" cellpadding="5" cellspacing="0" border="1" width="90%" style="border-collapse:collapse;">
+							<tr class="plan">
+								<td bgcolor="#F5F5F5" width="13%"><span style="color:RED">* </span>전체 상담의 목표
+								</td>
+								<td><textarea rows="15" cols="50" style="width: 97%" id="finalGoal" name="finalGoal" value="${record_detail.finalGoal}">${record_detail.finalGoal}</textarea></td>
+							</tr>
+							<!--
+							<tr>
+								<td class="plan" bgcolor="#F5F5F5" width="13%"><span style="color:RED">* </span>과정목표(장기목표)<br/>
+									-단기 상담의 경우 장기 <br/>
+									목표와 동일가능
+								</td>
+								<td><textarea rows="15" cols="50" style="width: 97%" id="courseGoal" name="courseGoal" value="${record_detail.courseGoal}">${record_detail.courseGoal}</textarea> </td>
+							</tr>
+							-->
+							<tr>
+								<td bgcolor="#F5F5F5" width="13%"><span style="color:RED">* </span>상담 계획</td>
+								<td><textarea rows="15" cols="50" style="width: 97%" id="counselPlan" name="counselPlan" value="${record_detail.counselPlan}">${record_detail.counselPlan}</textarea> </td>
+							</tr>
+							<tr>
+								<td bgcolor="#F5F5F5" width="13%"><span style="color:RED">* </span>주호소 문제</th>
+								<td>
+									<span style="color:RED; font-size:11px; font-weight: bold; margin-top:3px;">* 되도록 내담자의 언어 그대로 적어주세요.</span>
+									<textarea rows="15" cols="50" style="width: 97%" name="mainIssue" id="mainIssue" value="${record_detail.mainIssue}">${record_detail.mainIssue}</textarea> 
+								</td>
+							</tr>
+							<tr>
+								<td bgcolor="#F5F5F5" width="13%"><span style="color:RED">* </span>상담주제 분류</th>
+								<td>
+									<div style="font-weight: bold;">
+										&lt;상담주제 작성법&gt;<br/>
+										1. 상담의 <span style="color: red;">첫 회기에만 입력이 가능</span>합니다.<br/>
+										2. 대분류 &gt; 중분류 &gt; 소분류 순으로 입력해주세요.<br/>
+										3. "내담자"를 기준으로 작성해주세요.<br/>
+										<span style="font-size: 9px; margin-left:20px;">Ex. 내담자 아동의 부모와의 갈등인 경우 : (아동의) 가족 관련 주제 &gt; 가족관계 어려움 &gt; 부모자녀 관계갈등</span><br/>
+										4. 1회기 진행 후, 내담자의 주호소문제를 바탕으로 <span style="color: red;">대표적인 심리주제</span>를 설정해주세요.<br/>
+										5. 일부 고객사는 분류가 다를 수 있습니다. Ex) 대법원은 소분류가 없습니다.<br/>
+									</div>
+									<commClient:select name="subjectItemCd1" id="subjectItemCd1" clientCd="${record_detail.clientCd }" code="${groupOfUserAges }" onchange="subjectItem1CdChange();" selectValue="${record_detail.subjectItemCd1 }" basicValue="==== 대주제 ====" />
+									<commClient:select name="subjectItemCd2" id="subjectItemCd2" clientCd="${record_detail.clientCd }" code="${record_detail.subjectItemCd1 }" onchange="subjectItem2CdChange();" selectValue="${record_detail.subjectItemCd2 }" basicValue="==== 중주제 ====" />
+									<commClient:select name="subjectItemCd3" id="subjectItemCd3" clientCd="${record_detail.clientCd }" code="${record_detail.subjectItemCd2 }" selectValue="${record_detail.subjectItemCd3 }" basicValue="==== 소주제 ====" />
+								</td>
+							</tr>
+						</table>
+						</td>
+					</tr>
+					<!-- 상담의 목표 및 계획 테이블 끝 -->
+					<tr>
+						<td height="40px"></td>
+					</tr>
+<%-- 				</c:if> --%>
+
+				<tr>
+					<td>ㆍ상담일지</td>
+				</tr>
+				<tr>
+					<td>
+					<table cellpadding="5" cellspacing="0" border="1" width="90%" style="border-collapse:collapse;">
+						<tr>
+							<th width="16%">대주제</th>
+							<th width="16%">소주제</th>
+							<th colspan="6">내용</th>
+						</tr>
+						<%-- <tr>
+							<th width="13%" rowspan="2"><span style="color:RED">* </span>주호소<br/>&nbsp;&nbsp;문제</th>
+							<!-- 
+							<th width="13%" rowspan="1">회기 주제<br/>
+							<font style="color:gray;">본 회기의 핵심적<br/>
+							내용함축</font></th>
+							<td colspan="6"><textarea rows="4" cols="50" style="width: 97%" name="subject" id="subject">${record_detail.subject}</textarea> </td>
+							-->
+						</tr>
+						<tr>
+							<th width="13%">회기 내 내담자의<br/>
+							주소호문제</th>
+							<td colspan="6"><textarea rows="4" cols="50" style="width: 97%" name="mainIssue" id="mainIssue" value="${record_detail.mainIssue}">${record_detail.mainIssue}</textarea> </td>
+						</tr> --%>
+						<tr>
+							<th width="13%" rowspan="2"><span style="color:RED">* </span>상담과정</th>
+							<th width="13%" rowspan="1">본 회기 상담목표<br/></th>
+							<td colspan="6"><textarea rows="4" cols="50" style="width: 97%" name="goal" id="goal" value="${record_detail.goal}">${record_detail.goal}</textarea> </td>
+						</tr>
+						<tr>
+							<th width="13%">주요 개입 및 접근방법</th>
+							<td colspan="6"><textarea rows="4" cols="50" style="width: 97%" name="intervention" id="intervention" value="${record_detail.intervention}">${record_detail.intervention}</textarea> </td>
+						</tr>
+						<!-- 
+						<tr>
+							<th width="13%">내담자 주요 반응</th>
+							<td colspan="6"><textarea rows="4" cols="50" style="width: 97%" name="feedback" id="feedback" value="${record_detail.feedback}">${record_detail.feedback}</textarea> </td>
+						</tr>
+						<tr>
+							<th width="13%" rowspan="13"> 상담에 대한 <br/>
+							분석 및 소견<br/>
+							(사례개념화 방식)
+							</th>
+						</tr>
+						<c:forEach var="recordTxt" items="${record_txt}" varStatus="status">
+						<tr>
+							<th colspan="7"><c:if test="${recordTxt.recordType == '100644'}"><span style="color:RED">* </span></c:if>${recordTxt.recordTypeNm}</th>
+						</tr>
+						<tr>
+							<td colspan="7">
+								<input type="hidden" id="recordType${recordTxt.contNum }" name="recordType${recordTxt.contNum }" value="${recordTxt.recordType }" />
+								<textarea rows="4" cols="50" style="width: 95%" id="content${recordTxt.contNum}" name="content${recordTxt.contNum}" value="${recordTxt.content}">${recordTxt.content}</textarea>
+								<c:if test="${recordTxt.recordType == '100644'}">
+			 						<br/>*참고논문<br/>
+			  						1) 사례개념화 교육을 위한 상담전문가의 경험적 지식 탐색 연구(이명우 외, 2005)<br/>
+			  						2) 상담 사례개념화 요소목록 개발 및 수퍼비전에서 중요하게 지각되는 사례개념화요소 분석(이윤주, 2001)
+								</c:if>
+							</td>
+	 					</tr>
+	 					</c:forEach>
+						-->
+						<tr>
+							<th width="13%" rowspan="2">상담 내용</th>
+							<th width="13%" colspan="7" align="left">[다음 사항을 고려하여 작성해주십시오]<br/>
+							ㆍ History : 내담자의 문제와 관련된 발달/역사적 배경, 문제의 기원, 과거 문제력 및 당시 환경 상황<br/>
+							ㆍ 내적 요인 : 자아개념, 통찰내용과 수준, 인지적 스타일 및 특징, 정서적 스타일 및 특징, 신체/생리/행동적 특징<br/>
+							ㆍ 상황적 요인 : 문제와 관련된 현재 생활 여건, 문제를 지속시키는 상황적 요인<br/>
+							ㆍ 대인관계 양상 : 대인관계 양상, 문제영역<br/>
+							ㆍ 자원 및 취약점 : 긍정적 상황과 경험 및 강점, 대처 전략, 부정적 상황과 약점<br/>
+							ㆍ 종합적 이해 : 핵심 문제에 대한 이론적 설명, 내담자와 관련된 요인들에 대한 종합적 이해 및 평가
+							</th>
+						</tr>
+						<tr>
+							<td colspan="7">
+								<c:forEach var="recordTxt" items="${record_txt}" varStatus="status">
+								<c:if test="${recordTxt.recordType == '100644'}">
+									<input type="hidden" id="recordType${recordTxt.contNum }" name="recordType${recordTxt.contNum }" value="${recordTxt.recordType }" />
+									<textarea rows="15" cols="50" style="width: 95%" id="content${recordTxt.contNum}" name="content${recordTxt.contNum}" value="${recordTxt.content}">${recordTxt.content}</textarea>
+								</c:if>
+	 							</c:forEach>
+							</td>
+						</tr>
+						<tr>
+							<th>상담사 소견</th>
+							<td colspan="7">
+							<c:forEach var="recordTxt" items="${record_txt}" varStatus="status">
+								<c:if test="${recordTxt.recordType == '100642'}">
+									<input type="hidden" id="recordType${recordTxt.contNum }" name="recordType${recordTxt.contNum }" value="${recordTxt.recordType }" />
+									<textarea rows="4" cols="50" style="width: 95%" id="content${recordTxt.contNum}" name="content${recordTxt.contNum}" value="${recordTxt.content}">${recordTxt.content}</textarea>
+								</c:if>
+	 							</c:forEach>
+							</td>
+						</tr>
+						<tr>
+							<th>이후 계획</th>
+							<td colspan="7">
+							<c:forEach var="recordTxt" items="${record_txt}" varStatus="status">
+								<c:if test="${recordTxt.recordType == '100643'}">
+									<input type="hidden" id="recordType${recordTxt.contNum }" name="recordType${recordTxt.contNum }" value="${recordTxt.recordType }" />
+									<textarea rows="4" cols="50" style="width: 95%" id="content${recordTxt.contNum}" name="content${recordTxt.contNum}" value="${recordTxt.content}">${recordTxt.content}</textarea>
+								</c:if>
+	 							</c:forEach>
+							</td>
+						</tr>
+						<tr>
+							<th>기타/특이사항</th>
+							<td colspan="7"><textarea rows="15" cols="50" style="width: 95%" name="recordMemo" id="recordMemo" value="${record_detail.memo}">${record_detail.memo}</textarea> </td>
+						</tr>
+
+						<!-- 전화 상담 인 경우에만 노출 -->
+						<c:if test="${record_detail.counselType eq '100434'}">
+							<tr>
+								<th>상담시간</th>
+								<td colspan="7">
+									<select name="time1" id="time1">
+										<c:forEach var="time1" begin="00" end="05">
+											<option value="0${time1}" <c:if test="${time1 == record_detail.time.substring(0,2)}">selected="selected"</c:if> >0${time1}</option>
+										</c:forEach>
+									</select> 시간
+									<select name="time2" id="time2">
+										<option value="00" <c:if test="${record_detail.time.substring(2,4) eq 00}">selected="selected"</c:if> >00</option>
+										<option value="10" <c:if test="${record_detail.time.substring(2,4) eq 10}">selected="selected"</c:if> >10</option>
+										<option value="20" <c:if test="${record_detail.time.substring(2,4) eq 20}">selected="selected"</c:if> >20</option>
+										<option value="30" <c:if test="${record_detail.time.substring(2,4) eq 30}">selected="selected"</c:if> >30</option>
+										<option value="40" <c:if test="${record_detail.time.substring(2,4) eq 40}">selected="selected"</c:if> >40</option>
+										<option value="50" <c:if test="${record_detail.time.substring(2,4) eq 50}">selected="selected"</c:if> >50</option>
+									</select> 분
+								</td>
+							</tr>
+						</c:if>
+						
+						<!-- 법률 상담 인 경우에만 노출 -->
+						<c:if test="${intake_detail.channelType eq '100002'}">
+							<tr>
+								<th rowspan="2">상담사가 내담자에게<br>전하는 메시지</th>
+								<th colspan="7">
+									<span style="color:BLUE">작성한 내용은 저장 즉시 내담자에게 바로 전달되어,<br>'내담자페이지'나 SMS 및 이메일을 통해 열람 및 출력할 수 있습니다.<br>※ '종결하기'일 경우에만 발송됩니다.<br><br></span>
+									발송을 원하지 않으면 체크를 해지해주세요.<br> 
+									<label for="checkSms"> SMS <input type="checkbox" name="checkSms" id="checkSms" value="Y" checked="checked"/></label> 
+									<label for="checkEmail"> e-mail <input type="checkbox" name="checkEmail" id="checkEmail" value="Y" checked="checked"/></label>
+								</th>
+							</tr>
+							<tr>
+								<td colspan="7">
+	            					<textarea rows="10" cols="30" id="counselFeedBack" name="counselFeedBack" style="width:100%; height:400px;">${counsel_feedback.content }</textarea>
+								</td>
+							</tr>
+						</c:if>
+						
+						<tr>
+							<th>파일첨부</th>
+							<td colspan="7" >
+				    			<input type="file" name="file" id="file" />&nbsp;<a href="#" onclick="fileDownLoad('${record_detail.filePath}', '${record_detail.fileNm}')">${record_detail.fileNm}</a>
+		    				</td>
+						</tr>
+
+						<c:if test="${record_detail.recordStatus == 100694}">
+			 				<tr>
+								<th><span style="color:RED">* </span>소명사유</th>
+								<td colspan="7"><textarea rows="15" cols="50" style="width: 95%" id="callingIssue" name="callingIssue">${record_detail.callingIssue }</textarea></td>
+							</tr>
+						</c:if>
+						<c:if test="${record_detail.recordStatus != 100694}">
+							<c:if test="${not empty record_detail.callingIssue}">
+			 				<tr>
+								<th><span style="color:RED">* </span>소명사유</th>
+								<td colspan="7"><textarea rows="15" cols="50" style="width: 95%" id="callingIssue" name="callingIssue">${record_detail.callingIssue }</textarea></td>
+							</tr>
+							</c:if>
+						</c:if>
+
+						<tr>
+							<th>다음상담계획</th>
+								<c:choose>
+									<c:when test="${record_detail.recordStatus == 100692}">
+										<td colspan="7" align="center">
+											<span style="font-weight:bold">상담이 종결되었습니다.</span>
+										</td>
+									</c:when>
+									<c:when test="${record_detail.recordStatus == 100696}">
+										<td colspan="7" align="center">
+												<span style="font-weight:bold">No-Show로 인하여 상담이 진행되지 않았습니다.</span>
+<!-- 												</br>상담이 종결되었을 경우, 종결하기 버튼을 눌러주세요.</br> -->
+<!-- 											<span class="button"><a name="endBtn" href="#" value="100692" id="endBtn">종결하기 </a></span> -->
+										</td>
+									</c:when>
+									<c:otherwise>
+										<%-- <td colspan="7" id="ingCounsel">
+											<span class="button"><a name="endBtn" href="#" value="100692" id="endBtn">종결하기 </a></span>
+											<c:if test="${record_detail.counselType ne '100435'}">
+												<span class="button"><a name="endBtn" href="#" value="100692" id="extensionBtn">연장하기 </a></span>
+											</c:if>
+
+											<c:if test="${record_detail.counselType eq '100433'}">
+												<span class="button"><a name="nsBtn" href="#" value="100696" id="nonBtn" >N/S 처리 </a></span>
+											</c:if>
+											<c:if test="${record_detail.counselType eq '100434'}">
+												<span class="button"><a name="nsBtn" href="#" value="100696" id="nonBtn" >N/S 처리 </a></span>
+											</c:if>
+										</td> --%>
+									</c:otherwise>
+								</c:choose>
+						</tr>
+					</table>
+					</td>
+				</tr>
+				<!-- 상담일지 끝 -->
+
+				<!-- 버튼 영역 시작 -->
+				<table cellpadding="5" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
+					<tr align="center" height="50px">
+						<td class="" colspan="2" align="center">
+   							<input type="button" id="insertBtn" value="저장하기" style="height:30px; width:100px;">
+							<%-- <c:choose>
+								<c:when test="${record_detail.recordStatus == 100692}">
+									<input type="button" id="modefySave" value="수정하기" style="height:30px; width:100px;">
+								</c:when>
+								<c:when test="${record_detail.recordStatus == 100693}">
+									<input type="button" id="tempSave" value="저장" style="height:30px; width:100px;">
+								</c:when>
+								<c:when test="${record_detail.recordStatus == 100694}">
+									<input type="button" id="tempSave" value="저장" style="height:30px; width:100px;">
+								</c:when>
+								<c:when test="${record_detail.recordStatus == 100697}">
+									<input type="button" id="tempSave" value="저장" style="height:30px; width:100px;">
+								</c:when>
+								<c:otherwise>
+								</c:otherwise>
+							</c:choose> --%>
+							<span style="margin-left: 20px;"></span>
+						</td>
+					</tr>
+				</table>
+				<!-- 버튼 영역 시작 -->
+			</table>
+		</td>
+	</tr>
+</table>
+</form>
+   <div id="divAddFormTemplete" style="display: none">
+   	<table cellpadding="0" cellspacing="0" border="0" width="650px">
+   		<tr>
+   			<td align="center" style="font-weight:bold; font-family: dotum, 돋움, NanumGothic, 나눔고딕, 'Malgun Gothic', '맑은 고딕', Tahoma, Geneva, sans-serif; font-size: 11pt; ">
+   				(<span style="color: blue;"><c:out value="${baseInfo_detail.counselNm}" /></span>)님의 소속회사인(<span style="color: blue;"><c:out value="${baseInfo_detail.clientNm}" /></span>)의 상담제공 기간은 다음과 같습니다.<br/>
+   				<span style="color: blue;">* 상담가능기간 : ~ </span><span style="color: red;"><fmt:formatDate value="${jedoDateInfo.maxEndDate}" pattern="yyyy.MM.dd"/>까지</span><br/>
+   				<c:if test="${jedoDateInfo.isWillEnd eq true}">
+   				<span style="color: red;">[주의!]상담을 받을 수 있는 기간이 한 달 이내로 남았습니다<br/>기간이 지난 후에는 회사의 지원이 불가합니다.<br/>일정을 고려하시어 상담계획을 세워주세요!</span>
+   				</c:if>
+   				<br/><br/><br/>
+   			</td>
+   		</tr>
+   		<tr>
+   			<td align="center">
+   				<table cellpadding="5" cellspacing="0" border="1" width="600px" style="border-collapse:collapse;" bordercolor="#DDDDDD">
+   					<tr>
+   						<td align="center" bgcolor="#F5F5F5"><strong>  선 택  </strong></td>
+   						<td>
+							<c:if test="${record_detail.counselType ne '100435'}">
+				    			<input type='radio'  name="endType" id="extensionBtn" value='ex'/><label for="extensionBtn">연장 : 다음 회기로 연장</label>
+				    		</c:if>
+							<c:if test="${ record_detail.counselType eq '100433' or record_detail.counselType eq '100434' }">
+				    			<input type="radio" name="endType" id="nonBtn" value="ns"/><label for="nonBtn">N/S : No Show</label>
+				    		</c:if>
+				    		<input type="radio" name="endType" id="endBtn" value="end"/><label for="endBtn">종결 : 사례(케이스) 종결</label>
+   						</td>
+   					</tr>
+   				</table>
+   			</td>
+   		</tr>
+   		<tr>
+   			<td height="20px"></td>
+   		</tr>
+   		<tr>
+   			<td align="center">
+   				<table cellpadding="0" cellspacing="0" border="0">
+   					<tr>
+   						<td id="btn01">
+   							<a id="btAdd" href="javascript:endCounsel();" style="color: #111111;background: url(//img.ezwelmind.co.kr//admin/common/btn01_2.jpg);">
+   								<span style="background: url(//img.ezwelmind.co.kr//admin/common/btn01_2.jpg) right 0;">등 록</span>
+   							</a>
+   						</td>
+   						<td width="40px"></td>
+   						<td id="btn01">
+   							<a class="btClose" href="#"style="color: #111111;background: url(//img.ezwelmind.co.kr//admin/common/btn01_2.jpg);">
+   								<span style="background: url(//img.ezwelmind.co.kr//admin/common/btn01_2.jpg) right 0;">취 소</span>
+   							</a>
+   						</td>
+   					</tr>
+   				</table>
+   			</td>
+   		</tr>
+   	</table>
+   </div>
+
+</body>
+</html>

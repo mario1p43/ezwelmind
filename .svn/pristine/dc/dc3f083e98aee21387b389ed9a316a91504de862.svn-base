@@ -1,0 +1,861 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.client.ClientMapper">
+
+	<select id="getClientList" resultType="com.ezwel.admin.domain.entity.client.Client" >
+		SELECT
+				CLIENT_CD	As	clientCd
+			,	DOMAIN_CD	As	domainCd
+			,	CLIENT_NM	As	clientNm
+			,	CLIENT_TYPE	As	clientType
+			,	(select comm_nm from mind_comm_cd where comm_cd = C.CLIENT_TYPE)	As	clientTypeNm
+			,	DIV_CD	As	divCd
+			,	(select comm_nm from mind_comm_cd where comm_cd = C.DIV_Cd)	As	divCdNm
+			,	CEO_NM	As	ceoNm
+			,	BSNS_NUM	As	bsnsNum
+			,	BSNS_KIND	As	bsnsKind
+			,	BCOND	As	bcond
+			,	BITEM	As	bitem
+			,	(select comm_nm from mind_comm_cd where comm_cd = C.BITEM)	As	bitemNm
+			,	POST	As	post
+			,	ADDR1	As	addr1
+			,	ADDR2	As	addr2
+			,	FAX_NUM	As	faxNum
+			,	TEL_NUM	As	telNum
+			,	MENU_GROUP	As	menuGroup
+			,	SITE_NM	As	siteNm
+			,	POINT_NM	As	pointNm
+			,	OPEN_DD	As	openDd
+			,	CALC_DD	As	calcDd
+			,	CALC_TYPE	As	calcType
+			,	(select comm_nm from mind_comm_cd where comm_cd = C.CALC_TYPE)	As	calcTypeNm
+			,	POINT_BRING_YN	As	pointBringYn
+			,	CONTRACT_TYPE	As	contractType
+			,	(select comm_nm from mind_comm_cd where comm_cd = C.CONTRACT_TYPE)	As	contractTypeNm
+			,	AREA_CD	As	areaCd
+			,	(select comm_nm from mind_comm_cd where comm_cd = C.AREA_CD)	As	areaCdNm
+			,	TOT_EMPLOY	As	totEmploy
+			,	FILE_NM	As	fileNm
+			,	FILE_PATH	As	filePath
+			,	USE_TYPE	As	useType
+			,	USE_SERVICE	As	useService
+			,	USE_CHANNEL	As	useChannel
+			,	JOIN_TYPE	As	joinType
+			,	LOGIN_TYPE	As	loginType
+			,	USE_YN	As	useYn
+			,	OPEN_YN	As	openYn
+			,	DEL_YN	As	delYn
+			,	EMS_RECV_YN	As	emsRecvYn
+			,	SMS_RECV_YN	As	smsRecvYn
+			,	DUTY_YN	As	dutyYn
+			,	TAX_YN	As	taxYn
+			,	RECEIPT_POINT_YN	As	receiptPointYn
+			,	RECEIPT_ACCOUNT_YN	As	receiptAccountYn
+			,	WELCOME_IMG	As	welcomeImg
+			,	LOGIN_TXT	As	loginTxt
+			,	DEL_DT	As	delDt
+			,	REG_ID	As	regId
+			,	REG_DT	As	regDt
+			,	MODI_ID	As	ModiId
+			,	MODI_DT	As	ModiDt
+		FROM MIND_CLIENT C
+		WHERE DEL_YN = 'N'
+		<if test="isNotNull(clientNm)">
+		 AND CLIENT_NM LIKE '%${clientNm}%'
+		</if>
+		<if test="isNotNull(clientCd)">
+		 AND CLIENT_CD = #{clientCd}
+		</if>
+		<if test="isNotNull(areaCd)">
+		 AND AREA_CD = #{areaCd}
+		</if>
+		<if test="isNotNull(contractType)">
+		 AND CONTRACT_TYPE = #{contractType}
+		</if>
+		<if test="isNotNull(joinType)">
+		 AND JOIN_TYPE = #{joinType}
+		</if>
+		<if test="isNotNull(loginType)">
+		 AND LOGIN_TYPE = #{loginType}
+		</if>
+		<if test="isNotNull(useYn)">
+		 AND USE_YN = #{useYn}
+		</if>
+		<if test="isNotNull(openYn)">
+		 AND OPEN_YN = #{openYn}
+		</if>
+		<if test="(endEmp != 0)">
+		 AND TOT_EMPLOY BETWEEN #{startEmp} and #{endEmp}
+		</if>
+		ORDER BY client_nm
+	</select>
+
+	<select id="getClientSelectOne" resultType="com.ezwel.admin.domain.entity.client.Client" >
+		SELECT
+				CLIENT_CD	As	clientCd
+			,	DOMAIN_CD	As	domainCd
+			,	CLIENT_NM	As	clientNm
+			,	CLIENT_TYPE	As	clientType
+			,	(select comm_nm from mind_comm_cd where comm_cd = C.CLIENT_TYPE)	As	clientTypeNm
+			,	DIV_CD	As	divCd
+			,	(select comm_nm from mind_comm_cd where comm_cd = C.DIV_Cd)	As	divCdNm
+			,	CEO_NM	As	ceoNm
+			,	BSNS_NUM	As	bsnsNum
+			,	BSNS_KIND	As	bsnsKind
+			,	BCOND	As	bcond
+			,	BITEM	As	bitem
+			,	(select comm_nm from mind_comm_cd where comm_cd = C.BITEM)	As	bitemNm
+			,	POST	As	post
+			,	ADDR1	As	addr1
+			,	ADDR2	As	addr2
+			,	FAX_NUM	As	faxNum
+			,	TEL_NUM	As	telNum
+			,	MENU_GROUP	As	menuGroup
+			,	SITE_NM	As	siteNm
+			,	POINT_NM	As	pointNm
+			,	OPEN_DD	As	openDd
+			,	CALC_DD	As	calcDd
+			,	CALC_TYPE	As	calcType
+			,	(select comm_nm from mind_comm_cd where comm_cd = C.CALC_TYPE)	As	calcTypeNm
+			,	POINT_BRING_YN	As	pointBringYn
+			,	CONTRACT_TYPE	As	contractType
+			,	(select comm_nm from mind_comm_cd where comm_cd = C.CONTRACT_TYPE)	As	contractTypeNm
+			,	AREA_CD	As	areaCd
+			,	(select comm_nm from mind_comm_cd where comm_cd = C.AREA_CD)	As	areaCdNm
+			,	TOT_EMPLOY	As	totEmploy
+			,	FILE_NM	As	fileNm
+			,	FILE_PATH	As	filePath
+			,	USE_TYPE	As	useType
+			,	USE_SERVICE	As	useService
+			,	USE_CHANNEL	As	useChannel
+			,	JOIN_TYPE	As	joinType
+			,	LOGIN_TYPE	As	loginType
+			,	USE_YN	As	useYn
+			,	OPEN_YN	As	openYn
+			,	DEL_YN	As	delYn
+			,	EMS_RECV_YN	As	emsRecvYn
+			,	SMS_RECV_YN	As	smsRecvYn
+			,	DUTY_YN	As	dutyYn
+			,	TAX_YN	As	taxYn
+			,	RECEIPT_POINT_YN	As	receiptPointYn
+			,	RECEIPT_ACCOUNT_YN	As	receiptAccountYn
+			,	WELCOME_IMG	As	welcomeImg
+			,	LOGIN_TXT	As	loginTxt
+			,	DEL_DT	As	delDt
+			,	REG_ID	As	regId
+			,	REG_DT	As	regDt
+			,	MODI_ID	As	ModiId
+			,	MODI_DT	As	ModiDt
+			,   MGR_ID	AS mgrId
+			,	CONTRACT_BUDGET AS budget
+			,	CONTRACT_MEMO memo
+			,   mobile_yn as mobileYn
+			,	PAY_NM AS payNm
+			,	COUNSEL_MGR_ID AS counselMgrId
+		FROM MIND_CLIENT C
+		WHERE 1=1
+			AND DEL_YN = 'N'
+		<if test="isNotNull(clientCd)">
+			AND CLIENT_CD = #{clientCd}
+		</if>
+		<if test="isNotNull(clientNm)">
+			AND CLIENT_NM LIKE '%${clientNm}%'
+		</if>
+		LIMIT 1
+	</select>
+
+	<select id="getClientCnt" parameterType="com.ezwel.admin.service.client.dto.ClientDto" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM MIND_CLIENT C
+		WHERE DEL_YN = 'N'
+		 AND CLIENT_CD = #{clientCd}
+	</select>
+
+	<insert id="insertClient" parameterType="com.ezwel.admin.service.client.dto.ClientDto">
+		INSERT INTO MIND_CLIENT
+			(
+				CLIENT_CD
+				,DOMAIN_CD
+				,CLIENT_NM
+				,CLIENT_TYPE
+				,DIV_CD
+				,CEO_NM
+				,BSNS_NUM
+				,BSNS_KIND
+				,BCOND
+				,BITEM
+				,POST
+				,ADDR1
+				,ADDR2
+				,FAX_NUM
+				,TEL_NUM
+				,MENU_GROUP
+				,SITE_NM
+				,POINT_NM
+				,OPEN_DD
+				,CALC_DD
+				,CALC_TYPE
+				,POINT_BRING_YN
+				,CONTRACT_TYPE
+				,AREA_CD
+				,TOT_EMPLOY
+				,FILE_NM
+				,FILE_PATH
+				,USE_TYPE
+				,USE_SERVICE
+				,USE_CHANNEL
+				,JOIN_TYPE
+				,LOGIN_TYPE
+				,USE_YN
+				,OPEN_YN
+				,EMS_RECV_YN
+				,SMS_RECV_YN
+				,DUTY_YN
+				,TAX_YN
+				,RECEIPT_POINT_YN
+				,RECEIPT_ACCOUNT_YN
+				,REG_ID
+				,REG_DT
+				,MOBILE_YN
+				,PAY_NM
+				,COUNSEL_MGR_ID
+			) VALUES (
+				#{clientCd}
+				,#{domainCd}
+				,#{clientNm}
+				,#{clientType}
+				,#{divCd}
+				,#{ceoNm}
+				,#{bsnsNum}
+				,#{bsnsKind}
+				,#{bcond}
+				,#{bitem}
+				,#{post}
+				,#{addr1}
+				,#{addr2}
+				,#{faxNum}
+				,#{telNum}
+				,#{menuGroup}
+				,#{siteNm}
+				,#{pointNm}
+				,#{openDd}
+				,#{calcDd}
+				,#{calcType}
+				,#{pointBringYn}
+				,#{contractType}
+				,#{areaCd}
+				,#{totEmploy}
+				,#{fileNm}
+				,#{fileFullPath}
+				,#{useType}
+				,#{useService}
+				,#{useChannel}
+				,#{joinType}
+				,#{loginType}
+				,#{useYn}
+				,#{openYn}
+				,#{emsRecvYn}
+				,#{smsRecvYn}
+				,#{dutyYn}
+				,#{taxYn}
+				,#{receiptPointYn}
+				,#{receiptAccountYn}
+				,#{regId}
+				,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+				,#{mobileYn}
+				,#{payNm}
+				,#{counselMgrId}
+			)
+	</insert>
+
+	<insert id="insertTestUser" parameterType="com.ezwel.admin.service.client.dto.ClientDto">
+		INSERT INTO MIND_USER
+			(
+				CLIENT_CD, USER_ID, USER_NM, USER_PWD, RRN, EMP_NUM, USE_YN, DEL_YN, USER_STATUS, POST, ADDR1, ADDR2, EMAIL, EMAIL_RECV_YN, HOME_TEL, OFFICE_TEL, MOBILE, SMS_RECV_YN,
+				BIRTH_DD, BIRTH_TYPE, GENDER, FOREIGN_YN, AREA, JOB_FAMILY, JOB_SERIAL, COMPANY_JOIN_DD, JOIN_DT, AGREE_DT, DEL_DT, PWD_IMSI_YN, ASSIGN_TYPE,
+				IPIN_CI, IPIN_DI, AUTH_STRING, IPIN_AUTH_DT, TEST_YN, REG_DT
+			)
+			SELECT
+				#{clientCd}, user_id, user_nm, user_pwd, rrn, emp_num, use_yn, del_yn, user_status, post, addr1, addr2, email, email_recv_yn, home_tel, office_tel, mobile, sms_recv_yn,
+				birth_dd, birth_type, gender, foreign_yn, area, job_family, job_serial, date_format(now(), '%y%m%d%'), join_dt, agree_dt, del_dt, pwd_imsi_yn, assign_type,
+				ipin_ci, ipin_di, auth_string, ipin_auth_dt, test_yn, date_format(now(), '%Y%m%d%h%i%s')
+			FROM MIND_USER
+			WHERE CLIENT_CD = 'test'
+				AND USER_ID = '32827980'
+				AND TEST_YN = 'Y'
+			Limit 1
+	</insert>
+
+	<insert id="insertJedoPeriod" parameterType="com.ezwel.admin.service.client.dto.ClientDto">
+		INSERT INTO mind_client_jedo_period
+			(CLIENT_CD, PERIOD_NO, STATUS, START_DD, END_DD, LOGIN_YN, POINT_USE_YN, CONFIRM_YN, CONFIRM_DT, REG_ID, REG_DT)
+			SELECT
+				#{clientCd}, 1, STATUS, START_DD, END_DD, LOGIN_YN, POINT_USE_YN, 'N', '', #{regId}, date_format(now(), '%Y%m%d%h%i%s')
+			FROM MIND_CLIENT_JEDO_PERIOD
+			WHERE CLIENT_CD = 'test'
+			ORDER BY PERIOD_NO DESC LIMIT 1
+	</insert>
+
+	<insert id="insertMgr" parameterType="com.ezwel.admin.service.client.dto.ClientDto">
+		INSERT INTO MIND_MGR
+			(USER_ID, USER_TYPE, CLIENT_CD, USER_NM, USER_PWD, RRN, MGR_STATUS, USE_YN, MENU_GROUP, IPIN_DI, REG_DT)
+			SELECT
+				#{clientCd}, USER_TYPE, #{clientCd}, '총괄관리자', USER_PWD, RRN, MGR_STATUS, USE_YN, MENU_GROUP, IPIN_DI, date_format(now(), '%Y%m%d%h%i%s')
+			FROM MIND_MGR
+			WHERE CLIENT_CD = 'test'
+				AND USER_TYPE = '4001'
+				AND MGR_STATUS = 'Y'
+				AND USE_YN = 'Y'
+				AND USER_ID = 'test'
+			LIMIT 1
+	</insert>
+
+	<insert id="insertClientCommCd" parameterType="com.ezwel.admin.service.client.dto.ClientDto">
+		INSERT INTO MIND_CLIENT_COMM_CD
+			(COMM_CD, CLIENT_CD, HIGH_COMM_CD, COMM_NM, OPTION_CD, USE_YN, LOGIN_YN, POINT_USE_YN, COMM_DESC, REG_DT)
+			SELECT
+				comm_cd, #{clientCd}, high_comm_cd, comm_nm, option_cd, use_yn, login_yn, point_use_yn, comm_desc, date_format(now(), '%Y%m%d%h%i%s')
+			FROM MIND_CLIENT_COMM_CD
+			WHERE CLIENT_CD = 'test'
+				AND HIGH_COMM_CD IN (-1, 100001)
+			ORDER BY CLIENT_CD, COMM_CD
+	</insert>
+
+	<insert id="insertAclUserAuth" parameterType="com.ezwel.admin.service.client.dto.ClientDto">
+		INSERT INTO acl_user_auth
+		(
+			USER_AUTH_KEY
+			, AUTH_CD
+			, REG_DT
+		)
+		VALUES (
+			CONCAT(#{clientCd},'4001',#{clientCd})
+			, 'ROLE_CADM_ADMIN'
+			, date_format(now(), '%Y%m%d%h%i%s')
+		)
+	</insert>
+
+	<update id="updateClient" parameterType="com.ezwel.admin.service.client.dto.ClientDto">
+		UPDATE MIND_CLIENT
+		SET
+			CLIENT_NM = #{clientNm}
+			,CLIENT_TYPE = #{clientType}
+			,DIV_CD = #{divCd}
+			,CEO_NM = #{ceoNm}
+			,BSNS_NUM = #{bsnsNum}
+			,BSNS_KIND = #{bsnsKind}
+			,BCOND = #{bcond}
+			,BITEM = #{bitem}
+			,POST = #{post}
+			,ADDR1 = #{addr1}
+			,ADDR2 = #{addr2}
+			,FAX_NUM = #{faxNum}
+			,TEL_NUM = #{telNum}
+			,MENU_GROUP = #{menuGroup}
+			,SITE_NM = #{siteNm}
+			,POINT_NM = #{pointNm}
+			,OPEN_DD = #{openDd}
+			,CALC_DD = #{calcDd}
+			,CALC_TYPE = #{calcType}
+			,POINT_BRING_YN = #{pointBringYn}
+			,CONTRACT_TYPE = #{contractType}
+			,AREA_CD = #{areaCd}
+			,TOT_EMPLOY = #{totEmploy}
+		<if test="isNotNull(fileNm)">
+			,FILE_NM = #{fileNm}
+			,FILE_PATH = #{fileFullPath}
+		</if>
+			,USE_TYPE = #{useType}
+			,USE_SERVICE = #{useService}
+			,USE_CHANNEL = #{useChannel}
+			,JOIN_TYPE = #{joinType}
+			,LOGIN_TYPE = #{loginType}
+			,USE_YN = #{useYn}
+			,OPEN_YN = #{openYn}
+			,EMS_RECV_YN = #{emsRecvYn}
+			,SMS_RECV_YN = #{smsRecvYn}
+			,DUTY_YN = #{dutyYn}
+			,TAX_YN = #{taxYn}
+			,RECEIPT_POINT_YN = #{receiptPointYn}
+			,RECEIPT_ACCOUNT_YN = #{receiptAccountYn}
+			,MODI_ID = #{modiId}
+			,MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			,MGR_ID = #{mgrId}
+			,CONTRACT_BUDGET = #{budget}
+			,CONTRACT_MEMO = #{memo}
+			,MOBILE_YN = #{mobileYn}
+		<if test="isNotNull(payNm)">
+			,PAY_NM = #{payNm}
+		</if>
+		<if test="isNotNull(counselMgrId)">
+			,COUNSEL_MGR_ID = #{counselMgrId}
+		</if>
+		WHERE DEL_YN = 'N'
+			AND CLIENT_CD = #{clientCd}
+	</update>
+	
+	<select id="getmgrList" parameterType="map" resultType="com.ezwel.admin.domain.entity.client.Client" >
+		SELECT USER_ID AS userId
+				,USER_NM AS userNm
+		FROM MIND_MGR
+		WHERE USER_TYPE = #{userType}
+			AND USE_YN = 'Y'
+			AND BRANCH_CD = #{branchCd}
+	</select>
+	
+	<update id="updateClientJedo" parameterType="com.ezwel.admin.service.client.dto.ClientDto">
+		UPDATE MIND_CLIENT
+		SET MGR_ID = #{mgrId},
+			CONTRACT_BUDGET = #{budget},
+			CONTRACT_MEMO = #{memo}
+		WHERE CLIENT_CD = #{clientCd}
+	</update>
+
+	<select id="getDomainCd" parameterType="String" resultType="String">
+		SELECT DOMAIN_CD AS domainCd
+		FROM MIND_CLIENT
+		WHERE CLIENT_CD = #{clientCd}
+	</select>
+	
+	<select id="getCommCdList" resultType="com.ezwel.admin.domain.entity.client.ClientCommCd" >
+		SELECT A.COMM_CD AS commCd,
+			A.CLIENT_CD AS clientCd,
+			A.HIGH_COMM_CD AS highCommCd,
+			A.COMM_NM AS commNm,
+			A.OPTION_CD AS optionCd,
+			A.USE_YN AS useYn,
+			A.LOGIN_YN AS loginYn,
+			A.POINT_USE_YN AS pointUseYn,
+			A.COMM_DESC AS commDesc,
+			A.ORDER_NO AS orderNo,
+			(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE COMM_CD = A.HIGH_COMM_CD LIMIT 1) AS highCommNm
+		FROM MIND_CLIENT_COMM_CD A
+		WHERE 1=1
+		<if test="isNotNull(clientCd)">
+			AND CLIENT_CD = #{clientCd}
+		</if>
+		<if test="isNotNull(optionCd)">
+			AND OPTION_CD = #{optionCd}
+		</if>
+		<if test="isNotNull(highCommCd)">
+			AND HIGH_COMM_CD = #{highCommCd}
+		</if>
+		ORDER BY ORDER_NO, OPTION_CD, HIGH_COMM_CD, COMM_NM
+	</select>
+	
+	<select id="getCommClientList" resultType="com.ezwel.admin.domain.entity.client.ClientCommCd">
+		SELECT COMM_CD 		as commCd,
+			   CLIENT_CD    as clientCd,
+			   HIGH_COMM_CD as highCommCd,
+			   COMM_NM 		as commNm,
+			   OPTION_CD 	as optionCd,
+			   USE_YN		as useYn,
+			   LOGIN_YN     as loginYn,
+			   POINT_USE_YN as pointUseYn,
+			   COMM_DESC	as commDesc,
+			   REG_DT		as regDt
+		 FROM MIND_CLIENT_COMM_CD
+		 <where>
+			 <if test="isNotNull(code)">
+			 	AND	HIGH_COMM_CD = #{code}
+			 </if>
+			 <if test="isNotNull(commCd)">
+			 	AND HIGH_COMM_CD = (SELECT HIGH_COMM_CD FROM MIND_CLIENT_COMM_CD WHERE CLIENT_CD = #{clientCd} AND COMM_CD = #{commCd})
+			 </if>
+			 <if test="isNotNull(clientCd)">
+			    AND CLIENT_CD = #{clientCd}
+			 </if>
+		 </where>
+	</select>
+	
+	<select id="getPopCommCdList" resultType="com.ezwel.admin.domain.entity.client.ClientCommCd">
+		SELECT A.COMM_CD AS commCd,
+			A.CLIENT_CD AS clientCd,
+			A.HIGH_COMM_CD AS highCommCd,
+			A.COMM_NM AS commNm,
+			A.OPTION_CD AS optionCd,
+			A.USE_YN AS useYn,
+			A.LOGIN_YN AS loginYn,
+			A.POINT_USE_YN AS pointUseYn,
+			A.COMM_DESC AS commDesc,
+			(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE COMM_CD = A.HIGH_COMM_CD LIMIT 1) AS highCommNm
+		FROM MIND_CLIENT_COMM_CD A
+		WHERE 1=1
+		<if test="isNotNull(clientCd)">
+			AND CLIENT_CD = #{clientCd}
+		</if>
+		AND HIGH_COMM_CD NOT IN ('100001', '100006', '100000')
+		AND COMM_CD NOT IN ('100003', '100004', '100005')
+		ORDER BY HIGH_COMM_CD, COMM_NM, COMM_CD
+	</select>
+	
+	
+	<select id="getMaxClientCommCd" resultType="int" >
+		/* 부서 정보 등록시 코드값 생성 */
+		SELECT IFNULL(MAX(COMM_CD), 0) + 1
+		  FROM MIND_CLIENT_COMM_CD
+		 WHERE CLIENT_CD = #{clientCd}
+	</select>
+	
+	
+	<delete id="removeClientDivision">
+		/* 부서 레벨을 다시 만들기 위해 부서 정보를 모두 삭제한다.*/
+		DELETE
+		  FROM MIND_CLIENT_COMM_CD
+		 WHERE CLIENT_CD = #{clientCd}
+		   AND OPTION_CD = 'division' /* 부서정보는 division (상수같은 값) */ 
+	</delete>
+	
+	
+	<select id="getClientDivision" resultType="String" >
+		/* 고객사의 부서정보를 얻는다. */
+		SELECT COMM_CD
+		  FROM MIND_CLIENT_COMM_CD
+		 WHERE CLIENT_CD = #{clientCd}
+		   AND OPTION_CD = 'division' /* 부서정보는 division (상수같은 값) */ 
+	</select>
+	
+	
+	<insert id="addClientCommCdDivision">
+		INSERT INTO MIND_CLIENT_COMM_CD
+		(
+			  COMM_CD
+			, CLIENT_CD
+			, HIGH_COMM_CD
+			, COMM_NM
+			, OPTION_CD
+			, USE_YN
+			, ORDER_NO
+			, REG_DT
+		) VALUES (
+			  #{commCd}
+			, #{clientCd}
+			, #{highCommCd}
+			, #{commNm}
+			, #{optionCd}
+			, #{useYn}
+			, #{orderNo}
+			, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+	</insert>
+	
+	
+	<select id="getClientMyPrivateList" resultType="com.ezwel.admin.domain.entity.client.ClientSub" >
+		/*현재 고객사가 상담포유의 개인정보내역에 노출하고 있는 리스트*/ 
+		SELECT A.COMM_CD,
+			   A.COMM_NM,
+			   B.DISP_TYPE,
+			   B.DISP_YN,
+			   B.ESSEN_YN
+		  FROM MIND_COMM_CD A
+				LEFT JOIN MIND_CLIENT_SUB B
+					ON A.COMM_CD = B.DISP_TYPE
+					AND B.GUBUN_TYPE = 'MY_PRIVATE'
+					AND B.USE_YN = 'Y'
+					AND B.CLIENT_CD = #{clientCd}
+		 WHERE HIGH_COMM_CD = '100992'
+		   AND A.USE_YN = 'Y'
+		 ORDER BY A.COMM_CD
+	</select>
+	
+	<select id="getClientSub" resultType="com.ezwel.admin.domain.entity.client.ClientSub" >
+		SELECT CLIENT_CD,
+			   GUBUN_TYPE,
+			   DISP_TYPE,
+			   DISP_YN,
+			   ESSEN_YN
+		  FROM MIND_CLIENT_SUB
+		 WHERE 1=1
+	 	<if test="isNotNull(clientCd)">
+		 	AND	CLIENT_CD = #{clientCd}
+		</if>
+		<if test="isNotNull(gubunType)">
+		 	AND	GUBUN_TYPE = #{gubunType}
+		</if>
+		<if test="isNotNull(dispType)">
+		 	AND	DISP_TYPE = #{dispType}
+		</if>
+		 
+		 
+	</select>
+	
+	
+	<insert id="addClientSub">
+		INSERT INTO MIND_CLIENT_SUB
+		(
+			  CLIENT_CD
+			, GUBUN_TYPE
+			, DISP_TYPE
+			, DISP_NO
+			, USE_YN
+			, DISP_YN
+			, ESSEN_YN
+		) VALUES (
+			  #{clientCd}
+			, #{gubunType}
+			, #{dispType}
+			, #{dispNo}
+			, #{useYn}
+			, #{dispYn}
+			, #{essenYn}
+		)
+	</insert>
+	
+	
+	<delete id="deleteClientSub">
+		DELETE
+		  FROM MIND_CLIENT_SUB
+		 WHERE CLIENT_CD = #{clientCd}
+		   AND GUBUN_TYPE = #{gubunType}
+		   AND DISP_TYPE = #{dispType} 
+	</delete>
+	
+	
+	<update id="updateClientSub">
+		UPDATE MIND_CLIENT_SUB
+		SET ESSEN_YN = #{essenYn}
+		<if test="isNotNull(dispYn)">
+			, DISP_YN = #{dispYn}
+		</if>
+		WHERE CLIENT_CD = #{clientCd}
+		  AND GUBUN_TYPE = #{gubunType}
+		  AND DISP_TYPE = #{dispType} 
+	</update>
+	
+	<select id="getMenuURLtoClientList" resultType="com.ezwel.admin.domain.entity.client.Client" >
+		select distinct C.client_cd as clientCd     
+		from mind_menu_cd A
+			inner join mind_menu_level B
+			on A.menu_cd = B.menu_cd
+			inner join mind_menu_client C
+			on B.menu_seq = C.menu_seq
+		where A.menu_url = #{menuUrl}
+		and A.menu_group = 'usr'
+		and B.use_yn = 'Y'
+		and C.use_yn = 'Y'
+	</select>
+	
+	<select id="getMenuCdCnt" resultType="int">
+		select count(menu_cd) from mind_menu_cd
+		where menu_group = 'usr'
+		and menu_cd = #{menuCd}
+	</select>
+	
+	<select id="getBBSClient" resultType="com.ezwel.admin.domain.entity.client.Client" >
+		select client_cd as clientCd 
+		from mind_bbs_client
+		where data_seq = #{dataSeq}
+	</select>
+	
+	<select id="getCounselCdClientCd" resultType="String">
+		SELECT CLIENT_CD as clientCd 
+		FROM MIND_COUNSEL
+		WHERE COUNSEL_CD = #{counselCd}
+	</select>
+	
+	<select id="getClientPagingList" resultType="com.ezwel.admin.domain.entity.client.Client" >
+		<if test="pageCommonFlag == true">
+		SELECT COUNT(*) pageCommonCount
+		  FROM
+		    (
+		</if>
+			SELECT
+					CLIENT_CD	As	clientCd
+				,	DOMAIN_CD	As	domainCd
+				,	CLIENT_NM	As	clientNm
+				,	CLIENT_TYPE	As	clientType
+				,	(select comm_nm from mind_comm_cd where comm_cd = C.CLIENT_TYPE)	As	clientTypeNm
+				,	DIV_CD	As	divCd
+				,	(select comm_nm from mind_comm_cd where comm_cd = C.DIV_Cd)	As	divCdNm
+				,	CEO_NM	As	ceoNm
+				,	BSNS_NUM	As	bsnsNum
+				,	BSNS_KIND	As	bsnsKind
+				,	BCOND	As	bcond
+				,	BITEM	As	bitem
+				,	(select comm_nm from mind_comm_cd where comm_cd = C.BITEM)	As	bitemNm
+				,	POST	As	post
+				,	ADDR1	As	addr1
+				,	ADDR2	As	addr2
+				,	FAX_NUM	As	faxNum
+				,	TEL_NUM	As	telNum
+				,	MENU_GROUP	As	menuGroup
+				,	SITE_NM	As	siteNm
+				,	POINT_NM	As	pointNm
+				,	OPEN_DD	As	openDd
+				,	CALC_DD	As	calcDd
+				,	CALC_TYPE	As	calcType
+				,	(select comm_nm from mind_comm_cd where comm_cd = C.CALC_TYPE)	As	calcTypeNm
+				,	POINT_BRING_YN	As	pointBringYn
+				,	CONTRACT_TYPE	As	contractType
+				,	(select comm_nm from mind_comm_cd where comm_cd = C.CONTRACT_TYPE)	As	contractTypeNm
+				,	AREA_CD	As	areaCd
+				,	(select comm_nm from mind_comm_cd where comm_cd = C.AREA_CD)	As	areaCdNm
+				,	TOT_EMPLOY	As	totEmploy
+				,	FILE_NM	As	fileNm
+				,	FILE_PATH	As	filePath
+				,	USE_TYPE	As	useType
+				,	USE_SERVICE	As	useService
+				,	USE_CHANNEL	As	useChannel
+				,	JOIN_TYPE	As	joinType
+				,	LOGIN_TYPE	As	loginType
+				,	USE_YN	As	useYn
+				,	OPEN_YN	As	openYn
+				,	DEL_YN	As	delYn
+				,	EMS_RECV_YN	As	emsRecvYn
+				,	SMS_RECV_YN	As	smsRecvYn
+				,	DUTY_YN	As	dutyYn
+				,	TAX_YN	As	taxYn
+				,	RECEIPT_POINT_YN	As	receiptPointYn
+				,	RECEIPT_ACCOUNT_YN	As	receiptAccountYn
+				,	WELCOME_IMG	As	welcomeImg
+				,	LOGIN_TXT	As	loginTxt
+				,	DEL_DT	As	delDt
+				,	REG_ID	As	regId
+				,	REG_DT	As	regDt
+				,	MODI_ID	As	ModiId
+				,	MODI_DT	As	ModiDt
+			FROM MIND_CLIENT C
+			WHERE DEL_YN = 'N'
+			AND CLIENT_CD NOT IN ('test-mind', 'onmaum', 'HOME', 'api', 'test1')
+			<if test="isNotNull(clientCd)">
+			 AND CLIENT_CD = #{clientCd}
+			</if>
+			ORDER BY CLIENT_NM
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insertGradeCd">
+		INSERT INTO MIND_CLIENT_COMM_CD (
+			COMM_CD,
+			CLIENT_CD,
+			HIGH_COMM_CD,		
+			COMM_NM,
+			OPTION_CD,
+			COMM_DESC,
+			REG_DT
+		) SELECT
+			max(comm_cd) + 1,
+			#{clientCd},
+			#{highCommCd},
+			#{commNm},
+			#{optionCd},
+			#{commDesc},
+			date_format(now(), '%Y%m%d%h%i%s')
+		 FROM MIND_CLIENT_COMM_CD 
+		 WHERE CLIENT_CD = #{clientCd}
+	</insert>
+	
+	<insert id="modifyGradeCd">
+		UPDATE MIND_CLIENT_COMM_CD
+		SET
+			COMM_NM = #{commNm}
+			,COMM_DESC = #{commDesc}
+		WHERE COMM_CD = #{commCd}
+		AND CLIENT_CD = #{clientCd}
+	</insert>
+	
+	<update id="ajaxModifyGradeCdUseYn" parameterType="com.ezwel.admin.service.client.dto.ClientDto">
+		UPDATE MIND_CLIENT_COMM_CD
+		SET
+			USE_YN = #{useYn}
+		WHERE COMM_CD = #{commCd}
+		AND CLIENT_CD = #{clientCd}
+	</update>
+	
+	<update id="modifyClientLogin" parameterType="com.ezwel.admin.service.client.dto.ClientDto">
+		UPDATE MIND_CLIENT
+		SET
+			LOGIN_TXT = #{loginTxt}
+	   		<if test="isNotNull(fileFullPath)">
+	   		,WELCOME_IMG = #{fileFullPath}
+	   		</if>
+			,MODI_ID = #{modiId}
+			,MODI_DT = date_format(now(), '%Y%m%d%h%i%s')
+		WHERE CLIENT_CD = #{clientCd}
+	</update>
+	
+	<select id="getClientOnlinePollList" resultType="com.ezwel.admin.domain.entity.client.ClientSub" >
+		/*현재 고객사가 법인홈페이지 온라인자가진단 체크리스트*/ 
+		SELECT A.COMM_CD,
+			   A.COMM_NM,
+			   B.DISP_TYPE,
+			   B.DISP_YN,
+			   B.ESSEN_YN
+		  FROM MIND_COMM_CD A
+				LEFT JOIN MIND_CLIENT_SUB B
+					ON A.COMM_CD = B.DISP_TYPE
+					AND B.GUBUN_TYPE = 'HOME_ONLINE'
+					AND B.USE_YN = 'Y'
+					AND B.CLIENT_CD = #{clientCd}
+		 WHERE HIGH_COMM_CD = '101011'
+		   AND A.USE_YN = 'Y'
+		 ORDER BY A.COMM_CD
+	</select>
+	
+	<select id="getClientStatusList" resultType="com.ezwel.admin.domain.entity.client.Client" >
+		SELECT b.PERIOD_SEQ AS periodSeq,
+				 b.CLIENT_CD AS clientCd,
+				 b.PERIOD_NO AS periodNo,
+				 b.STATUS AS status,
+				 DATE_FORMAT(b.START_DD, '%Y-%m-%d') AS startDd,
+				 DATE_FORMAT(b.END_DD, '%Y-%m-%d') AS endDd,
+				 b.LOGIN_YN AS loginYn,
+				 b.REG_ID AS regId,
+				 b.REG_DT AS regDt,
+				 b.MODI_ID AS modiId,
+				 b.MODI_DT AS modiDt,
+				 a.CLIENT_NM AS clientNm,
+				 FN_GET_COMM_NM(a.DIV_CD) AS divCd,
+				 FN_GET_COMM_NM(a.BITEM) AS bItem,
+				 a.SITE_NM AS siteNm,
+				 a.POINT_NM AS pointNm,
+				 a.CALC_DD AS calcDd,
+				 FN_GET_COMM_NM(a.CALC_TYPE) AS calcType,
+				 FN_GET_COMM_NM(a.CONTRACT_TYPE) AS contractType,
+				 FN_GET_COMM_NM(a.AREA_CD) AS areaCd,
+				 FORMAT(a.TOT_EMPLOY, 0) AS totEmploy,
+				 FN_GET_COMM_NM(a.USE_TYPE) AS useType,
+				 FN_GET_COMM_NM(a.USE_SERVICE) AS useService,
+				 FN_GET_COMM_NM(a.USE_CHANNEL) AS useChannel,
+				 a.JOIN_TYPE AS joinType,
+				 a.MGR_ID AS mgrId,
+				 (SELECT user_nm FROM MIND_MGR WHERE USER_ID = a.mgr_id) AS mgrNm,
+				 a.CONTRACT_BUDGET AS contractBudget,
+				 a.CONTRACT_MEMO AS contractMemo,
+				 a.MOBILE_YN AS mobileYn,
+				 a.PAY_NM AS payNm,
+				 a.COUNSEL_MGR_ID AS counselMgrId,
+				 (SELECT user_nm FROM MIND_MGR WHERE USER_ID = a.COUNSEL_MGR_ID) AS counselMgrNm,
+				(SELECT FORMAT(CEILING_POINT,0) FROM MIND_CEILING WHERE PERIOD_SEQ = b.PERIOD_SEQ AND CLIENT_CD = b.CLIENT_CD) AS ceilingPoint
+		FROM mind_client as a LEFT JOIN mind_client_jedo_period b
+			ON a.client_cd = b.client_cd
+		WHERE a.client_cd not in('api','test','test-mind','test1','onmaum')
+		AND a.client_cd = b.client_cd
+   		<if test="isNotNull(clientCd)">
+   			AND a.client_cd = #{clientCd}
+   		</if>
+		ORDER BY a.client_nm, b.period_seq
+	</select>
+	
+	<select id="getClientJedoPeriod" resultType="String">
+		SELECT PERIOD_SEQ
+		FROM MIND_CLIENT_JEDO_PERIOD
+		WHERE 1=1
+			AND status = 'Y'
+			AND CLIENT_CD = #{clientCd}
+			AND START_DD &lt;= #{ymd}
+           	AND END_DD >= #{ymd}
+	</select>
+		
+</mapper>

@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.evaluation.EvaluationMapper">
+
+	<select id="getSurveyAnsList" resultType="com.ezwel.admin.domain.entity.evaluation.Evaluation">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+			SELECT
+				c.client_cd as clientCd,
+				(select client_nm from mind_client where client_cd = c.client_cd) as clientNm,
+				c.user_nm as userNm,
+				b.COUNSEL_NM as counselNm,
+				b.counsel_cd as counselCd,
+				b.counselor_id as counselId,
+				FN_GET_COMM_NM(b.RELATION) as relation,
+				d.center_nm as centerNm,
+				e.user_nm as counselorNm,
+				DATE_FORMAT(STR_TO_DATE(b.SCHEDULE_DT , '%Y%m%d%H%i%s'),'%Y년%m월%d일%H시') as counselDt,
+				DATE_FORMAT(STR_TO_DATE(a.REG_DT , '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i') as regDt,
+				a.item01Ans as item01Ans,
+				a.item02Ans as item02Ans,
+				a.item03Ans as item03Ans,
+				a.item04Ans as item04Ans,
+				a.item05Ans as item05Ans,
+				<if test="isNotNull(evalSeq)">
+					<choose>
+						<when test="evalSeq == '6'.toString()">
+							AES_DECRYPT(UNHEX(a.item06Ans),'1234') as item06Ans,
+						</when>
+						<otherwise>
+							a.item06Ans as item06Ans,
+						</otherwise>
+					</choose>
+				</if>
+				a.item07Ans as item07Ans,
+				a.item08Ans as item08Ans,
+				a.item09Ans as item09Ans,
+				a.item10Ans as item10Ans,
+				a.target_seq as targetSeq,
+				a.user_key as userKey,
+				a.eval_seq  as evalSeq,
+				a.SEARCH_YN as showYn,
+				a.SEARCH_ID as showId,
+                a.SEARCH_DT as showDt
+			FROM (			
+						SELECT 
+								max(item01Ans) as item01Ans,
+								max(item02Ans) as item02Ans,
+								max(item03Ans) as item03Ans,
+								max(item04Ans) as item04Ans,
+								max(item05Ans) as item05Ans,
+								max(item06Ans) as item06Ans,
+								max(item07Ans) as item07Ans,
+								max(item08Ans) as item08Ans,
+								max(item09Ans) as item09Ans,
+								max(item10Ans) as item10Ans,
+								target_seq,
+								user_key,
+								eval_seq,
+								reg_dt,
+								SEARCH_YN,
+								SEARCH_ID,
+                                SEARCH_DT
+						FROM (
+							SELECT 
+								case when ITEM_SEQ=1 then ifnull(item_ans,'') else '' end as item01Ans,
+								case when ITEM_SEQ=2 then ifnull(item_ans,'') else '' end as item02Ans,
+								case when ITEM_SEQ=3 then ifnull(item_ans,'') else '' end as item03Ans,
+								case when ITEM_SEQ=4 then ifnull(item_ans,'') else '' end as item04Ans,
+								case when ITEM_SEQ=5 then ifnull(item_ans,'') else '' end as item05Ans,
+								case when item_seq=6 then ifnull(item_ans,'') else '' end as item06Ans,
+								case when item_seq=7 then ifnull(item_ans,'') else '' end as item07Ans,
+								case when item_seq=8 then ifnull(item_ans,'') else '' end as item08Ans,
+								case when item_seq=9 then ifnull(item_ans,'') else '' end as item09Ans,
+								case when item_seq=10 then ifnull(item_ans,'') else '' end as item10Ans,
+								target_seq,
+								user_key,
+								eval_seq,
+								reg_dt,
+								SEARCH_YN,
+								SEARCH_ID,
+                                SEARCH_DT
+							FROM mind_evaluation_user
+							<if test="isNotNull(evalSeq)">
+								WHERE eval_seq in (#{evalSeq})
+							</if>
+							
+						) SUB
+						GROUP BY sub.target_seq,sub.user_key
+				) A			
+				left join (
+							select aa.order_num, bb.counsel_nm, bb.relation, bb.schedule_dt, bb.counsel_cd
+								  ,bb.center_seq, bb.counselor_id 
+							from mind_order aa 
+									left join ( select cc.counsel_nm, cc.relation, bb.schedule_dt, bb.counsel_cd
+													,bb.center_seq, bb.counselor_id 
+													from mind_counsel bb 
+														left join mind_counsel_intake cc 
+															on bb.INTAKE_CD = cc.intake_cd ) bb
+										on aa.COUNSEL_CD = bb.counsel_cd 
+						  ) b
+				on a.TARGET_SEQ = b.order_num
+				left join mind_user c 
+				on a.user_key = c.user_key
+				LEFT JOIN MIND_CENTER d
+				ON d.center_seq=b.center_seq
+				LEFT JOIN MIND_MGR e
+				ON e.user_id = b.counselor_id	
+			WHERE 1=1
+			<if test="isNotNull(clientCd)">
+				AND c.client_cd = #{clientCd}
+			</if>
+			<if test="isNotNull(userNm)">
+				AND c.user_nm = #{userNm}
+			</if>
+			<if test="isNotNull(userId)">
+				AND c.user_id = #{userId}
+			</if>
+			<if test="isNotNull(centerSeq)">
+				AND b.center_seq = #{centerSeq}
+			</if>
+			<if test="isNotNull(counselorId)">
+				AND b.counselor_id = #{counselorId}
+			</if>
+			<if test="isNotNull(startMonth)">
+				AND DATE_FORMAT(STR_TO_DATE(b.SCHEDULE_DT , '%Y%m%d%H%i%s'),'%Y/%m/%d') >= #{startMonth}
+			</if>
+			<if test="isNotNull(endMonth)">
+				AND DATE_FORMAT(STR_TO_DATE(b.SCHEDULE_DT , '%Y%m%d%H%i%s'),'%Y/%m/%d') &lt;= #{endMonth}
+			</if>
+			<if test="isNotNull(item01Ans)">
+				AND a.item01Ans in (${item01Ans})
+			</if>
+			<if test="isNotNull(item02Ans)">
+				AND a.item02Ans in (${item02Ans})
+			</if>
+			<if test="isNotNull(showYn)">
+				AND a.SEARCH_YN = #{showYn}
+			</if>
+			ORDER BY a.reg_dt desc
+		<choose>
+				<when test="pageCommonFlag == true">
+					) X
+				</when>
+				<otherwise>
+					LIMIT #{firstIndex} , #{pageSize}
+				</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getPtnSurveyAnsList" resultType="com.ezwel.admin.domain.entity.evaluation.Evaluation">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+			SELECT
+				c.client_cd as clientCd,
+				(select client_nm from mind_client where client_cd = c.client_cd) as clientNm,
+				c.user_nm as userNm,
+				b.COUNSEL_NM as counselNm,
+				b.counsel_cd as counselCd,
+				b.counselor_id as counselId,
+				FN_GET_COMM_NM(b.RELATION) as relation,
+				d.center_nm as centerNm,
+				e.user_nm as counselorNm,
+				DATE_FORMAT(STR_TO_DATE(b.SCHEDULE_DT , '%Y%m%d%H%i%s'),'%Y년%m월%d일%H시') as counselDt,
+				DATE_FORMAT(STR_TO_DATE(a.REG_DT , '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i') as regDt,
+				a.item01Ans as item01Ans,
+				a.item02Ans as item02Ans,
+				a.item03Ans as item03Ans,
+				a.item04Ans as item04Ans,
+				a.item05Ans as item05Ans,
+				a.item06Ans as item06Ans,
+				AES_DECRYPT(UNHEX(a.item06Ans),'1234') as item07Ans,
+				a.item08Ans as item08Ans,
+				a.item09Ans as item09Ans,
+				a.item10Ans as item10Ans,
+				a.target_seq as targetSeq,
+				a.user_key as userKey,
+				a.eval_seq as evalSeq
+			FROM (			
+						SELECT 
+								max(item01Ans) as item01Ans,
+								max(item02Ans) as item02Ans,
+								max(item03Ans) as item03Ans,
+								max(item04Ans) as item04Ans,
+								max(item05Ans) as item05Ans,
+								max(item06Ans) as item06Ans,
+								max(item07Ans) as item07Ans,
+								max(item08Ans) as item08Ans,
+								max(item09Ans) as item09Ans,
+								max(item10Ans) as item10Ans,
+								target_seq,
+								user_key,
+								eval_seq,
+								reg_dt
+						FROM (
+							SELECT 
+								case when ITEM_SEQ=1 then ifnull(item_ans,'') else '' end as item01Ans,
+								case when ITEM_SEQ=2 then ifnull(item_ans,'') else '' end as item02Ans,
+								case when ITEM_SEQ=3 then ifnull(item_ans,'') else '' end as item03Ans,
+								case when ITEM_SEQ=4 then ifnull(item_ans,'') else '' end as item04Ans,
+								case when ITEM_SEQ=5 then ifnull(item_ans,'') else '' end as item05Ans,
+								case when item_seq=6 then ifnull(item_ans,'') else '' end as item06Ans,
+								case when item_seq=7 then ifnull(item_ans,'') else '' end as item07Ans,
+								case when item_seq=8 then ifnull(item_ans,'') else '' end as item08Ans,
+								case when item_seq=9 then ifnull(item_ans,'') else '' end as item09Ans,
+								case when item_seq=10 then ifnull(item_ans,'') else '' end as item10Ans,
+								target_seq,
+								user_key,
+								eval_seq,
+								reg_dt
+							FROM mind_evaluation_user
+							
+								WHERE eval_seq in (1,6)
+							
+						) SUB
+						GROUP BY sub.target_seq,sub.user_key
+				) A			
+				left join (
+							select aa.order_num, bb.counsel_nm, bb.relation, bb.schedule_dt, bb.counsel_cd
+								  ,bb.center_seq, bb.counselor_id 
+							from mind_order aa 
+									left join ( select cc.counsel_nm, cc.relation, bb.schedule_dt, bb.counsel_cd
+													,bb.center_seq, bb.counselor_id 
+													from mind_counsel bb 
+														left join mind_counsel_intake cc 
+															on bb.INTAKE_CD = cc.intake_cd ) bb
+										on aa.COUNSEL_CD = bb.counsel_cd 
+						  ) b
+				on a.TARGET_SEQ = b.order_num
+				left join mind_user c 
+				on a.user_key = c.user_key
+				LEFT JOIN MIND_CENTER d
+				ON d.center_seq=b.center_seq
+				LEFT JOIN MIND_MGR e
+				ON e.user_id = b.counselor_id	
+			WHERE 1=1
+			<if test="isNotNull(clientCd)">
+				AND c.client_cd = #{clientCd}
+			</if>
+			<if test="isNotNull(userNm)">
+				AND c.user_nm = #{userNm}
+			</if>
+			<if test="isNotNull(userId)">
+				AND c.user_id = #{userId}
+			</if>
+			<if test="isNotNull(centerSeq)">
+				AND b.center_seq = #{centerSeq}
+			</if>
+			<if test="isNotNull(counselorId)">
+				AND b.counselor_id = #{counselorId}
+			</if>
+			<if test="isNotNull(startMonth)">
+				AND DATE_FORMAT(STR_TO_DATE(b.SCHEDULE_DT , '%Y%m%d%H%i%s'),'%Y/%m/%d') >= #{startMonth}
+			</if>
+			<if test="isNotNull(endMonth)">
+				AND DATE_FORMAT(STR_TO_DATE(b.SCHEDULE_DT , '%Y%m%d%H%i%s'),'%Y/%m/%d') &lt;= #{endMonth}
+			</if>
+			ORDER BY a.reg_dt desc
+		<choose>
+				<when test="pageCommonFlag == true">
+					) X
+				</when>
+				<otherwise>
+					LIMIT #{firstIndex} , #{pageSize}
+				</otherwise>
+		</choose>
+	</select>
+	
+	
+		<select id="getSurveyAnsListExcel" resultType="com.ezwel.admin.domain.entity.evaluation.Evaluation">
+			SELECT
+				c.client_cd as clientCd,
+				(select client_nm from mind_client where client_cd = c.client_cd) as clientNm,
+				c.user_nm as userNm,
+				b.COUNSEL_NM as counselNm,
+				b.counsel_cd as counselCd,
+				FN_GET_COMM_NM(b.RELATION) as relation,
+				d.center_nm as centerNm,
+				e.user_nm as counselorNm,
+				DATE_FORMAT(STR_TO_DATE(b.SCHEDULE_DT , '%Y%m%d%H%i%s'),'%Y년%m월%d일%H시') as counselDt,
+				DATE_FORMAT(STR_TO_DATE(a.REG_DT , '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i') as regDt,
+				a.item01Ans as item01Ans,
+				a.item02Ans as item02Ans,
+				a.item03Ans as item03Ans,
+				a.item04Ans as item04Ans,
+				a.item05Ans as item05Ans,
+				<if test="isNotNull(evalSeq)">
+					<choose>
+						<when test="evalSeq == '6'.toString()">
+							AES_DECRYPT(UNHEX(a.item06Ans),'1234') as item06Ans,
+						</when>
+						<otherwise>
+							a.item06Ans as item06Ans,
+						</otherwise>
+					</choose>
+				</if>
+				a.item07Ans as item07Ans,
+				a.item08Ans as item08Ans,
+				a.item09Ans as item09Ans,
+				a.item10Ans as item10Ans,
+				a.target_seq as targetSeq,
+				a.user_key,
+				a.eval_seq as evalSeq
+			FROM (			
+						SELECT 
+								max(item01Ans) as item01Ans,
+								max(item02Ans) as item02Ans,
+								max(item03Ans) as item03Ans,
+								max(item04Ans) as item04Ans,
+								max(item05Ans) as item05Ans,
+								max(item06Ans) as item06Ans,
+								max(item07Ans) as item07Ans,
+								max(item08Ans) as item08Ans,
+								max(item09Ans) as item09Ans,
+								max(item10Ans) as item10Ans,
+								target_seq,
+								user_key,
+								eval_seq,
+								reg_dt
+						FROM (
+							SELECT 
+								case when ITEM_SEQ=1 then ifnull(item_ans,'') else '' end as item01Ans,
+								case when ITEM_SEQ=2 then ifnull(item_ans,'') else '' end as item02Ans,
+								case when ITEM_SEQ=3 then ifnull(item_ans,'') else '' end as item03Ans,
+								case when ITEM_SEQ=4 then ifnull(item_ans,'') else '' end as item04Ans,
+								case when ITEM_SEQ=5 then ifnull(item_ans,'') else '' end as item05Ans,
+								case when item_seq=6 then ifnull(item_ans,'') else '' end as item06Ans,
+								case when item_seq=7 then ifnull(item_ans,'') else '' end as item07Ans,
+								case when item_seq=8 then ifnull(item_ans,'') else '' end as item08Ans,
+								case when item_seq=9 then ifnull(item_ans,'') else '' end as item09Ans,
+								case when item_seq=10 then ifnull(item_ans,'') else '' end as item10Ans,
+								target_seq,
+								user_key,
+								eval_seq,
+								reg_dt
+							FROM mind_evaluation_user
+							<if test="isNotNull(evalSeq)">
+								WHERE eval_seq = #{evalSeq}
+							</if>
+						) SUB
+						GROUP BY sub.target_seq,sub.user_key
+				) A			
+				left join (
+							select aa.order_num, bb.counsel_nm, bb.relation, bb.schedule_dt, bb.counsel_cd
+								  ,bb.center_seq, bb.counselor_id 
+							from mind_order aa 
+									left join ( select cc.counsel_nm, cc.relation, bb.schedule_dt, bb.counsel_cd
+													,bb.center_seq, bb.counselor_id 
+													from mind_counsel bb 
+														left join mind_counsel_intake cc 
+															on bb.INTAKE_CD = cc.intake_cd ) bb
+										on aa.COUNSEL_CD = bb.counsel_cd 
+						  ) b
+				on a.TARGET_SEQ = b.order_num
+				left join mind_user c 
+				on a.user_key = c.user_key
+				LEFT JOIN MIND_CENTER d
+				ON d.center_seq=b.center_seq
+				LEFT JOIN MIND_MGR e
+				ON e.user_id = b.counselor_id	
+			WHERE 1=1
+			<if test="isNotNull(clientCd)">
+				AND c.client_cd = #{clientCd}
+			</if>
+			<if test="isNotNull(userNm)">
+				AND c.user_nm = #{userNm}
+			</if>
+			<if test="isNotNull(userId)">
+				AND c.user_id = #{userId}
+			</if>
+			<if test="isNotNull(centerSeq)">
+				AND b.center_seq = #{centerSeq}
+			</if>
+			<if test="isNotNull(counselorId)">
+				AND b.counselor_id = #{counselorId}
+			</if>
+			<if test="isNotNull(startMonth)">
+				AND DATE_FORMAT(STR_TO_DATE(b.SCHEDULE_DT , '%Y%m%d%H%i%s'),'%Y/%m/%d') >= #{startMonth}
+			</if>
+			<if test="isNotNull(endMonth)">
+				AND DATE_FORMAT(STR_TO_DATE(b.SCHEDULE_DT , '%Y%m%d%H%i%s'),'%Y/%m/%d') &lt;= #{endMonth}
+			</if>
+			ORDER BY a.reg_dt desc
+	</select>
+	
+	<select id="getSurveyAnsAverage" resultType="com.ezwel.admin.domain.entity.evaluation.Evaluation">
+			SELECT
+				<if test="evalSeq == '1'.toString()">
+					ROUND(AVG(a.item01Ans), 2) as itemAvg,
+					MIN(a.item01Ans) as itemMin,
+					MAX(a.item01Ans) as itemMax
+				</if>
+				<if test="evalSeq == '6'.toString()">
+					ROUND(AVG(a.item02Ans), 2) as itemAvg,
+					MIN(a.item02Ans) as itemMin,
+					MAX(a.item02Ans) as itemMax
+				</if>
+			FROM (			
+						SELECT 
+								max(item01Ans) as item01Ans,
+								max(item02Ans) as item02Ans,
+								max(item03Ans) as item03Ans,
+								max(item04Ans) as item04Ans,
+								max(item05Ans) as item05Ans,
+								max(item06Ans) as item06Ans,
+								max(item07Ans) as item07Ans,
+								max(item08Ans) as item08Ans,
+								max(item09Ans) as item09Ans,
+								max(item10Ans) as item10Ans,
+								target_seq,
+								user_key,
+								eval_seq,
+								reg_dt
+						FROM (
+							SELECT 
+								case when ITEM_SEQ=1 then ifnull(item_ans,'') else '' end as item01Ans,
+								case when ITEM_SEQ=2 then ifnull(item_ans,'') else '' end as item02Ans,
+								case when ITEM_SEQ=3 then ifnull(item_ans,'') else '' end as item03Ans,
+								case when ITEM_SEQ=4 then ifnull(item_ans,'') else '' end as item04Ans,
+								case when ITEM_SEQ=5 then ifnull(item_ans,'') else '' end as item05Ans,
+								case when item_seq=6 then ifnull(item_ans,'') else '' end as item06Ans,
+								case when item_seq=7 then ifnull(item_ans,'') else '' end as item07Ans,
+								case when item_seq=8 then ifnull(item_ans,'') else '' end as item08Ans,
+								case when item_seq=9 then ifnull(item_ans,'') else '' end as item09Ans,
+								case when item_seq=10 then ifnull(item_ans,'') else '' end as item10Ans,
+								target_seq,
+								user_key,
+								eval_seq,
+								reg_dt
+							FROM mind_evaluation_user
+							<if test="isNotNull(evalSeq)">
+								WHERE eval_seq = #{evalSeq}
+							</if>
+						) SUB
+						GROUP BY sub.target_seq,sub.user_key
+				) A			
+				left join (
+							select aa.order_num, bb.counsel_nm, bb.relation, bb.schedule_dt, bb.counsel_cd
+								  ,bb.center_seq, bb.counselor_id 
+							from mind_order aa 
+									left join ( select cc.counsel_nm, cc.relation, bb.schedule_dt, bb.counsel_cd
+													,bb.center_seq, bb.counselor_id 
+													from mind_counsel bb 
+														left join mind_counsel_intake cc 
+															on bb.INTAKE_CD = cc.intake_cd ) bb
+										on aa.COUNSEL_CD = bb.counsel_cd 
+						  ) b
+				on a.TARGET_SEQ = b.order_num
+				left join mind_user c 
+				on a.user_key = c.user_key
+				LEFT JOIN MIND_CENTER d
+				ON d.center_seq=b.center_seq
+				LEFT JOIN MIND_MGR e
+				ON e.user_id = b.counselor_id	
+			WHERE 1=1
+			<if test="evalSeq == '1'.toString()">
+				AND A.item01Ans != 'null'
+			</if>
+			<if test="evalSeq == '6'.toString()">
+				AND A.item02Ans != ''
+			</if>
+			<if test="isNotNull(clientCd)">
+				AND c.client_cd = #{clientCd}
+			</if>
+			<if test="isNotNull(userNm)">
+				AND c.user_nm = #{userNm}
+			</if>
+			<if test="isNotNull(userId)">
+				AND c.user_id = #{userId}
+			</if>
+			<if test="isNotNull(centerSeq)">
+				AND b.center_seq = #{centerSeq}
+			</if>
+			<if test="isNotNull(counselorId)">
+				AND b.counselor_id = #{counselorId}
+			</if>
+			<if test="isNotNull(startMonth)">
+				AND DATE_FORMAT(STR_TO_DATE(b.SCHEDULE_DT , '%Y%m%d%H%i%s'),'%Y/%m/%d') >= #{startMonth}
+			</if>
+			<if test="isNotNull(endMonth)">
+				AND DATE_FORMAT(STR_TO_DATE(b.SCHEDULE_DT , '%Y%m%d%H%i%s'),'%Y/%m/%d') &lt;= #{endMonth}
+			</if>
+			ORDER BY a.reg_dt desc
+	</select>
+
+	<select id="getSurveyItemList" resultType="com.ezwel.admin.domain.entity.evaluation.Evaluation">
+		select EVAL_SEQ AS evalSeq,
+				ITEM_SEQ AS itemSeq,
+				ITEM_NO AS itemNo,
+				ITEM_TITLE AS itemTitle,
+				ITEM_TYPE AS itemType,
+				ITEM_LIMIT AS itemLimit,
+				ITEM_YN AS itemYn 
+		from mind_evaluation_item
+		where 1=1
+		<if test="isNotNull(evalSeq)">
+			and eval_seq = #{evalSeq}
+		</if>
+		order by item_seq
+	</select>
+	
+	<select id="getEvalSeq" resultType="String">
+		select 
+			CASE ORDER_TYPE
+			  	WHEN 100777 THEN '1'
+			  	WHEN 100778 THEN '2'
+			  	WHEN 100885 THEN '3'	END
+		from mind_order
+		where order_num = #{orderNum}
+	</select>
+
+	<select id="getSurveyAnsDetail" resultType="com.ezwel.admin.domain.entity.evaluation.Evaluation">
+		select 
+			a.EVAL_SEQ AS evalSeq,
+			a.ITEM_SEQ AS itemSeq,
+			a.ITEM_NO AS itemNo,
+			a.ITEM_TITLE AS itemTitle,
+			a.ITEM_TYPE AS itemType,
+			a.ITEM_LIMIT AS itemLimit,
+			a.ITEM_YN AS itemYn,
+			b.ITEM_ANS AS itemAns,
+			b.TARGET_SEQ AS targetSeq,
+			b.EVAL_USER_SEQ AS evalUserSeq,
+			(select eval_title from mind_evaluation where eval_seq = a.eval_seq) as evalTitle
+		from (select * from mind_evaluation_item where eval_seq = #{evalSeq} and item_yn = 'Y') as a left join mind_evaluation_user as b
+			on a.EVAL_SEQ = b.EVAL_SEQ and a.item_seq = b.ITEM_SEQ and b.TARGET_SEQ = #{orderNum}
+		where 1=1
+	</select>
+	
+	<insert id="insertHappyCall">
+		INSERT INTO MIND_EVALUATION_USER (
+			EVAL_SEQ,
+			TARGET_SEQ,
+			ITEM_SEQ,
+			USER_KEY,
+			ITEM_ANS,
+			REG_DT
+		) VALUES (
+			#{evalSeq}, 
+			#{targetSeq}, 
+			#{itemSeq}, 
+			#{userKey}, 
+			#{itemAns}, 
+			DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+	</insert>
+	
+	<update id="updateHappyCallShow">
+		UPDATE mind_evaluation_user 
+		SET 
+		SEARCH_YN = #{showYn},
+		SEARCH_ID = #{userId},
+		SEARCH_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') 
+		where target_seq = #{targetSeq}
+		and eval_seq = #{evalSeq}
+	</update>
+	
+	<delete id="deleteHappyCall">
+		delete from mind_evaluation_user
+		where target_seq = #{targetSeq}
+		and eval_seq = #{evalSeq}
+	</delete>
+	
+	<update id="updateHappayCallYn">
+		update mind_counsel_intake
+			set survey_call_yn = 'Y'
+		where intake_cd = #{intakeCd}
+	</update>
+	
+</mapper>

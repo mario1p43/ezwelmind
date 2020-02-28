@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.ecrm.EcrmMapper">
+
+	<select id="getClientList" resultType="com.ezwel.admin.domain.entity.client.Client" >
+		SELECT
+				CLIENT_CD	As	clientCd
+			,	DOMAIN_CD	As	domainCd
+			,	CLIENT_NM	As	clientNm
+			,	CLIENT_TYPE	As	clientType
+			,	(select comm_nm from mind_comm_cd where comm_cd = A.CLIENT_TYPE)	As	clientTypeNm
+			,	DIV_CD	As	divCd
+			,	(select comm_nm from mind_comm_cd where comm_cd = A.DIV_Cd)	As	divCdNm
+			,	CEO_NM	As	ceoNm
+			,	BSNS_NUM	As	bsnsNum
+			,	BSNS_KIND	As	bsnsKind
+			,	BCOND	As	bcond
+			,	BITEM	As	bitem
+			,	(select comm_nm from mind_comm_cd where comm_cd = A.BITEM)	As	bitemNm
+			,	POST	As	post
+			,	ADDR1	As	addr1
+			,	ADDR2	As	addr2
+			,	FAX_NUM	As	faxNum
+			,	TEL_NUM	As	telNum
+			,	MENU_GROUP	As	menuGroup
+			,	SITE_NM	As	siteNm
+			,	POINT_NM	As	pointNm
+			,	OPEN_DD	As	openDd
+			,	CALC_DD	As	calcDd
+			,	CALC_TYPE	As	calcType
+			,	(select comm_nm from mind_comm_cd where comm_cd = A.CALC_TYPE)	As	calcTypeNm
+			,	POINT_BRING_YN	As	pointBringYn
+			,	CONTRACT_TYPE	As	contractType
+			,	(select comm_nm from mind_comm_cd where comm_cd = A.CONTRACT_TYPE)	As	contractTypeNm
+			,	AREA_CD	As	areaCd
+			,	(select comm_nm from mind_comm_cd where comm_cd = A.AREA_CD)	As	areaCdNm
+			,	TOT_EMPLOY	As	totEmploy
+			,	FILE_NM	As	fileNm
+			,	FILE_PATH	As	filePath
+			,	USE_TYPE	As	useType
+			,	USE_SERVICE	As	useService
+			,	USE_CHANNEL	As	useChannel
+			,	JOIN_TYPE	As	joinType
+			,	LOGIN_TYPE	As	loginType
+			,	USE_YN	As	useYn
+			,	OPEN_YN	As	openYn
+			,	DEL_YN	As	delYn
+			,	EMS_RECV_YN	As	emsRecvYn
+			,	SMS_RECV_YN	As	smsRecvYn
+			,	DUTY_YN	As	dutyYn
+			,	TAX_YN	As	taxYn
+			,	RECEIPT_POINT_YN	As	receiptPointYn
+			,	RECEIPT_ACCOUNT_YN	As	receiptAccountYn
+			,	DEL_DT	As	delDt
+			,	REG_ID	As	regId
+			,	REG_DT	As	regDt
+			,	MODI_ID	As	ModiId
+			,	MODI_DT	As	ModiDt
+		FROM MIND_CLIENT A
+		WHERE 1=1 
+		AND CLIENT_CD NOT IN ('api', 'test-mind')
+		ORDER BY client_nm
+	</select>
+	
+	<select id="getTaskRequestList" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+				SELECT DATA_SEQ AS dataSeq
+					,A.BBS_CD AS bbsCd
+					,A.SUBJECT AS subject
+					,A.CONTENT AS content
+					,A.REQ_CD1 AS reqCd1
+					,A.REQ_CD2 AS reqCd2
+					,A.HIGH_DATA_SEQ AS highDataSeq
+					,A.STATUS AS status
+					,A.DISP_YN AS dispYn
+					,A.SERVICE_TYPE AS serviceType
+					,A.CLIENT_CD AS clientCd
+					,(SELECT CLIENT_NM FROM MIND_CLIENT WHERE CLIENT_CD = A.REG_COMPANY) AS clientNm
+					,A.REG_ID AS regId
+					,A.REG_NM AS regNm
+					,A.MODI_ID AS modiId
+					,A.MODI_NM AS modiNm
+					,DATE_FORMAT(STR_TO_DATE(A.MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS modiDt
+					,IFNULL(A.VISITED, 0) AS visited
+					,DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt
+					,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_CD1) AS reqCd1Nm
+					,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_CD2) AS reqCd2Nm
+					,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.STATUS) AS statusNm
+				FROM MIND_BBS_DATA A
+				WHERE 1=1
+				AND A.HIGH_DATA_SEQ = '-1'
+				<if test="isNotNull(serviceType)">
+					AND A.SERVICE_TYPE = #{serviceType}
+				</if>
+				<if test="isNotNull(bbsCd)">
+					AND A.BBS_CD = #{bbsCd}
+				</if>
+				<if test="isNotNull(clientCd)">
+					AND A.CLIENT_CD = #{clientCd}
+				</if>
+				<if test="isNotNull(searchType)">
+					AND A.REQ_CD1 = #{searchType}
+				</if>
+				<if test="isNotNull(searchStatus)">
+					AND A.STATUS = #{searchStatus}
+				</if>
+				<if test="isNotNull(searchNmType)">
+					<choose>
+						<when test="searchNmType == '제목'">
+							AND A.SUBJECT LIKE CONCAT('%', #{searchNm},'%')
+						</when>
+						<when test="searchNmType == '등록자'">
+							AND A.REG_NM LIKE CONCAT('%', #{searchNm},'%')
+						</when>
+						<when test="searchNmType == '담당자'">
+							AND A.REG_NM LIKE CONCAT('%', #{searchNm},'%')
+						</when>
+					</choose>
+				</if>
+				<if test="isNotNull(startDt)">
+					AND A.REG_DT between concat(#{startDt},'000000') and concat(#{endDt},'235959')
+				</if>
+				ORDER BY A.REG_DT DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getTaskRequestReList" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		SELECT DATA_SEQ AS dataSeq
+			,A.SUBJECT AS subject
+			,A.REQ_CD1 AS reqCd1
+			,A.REQ_CD2 AS reqCd2
+			,A.HIGH_DATA_SEQ AS highDataSeq
+			,A.CLIENT_CD AS clientCd
+			,(SELECT CLIENT_NM FROM MIND_CLIENT WHERE CLIENT_CD = A.REG_COMPANY) AS clientNm
+			,A.REG_ID AS regId
+			,A.REG_NM AS regNm
+			,A.MODI_ID AS modiId
+			,A.MODI_NM AS modiNm
+			,DATE_FORMAT(STR_TO_DATE(A.MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS modiDt
+			,DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt
+			,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_CD1) AS reqCd1Nm
+			,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_CD2) AS reqCd2Nm
+			,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.STATUS) AS statusNm
+		FROM MIND_BBS_DATA A
+		WHERE 1=1
+		AND A.HIGH_DATA_SEQ != '-1'
+		<if test="isNotNull(serviceType)">
+			AND A.SERVICE_TYPE = #{serviceType}
+		</if>
+		<if test="isNotNull(bbsCd)">
+			AND A.BBS_CD = #{bbsCd}
+		</if>
+		<if test="isNotNull(clientCd)">
+			AND A.CLIENT_CD = #{clientCd}
+		</if>
+		<if test="isNotNull(searchType)">
+			AND A.REQ_CD1 = #{searchType}
+		</if>
+		<if test="isNotNull(searchStatus)">
+			AND A.STATUS = #{searchStatus}
+		</if>
+		<if test="isNotNull(searchNmType)">
+			<choose>
+				<when test="searchNmType == '제목'">
+					AND A.SUBJECT LIKE CONCAT('%', #{searchNm},'%')
+				</when>
+				<when test="searchNmType == '등록자'">
+					AND A.REG_NM LIKE CONCAT('%', #{searchNm},'%')
+				</when>
+				<when test="searchNmType == '담당자'">
+					AND A.REG_NM LIKE CONCAT('%', #{searchNm},'%')
+				</when>
+			</choose>
+		</if>
+		<if test="isNotNull(startDt)">
+			AND A.REG_DT between concat(#{startDt},'000000') and concat(#{endDt},'235959')
+		</if>
+		ORDER BY A.REG_DT DESC
+	</select>
+	
+	<select id="getTaskRequestOne" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		SELECT DATA_SEQ AS dataSeq
+			,BBS_CD AS bbsCd
+			,SERVICE_TYPE AS serviceType
+			,SUBJECT AS subject
+			,CONTENT AS content
+			,REQ_CD1 AS reqCd1
+			,REQ_CD2 AS reqCd2
+			,HIGH_DATA_SEQ AS highDataSeq
+			,PAGE_KEY AS pageKey
+			,HTML_URL AS htmlUrl
+			,VISITED AS visited
+			,DISP_YN AS dispYn
+			,STATUS AS status
+			,CLIENT_CD AS clientCd
+			,ALL_CLIENT_YN AS allClientYn
+			,NEWS_DD AS newsDd
+			,COLUMNIST_NM AS columnistNm
+			,COLUMNIST_DD AS columnistDd
+			,COLUMNIST_CAREER AS columnistCareer
+			,COLUMNIST_MEMO AS columnistMemo
+			,COLUMNIST_GRADE AS columnistGrade
+			,INTEREST_DIV AS interestDiv
+			,INTEREST_DIV_ETC AS interestDiv
+			,REQ_TYPE AS regType
+			,REQ_ETC AS reqEtc
+			,REG_ID AS regId
+			,REG_COMPANY AS regCompany
+			,REG_DEPT AS regDept
+			,REG_GRADE AS regGrade
+			,REG_NM AS regNm
+			,REG_MOBILE AS regMobile
+			,REG_EMAIL AS regEmail
+			,DATE_FORMAT(STR_TO_DATE(REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')	AS regDt
+			,MODI_ID AS modiId
+			,MODI_NM AS modiNm
+			,DATE_FORMAT(STR_TO_DATE(MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')	AS modiDt
+			,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = REQ_CD1) AS reqCd1Nm
+			,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = REQ_CD2) AS reqCd2Nm
+		FROM MIND_BBS_DATA
+		WHERE DATA_SEQ = #{dataSeq}
+	</select>
+	
+	<insert id="addTaskRequest">
+		INSERT INTO MIND_BBS_DATA (
+			 BBS_CD 
+			,HIGH_DATA_SEQ
+			,CLIENT_CD
+			,SERVICE_TYPE
+			,SUBJECT
+			,CONTENT
+			,STATUS
+			,REG_ID 
+			,REG_NM 
+			,REG_DT
+		) VALUES (
+			 #{bbsCd}
+			,#{highDataSeq}
+			,#{clientCd}
+			,'CADM'
+			,#{subject}
+			,#{content}
+			,#{status}
+			,#{regId}
+			,#{regNm}
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+	</insert>
+	
+	<update id="updateTaskRequestStatus">
+		UPDATE MIND_BBS_DATA
+		SET STATUS = #{status},
+		    MODI_ID = #{regId},
+		    MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE DATA_SEQ = #{highDataSeq}
+	</update>
+	
+</mapper>

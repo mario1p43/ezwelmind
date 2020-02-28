@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.push.PushMapper">
+	
+	<select id="getPushList" resultType="com.ezwel.admin.domain.entity.push.PushInfo">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+			SELECT A.PUSH_SEQ AS pushSeq
+				, A.TITLE AS title
+				, A.CONTENT AS content
+				, A.LINK_URL AS linkUrl
+				, A.PUSH_IMG AS pushImg
+				, A.OS_TYPE AS osType
+				, A.MSG_TYPE AS msgType
+				, DATE_FORMAT(STR_TO_DATE(A.SEND_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS sendDt
+				, A.ALL_CLIENT_YN AS allClientYn
+				, A.REG_ID AS regId
+				, DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt
+				, A.MODI_ID AS modiId
+				, DATE_FORMAT(STR_TO_DATE(A.MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS modiDt
+				, A.STATUS as status
+				, A.PUSH_CNT as pushCnt
+			FROM MIND_PUSH A
+			WHERE 1=1 
+			
+			<if test="isNotNull(startDt)">
+				AND A.REG_DT &gt;= #{startDt}
+			</if>
+			
+			<if test="isNotNull(endDt)">
+				AND A.REG_DT &lt;= #{endDt}
+			</if>
+			
+			<if test="isNotNull(searchValue)">
+				<if test="searchValue == 'title'">
+					AND A.TITLE LIKE CONCAT (#{searchValue},'%')
+				</if>
+				
+				<if test="searchValue == 'regId'">
+					AND A.REG_ID LIKE CONCAT (#{searchValue},'%')
+				</if>
+			</if>
+			
+			ORDER BY A.REG_DT DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) B
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<insert id="insertPush" keyProperty="pushSeq" useGeneratedKeys="true">
+		/*
+			com.ezwel.admin.persist.push.PushMapper.xml , id=insertPush
+		*/
+		INSERT INTO mind_push( 
+			TITLE, 
+			CONTENT, 
+			LINK_URL, 
+			PUSH_IMG, 
+			OS_TYPE, 
+			MSG_TYPE, 
+			SEND_DT, 
+			ALL_CLIENT_YN, 
+			REG_ID, 
+			REG_DT
+		) VALUES ( 
+			#{title},
+			#{content}, 
+			#{linkUrl}, 
+			#{pushImg}, 
+			#{osType}, 
+			#{msgType}, 
+			#{sendDt}, 
+			#{allClientYn}, 
+			#{regId}, 
+			DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+	</insert>
+	
+	<select id="modifyPushDetail" resultType="com.ezwel.admin.domain.entity.push.PushInfo">
+		SELECT
+			PUSH_SEQ  as pushSeq
+			, TITLE as title
+			, CONTENT as content
+			, LINK_URL as linkUrl
+			, PUSH_IMG as pushImg
+			, OS_TYPE  as osType
+			, MSG_TYPE as msgType
+			, SEND_DT  as sendDt
+			, ALL_CLIENT_YN  as allClientYn
+			, REG_ID  as regId
+			, REG_DT  as regDt
+			, MODI_ID as modiId
+			, MODI_DT as modiDt
+			, STATUS as status
+			, PUSH_CNT as pushCnt
+		FROM MIND_PUSH
+		WHERE 1=1 
+		<if test="isNotNull(pushSeq)">
+			AND PUSH_SEQ = #{pushSeq}
+		</if>
+	</select>
+	
+	
+	<delete id="modifyPushDelete">
+		DELETE FROM MIND_PUSH WHERE PUSH_SEQ = ${pushSeq}
+	</delete>
+	
+	<update id="modifyPushUpdate">
+		UPDATE MIND_PUSH
+		   SET TITLE = #{title}
+		   		,CONTENT = #{content}
+		   		,PUSH_IMG = #{pushImg}
+		   		,LINK_URL = #{linkUrl}
+		   		,SEND_DT = #{sendDt}
+		   		<if test="isNotNull(allClientYn)">
+		   			,ALL_CLIENT_YN = #{allClientYn}
+		   		</if>
+		   		<if test="isNull(allClientYn)">
+		   			,ALL_CLIENT_YN = 'N'
+		   		</if>
+		   		,MODI_ID = #{modiId}
+		   		,MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		   		<if test="isNotNull(status)">
+				,STATUS = #{status}
+				</if>
+		   		<if test="isNotNull(pushCnt)">
+				,PUSH_CNT = #{pushCnt}
+				</if>
+		WHERE PUSH_SEQ = #{pushSeq}
+	</update>
+
+	<insert id="insertPushClient">
+		INSERT INTO MIND_PUSH_CLIENT (
+			PUSH_SEQ,
+			CLIENT_CD
+		) VALUES (
+			#{pushSeq},
+			#{clientCd}
+		) ON DUPLICATE KEY 
+		UPDATE 	
+			   	PUSH_SEQ	= #{pushSeq},
+				CLIENT_CD	= #{clientCd}
+	</insert>
+	
+	<select id="getPushSeq" resultType="String">
+		SELECT PUSH_SEQ
+		FROM MIND_PUSH
+		WHERE PUSH_SEQ = #{pushSeq}
+	</select>	
+	
+	<select id="getClientList" resultType="com.ezwel.admin.domain.entity.push.PushInfo">
+		SELECT   A.PUSH_SEQ AS pushSeq
+				,  B.CLIENT_CD AS clientCd
+				,  B.CLIENT_NM AS clientNm
+		FROM MIND_PUSH_CLIENT A RIGHT JOIN MIND_CLIENT B
+			ON A.CLIENT_CD = B.CLIENT_CD
+			<if test="isNotNull(pushSeq)">
+				AND A.PUSH_SEQ = #{pushSeq}
+			</if>
+	</select> 
+	
+	<delete id="deletePushClient">
+		DELETE FROM MIND_PUSH_CLIENT
+		WHERE PUSH_SEQ = #{pushSeq}
+	</delete>
+	
+	<select id="getReadyPushList" resultType="com.ezwel.admin.service.push.dto.PushDto">
+		SELECT A.PUSH_SEQ AS pushSeq
+			, A.TITLE AS title
+			, A.CONTENT AS content
+			, A.LINK_URL AS linkUrl
+			, A.PUSH_IMG AS pushImg
+			, A.OS_TYPE AS osType
+			, A.MSG_TYPE AS msgType
+			, DATE_FORMAT(STR_TO_DATE(SEND_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS sendDt
+			, A.ALL_CLIENT_YN AS allClientYn
+			, A.REG_ID AS regId
+			, DATE_FORMAT(STR_TO_DATE(REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt
+			, A.MODI_ID AS modiId
+			, DATE_FORMAT(STR_TO_DATE(MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS modiDt
+			, A.STATUS as status
+		FROM MIND_PUSH A left join MIND_PUSH_CLIENT B
+		ON A.PUSH_SEQ = B.PUSH_SEQ
+		WHERE (A.STATUS != 'Y' or A.STATUS is null) 
+		<if test="isNotNull(sendDt)">
+			AND SEND_DT = #{sendDt}
+		</if>			
+		ORDER BY REG_DT DESC
+	</select>
+	
+	<select id="getClientCdList" resultType="java.lang.String">
+		SELECT 
+			CLIENT_CD
+		FROM MIND_PUSH_CLIENT
+		WHERE PUSH_SEQ = #{pushSeq}
+	</select>
+	
+</mapper>

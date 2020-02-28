@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.info.ReqModifyMapper">
+
+	<select id="getReqModifyList" resultType="com.ezwel.admin.domain.entity.info.ReqModifyDto">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+			SELECT (select center_nm from mind_center where CENTER_SEQ = mm.CENTER_SEQ) as centerNm
+				,mm.USER_NM as userNm
+				,mm.USER_ID as userId
+				,(CASE WHEN SUBSTRING(mm.RRN,8,1) &lt;= 2 
+						THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('19', SUBSTRING(mm.RRN,1,2))+1)
+					WHEN 2 &lt; SUBSTRING(mm.RRN,8,1) &lt;= 4 
+					THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('20', SUBSTRING(mm.RRN,1,2))+1) END) AS rrn
+				,(CASE WHEN mgs.GENDER = 'M' THEN '남'
+					WHEN mgs.GENDER = 'F' THEN '여' END) AS gender
+				,mm.MOBILE as mobile
+				,(select option_cd from mind_comm_cd where comm_cd = (select AREA1 from mind_center where CENTER_SEQ = mm.CENTER_SEQ)) as area
+				, (CASE 
+					WHEN aua.AUTH_CD = 'ROLE_PARTNER_CENTER' THEN '센터장' 
+					WHEN aua.AUTH_CD = 'ROLE_PARTNER_SANGDAM' THEN '상담' 
+					WHEN aua.AUTH_CD = 'ROLE_PARTNER_SEND' THEN '파견' 
+					WHEN aua.AUTH_CD = 'ROLE_PARTNER_GROUP' THEN '집단' 
+					WHEN aua.AUTH_CD = 'ROLE_PARTNER_TEACHER' THEN '강사'		END) AS authCd
+				, (CASE WHEN mgs.WORK_TYPE = 'S' THEN '상주'
+					WHEN mgs.WORK_TYPE = 'P' THEN '파트타임' END) AS workType
+				, mgs.CHANNEL_TYPE	AS	channelType
+				, mm.MODI_ID AS modiId
+				, DATE_FORMAT(STR_TO_DATE(mm.MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d') as modiDt
+			FROM mind_mgr mm, MIND_MGR_SUB mgs, acl_user_auth aua
+			where 1=1
+			and mm.USER_ID = mgs.USER_ID
+			AND mm.MODI_YN = 'N'
+			AND aua.USER_AUTH_KEY = CONCAT(mm.USER_ID,'3001')
+			ORDER BY mm.MODI_DT DESC
+		<choose>
+				<when test="pageCommonFlag == true">
+					) A
+				</when>
+				<otherwise>
+					LIMIT #{firstIndex} , #{pageSize}
+				</otherwise>
+
+		</choose>
+	</select>
+</mapper>

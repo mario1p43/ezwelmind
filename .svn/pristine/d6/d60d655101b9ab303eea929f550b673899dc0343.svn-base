@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE decorators>
+<decorators defaultdir="/WEB-INF/jsp/layout">
+	<excludes>
+		<pattern>/test/excludes/*</pattern>
+		<pattern>/resources/*</pattern>
+		<pattern>/info.jsp*</pattern>
+		<pattern>/madm/diagnosis/excelDownload</pattern>
+		
+		<pattern>/partner/diagnosis/excelDownload</pattern>
+		<pattern>/madm/service/enrollment/goodsPreview</pattern>
+	</excludes>
+
+	<decorator name="default" page="defaultLayout.jsp">
+		<pattern>/*</pattern>
+	</decorator>
+
+	<!-- <decorator name="acl" page="aclLayout.jsp">
+		<pattern>/acl/*</pattern>
+	</decorator> -->
+
+	<decorator name="default-popup" page="defaultPopupLayout.jsp">
+		<pattern>/madm/popup/*</pattern>
+		<pattern>/madm/survey/popup/*</pattern>
+	</decorator>
+	
+	<decorator name="default-loginLayout" page="defaultLoginLayout.jsp">
+		<pattern>/login/form</pattern>
+	</decorator>
+
+	<decorator name="default-layerPopup" page="defaultLayerPopupLayout.jsp">
+		<pattern>/madm/layerPopup/*</pattern>
+	</decorator>
+
+	<decorator name="default-layerPopup" page="defaultLayerPopupLayout.jsp">
+		<pattern>/madm/*/layerPopup</pattern>
+		<pattern>/madm/*/enrollment/cspPopup</pattern>
+		<pattern>/madm/*/enrollment/diagnosisPopup</pattern>
+		<pattern>/madm/*/management/cspPopup</pattern>
+		<pattern>/madm/*/csp/cspPopup</pattern>
+		<pattern>/madm/*/exposure/menuPopup</pattern>
+		<pattern>/madm/*/management/proPricePopup</pattern>
+		
+		<pattern>/partner/*/csp/cspPopup</pattern>
+		<pattern>/*/layerPopup</pattern>
+		
+		<pattern>/madm/centerInfo/showCenterPop</pattern>
+		<pattern>/madm/client/showClientPop</pattern>
+		<pattern>/madm/client/showAmountPop</pattern>
+		<pattern>/madm/operations/popupGivePointToUser</pattern>
+	</decorator>
+
+</decorators>

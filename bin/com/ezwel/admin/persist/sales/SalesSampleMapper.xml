@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.sales.SalesSampleMapper">
+
+
+    <resultMap type="GoodsSalesEntity" id="salesResultMap">
+        <id     property="voucherSeq"         column="voucherSeq" />
+        <result property="manageCd"           column="manageCd" />
+        <result property="pageCommonCount"    column="pageCommonCount" javaType="int" />
+        
+        <association property="goodsAuthEntity" javaType="GoodsAuthEntity">
+            <result property="resCd"          	column="resCd"    />
+            <result property="resMgrId"     	column="resMgrId" />
+        </association>
+		<association property="goodsEntity" resultMap="com.ezwel.admin.persist.bbs.BbsMapper.goodsEntityResult"/>
+    </resultMap>
+    
+
+	<select id="getTest" resultMap="salesResultMap">
+		select a.VOUCHER_SEQ as voucherSeq
+		FROM VOU_GOODS_SALES A
+	</select>    
+	
+	<select id="getTest1" resultMap="salesResultMap">
+		select a.GOODS_CD as goodsCd
+		FROM VOU_GOODS A
+	</select>   
+
+	
+	<select id="getSalesHistory" resultMap="salesResultMap">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+					SELECT   A.SALES_SEQ			AS salesSeq
+						   , A.VOUCHER_SEQ			AS voucherSeq
+						   , A.REG_DT				AS regDt
+						   , A.MANAGE_CD 			AS manageCd
+						   , A.MANAGE_START_NUM		AS manageStartNum
+						   , A.MANAGE_END_NUM		AS manageEndNum
+						   , A.SALES_QTY			AS salesQty
+						   , A.SALES_AMT			AS salesAmt
+						   , A.TOTAL_AMT			AS totalAmt
+						   , C.PUBLISH_CD 			AS publishCd 
+						   , C.GOODS_CD				AS goodsCd
+						   , B.RES_CD				AS resCd
+						   , B.RES_MGR_ID			AS resMgrId
+						   , A.SALES_CD				AS salesCd
+						   , A.AGREE_DT				AS agreeDt
+						   , A.CANCEL_DT			AS cancelDt
+						   , A.SALES_STATUS			AS salesStatus
+					  FROM VOU_GOODS_SALES A
+					  LEFT OUTER JOIN (
+										SELECT B.RES_CD, 
+										 	   B.RES_MGR_ID, 
+										 	   B.VOUCHER_SEQ
+										  FROM
+									  		  (
+												SELECT MAX(AUTH_SEQ) AS AUTH_SEQ
+												  FROM VOU_GOODS_AUTH
+												 GROUP BY VOUCHER_SEQ
+											  ) A INNER JOIN VOU_GOODS_AUTH B ON A.AUTH_SEQ = B.AUTH_SEQ
+										) B
+					 					ON A.VOUCHER_SEQ = B.VOUCHER_SEQ
+					   LEFT OUTER JOIN vou_goods C 
+										ON A.VOUCHER_SEQ = C.VOUCHER_SEQ
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	
+	<resultMap type="GoodsCd" id="goodsResultMap">
+        <id     property="goodsCd"         column="goodsCd" />
+        <result property="goodsNm"           column="goodsNm" />
+        
+		<collection property="category" ofType="Category" javaType="list">
+			<result property="categorySeq" column="categorySeq"/>
+		</collection>
+        
+    </resultMap>
+    
+    
+	<select id="getGoodsList" resultMap="goodsResultMap">
+		SELECT A.GOODS_CD as goodsCd, 
+			   A.GOODS_NM as goodsNm, 
+			   B.CATEGORY_SEQ as categorySeq
+		 FROM VOU_GOODS_CD A
+		 LEFT OUTER JOIN VOU_CATEGORY B ON A.GOODS_CD = B.GOODS_CD
+	</select>
+    
+</mapper>

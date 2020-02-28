@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.banner.BannerMapper">
+	
+	<insert id="insertChannel">
+		INSERT INTO MIND_INV_CHANNEL (
+			CHANNEL_CD,
+			CHANNEL_NM,
+			CHANNEL_DESC				
+		) VALUES (
+			#{channelCd},
+			#{channelNm},
+			#{channelDesc}
+		)
+	</insert>
+	
+	
+	<select id="chDataList" resultType="com.ezwel.admin.domain.entity.banner.InvChannel">
+		SELECT CHANNEL_CD AS channelCd
+			, CHANNEL_NM AS channelNm
+			, ifnull(CHANNEL_DESC, '') AS channelDesc
+		FROM MIND_INV_CHANNEL
+		WHERE 1=1 
+		<if test="isNotNull(cornerCd)">
+			AND CHANNEL_CD = #{cornerCd}
+		</if>
+		ORDER BY CHANNEL_CD 
+	</select>
+	
+	
+	<select id="getBnrList" resultType="com.ezwel.admin.domain.entity.banner.InvBanner">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+			SELECT BANNER_SEQ AS bannerSeq
+				, CHANNEL_CD AS channelCd
+				, CORNER_CD AS cornerCd
+				, BANNER_NM AS bannerNm
+				, BANNER_IMG_URL AS bannerImgUrl
+				, TARGET_LINK AS targetLink
+				, START_DT AS startDt
+				, END_DT AS endDt
+				, DISP_ORDER AS dispOrder
+				, USE_YN AS useYn
+				, REG_ID AS regId
+				, DATE_FORMAT(STR_TO_DATE(REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt
+				, MODI_ID AS modiId
+				, DATE_FORMAT(STR_TO_DATE(MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS modiDt
+				, SUBJECT AS subject
+			FROM MIND_INV_BANNER
+			WHERE 1=1 
+			
+			<if test="isNotNull(cornerCd)">
+				AND CORNER_CD = #{cornerCd}
+			</if>
+						
+			<if test="isNotNull(startDt)">
+				AND START_DT >= #{startDt}
+			</if>
+			
+			<if test="isNotNull(endDt)">
+				AND END_DT &lt;= #{endDt}
+			</if>
+			
+			<if test="isNotNull(bannerNm)">
+				AND BANNER_NM LIKE CONCAT (#{bannerNm},'%')
+			</if>
+			
+			<if test="isNotNull(subject)">
+				AND SUBJECT LIKE CONCAT (#{subject},'%')
+			</if>
+			
+			<if test="isNotNull(useYn)">
+				AND USE_YN = #{useYn}
+			</if>
+			
+			<choose>
+				<when test="isNotNull(channelCd)">
+					AND CHANNEL_CD = #{channelCd}
+					AND CHANNEL_CD != 'MOBI'
+				</when>
+				
+				<when test="isNotNull(mobiChannelCd)">
+					AND CHANNEL_CD = #{mobiChannelCd}
+				</when>
+				
+				<otherwise>
+					AND CHANNEL_CD != 'MOBI'
+				</otherwise>
+			</choose>
+			
+			ORDER BY REG_DT DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<select id="getCornerList" resultType="com.ezwel.admin.domain.entity.banner.InvCorner">
+		SELECT A.CORNER_NM AS cornerNm
+			, A.CORNER_CD AS cornerCd
+			, A.DISP_NUM AS dispNum
+			, B.CHANNEL_CD AS channelCd
+		FROM MIND_INV_CORNER A, MIND_INV_CHANNEL B
+		WHERE 1=1
+		AND A.CHANNEL_CD = B.CHANNEL_CD
+		<choose>
+			<when test="isNotNull(channelCd)">
+				AND A.CHANNEL_CD = #{channelCd}
+				AND A.CHANNEL_CD != 'MOBI'
+			</when>
+			
+			<when test="isNotNull(mobiChannelCd)">
+				AND A.CHANNEL_CD = #{mobiChannelCd}
+			</when>
+			
+			<otherwise>
+				AND A.CHANNEL_CD != 'MOBI'
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<select id="ajaxCornerList" resultType="com.ezwel.admin.domain.entity.banner.InvCorner">
+		SELECT CORNER_CD AS cornerCd
+			, CORNER_NM AS cornerNm
+			, ifnull(CORNER_DESC, '') AS cornerDesc
+			, DISP_NUM AS dispNum
+			, DATE_FORMAT(STR_TO_DATE(REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt
+			, REG_ID AS regId
+			, ifnull(DATE_FORMAT(STR_TO_DATE(MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s'), '') AS modiDt
+			, ifnull(MODI_ID, '') AS modiId
+		FROM MIND_INV_CORNER
+		WHERE 1=1 
+		<if test="isNotNull(channelCd)">
+			AND CHANNEL_CD = #{channelCd}
+		</if>		
+	</select>
+	
+	<insert id="insertCorner">
+		INSERT INTO MIND_INV_CORNER (
+			CHANNEL_CD,
+			CORNER_CD,
+			CORNER_NM,
+			CORNER_DESC,
+			DISP_NUM,
+			REG_DT,
+			REG_ID				
+		) VALUES (
+			#{channelCd},			
+			(SELECT IFNULL(MAX(CORNER_CD)+1, 1) FROM MIND_INV_CORNER AS_SUB WHERE CHANNEL_CD = #{channelCd}),
+			#{cornerNm},
+			#{cornerDesc},
+			#{dispNum},
+			DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'),
+			#{regId}
+		)
+	</insert>
+	
+	<insert id="insertBnr" keyProperty="bannerSeq" useGeneratedKeys="true">
+		/*
+			com/ezwel/voucher/admin/service/manage/comp/mapper/ManageMapper.xml , id=insertBnr
+		*/
+		INSERT INTO MIND_INV_BANNER (
+			CHANNEL_CD
+			,CORNER_CD
+			,BANNER_NM
+			,BANNER_IMG_URL
+			,TARGET_LINK
+			,START_DT
+			,END_DT
+			<if test="isNotNull(dispOrder)">
+			,DISP_ORDER
+			</if>
+			<if test="isNotNull(allClientYn)">
+	   			,ALL_CLIENT_YN
+	   		</if>
+			,USE_YN
+			,REG_ID
+			,REG_DT
+			,SUBJECT
+			<if test="isNotNull(comment)">
+			,COMMENT
+			</if>
+		) VALUES (
+			#{channelCd}
+			,#{cornerCd}
+			,#{bannerNm}
+			,#{fileFullPath}
+			,#{targetLink}
+			,#{startDt}
+			,#{endDt}
+			<if test="isNotNull(dispOrder)">
+			,#{dispOrder}
+			</if>
+			<if test="isNotNull(allClientYn)">
+	   			,#{allClientYn}
+	   		</if>
+			,#{useYn}
+			,#{regId}
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			,#{subject}
+			<if test="isNotNull(comment)">
+			,#{comment}
+			</if>
+		)
+	</insert>
+	
+	<select id="modifyBnrDetail" resultType="com.ezwel.admin.domain.entity.banner.InvBanner">
+		SELECT BANNER_SEQ AS bannerSeq
+			, CHANNEL_CD AS channelCd
+			, CORNER_CD AS cornerCd
+			, BANNER_NM AS bannerNm
+			, BANNER_IMG_URL AS bannerImgUrl
+			, TARGET_LINK AS targetLink
+			, START_DT AS startDt
+			, END_DT AS endDt
+			, DISP_ORDER AS dispOrder
+			, USE_YN AS useYn
+			, ALL_CLIENT_YN AS allClientYn
+			, REG_ID AS regId
+			, DATE_FORMAT(STR_TO_DATE(REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt
+			, MODI_ID AS modiId
+			, DATE_FORMAT(STR_TO_DATE(MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS modiDt
+			, SUBJECT AS subject
+			, COMMENT AS comment
+		FROM MIND_INV_BANNER
+		WHERE 1=1 
+		<if test="isNotNull(bannerSeq)">
+			AND BANNER_SEQ = #{bannerSeq}
+		</if>
+	</select>
+	
+	
+	<delete id="modifyBnrDelete">
+		DELETE FROM MIND_INV_BANNER WHERE BANNER_SEQ = ${bannerSeq}
+	</delete>
+	
+	<update id="modifyBnrUpdate">
+		UPDATE MIND_INV_BANNER
+		   SET BANNER_NM = #{bannerNm}
+		   		,SUBJECT = #{subject}
+		   		<if test="isNotNull(comment)">
+		   		,COMMENT = #{comment}
+		   		</if>
+		   		<if test="isNotNull(fileFullPath)">
+		   		,BANNER_IMG_URL = #{fileFullPath}
+		   		</if>
+		   		,TARGET_LINK = #{targetLink}
+		   		,START_DT = #{startDt}
+		   		,END_DT = #{endDt}
+		   		,USE_YN = #{useYn}
+		   		<if test="isNotNull(dispOrder)">
+		   			,DISP_ORDER = #{dispOrder}
+		   		</if>
+		   		<if test="isNotNull(allClientYn)">
+		   			,ALL_CLIENT_YN = #{allClientYn}
+		   		</if>
+		   		<if test="isNull(allClientYn)">
+		   			,ALL_CLIENT_YN = 'N'
+		   		</if>
+		   		,MODI_ID = #{modiId}
+		   		,MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE BANNER_SEQ = #{bannerSeq}
+	</update>
+
+	<select id="getChannelList" resultType="com.ezwel.admin.domain.entity.banner.InvChannel">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+			SELECT CHANNEL_CD AS channelCd
+				, CHANNEL_NM AS channelNm
+				, CHANNEL_DESC AS channelDesc
+			FROM MIND_INV_CHANNEL
+			WHERE 1=1
+			<if test="isNotNull(channelCd)">
+				AND CHANNEL_CD LIKE CONCAT('%', #{channelCd},'%')
+			</if>
+			<if test="isNotNull(channelNm)">
+				AND CHANNEL_NM LIKE CONCAT('%', #{channelNm},'%')
+			</if>
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+	
+	<update id="modifyChannelUpdate">
+		UPDATE MIND_INV_CHANNEL
+		   SET CHANNEL_CD = #{channelCd}
+		   		,CHANNEL_NM = #{channelNm}
+		   		,CHANNEL_DESC = #{channelDesc}
+		WHERE CHANNEL_CD = #{channelCd}
+	</update>
+	
+	<select id="getChannelDetail" resultType="com.ezwel.admin.domain.entity.banner.InvChannel">
+		SELECT CHANNEL_CD AS channelCd
+			, CHANNEL_NM AS channelNm
+			, CHANNEL_DESC AS channelDesc
+		FROM MIND_INV_CHANNEL
+		WHERE CHANNEL_CD = #{channelCd}		
+	</select>
+	
+	<delete id="modifyChannelDelete">
+		DELETE FROM MIND_INV_CHANNEL WHERE CHANNEL_CD = ${channelCd}
+	</delete>
+	
+	<select id="getCornerMgrList" resultType="com.ezwel.admin.domain.entity.banner.InvCorner">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+			SELECT CORNER_CD AS cornerCd
+				, CHANNEL_CD AS channelCd
+				, CORNER_NM AS cornerNm
+				, CORNER_DESC AS cornerDesc
+				, DISP_NUM AS dispNum
+				, DATE_FORMAT(STR_TO_DATE(REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt
+				, REG_ID AS regId
+				, DATE_FORMAT(STR_TO_DATE(MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS modiDt
+				, MODI_ID AS modiId
+			FROM MIND_INV_CORNER
+			WHERE 1=1
+			<if test="isNotNull(cornerCd)">
+				AND CORNER_CD LIKE CONCAT('%', #{cornerCd},'%')
+			</if>
+			<if test="isNotNull(cornerNm)">
+				AND CORNER_NM LIKE CONCAT('%', #{cornerNm},'%')
+			</if>
+			ORDER BY CHANNEL_CD, CORNER_CD DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getCornerDetail" resultType="com.ezwel.admin.domain.entity.banner.InvCorner">
+		SELECT CORNER_CD AS cornerCd
+			, CHANNEL_CD AS channelCd
+			, CORNER_NM AS cornerNm
+			, CORNER_DESC AS cornerDesc
+			, DISP_NUM AS dispNum
+			, DATE_FORMAT(STR_TO_DATE(REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt
+			, REG_ID AS regId
+			, DATE_FORMAT(STR_TO_DATE(MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS modiDt
+			, MODI_ID AS modiId
+		FROM MIND_INV_CORNER
+		WHERE 1=1 
+		<if test="isNotNull(cornerCd)">
+			AND CORNER_CD = #{cornerCd}
+		</if>
+		<if test="isNotNull(channelCd)">
+			AND CHANNEL_CD = #{channelCd}
+		</if>
+	</select>
+	
+	<delete id="modifyCornerDelete">
+		DELETE FROM MIND_INV_CORNER WHERE CORNER_CD = ${cornerCd} AND  CHANNEL_CD = #{channelCd}
+	</delete>
+	
+	<update id="modifyCornerUpdate">
+		UPDATE MIND_INV_CORNER
+		   SET CORNER_NM = #{cornerNm}
+		   	, CORNER_DESC = #{cornerDesc}
+		   	, DISP_NUM = #{dispNum}
+	   		, MODI_ID = #{modiId}
+	   		, MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE CORNER_CD = #{cornerCd}
+		AND CHANNEL_CD = #{channelCd}
+	</update>
+	
+	<insert id="insertBnrClient">
+		INSERT INTO MIND_INV_BANNER_CLIENT (
+			CHANNEL_CD,
+			CORNER_CD,
+			BANNER_SEQ,		
+			CLIENT_CD
+		) VALUES (
+			#{channelCd},
+			#{cornerCd},
+			#{bannerSeq},
+			#{clientCd}
+		) ON DUPLICATE KEY 
+		UPDATE 	CHANNEL_CD 	= #{channelCd},
+		      	CORNER_CD 	= #{cornerCd},
+			   	BANNER_SEQ	= #{bannerSeq},
+				CLIENT_CD	= #{clientCd}
+	</insert>
+	
+	<select id="getBannerSeq" resultType="String">
+		SELECT BANNER_SEQ
+		FROM MIND_INV_BANNER
+		WHERE CHANNEL_CD = #{channelCd}
+		AND CORNER_CD = #{cornerCd}
+		AND BANNER_NM = #{bannerNm}
+	</select>	
+	
+	<select id="getClientList" resultType="com.ezwel.admin.domain.entity.banner.InvBanner">
+		SELECT   A.BANNER_SEQ AS bannerSeq
+				,  B.CLIENT_CD AS clientCd
+				,  B.CLIENT_NM AS clientNm
+		FROM MIND_INV_BANNER_CLIENT A RIGHT JOIN MIND_CLIENT B
+			ON A.CLIENT_CD = B.CLIENT_CD
+			<if test="isNotNull(bannerSeq)">
+				AND A.BANNER_SEQ = #{bannerSeq}
+			</if>
+	</select> 
+	
+	<delete id="deleteBnrClient">
+		DELETE FROM MIND_INV_BANNER_CLIENT
+		WHERE BANNER_SEQ = #{bannerSeq}
+	</delete>
+</mapper>

@@ -1,0 +1,815 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.pCounselorMgr.PCounselorMgrMapper">
+
+	<select id="pCounselorDateList" parameterType="com.ezwel.admin.service.pCounselorMgr.dto.MindCounselIntakeDto" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.MindCounselIntake">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+				SELECT
+					A.COUNSEL_CD		AS	counselCd
+					, A.USER_KEY		AS	userKey
+					, B.CLIENT_NM		AS	clientNm
+					, C.USER_NM			AS	userNm
+					, D.COUNSEL_NM		AS	counselNm
+					, D.COUNSEL_DIV		AS	counselDiv
+					, D.COUNSEL_TYPE	AS	counselType
+					, E.USER_NM			AS	counselorNm
+					, D.INTAKE_NUM		AS	intakeNum
+					, A.RECORD_STATUS	as	recordStatus
+					, A.INTAKE_CD 		AS  intakeCd
+					, IFNULL(A.EXTENSION_NUM, '1')   AS  extensionNum
+					, DATE_FORMAT(STR_TO_DATE(A.SCHEDULE_DT, '%Y%m%d%H%i%s'),'%Y년%m월%d일%H시') 		as scheduleDt
+				FROM MIND_COUNSEL A, MIND_CLIENT B, MIND_USER C, MIND_COUNSEL_INTAKE D, MIND_MGR E
+				WHERE 1=1
+					AND A.CLIENT_CD = B.CLIENT_CD
+					AND A.USER_KEY = C.USER_KEY
+					AND A.CLIENT_CD = D.CLIENT_CD
+					AND A.COUNSELOR_ID = E.USER_ID
+					AND A.USER_KEY = C.USER_KEY
+					AND A.INTAKE_CD = D.INTAKE_CD
+					AND A.CANCEL_DT IS NULL
+				<if test="centerSeq !=0">
+					AND E.CENTER_SEQ = #{centerSeq}
+				</if>
+				<if test="isNotNull(counselCd)">
+					AND A.COUNSEL_CD = #{counselCd}
+				</if>
+					AND (A.COUNSEL_TYPE = 100435 OR A.RECORD_CHECK_YN = 'Y')
+
+				<if test="isNotNull(clientNm)">
+					AND B.CLIENT_NM = #{clientNm}
+				</if>
+				<if test="isNotNull(userNm)">
+					AND	C.USER_NM = #{userNm}
+				</if>
+				<if test="isNotNull(counselNm)">
+					AND	D.COUNSEL_NM = #{counselNm}
+				</if>
+				<if test="isNotNull(counselorNm)">
+					AND	E.USER_NM = #{counselorNm}
+				</if>
+				<if test="isNotNull(recordStatus)">
+					AND	A.RECORD_STATUS REGEXP #{recordStatus}
+				</if>
+				<if test="isNotNull(loginId)">
+					AND E.USER_ID = #{loginId}
+				</if>
+				ORDER BY A.SCHEDULE_DT DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="pCounselorDateDetail" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.MindCounselIntake">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+				SELECT B.COUNSEL_CD			AS	counselCd
+						, A.INTAKE_CD		AS	intakeCd
+						, A.INTAKE_NUM		AS	intakeNum
+						, A.CLIENT_CD		AS	clientCd
+						, B.USER_KEY		AS	userKey
+						, C.USER_NM			AS	userNm
+						, A.COUNSEL_NM		AS	counselNm
+						, A.COUNSEL_DIV		AS	counselDiv
+						, A.COUNSEL_TYPE	AS	counselType
+						, B.COUNSELOR_ID	AS  counselorId
+						, D.USER_NM			AS	counselorNm
+						, E.CLIENT_NM		AS	clientNm
+						, B.RECORD_STATUS	AS	recordStatus
+						, F.RECORD_CD       AS  recordCd
+						, F.RISKS           AS  risks
+					FROM MIND_COUNSEL B LEFT OUTER JOIN MIND_COUNSEL_INTAKE A ON B.INTAKE_CD = A.INTAKE_CD	AND B.CLIENT_CD = A.CLIENT_CD
+									  LEFT OUTER JOIN MIND_USER C ON B.USER_KEY = C.USER_KEY
+									  LEFT OUTER JOIN MIND_MGR D ON B.COUNSELOR_ID = D.USER_ID
+									  LEFT OUTER JOIN MIND_COUNSEL_RECORD F ON B.COUNSEL_CD = F.COUNSEL_CD
+									  LEFT OUTER JOIN MIND_CLIENT E ON A.CLIENT_CD = E.CLIENT_CD
+				  WHERE 1=1
+				<if test="isNotNull(userKey)">
+					AND B.USER_KEY = #{userKey}
+				</if>
+				<if test="isNotNull(loginId)">
+					AND B.COUNSELOR_ID = #{loginId}
+				</if>
+				   ORDER BY B.INTAKE_CD DESC
+		   <choose>
+			<when test="pageCommonFlag == true">
+				) AA
+			</when>
+			<otherwise>
+<!-- 				LIMIT #{firstIndex} , #{pageSize} -->
+			</otherwise>
+		</choose>
+	</select>
+
+	<!-- 인테이크 정보 -->
+	<select id="intakeDetail" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.MindCounselIntake">
+		SELECT
+			A.INTAKE_CD			AS	intakeCd
+			, A.CLIENT_CD		AS	clientCd
+			, DATE_FORMAT(STR_TO_DATE(A.RRN, '%Y%m%d'),'%Y-%m-%d')			AS	rrn
+			, (CASE WHEN A.GENDER = 'M' THEN '남'
+					WHEN A.GENDER = 'F' THEN '여' 
+					WHEN A.GENDER IS NULL THEN '-' END)	AS	gender
+			, A.COUNSEL_NM		AS	counselNm		/* 성명 내담당자명 동일 */
+			, A.EDUCATION		AS	education
+			, A.SESSION			AS	session
+			, A.JOB				AS	job
+			, AES_DECRYPT(UNHEX(A.MOBILE),'1234') AS	mobile
+			, A.EMAIL			AS	email
+			, A.COUNSEL_DIV		AS	counselDiv
+			, FN_GET_CATEGORY_NM(A.COUNSEL_DIV) AS counselDivNm
+			, FN_GET_CATEGORY_NM(A.CHANNEL_TYPE) AS channelNm
+			, A.CHANNEL_TYPE AS channelType
+			, A.COUNSEL_TYPE	AS	counselType
+			, A.CAUSE			AS	cause
+			, A.MEMO			AS	memo
+			, B.COUNSEL_CD		AS	counselCd
+			, A.INTAKE_NUM		AS	intakeNumber
+			, A.RELATION		AS	relation
+		FROM MIND_COUNSEL_INTAKE A LEFT OUTER JOIN MIND_COUNSEL B ON A.USER_KEY  = B.USER_KEY
+				AND A.CLIENT_CD = B.CLIENT_CD	AND A.INTAKE_CD = B.INTAKE_CD
+		WHERE 1=1
+			<if test="counselCd !=0 or isNotNull(counselCd)">
+			AND B.COUNSEL_CD = #{counselCd}
+			</if>
+			<if test="userKey !=0">
+			AND B.USER_KEY  = #{userKey}
+			</if>
+<!-- 			<if test="isNotNull(recordStatus)"> -->
+<!-- 			AND B.RECORD_STATUS = #{recordStatus} -->
+<!-- 			</if> -->
+	</select>
+	<!-- 인테이크 정보 끝-->
+
+	<!-- 기본정보 -->
+	<select id="baseInfoDetail" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.MindCounselIntake">
+		SELECT
+			A.COUNSEL_CD		AS	counselCd
+			, A.USER_KEY		AS	userKey
+			, A.INTAKE_CD		AS	intakeCd
+			, A.CLIENT_CD		AS	clientCd
+			, B.CLIENT_NM		AS	clientNm
+			, C.USER_NM			AS	userNm
+			, D.RELATION		AS	relation
+			, D.COUNSEL_NM		AS	counselNm
+			, D.COUNSEL_DIV   	AS	counselDiv
+			, D.COUNSEL_TYPE	AS	counselType
+			, D.RELATION		AS	relation
+			, E.USER_NM 		AS	counselorNm
+			, D.INTAKE_NUM		AS	intakeNum
+			, D.EDUCATION		AS	education
+			, D.SESSION			AS	session
+			, D.JOB				AS	job
+			, DATE_FORMAT(STR_TO_DATE(D.RRN, '%Y%m%d'),'%Y-%m-%d')			AS	rrn
+			, (CASE WHEN D.GENDER = 'M' THEN '남'
+					WHEN D.GENDER = 'F' THEN '여' END)	AS	gender
+			, AES_DECRYPT(UNHEX(D.MOBILE),'1234') AS	intakeMobile
+			, AES_DECRYPT(UNHEX(C.MOBILE),'1234') AS	mobile
+ 			, F.RISKS			AS	risks
+			, F.TIME			AS	time
+			, DATE_FORMAT(STR_TO_DATE(F.REG_DT, '%Y%m%d'),'%Y-%m-%d') AS regDt
+			, A.RECORD_STATUS	AS	recordStatus
+			, DATE_FORMAT(STR_TO_DATE(A.SCHEDULE_DT, '%Y%m%d'),'%Y-%m-%d') AS scheduleDt
+			, IFNULL(A.EXTENSION_NUM, '1')   AS  extensionNum
+			, A.STATUS			AS status
+			, (SELECT USER_NM FROM MIND_MGR WHERE USER_ID = B.COUNSEL_MGR_ID) AS counselMgrNm
+		FROM MIND_COUNSEL A LEFT OUTER JOIN MIND_COUNSEL_INTAKE D ON A.INTAKE_CD = D.INTAKE_CD AND A.CLIENT_CD = D.CLIENT_CD
+							LEFT OUTER JOIN MIND_COUNSEL_RECORD F ON A.COUNSEL_CD = F.COUNSEL_CD
+							LEFT OUTER JOIN MIND_CLIENT B ON A.CLIENT_CD = B.CLIENT_CD
+							LEFT OUTER JOIN MIND_MGR E ON A.COUNSELOR_ID = E.USER_ID
+							LEFT OUTER JOIN MIND_USER C ON A.CLIENT_CD = C.CLIENT_CD AND A.USER_KEY = C.USER_KEY
+		WHERE 1=1
+<!-- 		<if test="isNotNull(recordStatus)"> -->
+<!-- 			AND	A.RECORD_STATUS = #{recordStatus} -->
+<!-- 		</if> -->
+		<if test="counselCd !=0 or isNotNull(counselCd)">
+			AND	A.COUNSEL_CD = #{counselCd}
+		</if>
+	</select>
+	<!-- 기본정보 끝-->
+
+	<!-- 상담 목표 등록 -->
+	<insert id="insertPlanDate" parameterType="com.ezwel.admin.domain.entity.pCounselorMgr.MindCounselCounselDetail">
+	INSERT INTO MIND_COUNSEL_PLAN (
+			  INTAKE_CD
+			, CLIENT_CD
+			, CENTER_SEQ
+			, COUNSELOR_ID
+			, FINAL_GOAL
+			, COURSE_GOAL
+			, COUNSEL_PLAN
+			, REG_ID
+			, REG_DT
+			, MODI_ID
+			, MODI_DT
+		) VALUES (
+			 #{intakeCd}
+			,#{clientCd}
+			,#{centerSeq}
+			,#{counselorId}
+			,#{finalGoal}
+			,#{courseGoal}
+			,#{counselPlan}
+			,#{regId}
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			,#{modiId}
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<!-- 	상담 일지 등록  -->
+	<insert id="insertRecordDate" parameterType="com.ezwel.admin.domain.entity.pCounselorMgr.MindCounselCounselDetail">
+		INSERT INTO MIND_COUNSEL_RECORD (
+			  COUNSEL_CD
+			, SUBJECT
+			, MAIN_ISSUE
+			, GOAL
+			, INTERVENTION
+			, FEEDBACK
+			, MEMO
+			, TIME
+			, FILE_NM
+			, FILE_PATH
+			, RISKS
+			, RISK_REASON
+			, CALLING_ISSUE
+			, REG_ID
+			, REG_DT
+			, MODI_ID
+			, MODI_DT
+			, SUBJECT_ITEM_CD1 
+			, SUBJECT_ITEM_CD2
+			, SUBJECT_ITEM_CD3
+		) VALUES (
+			 #{counselCd}
+			,#{subject}
+			,#{mainIssue}
+			,#{goal}
+			,#{intervention}
+			,#{feedback}
+			,#{recordMemo}
+			,#{time}
+			,#{fileNm}
+			,#{filePath}
+			,#{risks}
+			,#{riskReason}
+			,#{callingIssue}
+			,#{regId}
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			,#{modiId}
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			,#{subjectItemCd1}
+			,#{subjectItemCd2}
+			,#{subjectItemCd3}
+		)
+	</insert>
+
+	<!-- 	상담 소견 등록  -->
+	<insert id="insertRecordTextDate" parameterType="com.ezwel.admin.service.pCounselorMgr.dto.MindCounselRecordTxtDto">
+		INSERT INTO MIND_COUNSEL_RECORD_TXT (
+			  RECORD_CD
+			, RECORD_TYPE
+			, CONTENT
+		) VALUES (
+			 #{recordCd}
+			,#{recordType}
+			,#{content}
+		)
+	</insert>
+
+	<!-- 	상담 상태 업뎃 -->
+	<update id="updateCounsel" parameterType="com.ezwel.admin.domain.entity.pCounselorMgr.MindCounselCounselDetail">
+		UPDATE MIND_COUNSEL
+			SET RECORD_STATUS = #{recordStatus}
+			  , STATUS = #{counselStatus}
+			<if test="isNotNull(extensionStatus)">
+			  , EXTENSION_STATUS = #{extensionStatus}
+			</if>
+		WHERE COUNSEL_CD = #{counselCd}
+	</update>
+
+	<!-- 	상담 목표 수정  -->
+	<update id="updatePlanDate" parameterType="com.ezwel.admin.domain.entity.pCounselorMgr.MindCounselCounselDetail">
+		UPDATE MIND_COUNSEL_PLAN
+			SET MODI_ID  		= #{modiId}
+				, MODI_DT  		= DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+				<if test="isNotNull(finalGoal)">
+				, FINAL_GOAL		= #{finalGoal}
+				</if>
+				<if test="isNotNull(courseGoal)">
+				, COURSE_GOAL	= #{courseGoal}
+				</if>
+				<if test="isNotNull(counselPlan)">
+				, COUNSEL_PLAN	= #{counselPlan}
+				</if>
+		WHERE	INTAKE_CD		= #{intakeCd}
+		AND		CLIENT_CD		= #{clientCd}
+	</update>
+
+	<!-- 	상담 일지 수정  -->
+	<update id="updateRecordDate" parameterType="com.ezwel.admin.domain.entity.pCounselorMgr.MindCounselCounselDetail">
+		UPDATE MIND_COUNSEL_RECORD
+			SET	  MODI_ID  		= #{modiId}
+				, MODI_DT  		= DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+				<if test="isNotNull(subject)">
+				, SUBJECT			= #{subject}
+				</if>
+				<if test="isNotNull(mainIssue)">
+				, MAIN_ISSUE	= #{mainIssue}
+				</if>
+				<if test="isNotNull(goal)">
+				, GOAL			= #{goal}
+				</if>
+				<if test="isNotNull(intervention)">
+				, INTERVENTION	= #{intervention}
+				</if>
+				<if test="isNotNull(feedback)">
+				, FEEDBACK		= #{feedback}
+				</if>
+				, MEMO		= #{recordMemo}
+				<if test="isNotNull(time)">
+				, TIME		= #{time}
+				</if>
+				<if test="isNotNull(fileNm)">
+				, FILE_NM		= #{fileNm}
+				</if>
+				<if test="isNotNull(filePath)">
+				, FILE_PATH		= #{filePath}
+				</if>
+				<if test="isNotNull(risks)">
+				, RISKS		= #{risks}
+				</if>
+				<if test="isNotNull(riskReason)">
+				, RISK_REASON		= #{riskReason}
+				</if>
+				<if test="isNotNull(subjectItemCd1)">
+				, SUBJECT_ITEM_CD1		= #{subjectItemCd1}
+				</if>
+				<if test="isNotNull(subjectItemCd2)">
+				, SUBJECT_ITEM_CD2		= #{subjectItemCd2}
+				</if>
+				<if test="isNotNull(subjectItemCd3)">
+				, SUBJECT_ITEM_CD3		= #{subjectItemCd3}
+				</if>
+		WHERE	RECORD_CD		= #{recordCd}
+		AND		COUNSEL_CD		= #{counselCd}
+	</update>
+
+	<!-- 	상담 소견 수정  -->
+	<update id="updateRecordTextDate" parameterType="com.ezwel.admin.service.pCounselorMgr.dto.MindCounselRecordTxtDto">
+		UPDATE MIND_COUNSEL_RECORD_TXT
+			SET CONTENT			= #{content}
+		WHERE	RECORD_CD		= #{recordCd}
+		AND		RECORD_TYPE		= #{recordType}
+	</update>
+
+
+	<select id="getMonthScheduleList" parameterType="com.ezwel.admin.service.pCounselorMgr.dto.MindScheduleDto" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.MindSchedule">
+		SELECT
+			SCHEDULE_SEQ
+			, CENTER_SEQ
+			, COUNSEL_CD
+			, USER_ID
+			, HOLIDAY_YN
+			, YMD
+			, SCHEDULE_TYPE
+			, ST_TIME, ED_TIME
+			, REG_DT
+			, REG_ID
+			, MODI_DT
+			, MODI_ID
+		FROM MIND_SCHEDULE
+		WHERE CENTER_SEQ = #{centerSeq}
+			AND USER_ID = #{userId}
+			AND YMD LIKE CONCAT(#{ymd},'%')
+			AND SCHEDULE_TYPE IN ('100562', '100564')  -- 게시판 상담은 제외하고 노출
+		ORDER BY YMD, SCHEDULE_TYPE, ST_TIME
+	</select>
+
+	<select id="getScheduleCnt" parameterType="com.ezwel.admin.service.pCounselorMgr.dto.MindScheduleDto" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM MIND_SCHEDULE
+		WHERE
+			USER_ID = #{userId}
+			AND CENTER_SEQ = #{centerSeq}
+		<!-- 같은날 같은시간에 두가지 타입 등록 불가
+		 	AND SCHEDULE_TYPE = #{scheduleType}
+		 -->
+			AND YMD = #{ymd}
+			<if test="isNotNull(stTime)">
+				AND ST_TIME = ${stTime}
+			</if>
+			AND SCHEDULE_TYPE IN ('100562', '100564')  -- 게시판 상담은 제외하고 노출
+	</select>
+
+	<insert id="insertSchedule" parameterType="com.ezwel.admin.service.pCounselorMgr.dto.MindScheduleDto">
+		INSERT INTO MIND_SCHEDULE
+			(CENTER_SEQ, USER_ID, HOLIDAY_YN, YMD, SCHEDULE_TYPE, ST_TIME, ED_TIME, REG_DT, REG_ID)
+		VALUES
+			(
+				#{centerSeq}
+				,#{userId}
+				,#{holidayYn}
+				,#{ymd}
+				,#{scheduleType}
+				,#{stTime}
+				,#{edTime}
+				,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+				,#{mgrId}
+			)
+	</insert>
+
+	<delete id="deleteSchedule" parameterType="com.ezwel.admin.service.pCounselorMgr.dto.MindScheduleDto">
+		DELETE
+		FROM MIND_SCHEDULE
+		WHERE
+			USER_ID = #{userId}
+			AND CENTER_SEQ = #{centerSeq}
+			AND SCHEDULE_TYPE = #{scheduleType}
+			AND YMD = #{ymd}
+			AND ST_TIME = ${stTime}
+			AND COUNSEL_CD = 0
+	</delete>
+	
+	<select id="getHolidayScheduleCnt" parameterType="com.ezwel.admin.service.pCounselorMgr.dto.MindScheduleDto" resultType="int">
+		SELECT COUNT(*)
+		FROM MIND_SCHEDULE
+		WHERE
+			USER_ID = #{userId}
+			AND CENTER_SEQ = #{centerSeq}
+			AND YMD = #{ymd}
+			AND HOLIDAY_YN = 'N'
+			AND COUNSEL_CD != 0
+			AND SCHEDULE_TYPE IN ('100562', '100564')  -- 게시판 상담은 제외하고 노출
+	</select>
+
+	<delete id="deleteHolidaySchedule" parameterType="com.ezwel.admin.service.pCounselorMgr.dto.MindScheduleDto">
+		DELETE
+		FROM MIND_SCHEDULE
+		WHERE
+			USER_ID = #{userId}
+			AND CENTER_SEQ = #{centerSeq}
+			AND YMD = #{ymd}
+			AND COUNSEL_CD = 0
+	</delete>
+
+	<delete id="deleteHoliday" parameterType="com.ezwel.admin.service.pCounselorMgr.dto.MindScheduleDto">
+		DELETE
+		FROM MIND_SCHEDULE
+		WHERE
+			USER_ID = #{userId}
+			AND CENTER_SEQ = #{centerSeq}
+			AND YMD = #{ymd}
+			AND HOLIDAY_YN = 'Y'
+	</delete>
+	
+	<insert id="insertSchedule2" parameterType="java.util.Map">
+		INSERT INTO MIND_SCHEDULE
+			(CENTER_SEQ, USER_ID, HOLIDAY_YN, YMD, SCHEDULE_TYPE, ST_TIME, ED_TIME, REG_DT, REG_ID)
+		VALUES
+		<foreach collection="itemMap" item="item" separator=", ">
+			(
+				#{item.centerSeq}
+				,#{item.userId}
+				,#{item.holidayYn}
+				,#{item.ymd}
+				,#{item.scheduleType}
+				,#{item.stTime}
+				,#{item.edTime}
+				,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+				,#{item.mgrId}
+			)
+		</foreach>
+	</insert>
+	
+	<delete id="deleteSchedule2" parameterType="com.ezwel.admin.service.pCounselorMgr.dto.MindScheduleDto">
+		DELETE
+		FROM MIND_SCHEDULE
+		WHERE USER_ID = #{userId}
+		  AND CENTER_SEQ = #{centerSeq}
+		  AND SCHEDULE_TYPE = #{scheduleType}
+		  AND COUNSEL_CD = 0
+		  AND YMD = #{ymd}
+		  AND ST_TIME = #{stTime}
+	</delete>
+			
+	<!-- <delete id="deleteHolidaySchedule2" parameterType="com.ezwel.admin.service.pCounselorMgr.dto.MindScheduleDto"> -->
+	<delete id="deleteHolidaySchedule2" parameterType="java.util.Map">
+		DELETE
+		FROM MIND_SCHEDULE
+		WHERE
+			<foreach collection="itemMap" index="idx" item="item" separator=", ">
+				<if test="idx == 0">
+				USER_ID = #{item.userId}
+				AND CENTER_SEQ = #{item.centerSeq}
+				AND COUNSEL_CD = 0
+				AND YMD in (
+				</if>
+				#{item.ymd}
+			</foreach>
+			)
+	</delete>
+	
+	<!-- <delete id="deleteHoliday2" parameterType="com.ezwel.admin.service.pCounselorMgr.dto.MindScheduleDto"> -->
+	<delete id="deleteHoliday2" parameterType="java.util.Map">
+		DELETE
+		FROM MIND_SCHEDULE
+		WHERE
+			<foreach collection="itemMap" index="idx" item="item" separator=", ">
+				<if test="idx == 0">
+				USER_ID = #{item.userId}
+				AND CENTER_SEQ = #{item.centerSeq}
+				AND HOLIDAY_YN = 'Y'
+				AND YMD in (
+				</if>
+				#{item.ymd}
+			</foreach>
+			)
+	</delete>
+
+	<select id="selectPCounselorDateInput" resultType="int">
+		SELECT COUNT(*)
+		FROM MIND_COUNSEL
+		WHERE 1=1
+		<if test="isNotNull(counselorId)">
+			AND COUNSELOR_ID = #{counselorId}
+		</if>
+		<if test="centerSeq !=0">
+			AND CENTER_SEQ = #{centerSeq}
+		</if>
+		<if test="isNotNull(counselCd)">
+			AND COUNSEL_CD = #{counselCd}
+		</if>
+	</select>
+
+	<update id="updatePCounselorDateInput" parameterType="com.ezwel.admin.service.pCounselorMgr.dto.MindCounselIntakeDto">
+		UPDATE MIND_COUNSEL
+		   SET RECORD_CHECK_YN = 'Y'
+		 WHERE COUNSEL_CD = #{counselCd}
+		<if test="isNotNull(counselorId)">
+		   AND COUNSELOR_ID = #{counselorId}
+		</if>
+		<if test="counselType != '100435'.toString()">
+		   AND SCHEDULE_DT &lt;= DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		</if>
+	</update>
+
+	<!-- 상담 일지 등록 / 수정 조회 -->
+	<select id="pCounselorRecordDtl" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.MindCounselCounselDetail">
+		   SELECT     A.CLIENT_CD		AS	clientCd
+					, A.INTAKE_CD		AS	intakeCd
+					, A.USER_KEY		AS	userKey
+					, A.CENTER_SEQ 	    AS	centerSeq
+					, A.COUNSEL_TYPE	AS	counselType
+					, A.INTAKE_NUM		AS	intakeNum
+					, B.RECORD_STATUS	AS	recordStatus
+					,( CASE WHEN A.INTAKE_NUM = '1' AND (B.RECORD_STATUS BETWEEN 100693 AND 100694) THEN 'Y'
+					        WHEN A.INTAKE_NUM = '1' AND (B.RECORD_STATUS IN ('100696','100697')) THEN 'Y' ELSE 'N' END )  AS recordStatusYn
+					, B.COUNSEL_CD		AS	counselCd
+					, B.COUNSELOR_ID	AS	counselorId
+					, C.RECORD_CD		AS	recordCd
+					, C.SUBJECT         AS subject
+					, C.MAIN_ISSUE      AS mainIssue
+					, C.GOAL 			AS goal
+					, C.INTERVENTION 	AS intervention
+					, C.FEEDBACK 		AS feedback
+					, C.MEMO 			AS memo
+					, C.TIME 			AS time
+					, C.FILE_NM 		AS fileNm
+					, C.FILE_PATH   	AS filePath
+					, C.RISKS 			AS risks
+					, C.RISK_REASON	    AS riskReason
+					, C.CALLING_ISSUE	AS callingIssue
+					, C.NEXT_DT			AS nextDt
+					, D.FINAL_GOAL      AS finalGoal
+					, D.COURSE_GOAL     AS courseGoal
+					, D.COUNSEL_PLAN    AS counselPlan
+					, C.SUBJECT_ITEM_CD1
+					, C.SUBJECT_ITEM_CD2
+					, C.SUBJECT_ITEM_CD3
+				FROM MIND_COUNSEL_INTAKE A LEFT OUTER JOIN MIND_COUNSEL B ON A.INTAKE_CD = B.INTAKE_CD
+											AND A.CLIENT_CD = B.CLIENT_CD AND A.USER_KEY = B.USER_KEY
+				 		 LEFT OUTER JOIN MIND_COUNSEL_RECORD C ON B.COUNSEL_CD = C.COUNSEL_CD
+				  		 LEFT OUTER JOIN MIND_COUNSEL_PLAN D ON A.INTAKE_CD = D.INTAKE_CD AND A.CLIENT_CD = D.CLIENT_CD
+				WHERE 1=1
+<!-- 				  AND A.INTAKE_CD =  -->
+<!-- 				  AND A.CLIENT_CD = -->
+				<if test="isNotNull(counselCd)">
+				  	AND B.COUNSEL_CD = #{counselCd}
+				</if>
+	</select>
+
+	<!-- 상담 일지 등록 / 수정_소견 리스트 -->
+	<select id="pCounselorRecordTxtList" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.MindCounselCounselDetail">
+		SELECT @RN:=@RN+1 AS contNum, AA.*
+			FROM(
+				SELECT A.COMM_CD	AS recordType
+					 , A.COMM_NM	AS recordTypeNm
+					 , B.RECORD_CD  AS recordCd
+					 , B.CONTENT    AS content
+					 , CASE WHEN LENGTH(B.CONTENT) > 0 THEN 'Y' ELSE 'N' END  AS contentYn
+				  FROM (   SELECT COMM_CD
+				  				, COMM_NM
+								FROM MIND_COMM_CD
+							  WHERE COMM_CD BETWEEN '100639' AND '100644'
+							    AND USE_YN = 'Y'
+					   ) A LEFT OUTER JOIN MIND_COUNSEL_RECORD_TXT B ON A.COMM_CD = B.RECORD_TYPE AND B.RECORD_CD = #{recordCd}
+				ORDER BY A.COMM_CD
+				) AS AA,
+			(SELECT @RN:=0) AS R
+	</select>
+
+	<!-- 상담 일지 등록 체크_일지,계획 -->
+	<select id="pCounselorRecordCnt" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.MindCounselCounselDetail">
+			SELECT 'record' AS cntTitle
+				  , RECORD_CD  AS recordCd
+				  , COUNT(*)  AS cnt
+			  FROM MIND_COUNSEL_RECORD
+			 WHERE COUNSEL_CD = #{counselCd}
+		 UNION ALL
+			SELECT 'plan'		 AS cntTitle
+				  , ''           AS recordCd
+				  , COUNT(*) 	 AS cnt
+				FROM MIND_COUNSEL_PLAN
+			 WHERE INTAKE_CD = #{intakeCd}
+			   AND CLIENT_CD = #{clientCd}
+	</select>
+
+	<!-- 상담 일지 등록 체크_일지TXT -->
+	<select id="pCounselorRecordTxtChkCnt" resultType="int">
+			SELECT COUNT(*) 	 AS cnt
+				FROM MIND_COUNSEL_RECORD_TXT
+			 WHERE RECORD_CD = #{recordCd}
+			   AND RECORD_TYPE = #{recordType}
+	</select>
+	
+	<update id="updatePCounselSchedule">
+		UPDATE	mind_counsel
+		SET		RECORD_STATUS = IF(counsel_type = 100435 ,
+									(CASE WHEN (DATE_FORMAT( Date_add(STR_TO_DATE(SCHEDULE_DT, '%Y%m%d%H%i%s'),interval 1 MONTH),'%Y%m%d') &lt; DATE_FORMAT(NOW(), '%Y%m%d') ) THEN 100695 
+										  WHEN (DATE_FORMAT( Date_add(STR_TO_DATE(SCHEDULE_DT, '%Y%m%d%H%i%s'),interval 3 DAY),'%Y%m%d') &lt; DATE_FORMAT(NOW(), '%Y%m%d') ) THEN 100694
+										  ELSE 100693 END ),
+									(CASE WHEN (DATE_FORMAT( Date_add(STR_TO_DATE(SCHEDULE_DT, '%Y%m%d%H%i%s'),interval 3 DAY),'%Y%m%d') &lt; DATE_FORMAT(NOW(), '%Y%m%d') ) THEN 100696 
+										  ELSE 100693 END) )
+		WHERE	RECORD_STATUS != 100692
+	</update>
+	
+	<select id="getCounselInfo" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.MindCounselCounselDetail">
+		SELECT A.INTAKE_CD AS intakeCd
+			, A.CLIENT_CD AS clientCd
+			, A.USER_KEY AS userKey
+			, B.DIAGNOSIS_SEQ AS diagnosis_seq
+			, B.Q_NUM AS qNum
+			, B.ANSWER_NUM AS answerNum
+			, B.ANSWER_TXT AS answerTxt
+			, B.ANSWER AS answer
+		FROM MIND_COUNSEL_DIAGNOSIS A, MIND_COUNSEL_DIAGNOSIS_ANSWER B
+		WHERE A.INTAKE_CD = #{intakeCd }
+		AND A.DIAGNOSIS_SEQ	= B.DIAGNOSIS_SEQ
+	</select>
+	
+	<select id="getReplyInfo" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.MindCounselCounselDetail">
+		SELECT A.INTAKE_CD AS intakeCd
+			, A.CLIENT_CD AS clientCd
+			, A.ANSWER_YN AS answerYn
+			, A.ANSWER1 AS answer1
+			, A.ANSWER2 AS answer2
+			, A.ANSWER3 AS answer3
+			, A.ANSWER4 AS answer4
+			, A.ANSWER5 AS answer5
+			, A.REG_ID AS regId
+			, A.REG_DT AS regDt
+			, A.MODI_ID AS modiId
+			, A.MODI_DT AS modiDt
+		FROM MIND_COUNSEL_BBS_ANSWER A
+		WHERE A.INTAKE_CD = #{intakeCd }
+	</select>
+
+	<insert id="addCounselBbsAdd">
+		INSERT INTO MIND_COUNSEL_BBS_ANSWER (
+			  INTAKE_CD
+			, CLIENT_CD
+			<if test="isNotNull(answerYn)">
+				, ANSWER_YN
+			</if>
+			, ANSWER1
+			, ANSWER2
+			, ANSWER3
+			, ANSWER4
+			, ANSWER5
+			, REG_ID
+			, REG_DT
+		) VALUES (
+			 #{intakeCd}
+			,#{clientCd}
+			<if test="isNotNull(answerYn)">
+				, #{answerYn}
+			</if>
+			,#{answer1}
+			,#{answer2}
+			,#{answer3}
+			,#{answer4}
+			,#{answer5}
+			,#{regId}
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		) ON DUPLICATE KEY 
+		UPDATE    INTAKE_CD = #{intakeCd}
+				, CLIENT_CD = #{clientCd}
+				<if test="isNotNull(answerYn)">
+					, ANSWER_YN = #{answerYn}
+				</if>
+				, ANSWER1 = #{answer1}                        
+				, ANSWER2 = #{answer2}                        
+				, ANSWER3 = #{answer3}                        
+				, ANSWER4 = #{answer4}                        
+				, ANSWER5 = #{answer5}                        
+				, MODI_ID = #{regId}                          
+				, MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+	</insert>
+	
+	<select id="getUserInfo" resultType="com.ezwel.admin.domain.entity.employ.EmployData">
+		SELECT COUNSEL_NM AS userNm
+			, AES_DECRYPT(UNHEX(MOBILE), '1234') AS mobile
+		FROM MIND_COUNSEL_INTAKE
+		WHERE INTAKE_CD = #{intakeCd}
+	</select>
+	
+	<insert id="adminUpdatePCounselSchedule" timeout="2000">
+		INSERT INTO MIND_SCHEDULE (
+			CENTER_SEQ, USER_ID, HOLIDAY_YN, YMD, SCHEDULE_TYPE, ST_TIME, ED_TIME, REG_DT, REG_ID
+		) VALUES (
+			(select center_seq from mind_mgr where user_id = #{userId})
+			,#{userId}
+			,#{holidayYn}
+			,#{ymd}
+			,#{scheduleType}
+			,#{stTime}
+			,#{edTime}
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			,'admin'
+		) ON DUPLICATE KEY 
+		UPDATE 
+			MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'
+		)
+	</insert>
+	
+	<select id="pCounselorRecordFeedBack" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.MindCounselCounselDetail">
+		SELECT A.COMM_CD	AS recordType
+			 , A.COMM_NM	AS recordTypeNm
+			 , B.RECORD_CD  AS recordCd
+			 , B.CONTENT    AS content
+			 , CASE WHEN LENGTH(B.CONTENT) > 0 THEN 'Y' ELSE 'N' END  AS contentYn
+		  FROM (   SELECT COMM_CD
+		  				, COMM_NM
+						FROM MIND_COMM_CD
+					  WHERE COMM_CD = #{counselFeedBackType}
+					    AND USE_YN = 'Y'
+			   ) A LEFT OUTER JOIN MIND_COUNSEL_RECORD_TXT B ON A.COMM_CD = B.RECORD_TYPE AND B.RECORD_CD = #{recordCd}
+		ORDER BY A.COMM_CD
+	</select>
+	
+	<insert id="updateCounselFeedBack">
+		INSERT INTO MIND_COUNSEL_RECORD_TXT (
+			  RECORD_CD
+			, RECORD_TYPE
+			, CONTENT
+		) VALUES (
+			 #{recordCd}
+			,#{counselFeedBackType}
+			,#{counselFeedBack}
+		) ON DUPLICATE KEY 
+		UPDATE
+			CONTENT= #{counselFeedBack}
+	</insert>
+	
+	<select id="getRecordStatus" resultType="String">
+		SELECT STATUS 
+		FROM MIND_COUNSEL
+		WHERE COUNSEL_CD = #{counselCd}
+	</select>
+	
+	<select id="getCounselDiagnosis" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.MindCounselIntake">
+		select b.Q_NUM as qNum,
+				b.point as point,
+				b.ANSWER_NUM as answerNum
+		from  mind_counsel_diagnosis a left join mind_counsel_diagnosis_answer b 
+			on a.diagnosis_seq = b.diagnosis_seq
+		where intake_cd = #{intakeCd }
+	</select>
+	
+</mapper>

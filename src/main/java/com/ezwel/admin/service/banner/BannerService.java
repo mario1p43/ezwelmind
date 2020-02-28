@@ -1,0 +1,156 @@
+package com.ezwel.admin.service.banner;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.ezwel.admin.domain.entity.banner.InvBanner;
+import com.ezwel.admin.domain.entity.banner.InvChannel;
+import com.ezwel.admin.domain.entity.banner.InvCorner;
+import com.ezwel.admin.persist.banner.BannerMapper;
+import com.ezwel.admin.service.banner.dto.InvBannerDto;
+import com.ezwel.admin.service.banner.dto.InvChannelDto;
+import com.ezwel.admin.service.banner.dto.InvCornerDto;
+import com.ezwel.core.framework.web.vo.Paging;
+import com.ezwel.core.support.util.FileUploadUtils;
+import com.ezwel.core.support.util.FileUtils;
+import com.ezwel.core.support.util.StringUtils;
+
+
+@Service
+public class BannerService {
+
+	@Resource
+	private BannerMapper bannerMapper;
+	
+	
+	
+	public List<InvChannel> chDataList(InvBannerDto invBannerDto) {
+		return bannerMapper.chDataList(invBannerDto);
+	}
+	
+	public Paging<InvChannel> getChannelList(InvChannelDto invChannelDto) {
+		Paging<InvChannel> paging = new Paging<InvChannel>();
+		paging.setPaging(invChannelDto);
+		paging.setList(bannerMapper.getChannelList(invChannelDto));
+		invChannelDto.setPageCommonFlag(true);
+		paging.setTotalCount(bannerMapper.getChannelList(invChannelDto).get(0).getPageCommonCount());
+		
+		return paging;
+	}
+	
+	
+	public void insertChannel(InvChannelDto invChannelDto) {
+		bannerMapper.insertChannel(invChannelDto);
+	}
+	
+	
+	public Paging<InvBanner> getBnrList(InvBannerDto invBannerDto) {
+		Paging<InvBanner> paging = new Paging<InvBanner>();
+		paging.setPaging(invBannerDto);
+		paging.setList(bannerMapper.getBnrList(invBannerDto));
+		invBannerDto.setPageCommonFlag(true);
+		paging.setTotalCount(bannerMapper.getBnrList(invBannerDto).get(0).getPageCommonCount());
+		return paging;
+	}
+	
+	public Paging<InvCorner> getCornerMgrList(InvCornerDto invCornerDto) {
+		Paging<InvCorner> paging = new Paging<InvCorner>();
+		paging.setPaging(invCornerDto);
+		paging.setList(bannerMapper.getCornerMgrList(invCornerDto));
+		invCornerDto.setPageCommonFlag(true);
+		paging.setTotalCount(bannerMapper.getCornerMgrList(invCornerDto).get(0).getPageCommonCount());
+		return paging;
+	}
+	
+	public List<InvCorner> getCornerList(InvBannerDto invBannerDto) {
+		return bannerMapper.getCornerList(invBannerDto);
+	}
+	
+	
+	public List<InvCorner> ajaxCornerList(InvChannelDto invChannelDto) {
+		return bannerMapper.ajaxCornerList(invChannelDto);
+	}
+	
+	
+	public void insertCorner(InvCornerDto invBannerDto) {
+		//invBannerDto.setCornerCd( bannerMapper.getInsertCornerCd(invBannerDto) );
+		bannerMapper.insertCorner(invBannerDto);
+	}
+	
+	
+	public void insertBnr(InvBannerDto invBannerDto) {
+//		배너 인서트		
+		bannerMapper.insertBnr(invBannerDto);
+		FileUtils.fileAddUpload(invBannerDto, FileUploadUtils.UPLOAD_DIR_IMG_PROP);
+
+//		발급된 배너SEQ 셀렉_삭제예정
+//		invBannerDto.setBannerSeq( bannerMapper.getBannerSeq(invBannerDto) );
+		
+//		고객사정보 인서트
+		if(!StringUtils.isEmpty( invBannerDto.getClientCdArr() ) ){
+			for(String str : invBannerDto.getClientCdArr() ){
+				invBannerDto.setClientCd(str);
+				bannerMapper.insertBnrClient(invBannerDto);
+			}
+		}
+	}
+	
+	
+	public InvBanner modifyBnrDetail(InvBannerDto invBannerDto) {
+		return bannerMapper.modifyBnrDetail(invBannerDto);
+	}
+	
+	
+	public void modifyBnrDelete(InvBannerDto invBannerDto) {
+		bannerMapper.modifyBnrDelete(invBannerDto);
+	}
+	
+	public void modifyBnrUpdate(InvBannerDto invBannerDto) {
+//		배너정보 업데이트
+		bannerMapper.modifyBnrUpdate(invBannerDto);
+		
+		FileUtils.fileAddUpload(invBannerDto, FileUploadUtils.UPLOAD_DIR_IMG_PROP);
+		
+//		해당 배너에 등록된 고객사 삭제		
+		bannerMapper.deleteBnrClient(invBannerDto);
+		
+//		고객사정보 인서트
+		if(!StringUtils.isEmpty( invBannerDto.getClientCdArr() ) ){
+			for(String str : invBannerDto.getClientCdArr() ){
+				invBannerDto.setClientCd(str);
+				bannerMapper.insertBnrClient(invBannerDto);
+			}
+		}
+	}
+	
+	public void modifyChannelUpdate(InvChannelDto invChannelDto){
+		bannerMapper.modifyChannelUpdate(invChannelDto);
+	}
+	
+	public InvChannel getChannelDetail(InvChannelDto invChannelDto){
+		return bannerMapper.getChannelDetail(invChannelDto);
+	}
+	
+	public void modifyChannelDelete(InvChannelDto invChannelDto){
+		bannerMapper.modifyChannelDelete(invChannelDto);
+	}
+	
+	public InvCorner getCornerDetail(InvCornerDto invCornerDto){
+		return bannerMapper.getCornerDetail(invCornerDto);
+	}
+
+	public void modifyCornerUpdate(InvCornerDto invCornerDto) {
+		bannerMapper.modifyCornerUpdate(invCornerDto);
+	}
+	
+	public void modifyCornerDelete(InvCornerDto invCornerDto){
+		bannerMapper.modifyCornerDelete(invCornerDto);
+	}
+	
+	public List<InvBanner> getClientList(InvBannerDto invBannerDto){
+		return bannerMapper.getClientList(invBannerDto);
+	}
+}

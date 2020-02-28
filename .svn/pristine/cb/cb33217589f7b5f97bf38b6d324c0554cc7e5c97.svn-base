@@ -1,0 +1,425 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ include file="/WEB-INF/jsp/layout/inc/tags.jspf"%>
+<%@ page import="java.util.*"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%
+	Date ct = new Date();
+	SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd");
+	
+	//today
+	String today = fmt.format(ct);
+	
+	//today-7
+	ct.setDate(ct.getDate()-7);
+	String owa = fmt.format(ct);
+	
+	//today -15(7+8)
+	ct.setDate(ct.getDate()-8);
+	String hma = fmt.format(ct);
+	
+	//today -30(7+8+15)
+	ct.setDate(ct.getDate()-15);
+	String oma = fmt.format(ct);
+
+	//today -60(7+8+15+30)
+	ct.setDate(ct.getDate()-30);
+	String tma = fmt.format(ct);
+	
+%>
+<html>
+<head>
+<title>만족도조사(약식)</title>
+<script type="text/javascript">
+j$(document).ready(function(){
+	clientReload('sel');
+	j$(".downBtn").click(function(){
+		j$(".downBtn").hide();
+		j$("#frm").attr("action","/madm/evaluation/excelDownload");
+		j$("#frm").submit();
+	});
+	
+	$("#searchBtn").click(function(){
+		j$("#frm").attr("action","/madm/evaluation/surveyList");
+		j$("#frm").submit();
+		return false;
+	});
+	
+	j$(".viewDetail").click(function(){
+		var counselCd = $(this).attr("val");
+		j$.divPop("viewDetail", "상세보기 (신청코드 : " + counselCd + " )", "/madm/layerPopup/counselDetail?counselCd="+counselCd);
+		return false;
+	});
+	var cseq = "${evaluationDto.centerSeq}";
+	if(cseq!=null && cseq!=''){
+		var counselorId = "${evaluationDto.counselorId}";
+		getCounselorList(cseq,counselorId);
+	}
+	$('.date_timepicker_startMonth').datetimepicker({
+		format:'Y/m/d',
+		onShow:function( ct ){
+			this.setOptions({
+				maxDate:j$('.date_timepicker_endMonth').val()?j$('.date_timepicker_endMonth').val():false
+			})
+		},
+		timepicker:false
+	});
+
+	$('.date_timepicker_endMonth').datetimepicker({
+		format:'Y/m/d',
+		onShow:function( ct ){
+			this.setOptions({
+				minDate:j$('.date_timepicker_startMonth').val()?j$('.date_timepicker_startMonth').val():false
+			})
+		},
+		timepicker:false
+	});
+	
+	$("#startMonthImg").click(function(){
+		$('.date_timepicker_startMonth').datetimepicker('show');
+	});
+
+	$("#endMonthImg").click(function(){
+		$('.date_timepicker_endMonth').datetimepicker('show');
+	});
+	
+	
+});
+
+function clientReload(setType){
+	if(setType == "sel"){
+		var tempClientCd = $("#clientCd option:selected").val();
+		if(tempClientCd == "") return;
+		var tempClientNm = $("#clientCd option:selected").text();
+		$("#chkClientCd").val(tempClientNm);
+	}else if(setType == "txt"){
+		var tempClientCd = $("#chkClientCd").val();
+		if(tempClientCd == "") return;
+		
+		var clientList = new Array();
+		<c:forEach var="list" items="${clientList}">
+		var arr = { nm : "${list.clientNm}", cd : "${list.clientCd}"};
+		clientList.push(arr);
+		</c:forEach>
+		
+		for(var i=0 ; i < clientList.length ; i++){
+			var checkClientArr = clientList[i];
+			if(checkClientArr.nm.indexOf(tempClientCd) != -1) {
+				$("#clientCd").val(checkClientArr.cd);
+				break;
+			}	
+		}
+	}
+}
+
+function centerReload(setType){
+	if(setType == "sel"){
+		var tempCenterSeq = $("#centerSeq option:selected").val();
+		if(tempCenterSeq == "") return;
+		var tempClientNm = $("#centerSeq option:selected").text();
+		$("#chkCenterNm").val(tempClientNm);
+	}else if(setType == "txt"){
+		var tempCenterSeq = $("#chkCenterNm").val();
+		if(tempCenterSeq == "") return;
+		
+		var centerList = new Array();
+		<c:forEach var="centerList" items="${centerList}">
+		var arr = { nm : "${centerList.centerNm}", cd : "${centerList.centerSeq}"};
+		centerList.push(arr);
+		</c:forEach>
+		
+		for(var i=0 ; i < centerList.length ; i++){
+			var checkClientArr = centerList[i];
+			if(checkClientArr.nm.indexOf(tempCenterSeq) != -1) {
+				$("#centerSeq").val(checkClientArr.cd);
+				break;
+			}	
+		}
+	}
+	centerChange();
+	
+}
+//상담센터 선택시
+function centerChange(){
+	j$("select[name='counselorId'] option").remove();
+	j$("[name='counselorId']").append("<option value=''>---- 선택 ----</option>");
+	var centerSeq = $("[name='centerSeq']").val();
+	if(centerSeq!=null && centerSeq!=""){
+		getCounselorList(centerSeq,null); 
+	}
+}
+//상담사 리스트 가져오기 
+function getCounselorList(centerSeq,counselorId) {
+		$.ajax({
+			url: "/madm/evaluation/getCounselorList?centerSeq=" + centerSeq,
+			dataType: 'json',
+			success: function (response) {
+				var iter = response.list;
+				var element = "";
+				for (var i = 0; i < iter.length; i++) {
+					element += "<option value='" + iter[i].counselorId + "'>" + iter[i].counselorNm + "</option>";
+				}
+				if (element != "") {
+					j$("[name='counselorId']").append(element);
+						debugger;
+					if(counselorId!=null && counselorId!=''){
+						j$("[name='counselorId']").val(counselorId);
+					}
+				}
+			}
+		});
+}
+//상담사 검색하기
+function counselorReload(){
+	var tempCenterSeq = $("#centerSeq option:selected").val();
+	var chkCounselorCd = $("#chkCounselorCd").val();
+	if(tempCenterSeq!='' && tempCenterSeq!=null){
+		j$("[name='counselorId']").find("option").filter(function(index) {
+			return chkCounselorCd === $(this).text();
+		}).prop("selected", "selected");
+	}else{
+		alert('상담센터를 먼저 선택해주세요.')
+		$("[name='centerSeq']").focus();
+		
+	}
+}
+
+function jsSearchDate(arg) {
+    if (arg == "today") { //오늘
+    	$("#startMonth").val("<%=today %>");
+    	$("#endMonth").val("<%=today %>");
+    }
+    if (arg == "week") {  //일주일
+    	$("#startMonth").val("<%=owa %>");
+    	$("#endMonth").val("<%=today %>");
+    }
+    if (arg == "halfMonth") {  //보름
+    	$("#startMonth").val("<%=hma %>");
+    	$("#endMonth").val("<%=today %>");
+    }
+    if (arg == "month") {  //한달
+    	$("#startMonth").val("<%=oma %>");
+    	$("#endMonth").val("<%=today %>");
+    }
+    if (arg == "twoMonths") {  //두달
+    	$("#startMonth").val("<%=tma %>");
+    	$("#endMonth").val("<%=today %>");
+    } 
+}
+
+
+
+function jsSearchDateClear() {
+	$("#startMonth").val("");
+	$("#endMonth").val("");
+}
+
+</script>
+</head>
+<body>
+<form:form id="frm" modelAttribute="evaluationDto" action="/madm/evaluation/surveyList" method="GET">
+<table cellpadding="0" cellspacing="0" border="0" width="95%">
+<tr>
+	<td height="20px"></td>
+</tr>
+
+<tr>
+	<td>
+		<!-- 버튼 영역 시작 -->
+		<table cellpadding="5" cellspacing="0" border="0" width="100%" align="center" style="border-bottom: 1px solid silver;">
+			<tr>
+		    	<td align="left" class="subtitle">만족도조사(약식)</td>
+			</tr>
+		</table>
+		<!-- 버튼 영역 종료 -->
+	</td>
+</tr>
+
+<tr>
+	<td height="10px"></td>
+</tr>
+ 
+<tr>
+	<td>
+		<!-- 검색 영역 시작 -->
+		<table cellpadding="5" cellspacing="0" border="1" width="65%" style="border-collapse:collapse;" bordercolor="#DDDDDD">
+			<tr align="left" height="30px">
+				<td width="10%" bgcolor="#F5F5F5" align="center"><strong>고객사 선택</strong></td>
+		    	<td width="39%" align="left">
+			    	<select id="clientCd" name="clientCd" style="height: 20px;" onchange="clientReload('sel');">
+			    		<option value="">---- 선택 ----</option>	
+			    		<c:forEach var="list" items="${clientList}">
+		    				<option value="${list.clientCd }" <c:if test="${list.clientCd eq evaluationDto.clientCd}"> selected </c:if> >${list.clientNm }</option>
+		    			</c:forEach>
+		    		</select>
+		    		<input type="text" id="chkClientCd" value="" onkeyup="clientReload('txt');" style="width:200px;" placeholder="고객사명을 입력 또는 선택하세요."> 
+		    	</td>
+				<td width="10%" bgcolor="#F5F5F5" align="center"><strong>임직원명</strong></td>
+		    	<td width="41%" align="left">
+		    		<input type="text" name="userNm" placeholder="임직원의 이름을 입력하세요." value="${evaluationDto.userNm }" style="width:350px;">
+		    	</td>
+			</tr>
+			<tr align="left" height="30px">
+				<td width="10%" bgcolor="#F5F5F5" align="center"><strong>상담센터 선택</strong></td>
+		    	<td width="40%" align="left">
+			    	<select id="centerSeq" name="centerSeq" style="height: 20px;" onchange="centerReload('sel');">
+						<option value="">상담센터를 선택하세요</option>
+						<c:forEach var="centerList" items="${centerList}" varStatus="centerListCnt">
+							<option value="${centerList.centerSeq }" <c:if test="${centerList.centerSeq eq evaluationDto.centerSeq}"> selected </c:if>>${centerList.centerNm }</option>
+						</c:forEach>
+					</select>
+					<input type="text" id="chkCenterNm" value="" onchange="centerReload('txt');" onkeyup="centerReload('txt');" style="width:200px;" placeholder="상담센터명을 입력 또는 선택하세요.">
+		    	</td>
+				<td width="10%" bgcolor="#F5F5F5" align="center"><strong>상담사명</strong></td>
+		    	<td width="40%" align="left">
+		    		<%-- <input type="text" name="userNm" placeholder="상담사의 이름을 입력하세요." value="${evaluationDto.counselorId }" style="width:350px;"> --%>
+		    		<select id="counselorId" name="counselorId" >
+                     	<option value="">---- 선택 ----</option>
+                    </select>
+                   <input type="text" id="chkCounselorCd" value="" onkeyup="counselorReload();" style="width:200px;" placeholder="상담사명을 입력 또는 선택하세요."> 
+		    	</td>
+			</tr>
+			<tr align="left" height="30px">
+		    	<td width="10%" bgcolor="#F5F5F5" align="center"><strong>아이디/사번</strong></td>
+		    	<td width="auto;" align="left" >
+		    		<input type="text" name="userId" value="${evaluationDto.userId }" style="width:350px;">
+		    	</td>
+				<td width="" bgcolor="#F5F5F5" align="center"><strong>상담일</strong></td>
+		    	<td width="" align="left">
+					<input type="text" name="startMonth" id="startMonth" size="10" class="date_timepicker_startMonth" value="${evaluationDto.startMonth}"/>
+					<img id="startMonthImg" src="//img.ezwelmind.co.kr/images/icon02.jpg"border="0" />
+					&nbsp;~&nbsp;
+					<input type="text" name="endMonth" id="endMonth" size="10" class="date_timepicker_endMonth" value="${evaluationDto.endMonth}"/>
+					<img id="endMonthImg" src="//img.ezwelmind.co.kr/images/icon02.jpg"border="0" />
+					<input type="button" value="오늘" onclick="javascript:jsSearchDate('today');" >
+					<input type="button" value="일주일" onclick="javascript:jsSearchDate('week');" >
+					<input type="button" value="15일" onclick="javascript:jsSearchDate('halfMonth');" >
+					<input type="button" value="한달" onclick="javascript:jsSearchDate('month');" >
+					<input type="button" value="두달" onclick="javascript:jsSearchDate('twoMonths');" >
+					<input type="button" value="전체" onclick="javascript:jsSearchDateClear();" >
+				</td>
+		    	<!-- <td width="10%" bgcolor="#F5F5F5" align="center"><strong>상담일자 검색</strong></td>
+		    	<td width="40%" align="left">
+		    	</td> -->
+			</tr>
+		</table>
+		<!-- 검색 영역 종료 -->
+	</td>
+</tr>
+
+<tr>
+	<td height="10px"></td>
+</tr>
+
+<tr>
+	<td>
+		<!-- 버튼 영역 시작 -->
+		<table cellpadding="5" cellspacing="0" border="0" width="60%" style="border-collapse:collapse;" bordercolor="#DDDDDD">
+			<tr>
+				<td align="center" colspan="4">
+					<table cellpadding="0" cellspacing="0" border="0">
+						<tr>
+				    		<td id="btn01"><a href="javascript:void(0);"><span id="searchBtn">검 색</span></a></td>
+		    			</tr>
+		    		</table>
+		    	</td>
+			</tr>
+		</table>
+		<!-- 버튼 영역 종료 -->
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<!-- 채널 영역 시작 -->
+		<table cellpadding="0" cellspacing="0" border="0" width="2000px" align="center">
+			<tr>
+				<td>
+					<table cellpadding="5" cellspacing="0" border="0" width="100%" style="border-collapse:collapse; margin: 15px auto 5px auto;">
+						<tr>
+							<td align="left" width="250px">
+								<strong>총 ${paging.totalCount}건</strong>
+								<span style="margin-left: 20px;"></span>
+								<strong>페이지 : ${paging.currentPage}/${paging.getPageCount()} </strong>
+							</td>
+							<td align="left" id="btn02" class="hideBtn" width="auto;">
+								<a href="javascript:void(0);">
+									<span class="downBtn"> 엑셀다운 </span>
+								</a>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<!-- 채널 정보 시작 -->
+					<table class="" cellpadding="5" align="" id="chRow" cellspacing="0" border="1" width="100%" style="text-align:center; border-collapse:collapse;">
+						<thead>
+			                <tr>
+			                  <th width="40px">순번</th>
+			                  <th width="130px">고객사</th>
+			                  <th width="70px">임직원명</th>
+			                  <th width="120px">관계</th>
+			                  <th width="70px">내담자명</th>
+			                  <th width="80px">신청코드</th>
+			                  <th width="140px">상담센터</th>
+			                  <th width="70px">상담사</th>
+			                  <c:forEach var="list" items="${itemList}">
+			                  	<th width="auto;">${list.itemTitle }</th>
+			                  </c:forEach>
+			                  <th width="130px">상담일시</th>
+			                  <th width="130px">설문일시</th>
+			                </tr>
+			            </thead>
+
+						<tbody>
+						<c:forEach var="list" items="${paging.list}" varStatus="status">
+							<tr align="" height="50px">
+								<td class="" width="" align="" bgcolor="">
+									${(paging.totalCount - ((paging.currentPage-1) * paging.pageSize)) - status.index}
+								</td>
+								<td>${list.clientNm }(${list.clientCd })</td>
+								<td>${list.userNm }</td>
+								<td>${list.relation }</td>
+								<td>${list.counselNm }</td>
+								<td class="viewDetail" val="${list.counselCd }" ><a href="javascript:void(0);"><span style="font-weight: bold; color: blue;">${list.counselCd }</span></a></td>
+								<td>${list.centerNm }</td>
+								<td>${list.counselorNm }</td>
+								<td>${list.item01Ans }</td>
+								<td>${list.item02Ans }</td>
+								<td>${list.item03Ans }</td>
+								<td>${list.item04Ans }</td>
+								<td>${list.item05Ans }</td>
+								<td>${list.item06Ans }</td>
+								<td>${list.counselDt }</td>
+								<td>${list.regDt }</td>
+							</tr>
+						</c:forEach>
+					</tbody>
+					</table>
+					</div>
+					<div>평균 : ${itemAvg.itemAvg } / 최고점 : ${itemAvg.itemMax } / 최하점 : ${itemAvg.itemMin }</div>
+					<br>
+					<table cellpadding="2" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
+						<tr>
+							<td align="center">
+  								<ui:paging value="${paging}"
+  									btnFirst="${url:img('/images/btn_first.jpg')}"
+  									btnPrev="${url:img('/images/btn_prev.jpg')}"
+  									btnNext="${url:img('/images/btn_next.jpg')}"
+  									btnLast="${url:img('/images/btn_last.jpg')}" />
+							</td>
+						</tr>
+					</table>
+					<!-- 채널 정보 종료 -->
+				</td>
+			</tr>
+		</table>
+		<!-- 채널 영역 종료 -->
+	</td>
+</tr>
+</table>
+</form:form>
+</body>
+</html>
+

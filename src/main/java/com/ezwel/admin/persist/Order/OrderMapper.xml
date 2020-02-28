@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.Order.OrderMapper">
+	
+	<select id="getOrderComletionSmsMsg" resultType="com.ezwel.admin.domain.entity.sms.SmsResult">
+		/* 매일 9시에 다음날 상담이 있는 고객한테 문자 보낼 주문을 추출 */
+        SELECT A.ORDER_NUM,
+			   E.COUNSEL_NM	as sndNm,
+			   AES_DECRYPT(UNHEX(IFNULL(E.MOBILE,A.SND_MOBILE)),'1234') as sndMobile, /* 인테이크에 입력한 휴대폰번호로 메시지가 날라가도록 수정, 인테이크에 입력된 정보가 없으면 주문에 있는 휴대펀번호로 */
+			   B.COUNSELOR_ID,
+			   B.COUNSEL_CD,
+			   DATE_FORMAT(STR_TO_DATE(B.SCHEDULE_DT, '%Y%m%d%H%i%s'),'%Y년%m월%d일%H시') 	AS scheduleDt,
+			   DATE_FORMAT(STR_TO_DATE(B.SCHEDULE_DT, '%Y%m%d%H%i%s'),'%m월%d일 %H시') 		AS scheduleDtMonth,
+			   C.TEL_NUM 			as centerTelNum,
+			   C.CENTER_NM			as centerNm,
+			   C.ADDR1 				as centerAddr1,
+			   C.ADDR2 				as centerAddr2,
+			   D.USER_NM 			as counselorNm,
+			   D.MOBILE 			as counselorMobile,
+			   A.CLIENT_CD			as clientCd,
+			   B.COUNSEL_TYPE       AS counselType,
+			   B.center_seq			as centerSeq,
+			   IF(F.SITE_NM IS NULL or F.SITE_NM = '', '상담포유', F.SITE_NM) as siteNm			
+          FROM MIND_ORDER A INNER JOIN MIND_COUNSEL B
+            ON A.COUNSEL_CD = B.COUNSEL_CD
+            INNER JOIN MIND_CENTER C
+            ON B.CENTER_SEQ = C.CENTER_SEQ
+            INNER JOIN MIND_MGR D
+            ON B.COUNSELOR_ID = D.USER_ID
+	        LEFT JOIN MIND_COUNSEL_INTAKE E
+	        ON B.INTAKE_CD=E.INTAKE_CD
+            INNER JOIN MIND_CLIENT F
+            ON A.CLIENT_CD =F.CLIENT_CD 
+         WHERE 1=1
+		   AND DATE_FORMAT(B.schedule_dt, '%Y-%m-%d') = DATE_ADD(DATE_FORMAT(NOW(), '%Y%m%d'), INTERVAL 1 DAY)
+           AND B.CANCEL_DT IS NULL -- 취소가 아니고
+           AND A.REF_ORDER_NUM IS NULL -- 취소 재주문도 아닌거
+           AND A.CLIENT_CD != 'police'
+	</select>
+	
+	<select id="getOrderComletionPoliceSmsMsg" resultType="com.ezwel.admin.domain.entity.sms.SmsResult">
+		/* 매일 9시에 다음날 상담이 있는 고객한테 문자 보낼 주문을 추출 */
+        SELECT A.ORDER_NUM,
+			   E.COUNSEL_NM	as sndNm,
+			   AES_DECRYPT(UNHEX(IFNULL(E.MOBILE,A.SND_MOBILE)),'1234') as sndMobile, /* 인테이크에 입력한 휴대폰번호로 메시지가 날라가도록 수정, 인테이크에 입력된 정보가 없으면 주문에 있는 휴대펀번호로 */
+			   B.COUNSELOR_ID,
+			   B.COUNSEL_CD,
+			   DATE_FORMAT(STR_TO_DATE(B.SCHEDULE_DT, '%Y%m%d%H%i%s'),'%Y년%m월%d일%H시') 	AS scheduleDt,
+			   DATE_FORMAT(STR_TO_DATE(B.SCHEDULE_DT, '%Y%m%d%H%i%s'),'%m월%d일 %H시') 		AS scheduleDtMonth,
+			   C.TEL_NUM 			as centerTelNum,
+			   C.CENTER_NM			as centerNm,
+			   C.ADDR1 				as centerAddr1,
+			   C.ADDR2 				as centerAddr2,
+			   D.USER_NM 			as counselorNm,
+			   D.MOBILE 			as counselorMobile,
+			   A.CLIENT_CD			as clientCd,
+			   B.COUNSEL_TYPE       AS counselType,
+			   B.center_seq			as centerSeq,
+			   IF(F.SITE_NM IS NULL or F.SITE_NM = '', '상담포유', F.SITE_NM) as siteNm			
+          FROM MIND_ORDER A INNER JOIN MIND_COUNSEL B
+            ON A.COUNSEL_CD = B.COUNSEL_CD
+            INNER JOIN MIND_CENTER C
+            ON B.CENTER_SEQ = C.CENTER_SEQ
+            INNER JOIN MIND_MGR D
+            ON B.COUNSELOR_ID = D.USER_ID
+	        LEFT JOIN MIND_COUNSEL_INTAKE E
+	        ON B.INTAKE_CD=E.INTAKE_CD
+            INNER JOIN MIND_CLIENT F
+            ON A.CLIENT_CD =F.CLIENT_CD 
+         WHERE 1=1
+		   AND DATE_FORMAT(B.schedule_dt, '%Y-%m-%d') = DATE_ADD(DATE_FORMAT(NOW(), '%Y%m%d'), INTERVAL 1 DAY)
+           AND B.CANCEL_DT IS NULL -- 취소가 아니고
+           AND A.REF_ORDER_NUM IS NULL -- 취소 재주문도 아닌거
+           AND A.CLIENT_CD = 'police'
+	</select>
+</mapper>

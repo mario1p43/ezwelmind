@@ -1,0 +1,1987 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.service.ServiceMapper">
+
+	<select id="getGoodsList" resultType="com.ezwel.admin.domain.entity.service.ServiceData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+			SELECT GOODS_CD AS goodsCd
+					,GOODS_TYPE AS goodsType
+					,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = GOODS_TYPE) AS goodsTypeNm
+					,mg.CSP_CD AS cspCd
+					,CSP_NM AS cspNm
+					,GOODS_NM AS goodsNm
+					,FORMAT(GOODS_NORMAL_PRICE, 0) AS normalPrice
+					,FORMAT(GOODS_BUY_PRICE, 0) AS buyPrice
+					,FORMAT(GOODS_SALE_PRICE, 0) AS salePrice
+					,GOODS_DIS_RATE AS disRate
+					,GOODS_STATUS AS statusCd
+					,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = GOODS_STATUS) AS statusNm
+					,DATE_FORMAT(mg.REG_DT,'%Y-%m-%d %H:%i:%s') AS regDt
+					,DATE_FORMAT(mg.MODI_DT,'%Y-%m-%d %H:%i:%s') AS modiDt
+			FROM MIND_GOODS mg 
+					LEFT OUTER JOIN MIND_CSP mc
+						on mg.CSP_CD = mc.CSP_CD
+			WHERE 1=1
+				<if test="isNotNull(searchCspCd)">
+				 	AND mc.CSP_CD = #{searchCspCd}
+				</if>
+				<if test="isNotNull(searchcsp)">
+				 	AND mc.CSP_NM = #{searchcsp}
+				</if>
+				<if test="isNotNull(selectgoodtype)">	
+					AND GOODS_TYPE = #{selectgoodtype}
+				</if>
+				<if test="isNotNull(selectgoods) and selectgoods=='code'">
+					AND GOODS_CD LIKE CONCAT('%', #{searchgoods},'%')
+				</if>
+				<if test="isNotNull(selectgoods) and selectgoods=='name'">
+					AND GOODS_NM LIKE CONCAT('%', #{searchgoods},'%')
+				</if>
+				<if test="isNotNull(selectamount) and selectamount=='sale'">
+					AND GOODS_SALE_PRICE BETWEEN #{amount1} AND #{amount2}
+				</if>
+				<if test="isNotNull(selectamount) and selectamount=='buy'">
+					AND GOODS_BUY_PRICE BETWEEN #{amount1} AND #{amount2}
+				</if>
+				<if test="isNotNull(reqFromDt)">
+					AND mg.REG_DT BETWEEN #{reqFromDt} AND #{reqToDt}
+				</if>
+				<if test="searchType=='100804'">
+					AND GOODS_STATUS = '100804'
+				</if>
+				<if test="searchType!='100804'">
+					AND GOODS_STATUS != '100804'
+				</if>
+				<if test="isNotNull(approve)">
+					AND GOODS_STATUS = #{approve}
+				</if>
+				<if test="isNotNull(selectoption) and selectoption=='code'">
+				 	ORDER BY GOODS_CD
+				</if>
+				<if test="isNotNull(selectoption) and selectoption=='name'">
+				 	ORDER BY GOODS_NM
+				</if>
+				<if test="isNotNull(selectoption) and selectoption=='modi'">
+				 	ORDER BY mg.MODI_DT
+				</if>
+				<if test="isNotNull(selectoption) and selectoption=='price1'">
+				 	ORDER BY GOODS_NORMAL_PRICE DESC
+				</if>
+				<if test="isNotNull(selectoption) and selectoption=='price2'">
+				 	ORDER BY GOODS_NORMAL_PRICE
+				</if>
+				<if test="isNotNull(selectoption) and selectoption=='csp'">
+				 	ORDER BY CSP_NM
+				</if>
+		<choose>
+				<when test="pageCommonFlag == true">
+					) A
+				</when>
+				<otherwise>
+					LIMIT #{firstIndex} , #{pageSize}
+				</otherwise>
+
+		</choose>
+	</select>
+	
+	<select id="geCsptList" resultType="com.ezwel.admin.domain.entity.service.ServiceData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+			SELECT
+				CSP_CD AS cspCd
+				,CSP_NM AS cspNm
+			FROM MIND_CSP
+			WHERE 1=1
+				<if test="isNotNull(cspCd)">
+				 	AND CSP_CD = #{cspCd}
+				</if>
+				<if test="isNotNull(cspNm)">	
+					AND CSP_NM LIKE CONCAT('%', #{cspNm},'%')
+				</if>
+				<!-- <if test="isNotNull(cspstatus)">
+					AND CSP_TYPE in 
+					<foreach collection="cspstatus" item="status" open="(" close=")" separator=",">
+						#{status}
+					</foreach>
+				</if> -->
+				<if test="isNotNull(cspType1)">
+					AND CSP_TYPE LIKE CONCAT('%', #{cspType1},'%')
+				</if>
+				<if test="isNotNull(cspType2)">
+					AND CSP_TYPE LIKE CONCAT('%', #{cspType2},'%')
+				</if>
+				<if test="isNotNull(cspType3)">
+					AND CSP_TYPE LIKE CONCAT('%', #{cspType3},'%')
+				</if>
+				<if test="isNotNull(cspType4)">
+					AND CSP_TYPE LIKE CONCAT('%', #{cspType4},'%')
+				</if>
+								
+		<choose>
+				<when test="pageCommonFlag == true">
+					) A
+				</when>
+				<otherwise>
+					LIMIT #{firstIndex} , #{pageSize}
+				</otherwise>
+
+		</choose>
+	</select>
+	
+	<select id="getClientList" resultType="com.ezwel.admin.domain.entity.service.ServiceData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+			SELECT
+				CLIENT_CD AS cspCd
+				,CLIENT_NM AS cspNm
+			FROM MIND_CLIENT
+			WHERE 1=1
+			AND USE_YN = 'Y'
+				<if test="isNotNull(cspCd)">
+				 	AND CLIENT_CD = #{cspCd}
+				</if>
+				<if test="isNotNull(cspNm)">	
+					AND CLIENT_NM LIKE CONCAT('%', #{cspNm},'%')
+				</if>
+		<choose>
+				<when test="pageCommonFlag == true">
+					) A
+				</when>
+				<otherwise>
+					LIMIT #{firstIndex} , #{pageSize}
+				</otherwise>
+
+		</choose>
+	</select>
+	
+	<delete id="delgoods" parameterType="com.ezwel.admin.service.service.dto.ServiceDto" >
+		DELETE FROM MIND_GOODS
+		WHERE GOODS_CD = #{goodsCd}
+	</delete>
+	
+	<update id="updateStatus" parameterType="com.ezwel.admin.service.service.dto.ServiceDto" >
+		UPDATE MIND_GOODS
+		SET GOODS_STATUS = #{status}
+			,MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE GOODS_CD = #{goodsCd}
+	</update>
+	
+	
+	<select id="getPromotionList" resultType="com.ezwel.admin.domain.entity.service.PromotionData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+			SELECT PRM_MENU_CD AS menuCd
+					,(SELECT MENU_NM FROM mind_menu_cd mmc WHERE mmc.MENU_CD = mp.PRM_MENU_CD) AS menuNm
+					,PRM_CD AS prmCd
+					,PRM_NM AS prmNm
+					,DATE_FORMAT(PRM_ST_DT,'%Y-%m-%d') AS stdt
+					,DATE_FORMAT(PRM_ED_DT,'%Y-%m-%d') AS eddt
+					,(SELECT COUNT(*) FROM mind_promotion_goods mpg WHERE mpg.PRM_CD = mp.PRM_CD) AS goodsCount
+					,PRM_STATUS AS statusCd
+					,(SELECT COMM_NM FROM mind_comm_cd WHERE COMM_CD = PRM_STATUS) AS statusNm
+					,DATE_FORMAT(REG_DT,'%Y-%m-%d') AS regDt
+			FROM mind_promotion mp
+			WHERE 1=1
+				<if test="isNotNull(searchPromotionNm)">
+				 	AND PRM_NM = #{searchPromotionNm}
+				</if>
+				<if test="isNotNull(searchPromotionCd)">	
+					AND PRM_CD = #{searchPromotionCd}
+				</if>
+				<if test="isNotNull(selectStatus)">
+					AND PRM_STATUS = #{selectStatus}
+				</if>
+				<if test="isNotNull(reqFromDt)">
+					AND REG_DT BETWEEN #{reqFromDt} AND #{reqToDt}
+				</if>
+				ORDER BY MODI_DT DESC, REG_DT DESC
+		<choose>
+				<when test="pageCommonFlag == true">
+					) A
+				</when>
+				<otherwise>
+					LIMIT #{firstIndex} , #{pageSize}
+				</otherwise>
+
+		</choose>
+	</select>
+	
+	<update id="updatePrmStatus" parameterType="com.ezwel.admin.service.service.dto.PromotionDto" >
+		UPDATE MIND_PROMOTION
+		SET PRM_STATUS = #{status}
+			,MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE PRM_CD = #{prmCd}
+	</update>
+	
+	
+	<select id="geMenutList" resultType="com.ezwel.admin.domain.entity.service.PromotionData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+			SELECT
+				MENU_CD AS menuCd
+				,MENU_NM AS menuNm
+			FROM MIND_MENU_CD
+			WHERE 1=1
+				<if test="isNotNull(menuCd)">
+				 	AND MENU_CD = #{menuCd}
+				</if>
+				<if test="isNotNull(menuNm)">	
+					AND MENU_NM = #{menuNm}
+				</if>
+		<choose>
+				<when test="pageCommonFlag == true">
+					) A
+				</when>
+				<otherwise>
+					LIMIT #{firstIndex} , #{pageSize}
+				</otherwise>
+
+		</choose>
+	</select>
+	
+	<insert id="insertpromotion" parameterType="com.ezwel.admin.service.service.dto.PromotionDto" >
+		INSERT INTO MIND_PROMOTION
+		(PRM_NM ,PRM_CONTENT ,PRM_ST_DT ,PRM_ED_DT ,PRM_DISPLAY
+		,PRM_SORT ,PRM_PER_NO ,PRM_MEMO ,PRM_MENU_CD ,PRM_STATUS
+		,PRM_IMG ,REG_DT)
+		VALUE
+		(#{promotionnm},#{acontent},#{reqFromDt},#{reqToDt},#{selectdisplay}
+		,#{selectsort},#{selectperNo},#{amemo},#{promotionmenuCd},'100806'
+		,#{imgurl} ,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') )
+	</insert>
+	
+	
+	<select id="modifypromotionform" resultType="com.ezwel.admin.domain.entity.service.PromotionData">
+		SELECT PRM_CD AS prmCd
+				,PRM_MENU_CD AS menuCd
+				,PRM_STATUS AS statusCd
+				,(SELECT COMM_NM FROM mind_comm_cd WHERE COMM_CD = PRM_STATUS) AS statusNm
+				,(SELECT COUNT(*) FROM mind_promotion_goods mpg WHERE mpg.PRM_CD = mp.PRM_CD) AS goodsCount
+				,(SELECT MENU_NM FROM mind_menu_cd mmc WHERE mmc.MENU_CD = mp.PRM_MENU_CD) AS menuNm
+				,PRM_NM AS prmNm
+				,PRM_CONTENT AS content
+				,DATE_FORMAT(PRM_ST_DT,'%Y/%m/%d') AS stdt
+				,DATE_FORMAT(PRM_ED_DT,'%Y/%m/%d') AS eddt
+				,PRM_DISPLAY AS display
+				,PRM_SORT AS sort
+				,PRM_PER_NO AS perNo
+				,PRM_IMG AS img
+				,PRM_MEMO AS memo
+		FROM mind_promotion mp
+		WHERE PRM_CD = #{prmCd} 
+	</select>
+	
+	<update id="modifypromotion" parameterType="com.ezwel.admin.service.service.dto.PromotionDto" >
+		UPDATE MIND_PROMOTION
+		SET
+			PRM_NM = #{promotionnm}
+			,PRM_CONTENT = #{acontent}
+			,PRM_ST_DT = #{mreqFromDt}
+			,PRM_ED_DT = #{mreqToDt}
+			,PRM_DISPLAY = #{selectdisplay}
+			,PRM_SORT = #{selectsort}
+			,PRM_PER_NO = #{selectperNo}
+			,PRM_MEMO = #{amemo}
+			,PRM_MENU_CD = #{promotionmenuCd}
+			,PRM_IMG = #{fileFullPath}
+			,MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE PRM_CD = #{prmCd}
+	</update>
+	
+	<insert id="insertpromotiongoods" parameterType="com.ezwel.admin.service.service.dto.PromotionDto" >
+		<selectKey keyProperty="goodsSort" resultType="int" order="BEFORE">
+			SELECT COUNT(PRM_CD)+1 FROM MIND_PROMOTION_GOODS WHERE PRM_CD = #{prmCd}
+		</selectKey>
+		INSERT INTO MIND_PROMOTION_GOODS (	
+			PRM_CD 
+		,	GOODS_CD 
+		,	PRM_GOODS
+		,	PRM_GOODS_STATUS 
+		,   PRM_NORMAL_PRICE
+		,   PRM_BUY_PRICE
+		,   PRM_SALE_PRICE
+		,   PRM_GOODS_SORT
+		,	REG_ID
+		,	REG_DT
+		) VALUE (	
+			#{prmCd} 
+		,	#{goodsCd}
+		,	#{goodsNm}
+		,	'100820' 
+		,	#{normalPrice}
+		,	#{buyPrice}
+		,	#{salePrice}
+		,	#{goodsSort}
+		,	#{regId}
+		,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+	
+	<select id="getpromotiongoods" resultType="com.ezwel.admin.domain.entity.service.PromotionGoodsData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+		SELECT mpg.GOODS_CD AS goodsCd
+				,GOODS_TYPE AS goodsType
+				,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = GOODS_TYPE) AS goodsTypeNm
+				,mg.CSP_CD AS cspCd
+				,(SELECT CSP_NM FROM MIND_CSP mc WHERE mg.CSP_CD = mc.CSP_CD ) AS cspNm
+				,GOODS_NM AS goodsNm 
+				,GOODS_BUY_PRICE AS buyPrice
+				,GOODS_SALE_PRICE AS salePrice 
+				,PRM_BUY_PRICE AS prmBuyPrice
+				,PRM_SALE_PRICE AS prmSalePrice
+				,PRM_GOODS_STATUS AS statusCd
+				,PRM_GOODS_SORT AS sort
+				,PRM_GOODS		AS prmGoods
+		FROM MIND_PROMOTION_GOODS mpg join MIND_GOODS mg
+			on mpg.GOODS_CD = mg.GOODS_CD
+		WHERE mpg.PRM_CD = #{prmCd}
+		ORDER BY PRM_GOODS_SORT
+		<choose>
+				<when test="pageCommonFlag == true">
+					) A
+				</when>
+				<otherwise>
+					LIMIT #{firstIndex} , #{pageSize}
+				</otherwise>
+
+		</choose>
+	</select>
+	
+	<delete id="delpromotiongoods" parameterType="com.ezwel.admin.service.service.dto.PromotionGoodsDto" >
+		DELETE FROM MIND_PROMOTION_GOODS
+		WHERE PRM_CD = #{prmCd}
+			AND GOODS_CD = #{goodsCd}
+	</delete>
+	
+	<update id="updatepromotiongoods" parameterType="com.ezwel.admin.service.service.dto.PromotionGoodsDto" >
+		UPDATE MIND_PROMOTION_GOODS
+		SET
+			  MODI_ID = #{modiId}
+			, MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			<if test="isNotNull(goodsNm)">
+			, PRM_GOODS = #{goodsNm}
+			</if>
+			<if test="isNotNull(buyPrice)">
+			, PRM_BUY_PRICE = #{buyPrice}
+			</if>
+			<if test="isNotNull(salePrice)">
+			, PRM_SALE_PRICE = #{salePrice}
+			</if>
+			<if test="isNotNull(sort)">
+			, PRM_GOODS_SORT = #{sort}
+			</if>
+			<if test="isNotNull(status)">
+			, PRM_GOODS_STATUS = #{status}
+			</if>
+		WHERE PRM_CD = #{prmCd}
+			AND GOODS_CD = #{goodsCd}
+	</update>
+	
+	<select id="countpromotiongoods" resultType="integer">
+		SELECT COUNT(*)
+		FROM MIND_PROMOTION_GOODS
+		WHERE PRM_CD = #{prmCd}
+			AND GOODS_CD = #{goodsCd}
+	</select>
+	
+	<select id="getPromotionSortCount" resultType="integer">
+		select	PRM_GOODS_SORT AS goodsSort
+		from	mind_promotion_goods
+		where	prm_cd = #{prmCd}
+		order by	prm_goods_sort desc
+		limit 1
+	</select>
+	
+	<insert id="insertGoodsOnline" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" >
+		INSERT INTO MIND_GOODS(
+			GOODS_TYPE 
+			,RECEIPT_YN 
+			,DUTY_YN 
+			,GOODS_NM
+			,GOODS_DES
+			,GOODS_STATUS
+			,GOODS_AUTH
+			,GOODS_NORMAL_PRICE
+			,GOODS_BUY_PRICE
+			,GOODS_DIS_RATE
+			,GOODS_SALE_PRICE
+			,GOODS_PAY_YN
+			,CSP_CD
+			,REG_DT
+		)VALUES(
+			#{goodsType }
+			,#{receiptYn }
+			,#{dutyYn }
+			,#{goodsNm }
+			,#{goodsDes }
+			,#{goodsStatus }
+			,#{goodsAuth }
+			,#{goodsNormalPrice }
+			,#{goodsBuyPrice }
+			,#{goodsDisRate }
+			,#{goodsSalePrice }
+			<choose>
+				<when test="isNotNull(goodsPayYn)">
+					,'Y'
+				</when>
+				<otherwise>
+					,'N'
+				</otherwise>
+			</choose>
+			,#{cspCd }
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+		<selectKey resultType="String" keyProperty="goodsCd" order="AFTER" >
+        	SELECT LAST_INSERT_ID()
+    	</selectKey>
+	</insert>
+	
+	<insert id="insertGoodsDetailOnline" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" >
+		INSERT MIND_GOODS_DETAIL(
+				GOODS_CD 
+				,GOODS_TEXTBOOK
+				,GOODS_TOT_EDU
+				,GOODS_CONTENT
+				,GOODS_INTRODUCE
+				,GOODS_USE_PERIOD
+				,GOODS_CANCEL_REFUND
+		)VALUES(
+				#{goodsCd }
+				,#{goodsTextbook }
+				,#{goodsTotEdu }
+				,#{goodsContent }
+				,#{goodsIntroduce }
+				,#{goodsUsePeriod }
+				,#{goodsCancelRefund }
+		)
+	</insert>
+	
+	<insert id="insertGoodsLecture" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" >
+		INSERT mind_goods_lecture(
+				GOODS_CD 
+				,LEC_NO
+				,LEC_NM
+				,LEC_TIME
+				,LEC_PATH
+				,LEC_PAY_YN
+				,REG_DT
+		)VALUES(
+				#{goodsCd }
+				,#{lecCount }
+				,#{lecNm }
+				,#{lecTime }
+				,#{lecPath }
+				,#{lecPayYn }
+				,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+	</insert>
+	
+	<insert id="insertGoodsAttach" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" >
+		INSERT mind_goods_attach(
+				GOODS_CD 
+				,FILE_TYPE
+				,FILE_NM
+				,FILE_PATH
+				<if test="regId">
+				,REG_ID
+				</if>
+				,REG_DT
+		)VALUES(
+				#{goodsCd }
+				,#{attachFileType }
+				,#{attachFileNm }
+				,#{attachFilePath }
+				<if test="regId">
+				,#{regId}
+				</if>
+				,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+	<selectKey resultType="String" keyProperty="fileSeq" order="AFTER" >
+        	SELECT LAST_INSERT_ID()
+    	</selectKey>
+	</insert>
+	
+	<insert id="insertGoodsMental" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" >
+		INSERT INTO MIND_GOODS(
+			GOODS_TYPE 
+			,RECEIPT_YN 
+			,DUTY_YN 
+			,GOODS_CATE1
+			,GOODS_CATE2
+			,GOODS_NM
+			,GOODS_DES
+			,GOODS_STATUS
+			,GOODS_AUTH
+			,GOODS_TARGET
+			,GOODS_NORMAL_PRICE
+			,GOODS_BUY_PRICE
+			,GOODS_DIS_RATE
+			,GOODS_SALE_PRICE
+			,GOODS_PAY_YN
+			,CSP_CD
+			,GOODS_LINK
+			,REG_DT
+		)VALUES(
+			#{goodsType }
+			,#{receiptYn }
+			,#{dutyYn }
+			,#{goodsCate1}
+			,#{goodsCate2}
+			,#{goodsNm }
+			,#{goodsDes }
+			,#{goodsStatus }
+			,#{goodsAuth }
+			,#{goodsTarget}
+			,#{goodsNormalPrice }
+			,#{goodsBuyPrice }
+			,#{goodsDisRate }
+			,#{goodsSalePrice }
+			<choose>
+				<when test="isNotNull(goodsPayYn)">
+					,'Y'
+				</when>
+				<otherwise>
+					,'N'
+				</otherwise>
+			</choose>
+			,#{cspCd }
+			,#{goodsLink }
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+		<selectKey resultType="String" keyProperty="goodsCd" order="AFTER" >
+        	SELECT LAST_INSERT_ID()
+    	</selectKey>
+	</insert>
+	
+	<insert id="insertGoodsDetailMental" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" >
+		INSERT MIND_GOODS_DETAIL(
+				GOODS_CD 
+				,GOODS_INTRODUCE
+				,GOODS_TOT_ITEM
+				,GOODS_TOT_EDU
+				,GOODS_CONTENT
+				,GOODS_ADD_INFO1
+				,GOODS_USE_PERIOD
+				,GOODS_ADD_INFO2
+				,GOODS_CANCEL_REFUND
+		)VALUES(
+				#{goodsCd }
+				,#{goodsIntroduce }
+				,#{goodsTotItem }
+				,#{goodsTotEdu }
+				,#{goodsContent }
+				,#{goodsAddInfo1 }
+				,#{goodsUsePeriod }
+				,#{goodsAddInfo2 }
+				,#{goodsCancelRefund }
+		)
+	</insert>
+	
+	<insert id="insertGoodsEdu" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" >
+		INSERT INTO MIND_GOODS(
+			GOODS_TYPE 
+			,RECEIPT_YN 
+			,DUTY_YN 
+			,GOODS_CATE1
+			,GOODS_NM
+			,GOODS_TARGET
+			,GOODS_REMARK
+			,GOODS_SALE_ST
+			,GOODS_SALE_ED
+			,GOODS_STOCK
+			,GOODS_REG_ST
+			,GOODS_REG_ED
+			,GOODS_AUTH
+			,GOODS_STATUS
+			,GOODS_NORMAL_PRICE
+			,GOODS_BUY_PRICE
+			,GOODS_DIS_RATE
+			,GOODS_SALE_PRICE
+			,GOODS_PAY_YN
+			,CSP_CD
+			,REG_DT
+		)VALUES(
+			#{goodsType }
+			,#{receiptYn }
+			,#{dutyYn }
+			,#{goodsCate1}
+			,#{goodsNm }
+			,#{goodsTarget }
+			,#{goodsRemark }
+			,#{goodsSaleSt }
+			,#{goodsSaleEd }
+			,#{goodsStock }
+			,#{goodsRegSt }
+			,#{goodsRegEd }
+			,#{goodsAuth }
+			,#{goodsStatus }
+			,#{goodsNormalPrice }
+			,#{goodsBuyPrice }
+			,#{goodsDisRate }
+			,#{goodsSalePrice }
+			<choose>
+				<when test="isNotNull(goodsPayYn)">
+					,'Y'
+				</when>
+				<otherwise>
+					,'N'
+				</otherwise>
+			</choose>
+			,#{cspCd }
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+		<selectKey resultType="String" keyProperty="goodsCd" order="AFTER" >
+        	SELECT LAST_INSERT_ID()
+    	</selectKey>
+	</insert>
+	
+	<insert id="insertGoodsDetailEdu" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" >
+		INSERT MIND_GOODS_DETAIL(
+				GOODS_CD 
+				,GOODS_INTRODUCE
+				,GOODS_CONTENT
+				,GOODS_CANCEL_REFUND
+		)VALUES(
+				#{goodsCd }
+				,#{goodsIntroduce }
+				,#{goodsContent }
+				,#{goodsCancelRefund }
+		)
+	</insert>
+	
+	<select id="getCate2" resultType="com.ezwel.admin.domain.entity.common.CommCd">
+		SELECT COMM_CD AS commCd
+			,HIGH_COMM_CD AS highCommCd
+			,COMM_NM AS commNm
+			,OPTION_CD AS optionCd
+			,USE_YN AS useYn
+			,COMM_DESC AS commDesc
+			,REG_DT AS regDt
+		FROM MIND_COMM_CD
+		WHERE 1=1
+		AND USE_YN = 'Y'
+		<if test="isNotNull(highCommCd)">
+			AND HIGH_COMM_CD = #{highCommCd}
+		</if>
+	</select>
+	
+	<select id="modifyGoodsInfo" resultType="com.ezwel.admin.domain.entity.service.GoodsData">
+		SELECT mg.GOODS_CD AS goodsCd
+				,GOODS_TYPE AS goodsType
+				,RECEIPT_YN AS receiptYn
+				,DUTY_YN AS dutyYn
+				,GOODS_CATE1 AS cate1
+				,GOODS_CATE2 AS cate2
+				,GOODS_NM AS goodsNm
+				,GOODS_AUTH AS auth
+				,DATE_FORMAT(GOODS_SALE_ST,'%Y/%m/%d') AS saleSt
+				,DATE_FORMAT(GOODS_SALE_ST,'%H') AS saleStTime
+				,DATE_FORMAT(GOODS_SALE_ST,'%i') AS saleStMIN
+				,DATE_FORMAT(GOODS_SALE_ED,'%Y/%m/%d') AS saleEd 
+				,DATE_FORMAT(GOODS_SALE_ED,'%H') AS saleEdTime
+				,DATE_FORMAT(GOODS_SALE_ED,'%i') AS saleEdMIN
+				,DATE_FORMAT(GOODS_REG_ST,'%Y/%m/%d') AS regSt
+				,DATE_FORMAT(GOODS_REG_ED,'%Y/%m/%d') AS regEd
+				,GOODS_STOCK AS stock
+				,GOODS_TARGET AS target
+				,GOODS_DES AS des
+				,GOODS_PAY_YN AS payYn
+				,GOODS_STATUS AS goodsStatus
+				,GOODS_REMARK AS remark
+				,CSP_CD AS cspCd
+				,(SELECT CSP_NM FROM MIND_CSP WHERE CSP_CD = mg.CSP_CD) AS cspNm
+				,GOODS_NORMAL_PRICE AS normalPrice
+				,GOODS_BUY_PRICE AS buyPrice
+				,GOODS_DIS_RATE AS disRate
+				,GOODS_SALE_PRICE AS salePrice
+				,GOODS_TEXTBOOK AS textbook
+				,GOODS_TOT_EDU AS totEdu
+				,GOODS_USE_PERIOD AS usePeriod
+				,GOODS_TOT_ITEM AS totItem
+				,GOODS_ADD_INFO1 AS info1
+				,GOODS_ADD_INFO2 AS info2
+				,GOODS_INTRODUCE AS introduce
+				,GOODS_CONTENT AS content
+				,GOODS_CANCEL_REFUND AS cancelRefund
+				,(SELECT FILE_NM FROM MIND_GOODS_ATTACH WHERE GOODS_CD = #{goodsCd } AND FILE_TYPE = 'main') AS mainFileNm
+				,(SELECT FILE_PATH FROM MIND_GOODS_ATTACH WHERE GOODS_CD = #{goodsCd } AND FILE_TYPE = 'main') AS mainFilePath
+				,(SELECT FILE_NM FROM MIND_GOODS_ATTACH WHERE GOODS_CD = #{goodsCd } AND FILE_TYPE = 'detail') AS detailFileNm
+				,(SELECT FILE_PATH FROM MIND_GOODS_ATTACH WHERE GOODS_CD = #{goodsCd } AND FILE_TYPE = 'detail') AS detailFilePath
+		FROM mind_goods mg 
+			join mind_goods_detail mgd
+				on mg.GOODS_CD = mgd.GOODS_CD
+		WHERE 1=1
+		AND mg.GOODS_CD = #{goodsCd }		
+	
+	</select> 
+	
+	<select id="getLectureList" resultType="com.ezwel.admin.domain.entity.service.GoodsData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+			SELECT GOODS_CD AS goodsCd
+					,LEC_NO AS lecNo
+					,LEC_NM AS lecNm
+					,LEC_TIME AS lecTime
+					,LEC_PATH AS lecPath
+					,LEC_PAY_YN AS lecPayYN
+			FROM MIND_GOODS_LECTURE
+			WHERE GOODS_CD = #{goodsCd }	
+		<choose>
+				<when test="pageCommonFlag == true">
+					) A
+				</when>
+				<otherwise>
+					LIMIT 0 , 50
+				</otherwise>
+		</choose>
+	</select>
+	
+	<update id="updateGoodsOnline" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" >
+		UPDATE MIND_GOODS
+		SET
+			RECEIPT_YN = #{receiptYn }
+			,DUTY_YN = #{dutyYn }
+			,GOODS_NM = #{goodsNm }
+			,GOODS_DES = #{goodsDes }
+			,GOODS_STATUS = #{goodsStatus }
+			,GOODS_AUTH = #{goodsAuth }
+			,GOODS_NORMAL_PRICE = #{goodsNormalPrice }
+			,GOODS_BUY_PRICE = #{goodsBuyPrice }
+			,GOODS_DIS_RATE = #{goodsDisRate }
+			,GOODS_SALE_PRICE = #{goodsSalePrice }
+			<choose>
+				<when test="isNotNull(goodsPayYn)">
+						,GOODS_PAY_YN = 'Y'
+				</when>
+				<otherwise>
+						,GOODS_PAY_YN = 'N'
+				</otherwise>
+			</choose>
+			,CSP_CD = #{cspCd }
+			,MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE GOODS_CD = #{goodsCd }
+	</update>
+	
+	<update id="updateGoodsDetailOnline" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" >
+		UPDATE MIND_GOODS_DETAIL
+		SET
+			GOODS_TEXTBOOK = #{goodsTextbook }
+			,GOODS_TOT_EDU = #{goodsTotEdu }
+			,GOODS_CONTENT = #{goodsContent }
+			,GOODS_INTRODUCE = #{goodsIntroduce }
+			,GOODS_USE_PERIOD = #{goodsUsePeriod }
+			,GOODS_CANCEL_REFUND = #{goodsCancelRefund }
+		WHERE GOODS_CD = #{goodsCd }
+	</update>
+	
+	<delete id="deleteGoodsLecture" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" >
+		DELETE FROM MIND_GOODS_LECTURE
+		WHERE GOODS_CD = #{goodsCd} 
+	</delete>
+	
+	<update id="updateGoodsLecture" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" >
+		INSERT INTO MIND_GOODS_LECTURE(
+				GOODS_CD 
+				,LEC_NO
+				,LEC_NM
+				,LEC_TIME
+				,LEC_PATH
+				,LEC_PAY_YN
+				,REG_DT
+			)VALUES(
+				#{goodsCd }
+				,#{lecCount }
+				,#{lecNm }
+				,#{lecTime }
+				,#{lecPath }
+				,#{lecPayYn }
+				,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			)ON DUPLICATE KEY 
+			UPDATE LEC_NM = #{lecNm }
+					,LEC_TIME = #{lecTime }
+					,LEC_PATH = #{lecPath }
+					,LEC_PAY_YN = #{lecPayYn }
+					,MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+	</update>
+	
+	<update id="updateGoodsAttach" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" >
+		UPDATE mind_goods_attach
+		SET
+			FILE_NM = #{attachFileNm }
+			,FILE_PATH = #{attachFilePath }
+			,MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE GOODS_CD = #{goodsCd }
+		AND FILE_TYPE = #{attachFileType }
+	</update>
+	
+	<update id="updateGoodsMental" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" >
+		UPDATE MIND_GOODS
+		SET
+			RECEIPT_YN = #{receiptYn }
+			,DUTY_YN = #{dutyYn }
+			,GOODS_CATE1 = #{goodsCate1}
+			,GOODS_CATE2 = #{goodsCate2}
+			,GOODS_NM = #{goodsNm }
+			,GOODS_DES = #{goodsDes }
+			,GOODS_STATUS = #{goodsStatus }
+			,GOODS_AUTH = #{goodsAuth }
+			,GOODS_TARGET = #{goodsTarget}
+			,GOODS_NORMAL_PRICE = #{goodsNormalPrice }
+			,GOODS_BUY_PRICE = #{goodsBuyPrice }
+			,GOODS_DIS_RATE = #{goodsDisRate }
+			,GOODS_SALE_PRICE = #{goodsSalePrice }
+			<choose>
+				<when test="isNotNull(goodsPayYn)">
+						,GOODS_PAY_YN = 'Y'
+				</when>
+				<otherwise>
+						,GOODS_PAY_YN = 'N'
+				</otherwise>
+			</choose>
+			,CSP_CD = #{cspCd }
+			,MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE GOODS_CD = #{goodsCd }
+	</update>
+	
+	<update id="updateGoodsDetailMental" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" >
+		UPDATE MIND_GOODS_DETAIL
+		SET
+			GOODS_INTRODUCE = #{goodsIntroduce }
+			,GOODS_TOT_ITEM = #{goodsTotItem }
+			,GOODS_TOT_EDU = #{goodsTotEdu }
+			,GOODS_CONTENT = #{goodsContent }
+			,GOODS_ADD_INFO1 = #{goodsAddInfo1 }
+			,GOODS_USE_PERIOD = #{goodsUsePeriod }
+			,GOODS_ADD_INFO2 = #{goodsAddInfo2 }
+			,GOODS_CANCEL_REFUND = #{goodsCancelRefund }
+		WHERE GOODS_CD = #{goodsCd }
+	</update>
+	
+	<update id="updateGoodsEdu" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" >
+		UPDATE MIND_GOODS
+		SET
+			RECEIPT_YN = #{receiptYn }
+			,DUTY_YN = #{dutyYn }
+			,GOODS_CATE1 = #{goodsCate1}
+			,GOODS_NM = #{goodsNm }
+			,GOODS_TARGET = #{goodsTarget }
+			,GOODS_REMARK = #{goodsRemark }
+			,GOODS_SALE_ST = #{goodsSaleSt }
+			,GOODS_SALE_ED = #{goodsSaleEd }
+			,GOODS_STOCK = #{goodsStock }
+			,GOODS_REG_ST = #{goodsRegSt }
+			,GOODS_REG_ED = #{goodsRegEd }
+			,GOODS_AUTH = #{goodsAuth }
+			,GOODS_STATUS = #{goodsStatus }
+			,GOODS_NORMAL_PRICE = #{goodsNormalPrice }
+			,GOODS_BUY_PRICE = #{goodsBuyPrice }
+			,GOODS_DIS_RATE = #{goodsDisRate }
+			,GOODS_SALE_PRICE = #{goodsSalePrice }
+			<choose>
+				<when test="isNotNull(goodsPayYn)">
+						,GOODS_PAY_YN = 'Y'
+				</when>
+				<otherwise>
+						,GOODS_PAY_YN = 'N'
+				</otherwise>
+			</choose>
+			,CSP_CD = #{cspCd }
+			,MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE GOODS_CD = #{goodsCd }
+			
+		
+	</update>
+	
+	<update id="updateGoodsDetailEdu" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" >
+		UPDATE MIND_GOODS_DETAIL
+		SET
+			GOODS_INTRODUCE = #{goodsIntroduce }
+			,GOODS_CONTENT = #{goodsContent }
+			,GOODS_CANCEL_REFUND = #{goodsCancelRefund }
+		WHERE GOODS_CD = #{goodsCd }
+				
+	</update>
+	
+	<select id="getCspInfoList" resultType="com.ezwel.admin.domain.entity.service.CspData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+			SELECT	A.CSP_CD		AS cspCd
+				,	A.CSP_NM		AS cspNm
+				,	(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.CSP_Div)	AS cspDiv 
+				,if(replace(substring(substring_index(A.CSP_TYPE, ',', 1), length(substring_index(A.CSP_TYPE, ',', 1 - 1)) + 1), ',', '') 
+					= 100718, 'Y', 'N') as typeLecture
+				,if(replace(substring(substring_index(A.CSP_TYPE, ',', 2), length(substring_index(A.CSP_TYPE, ',', 2 - 1)) + 1), ',', '') 
+					= 100720, 'Y', 'N') as typeTest
+				,if(replace(substring(substring_index(A.CSP_TYPE, ',', 3), length(substring_index(A.CSP_TYPE, ',', 3 - 1)) + 1), ',', '') 
+					= 100721, 'Y', 'N') as typeEducation
+				,if(replace(substring(substring_index(A.CSP_TYPE, ',', 4), length(substring_index(A.CSP_TYPE, ',', 4 - 1)) + 1), ',', '') 
+					= 100722, 'Y', 'N') as typeDelivery
+				,	A.TEL_NUM		AS telnum
+				,	(SELECT USER_NM FROM MIND_MGR WHERE USER_ID = A.MAIN_MGR_ID)	AS mainMgrId
+				,	(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.CSP_STATUS)	AS cspStatus
+			FROM MIND_CSP A
+			WHERE 1=1
+			<if test="isNotNull(cspCd)">
+			AND		A.CSP_CD = #{cspCd}
+			</if>
+			<if test="isNotNull(cspNm)">
+			AND		A.CSP_NM = #{cspNm}
+			</if>
+			<if test="isNotNull(sCspDiv)">
+			AND		A.CSP_Div in
+					    <foreach collection="sCspDiv" item="div" open="(" close=")" separator=",">
+							#{div}
+						</foreach>
+			</if>
+			<if test="isNotNull(sCspStatus)">
+			AND		A.CSP_STATUS in
+					    <foreach collection="sCspStatus" item="status" open="(" close=")" separator=",">
+							#{status}
+						</foreach>
+			</if>
+			<if test="isNotNull(typeLecture)">
+				AND A.CSP_TYPE LIKE CONCAT('%', #{typeLecture},'%')
+			</if>
+			<if test="isNotNull(typeTest)">
+				AND A.CSP_TYPE LIKE CONCAT('%', #{typeTest},'%')
+			</if>
+			<if test="isNotNull(typeEducation)">
+				AND A.CSP_TYPE LIKE CONCAT('%', #{typeEducation},'%')
+			</if>
+			<if test="isNotNull(typeDelivery)">
+				AND A.CSP_TYPE LIKE CONCAT('%', #{typeDelivery},'%')
+			</if>
+			ORDER BY binary(A.CSP_NM)
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insertCspInfo" keyProperty="cspCd" useGeneratedKeys="true" parameterType="com.ezwel.admin.service.service.dto.CspDto" >
+		INSERT INTO MIND_CSP
+		(CSP_NM 
+		,CSP_TYPE 
+		,OWNER_NM 
+		,POST 
+		,ADDR1 
+		,ADDR2 
+		,BSNS_NUM
+		,BCOND
+		,BITEM
+		,EMAIL
+		,TEL_NUM
+		<if test="isNotNull(faxNum)">
+		,FAX_NUM
+		</if>
+		,BANK_CD
+		,BANK_NUM
+		,BANK_ORDER
+		,FILE_NM1
+		,FILE_PATH1
+		,FILE_NM2
+		,FILE_PATH2
+		,CSP_STATUS
+		,REG_ID
+		,REG_DT
+		,CSP_DIV
+		<if test="isNotNull(taxYn)">
+		,TAX_YN
+		</if>
+		,RECEIPT_YN
+		<if test="isNotNull(receiptType)">
+		,RECEIPT_TYPE
+		</if>
+		<if test="isNotNull(receiptAgent)">
+		,RECEIPT_AGENT
+		</if>
+		<if test="isNotNull(memo)">
+		,MEMO
+		</if>
+		<if test="isNotNull(homepage)">
+		,HOMEPAGE		
+		</if>
+		,ASP_NM
+		,FREE_DLVR_AMT
+		,MAIN_MGR_ID
+		<if test="isNotNull(firstUrl)">
+		, FIRST_URL
+		</if>
+		<if test="isNotNull(orderUrl)">
+		, ORDER_URL
+		</if>
+		<if test="isNotNull(cancelUrl)">
+		, CANCEL_URL
+		</if>
+		<if test="isNotNull(checkUrl)">
+		, CHECK_URL
+		</if>
+		<if test="isNotNull(seedKey)">
+		, SEED_KEY
+		</if>
+		)
+		VALUE
+		(#{cspNm} 
+		,#{cspType} 
+		,#{ownerNm} 
+		,#{post} 
+		,#{addr1} 
+		,#{addr2}
+		,#{bsnsNum}
+		,#{bcond}
+		,#{bitem}
+		,#{email}
+		,#{telNum}
+		<if test="isNotNull(faxNum)">
+		,#{faxNum}
+		</if>
+		,#{bankCd}
+		,#{bankNum}
+		,#{bankOrder}
+		,#{fileNm1}
+		,#{filePath1}
+		,#{fileNm2}
+		,#{filePath2}
+		,#{cspStatus}
+		,#{regId}
+		,DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		,#{cspDiv}
+		<if test="isNotNull(taxYn)">
+		,#{taxYn}
+		</if>
+		,#{receiptYn}
+		<if test="isNotNull(receiptType)">
+		,#{receiptType}
+		</if>
+		<if test="isNotNull(receiptAgent)">
+		,#{receiptAgent}
+		</if>
+		<if test="isNotNull(memo)">
+		,#{memo}
+		</if>
+		<if test="isNotNull(homepage)">
+		,#{homepage}
+		</if>
+		,#{aspNm}
+		,#{freeDlvrAmt}
+		,#{mainMgrId}
+		<if test="isNotNull(firstUrl)">
+		, #{firstUrl}
+		</if>
+		<if test="isNotNull(orderUrl)">
+		, #{orderUrl}
+		</if>
+		<if test="isNotNull(cancelUrl)">
+		, #{cancelUrl}
+		</if>
+		<if test="isNotNull(checkUrl)">
+		, #{checkUrl}
+		</if>
+		<if test="isNotNull(seedKey)">
+		, #{seedKey}
+		</if>
+		)
+	</insert>
+	
+	<select id="modifyCspInfo" resultType="com.ezwel.admin.domain.entity.service.CspData">
+		SELECT 	A.CSP_CD AS cspCd
+			,	A.CSP_NM AS cspNm
+			,	A.CSP_TYPE AS cspType
+			,	A.CSP_DIV AS cspDiv
+			,	A.HOMEPAGE AS homepage
+			,	A.POST AS post
+			,	A.ADDR1 AS addr1
+			,	A.ADDR2 AS addr2
+			,	A.OWNER_NM AS ownerNm
+			,	A.BSNS_NUM AS bsnsNum
+			,	A.BCOND AS bcond
+			,	A.BITEM AS bitem
+			,	A.EMAIL AS email
+			,	A.TEL_NUM	AS telNum
+			,	SUBSTRING(SUBSTRING_INDEX(A.TEL_NUM, '-', 1), LENGTH(SUBSTRING_INDEX(A.TEL_NUM, '-', 1 - 1)) + 1)	AS telNum1
+			,	SUBSTRING(SUBSTRING_INDEX(A.TEL_NUM, '-', 2), LENGTH(SUBSTRING_INDEX(A.TEL_NUM, '-', 2 - 1)) + 2)	AS telNum2
+			,	SUBSTRING(SUBSTRING_INDEX(A.TEL_NUM, '-', 3), LENGTH(SUBSTRING_INDEX(A.TEL_NUM, '-', 3 - 1)) + 2)	AS telNum3
+			,	A.FAX_NUM AS faxNum
+			,	SUBSTRING(SUBSTRING_INDEX(A.FAX_NUM, '-', 1), LENGTH(SUBSTRING_INDEX(A.FAX_NUM, '-', 1 - 1)) + 1)	AS faxNum1
+			,	SUBSTRING(SUBSTRING_INDEX(A.FAX_NUM, '-', 2), LENGTH(SUBSTRING_INDEX(A.FAX_NUM, '-', 2 - 1)) + 2)	AS faxNum2
+			,	SUBSTRING(SUBSTRING_INDEX(A.FAX_NUM, '-', 3), LENGTH(SUBSTRING_INDEX(A.FAX_NUM, '-', 3 - 1)) + 2)	AS faxNum3
+			,	A.BANK_CD AS bankCd
+			,	A.BANK_NUM AS bankNum
+			,	A.BANK_ORDER AS bankOrder
+			,	A.FILE_NM1 AS fileNm1
+			,	A.FILE_PATH1 AS filePath1
+			,	A.FILE_NM2 AS fileNm2
+			,	A.FILE_PATH2 AS filePath2
+			,	A.TAX_YN AS taxYn
+			,	A.RECEIPT_YN AS receiptYn
+			,	A.RECEIPT_TYPE AS receiptType
+			,	A.RECEIPT_AGENT AS receiptAgent
+			,	A.MEMO AS memo
+			,	A.MAIN_MGR_ID AS mainMgrId
+			,	B.USER_NM AS mainMgrNm
+			,	(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = (SELECT DEPT_CD FROM MIND_MGR WHERE USER_ID = A.MAIN_MGR_ID )) AS mainMgrDeptNm
+			,	B.EMAIL AS mainMgrEmail
+			,	B.MOBILE AS mainMgrMobile
+			,	B.USER_PWD AS mainMgrPwd
+			, 	ASP_NM as aspNm
+			, 	IFNULL(FREE_DLVR_AMT,0) AS freeDlvrAmt
+			,	A.FIRST_URL as firstUrl
+			,	A.ORDER_URL as orderUrl
+			,	A.CANCEL_URL as cancelUrl
+			,	A.CHECK_URL as checkUrl
+			,	A.SEED_KEY as seedKey
+		FROM MIND_CSP A
+		LEFT OUTER JOIN MIND_MGR B ON A.MAIN_MGR_ID = B.USER_ID
+		WHERE A.CSP_CD = #{cspCd}
+	</select>
+	
+	
+	<update id="updateCspInfo" parameterType="com.ezwel.admin.service.service.dto.CspDto">
+		UPDATE MIND_CSP
+			SET	CSP_NM = #{cspNm}
+			,	CSP_TYPE  = #{cspType}
+			,	OWNER_NM  = #{ownerNm}
+			,	POST  = #{post}
+			,	ADDR1  = #{addr1}
+			,	ADDR2  = #{addr2}
+			,	BSNS_NUM = #{bsnsNum}
+			,	BCOND = #{bcond}
+			,	BITEM = #{bitem}
+			,	EMAIL = #{email}
+			,	TEL_NUM = #{telNum}
+			<if test="isNotNull(faxNum)">
+			,	FAX_NUM = #{faxNum}
+			</if>
+			,	BANK_CD = #{bankCd}
+			,	BANK_NUM = #{bankNum}
+			,	BANK_ORDER = #{bankOrder}
+			,	FILE_NM1 = #{fileNm1}
+			,	FILE_PATH1 = #{filePath1}
+			,	FILE_NM2 = #{fileNm2}
+			,	FILE_PATH2 = #{filePath2}
+			,	CSP_STATUS = #{cspStatus}
+			,	MODI_ID = #{modiId}
+			,	MODI_DT = DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+			,	CSP_DIV = #{cspDiv}
+			<if test="isNotNull(taxYn)">
+			,	TAX_YN = #{taxYn}
+			</if>
+			,	RECEIPT_YN = #{receiptYn}
+			<if test="isNotNull(receiptType)">
+			,	RECEIPT_TYPE = #{receiptType}
+			</if>
+			<if test="isNotNull(receiptAgent)">
+			,	RECEIPT_AGENT = #{receiptAgent}
+			</if>
+			<if test="isNotNull(memo)">
+			,	MEMO = #{memo}
+			</if>
+			<if test="isNotNull(homepage)">
+			,	HOMEPAGE		 = #{homepage}
+			</if>
+			,	ASP_NM = #{aspNm}
+			,	FREE_DLVR_AMT = #{freeDlvrAmt}
+			<if test="isNotNull(firstUrl)">
+			, FIRST_URL = #{firstUrl}
+			</if>
+			<if test="isNotNull(orderUrl)">
+			, ORDER_URL = #{orderUrl}
+			</if>
+			<if test="isNotNull(cancelUrl)">
+			, CANCEL_URL = #{cancelUrl}
+			</if>
+			<if test="isNotNull(checkUrl)">
+			, CHECK_URL = #{checkUrl}
+			</if>
+			<if test="isNotNull(seedKey)">
+			, SEED_KEY = #{seedKey}
+			</if>
+		WHERE CSP_CD = #{cspCd}
+	
+	</update>
+	
+	<select id="getGrpLayout" resultType="com.ezwel.admin.domain.entity.goods.GoodsGrpLayoutData">
+	SELECT GOODS_GRP_CD	AS	goodsGrpCd
+		,	LAYOUT_SEQ	AS	layoutSeq
+		,	TITLE	AS	title
+		,	USE_YN	AS	userYn
+		,	USE_EXAMPLE	AS	useExample
+		,	ETC	AS	etc
+		,	DISP_NUM	AS	dispNum
+		,	REG_DT	AS	regDt
+		,	MODI_DT	AS	modiDt
+	FROM mind_goods_grp_layout
+	WHERE goods_grp_cd = #{goodsGrpCd}
+	
+	</select>
+	
+	
+	<insert id="insertMindGoods" parameterType="com.ezwel.admin.service.service.dto.GoodsDto"  keyProperty="goodsCd" useGeneratedKeys="true">
+		INSERT INTO MIND_GOODS
+		(GOODS_TYPE 
+		,RECEIPT_YN 
+		,DUTY_YN
+		,GOODS_NM
+		,GOODS_PAY_YN
+		,GOODS_STATUS
+		,CSP_CD
+		,GOODS_NORMAL_PRICE
+		,GOODS_BUY_PRICE
+		,GOODS_DIS_RATE
+		,GOODS_SALE_PRICE
+		,REG_ID
+		,REG_DT
+		)
+		VALUES
+		(#{goodsType} 
+		,#{receiptYn} 
+		,#{dutyYn}
+		,#{goodsNm} 
+		,#{goodsPayYn}
+		,#{goodsStatus}
+		,#{cspCd}
+		,#{goodsNormalPrice}
+		,#{goodsBuyPrice}
+		,#{goodsDisRate}
+		,#{goodsSalePrice}
+		,#{regId}
+		,DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+	
+	
+	<insert id="insertMindGoodsSub" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" >
+		INSERT INTO MIND_GOODS_SUB
+		(GOODS_CD 
+		,GOODS_SEARCH
+		,GOODS_BRAND
+		,GOODS_MODEL
+		,GOODS_MANU
+		,GOODS_ORIGIN
+		<if test="isNotNull(goodsLinkKey)">
+		,GOODS_LINK_KEY
+		</if>
+		,GOODS_HOPE_DLVR_YN
+		,DLVR_PRICE_YN
+		<if test="isNotNull(dlvrPrice)">
+		,DLVR_PRICE
+		</if>
+		,REQUIRED_CHECK_YN
+		<if test="isNotNull(requiredCheckContent)">
+		,REQUIRED_CHECK
+		</if>
+		,REQUIRED_INPUT_YN
+		<if test="isNotNull(requiredInputContent)">
+		,REQUIRED_INPUT
+		</if>
+		,GOODS_DLVR
+		,GOODS_CANCEL_REFUND
+		,GOODS_DESC
+		,DC_AMT_YN
+		,DC_RATE_YN
+		)
+		VALUES
+		(#{goodsCd} 
+		,#{goodsSearch} 
+		,#{goodsBrand}
+		,#{goodsModel} 
+		,#{goodsManu}
+		,#{goodsOrigin}
+		<if test="isNotNull(goodsLinkKey)">
+		,#{goodsLinkKey}
+		</if>
+		,#{goodsHopeDlvrYn}
+		,#{dlvrPriceYn}
+		<if test="isNotNull(dlvrPrice)">
+		,#{dlvrPrice}
+		</if>
+		,#{requiredCheckYn}
+		<if test="isNotNull(requiredCheckContent)">
+		,#{requiredCheckContent}
+		</if>
+		,#{requiredInputYn}
+		<if test="isNotNull(requiredInputContent)">
+		,#{requiredInputContent}
+		</if>
+		,#{goodsDlvr}
+		,#{goodsSubGoodsCancelRefund}
+		,#{goodsDesc}
+		,#{dcAmtYn}
+		,#{dcRateYn}
+		)
+	</insert>
+	
+	<insert id="insertMindGoodsGrpInfo" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" >
+		INSERT INTO MIND_GOODS_GRP_INFO
+		(GOODS_GRP_CD
+		,LAYOUT_SEQ
+		,GOODS_CD
+		,GOODS_DESC
+		,REG_DT
+		)
+		VALUES
+		(#{goodsGrpCd} 
+		,#{layoutSeq} 
+		,#{goodsCd}
+		,#{grpInfoGoodsDesc}
+		,DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+	
+	<select id="getTitle" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" resultType="String">
+		SELECT TITLE
+		  FROM MIND_GOODS_GRP_LAYOUT
+		 WHERE GOODS_GRP_CD = #{goodsGrpCd}
+		   AND LAYOUT_SEQ = #{layoutSeq}
+	</select>
+	
+	<insert id="insertMindGoodsOptionGrp" parameterType="com.ezwel.admin.service.service.dto.GoodsDto"  keyProperty="grpCd" useGeneratedKeys="true">
+		INSERT INTO MIND_GOODS_OPTION_GRP
+		(GOODS_CD
+		,GRP_NM 
+		,USE_YN
+		,SELECT_YN
+		,REG_ID
+		,REG_DT
+		)
+		VALUES
+		(#{goodsCd} 
+		,#{grpNm} 
+		,#{optionUseYn}
+		,#{selectYn}
+		,#{regId}
+		,DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+	
+	<insert id="insertMindGoodsOptionItem" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" >
+		INSERT INTO MIND_GOODS_OPTION_ITEM
+		(GOODS_CD
+		,GRP_CD
+		,ITEM_NM
+		,ITEM_BUY_PRICE
+		,ITEM_SALE_PRICE
+		)
+		VALUES
+		(#{goodsCd} 
+		,#{grpCd} 
+		,#{itemNm}
+		,#{itemBuyPrice}
+		,#{itemSalePrice}
+		)
+	</insert>
+	
+	<select id="getGoods" resultType="com.ezwel.admin.domain.entity.goods.mGoodsData">
+		SELECT	A.GOODS_CD AS goodsCd
+			,	A.GOODS_TYPE AS goodsType
+			,	A.RECEIPT_YN AS receiptYn
+			,	A.DUTY_YN AS dutyYn
+			,	A.GOODS_NM AS goodsNm
+			,	A.GOODS_PAY_YN AS goodsPayYn
+			,	A.GOODS_STATUS AS goodsStatus
+			,	A.CSP_CD AS cspCd
+			,	(SELECT CSP_NM FROM MIND_CSP WHERE CSP_CD = A.CSP_CD) AS cspNm
+			,	A.GOODS_NORMAL_PRICE AS goodsNormalPrice
+			,	A.GOODS_BUY_PRICE AS goodsBuyPrice
+			,	A.GOODS_DIS_RATE AS goodsDisRate
+			,	A.GOODS_SALE_PRICE AS goodsSalePrice
+			,	(SELECT FILE_NM FROM MIND_GOODS_ATTACH WHERE GOODS_CD = A.GOODS_CD AND FILE_TYPE = 'dlvr500') AS fileNm500
+			,	(SELECT FILE_PATH FROM MIND_GOODS_ATTACH WHERE GOODS_CD = A.GOODS_CD AND FILE_TYPE = 'dlvr500') AS filePath500
+			,	(SELECT FILE_NM FROM MIND_GOODS_ATTACH WHERE GOODS_CD = A.GOODS_CD AND FILE_TYPE = 'dlvr300') AS fileNm300
+			,	(SELECT FILE_PATH FROM MIND_GOODS_ATTACH WHERE GOODS_CD = A.GOODS_CD AND FILE_TYPE = 'dlvr300') AS filePath300
+			,	(SELECT FILE_NM FROM MIND_GOODS_ATTACH WHERE GOODS_CD = A.GOODS_CD AND FILE_TYPE = 'dlvr125') AS fileNm125
+			,	(SELECT FILE_PATH FROM MIND_GOODS_ATTACH WHERE GOODS_CD = A.GOODS_CD AND FILE_TYPE = 'dlvr125') AS filePath125
+		FROM	MIND_GOODS A
+		WHERE 1=1
+		AND		A.GOODS_CD = #{goodsCd}	
+	
+	</select>
+	
+	<select id="getGoodsSub" resultType="com.ezwel.admin.domain.entity.goods.GoodsSubData">
+		SELECT	GOODS_CD AS goodsCd
+			,	GOODS_SEARCH AS goodsSearch
+			,	GOODS_BRAND AS goodsBrand
+			,	GOODS_MODEL AS goodsModel
+			,	GOODS_MANU AS goodsManu
+			,	GOODS_ORIGIN AS goodsOrigin
+			,	GOODS_LINK_KEY AS goodsLinkKey
+			,	GOODS_HOPE_DLVR_YN AS goodsHopeDlvrYn
+			,	DLVR_PRICE_YN AS dlvrPriceYn
+			,	DLVR_PRICE AS dlvrPrice
+			,	REQUIRED_CHECK_YN AS requiredCheckYn
+			,	REQUIRED_CHECK AS requiredCheckContent
+			,	REQUIRED_INPUT_YN AS requiredInputYn
+			,	REQUIRED_INPUT AS requiredInputContent
+			,	GOODS_DLVR AS goodsDlvr
+			,	GOODS_DESC AS goodsDesc
+			,	GOODS_CANCEL_REFUND AS goodsCancelRefund
+			,	DC_AMT_YN AS dcAmtYn
+			,	DC_RATE_YN AS dcRateYn
+		FROM	MIND_GOODS_SUB
+		WHERE 1=1
+		AND		GOODS_CD = #{goodsCd}	
+	
+	</select>
+	
+	<select id="getGoodsGrpInfo" resultType="com.ezwel.admin.domain.entity.goods.GoodsGrpInfoData">
+	SELECT	A.GOODS_GRP_CD AS goodsGrpCd
+		,	A.LAYOUT_SEQ AS layoutSeq
+		,	A.GOODS_DESC AS goodsDesc
+		,	(SELECT COMM_CD FROM MIND_COMM_CD WHERE OPTION_CD = A.GOODS_GRP_CD) AS cdSet
+	FROM	MIND_GOODS_GRP_INFO A
+	WHERE 1=1
+	AND		GOODS_CD = #{goodsCd}	
+	</select>
+	
+	<select id="getGoodsOptionGrp" resultType="com.ezwel.admin.domain.entity.goods.GoodsOptionGrpData">
+	SELECT	GRP_CD AS grpCd
+		,	GRP_NM AS grpNm
+		,	USE_YN AS useYn
+		,	SELECT_YN AS selectYn
+	FROM	MIND_GOODS_OPTION_GRP
+	WHERE 1=1
+	AND		GOODS_CD = #{goodsCd}	
+	
+	</select>
+	
+	<select id="getGoodsOptionItem" resultType="com.ezwel.admin.domain.entity.goods.GoodsOptionItemData">
+	SELECT	GRP_CD AS grpCd
+		,	ITEM_NM AS itemNm
+		,	ITEM_CD AS itemCd
+		,	ITEM_BUY_PRICE AS itemBuyPrice
+		,	ITEM_SALE_PRICE AS itemSalePRICE
+	FROM	MIND_GOODS_OPTION_ITEM
+	WHERE	1=1
+	AND		GOODS_CD = #{goodsCd}	
+	</select>
+	
+	<select id="getItemCount" resultType="com.ezwel.admin.domain.entity.goods.GoodsItemCountData">
+	SELECT	GRP_CD AS	grpCd
+		,	COUNT(GRP_CD)	AS	count
+	FROM MIND_GOODS_OPTION_ITEM
+	WHERE GOODS_CD = #{goodsCd}
+	GROUP BY grp_cd
+	</select>
+	
+	<update id="updateMindGoods" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" >
+		UPDATE MIND_GOODS
+		SET RECEIPT_YN = #{receiptYn}
+		,DUTY_YN = #{dutyYn}
+		,GOODS_NM = #{goodsNm}
+		,GOODS_PAY_YN = #{goodsPayYn}
+		,GOODS_STATUS = #{goodsStatus}
+		,CSP_CD = #{cspCd}
+		,GOODS_NORMAL_PRICE = #{goodsNormalPrice}
+		,GOODS_BUY_PRICE = #{goodsBuyPrice}
+		,GOODS_DIS_RATE = #{goodsDisRate}
+		,GOODS_SALE_PRICE = #{goodsSalePrice}
+		,MODI_ID = #{modiId}
+		,MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE GOODS_CD = #{goodsCd}
+	
+	</update>
+	
+	<update id="updateMindGoodsSub" parameterType="com.ezwel.admin.service.service.dto.GoodsDto" >
+		UPDATE MIND_GOODS_SUB
+		SET GOODS_SEARCH = #{goodsSearch}
+		,GOODS_BRAND = #{goodsBrand}
+		,GOODS_MODEL = #{goodsModel}
+		,GOODS_MANU = #{goodsManu}
+		<if test="isNotNull(goodsLinkKey)">
+		,GOODS_LINK_KEY = #{goodsLinkKey}
+		</if>
+		,GOODS_ORIGIN = #{goodsOrigin}
+		,GOODS_HOPE_DLVR_YN = #{goodsHopeDlvrYn}
+		,DLVR_PRICE_YN = #{dlvrPriceYn}
+		<if test="isNotNull(dlvrPrice)">
+		,DLVR_PRICE = #{dlvrPrice}
+		</if>
+		<if test="isNull(dlvrPrice)">
+		,DLVR_PRICE = null
+		</if>
+		,REQUIRED_CHECK_YN = #{requiredCheckYn}
+		<if test="isNotNull(requiredCheckContent)">
+		,REQUIRED_CHECK = #{requiredCheckContent}
+		</if>
+		,REQUIRED_INPUT_YN = #{requiredInputYn}
+		<if test="isNotNull(requiredInputContent)">
+		,REQUIRED_INPUT = #{requiredInputContent}
+		</if>
+		,GOODS_DLVR = #{goodsDlvr}
+		,GOODS_CANCEL_REFUND = #{goodsSubGoodsCancelRefund}
+		,GOODS_DESC = #{goodsDesc}
+		,DC_AMT_YN = #{dcAmtYn}
+		,DC_RATE_YN = #{dcRateYn}
+		WHERE GOODS_CD = #{goodsCd}
+	
+	</update>
+	
+	
+	<delete id="deleteMindGoodsGrpInfo" parameterType="com.ezwel.admin.service.service.dto.GoodsDto">
+		DELETE	FROM MIND_GOODS_GRP_INFO
+		WHERE	GOODS_CD = #{goodsCd}
+	</delete>
+	
+	<update id="updateMindGoodsAttach" parameterType="com.ezwel.admin.service.service.dto.GoodsDto">
+	UPDATE MIND_GOODS_ATTACH
+		SET	FILE_NM	= #{attachFileNm}
+		,	FILE_PATH	= #{attachFilePath}
+		,	MODI_ID	= #{modiId}
+		,	MODI_DT	= DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE GOODS_CD = #{goodsCd}
+		AND	FILE_TYPE = #{attachFileType}
+	</update>
+
+	<delete id="deleteMindGoodsOptionGrp" parameterType="com.ezwel.admin.service.service.dto.GoodsDto">
+		DELETE	FROM MIND_GOODS_OPTION_GRP
+		WHERE	GOODS_CD = #{goodsCd}
+	</delete>
+
+	<delete id="deleteMindGoodsOptionItem" parameterType="com.ezwel.admin.service.service.dto.GoodsDto">
+		DELETE	FROM MIND_GOODS_OPTION_ITEM
+		WHERE	GOODS_CD = #{goodsCd}
+	</delete>
+	
+	<insert id="mergeMindGoodsOptionGrp" parameterType="com.ezwel.admin.service.service.dto.GoodsDto"  keyProperty="grpCd" useGeneratedKeys="true">
+	INSERT INTO MIND_GOODS_OPTION_GRP
+		(GOODS_CD
+		,GRP_NM 
+		,USE_YN
+		,SELECT_YN
+		,REG_ID
+		,REG_DT)
+		VALUES
+		(#{goodsCd} 
+		,#{grpNm} 
+		,#{optionUseYn}
+		,#{selectYn}
+		,#{regId}
+		,DATE_FORMAT(NOW(),'%Y%m%d%H%i%s'))
+		ON DUPLICATE KEY 
+		UPDATE	GRP_NM = #{grpNm} 
+			,	USE_YN = #{optionUseYn}
+			,	SELECT_YN = #{selectYn}
+			,	MODI_ID = #{modiId}
+			,	MODI_DT = DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+	</insert>
+	
+	<insert id="mergeMindGoodsOptionItem" parameterType="com.ezwel.admin.service.service.dto.GoodsDto">
+	INSERT INTO MIND_GOODS_OPTION_ITEM
+		(GOODS_CD
+		,GRP_CD
+		,ITEM_NM
+		,ITEM_BUY_PRICE
+		,ITEM_SALE_PRICE)
+		VALUES
+		(#{goodsCd} 
+		,#{grpCd} 
+		,#{itemNm}
+		,#{itemBuyPrice}
+		,#{itemSalePrice})
+		ON DUPLICATE KEY 
+		UPDATE	ITEM_NM = #{itemNm}
+		,	ITEM_BUY_PRICE = #{itemBuyPrice}
+		,	ITEM_SALE_PRICE = #{itemSalePrice}
+	</insert>
+	
+	
+	<select id="getDiagnosisGroupList" resultType="com.ezwel.admin.domain.entity.diagnosis.DiagnosisGroup">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+					SELECT
+							GRP_SEQ
+						  , GRP_NM
+					FROM MIND_DIAGNOSIS_GROUP
+					WHERE 1=1
+					 AND GRP_YN = 'Y'
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getMindAreaPageCount" resultType="int">
+		SELECT COUNT(PAGE_TYPE_SEQ)
+			FROM MIND_AREA
+			WHERE PAGE_TYPE_SEQ = #{pageTypeSeq}
+	</select>
+	
+	<select id="getMindAreaPage" resultType="com.ezwel.admin.domain.entity.service.MindAreaPageData">
+		SELECT 
+				PAGE_TYPE_SEQ
+				, AREA_NM
+				, AREA_TYPE
+				, AREA_TEXT
+				, AREA_LINK_URL
+				, AREA_IMG_URL
+				, FILE_SEQ
+			FROM MIND_AREA
+			WHERE 1 = 1
+			<if test="isNotNull(pageTypeSeq)">
+				AND PAGE_TYPE_SEQ = #{pageTypeSeq}
+			</if>			 
+			ORDER BY AREA_NM
+	</select>
+	
+	<select id="getMindPageType" resultType="com.ezwel.admin.domain.entity.service.MindAreaPageData">
+		SELECT
+			PAGE_TYPE_SEQ
+			, PAGE_TYPE_NM
+		FROM MIND_PAGE_TYPE
+	</select>
+	
+	<delete id="deleteMindAreaPage" parameterType="com.ezwel.admin.service.service.dto.MindAreaDto">
+		DELETE FROM MIND_AREA
+		WHERE PAGE_TYPE_SEQ = #{pageTypeSeq}
+	</delete>
+	
+	<insert id="insertMindAreaPage" parameterType="java.util.Map">
+		INSERT INTO MIND_AREA
+			(PAGE_TYPE_SEQ
+			, AREA_NM
+			, AREA_TYPE
+			, AREA_TEXT
+			, AREA_LINK_URL
+			, AREA_IMG_URL
+			, FILE_SEQ)
+			VALUES
+			<foreach collection="list" item="item" separator=", ">
+				(#{item.pageTypeSeq}
+				, #{item.areaNm}
+				, #{item.areaType}
+				, #{item.areaText}
+				, #{item.areaLinkUrl}
+				, #{item.areaImgUrl}
+				, #{item.fileSeq}
+				)
+			</foreach>
+	</insert>
+	
+	<insert id="insertMindAreaLayout" parameterType="java.lang.String">
+		INSERT INTO MIND_PAGE_TYPE
+			(PAGE_TYPE_NM)
+			VALUES
+			(#{pageTypeNm})
+	</insert>
+
+	<select id="getSubGoodsList" resultType="com.ezwel.admin.domain.entity.service.ServiceData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+			SELECT C.CLIENT_NM AS clientNm
+				 , D.MENU_NM AS menuNm
+				 , B.USER_NM AS userNm
+				 , A.ORDER_NUM AS orderNum
+				 , DATE_FORMAT(A.ORDER_DT,'%Y-%m-%d %H:%i:%s') AS orderDt
+				 , DATE_FORMAT(A.CANCEL_DT,'%Y-%m-%d %H:%i:%s') AS cancelDt
+				 , A.ORDER_NM AS orderNm
+				 , FORMAT((SELECT SUM(DLVR_PRICE) FROM MIND_ORDER_GOODS WHERE ORDER_NUM = A.ORDER_NUM), 0) AS dlvrPrice
+				 , FORMAT((SELECT SUM(SALE_PRICE*ORDER_QTY) FROM MIND_ORDER_GOODS WHERE ORDER_NUM = A.ORDER_NUM), 0) AS salePrice
+				 , FORMAT(A.ORDER_AMT, 0) AS orderAmt
+				 , A.ORDER_STATUS AS orderStatus
+				 , A.CLIENT_CD AS counselCd
+				 , A.ORDER_TYPE AS orderType
+				 , E.COMM_NM AS orderStatusNm
+			  FROM MIND_ORDER A
+			  LEFT OUTER JOIN MIND_USER B ON A.USER_KEY = B.USER_KEY
+			  LEFT OUTER JOIN MIND_CLIENT C ON A.CLIENT_CD = C.CLIENT_CD
+			  LEFT OUTER JOIN MIND_MENU_CD D ON A.MENU_CD = D.MENU_CD
+			  LEFT OUTER JOIN MIND_COMM_CD E ON A.ORDER_STATUS = E.COMM_CD AND E.HIGH_COMM_CD = '100781'
+			 WHERE A.COUNSEL_CD = -1
+			   AND A.ORDER_TYPE IN ('100959', '100978')
+			<if test="isNotNull(searchYear)">
+			 	AND SUBSTR(A.ORDER_DT,1,4) = #{searchYear}
+			</if>
+			<if test="isNotNull(searchClientCd)">
+			 	AND A.CLIENT_CD = #{searchClientCd}
+			</if>
+			<if test="isNotNull(searchMenu)">
+			 	AND A.MENU_CD = #{searchMenu}
+			</if>
+			<if test="isNotNull(searchCspCd)">
+				AND A.ORDER_NUM IN (
+									SELECT DISTINCT(ORDER_NUM) 
+									  FROM MIND_ORDER_GOODS 
+									 WHERE ORDER_NUM = A.ORDER_NUM 
+									   AND CSP_CD IN (
+														SELECT CSP_CD
+														  FROM MIND_CSP
+														 WHERE CSP_CD = #{searchCspCd}
+													)
+									)
+			</if>
+			<if test="isNotNull(orderFromDt)">
+				AND A.ORDER_DT >= #{orderFromDt}
+			</if>
+			<if test="isNotNull(orderToDt)">
+				AND A.ORDER_DT &lt;= #{orderToDt}
+			</if>
+			<if test="isNotNull(modFromDt)">
+				AND A.MODI_DT >= #{modFromDt}
+			</if>
+			<if test="isNotNull(modToDt)">
+				AND A.MODI_DT &lt;= #{modToDt}
+			</if>
+			<if test="isNotNull(searchOrderNum)">
+				AND A.ORDER_NUM = #{searchOrderNum}
+			</if>
+			<if test="isNotNull(searchUserNm)">
+				AND B.USER_NM = #{searchUserNm}
+			</if>
+			<if test="isNotNull(searchRrn)">
+				AND B.RRN LIKE CONCAT('%', #{searchRrn},'%')
+			</if>
+			<if test="isNotNull(searchUserId)">
+				AND B.USER_ID = #{searchUserId}
+			</if>
+			<if test="isNotNull(searchOrderStatus)">
+				AND A.ORDER_STATUS = #{searchOrderStatus}
+			</if>
+			<if test="isNotNull(searchGoodsNm)">
+				AND A.ORDER_NUM IN (
+									SELECT DISTINCT(ORDER_NUM) 
+									  FROM MIND_ORDER_GOODS 
+									 WHERE ORDER_NUM = A.ORDER_NUM 
+									   AND GOODS_CD IN (
+														SELECT GOODS_CD
+														  FROM MIND_GOODS
+														 WHERE GOODS_NM LIKE CONCAT('%', #{searchGoodsNm},'%')
+													)
+									)
+			</if>
+			 ORDER BY A.ORDER_DT DESC
+		<choose>
+				<when test="pageCommonFlag == true">
+					) A
+				</when>
+				<otherwise>
+					LIMIT #{firstIndex} , #{pageSize}
+				</otherwise>
+
+		</choose>
+	</select>
+	
+	<select id="getMentalMenuList" resultType="com.ezwel.admin.domain.entity.service.ServiceData">
+		SELECT MENU_CD AS menuCd
+			 , MENU_NM AS menuNm
+		  FROM MIND_MENU_LEVEL
+		 WHERE MENU_TXT = 'mental'
+		   AND DEPTH > 2
+	</select>
+	
+	<update id="modifySubOrderStatus">
+		UPDATE MIND_ORDER
+		   SET ORDER_STATUS = #{modifyOrderStatus}
+				,MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		 WHERE ORDER_NUM IN 
+		<foreach collection="orderNumArr" item="orderNumber" open="(" close=")" separator=",">
+			#{orderNumber}
+		</foreach>
+	</update>
+	
+	<select id="getSubOrder" resultType="com.ezwel.admin.domain.entity.service.ServiceData">
+		SELECT A.ORDER_NUM AS orderNum
+			 , DATE_FORMAT(A.ORDER_DT,'%Y-%m-%d %H:%i:%s') AS orderDt
+			 , DATE_FORMAT(A.CANCEL_DT,'%Y-%m-%d %H:%i:%s') AS cancelDt
+			 , A.CLIENT_CD AS clientCd
+			 , C.CLIENT_NM AS clientNm
+			 , B.USER_ID AS userId
+			 , B.EMP_NUM AS empNum
+			 , B.USER_NM AS userNm
+			 , B.RRN AS rrn
+			 , AES_DECRYPT(UNHEX(A.SND_MOBILE),'1234') AS sndMobile
+			 , A.SND_TEL_NUM AS sndTelNum
+			 , A.SND_EMAIL AS sndEmail
+			 , A.PAY_TYPE AS payType
+			 , A.RCVR_NM AS rcvrNm
+			 , A.RCVR_MOBILE AS rcvrMobile
+			 , A.RCVR_TEL_NUM AS rcvrTelNum
+			 , A.RCVR_ADDR1 AS rcvrAddr1
+			 , A.RCVR_ADDR2 AS rcvrAddr2
+			 , A.RCVR_POST AS rcvrPost
+		  FROM MIND_ORDER A
+		  LEFT OUTER JOIN MIND_USER B ON A.USER_KEY = B.USER_KEY
+		  LEFT OUTER JOIN MIND_CLIENT C ON A.CLIENT_CD = C.CLIENT_CD
+		  LEFT OUTER JOIN MIND_MENU_CD D ON A.MENU_CD = D.MENU_CD
+		 WHERE A.COUNSEL_CD = -1
+		   AND A.ORDER_TYPE = '100959'
+		   AND A.ORDER_NUM = #{orderNum}
+	</select>
+	
+	<select id="getSubOrderGoodsList" resultType="com.ezwel.admin.domain.entity.service.ServiceData">
+		SELECT A.GOODS_CD AS goodsCd
+			 , A.GOODS_NM AS goodsNm
+			 , A.SALE_PRICE AS salePrice
+			 , A.BUY_PRICE AS buyprice
+			 , A.ORDER_QTY AS orderQty
+			 , A.DLVR_PRICE AS dlvrPrice
+			 , A.REQUIRED_INPUT AS requiredInput
+			 , A.DLVR_CD AS dlvrCd
+			 , A.DLVR_NO AS dlvrNo
+			 , B.MENU_NM AS menuNm
+		  FROM MIND_ORDER_GOODS A
+		  LEFT OUTER JOIN MIND_MENU_CD B ON A.MENU_CD = B.MENU_CD
+		 WHERE A.ORDER_NUM = #{orderNum}
+	</select>
+	
+	<select id="getSubOrderPayList" resultType="com.ezwel.admin.domain.entity.service.ServiceData">
+		SELECT 1 AS orderNum
+	</select>
+	
+	<select id="getProPriceList" resultType="com.ezwel.admin.domain.entity.service.ServiceData">
+		SELECT A.PRM_CD AS prmCd
+			 , B.PRM_NM AS prmNm
+			 , B.PRM_STATUS AS prmStatus
+			 , C.COMM_NM AS prmStatusNm
+			 , A.PRM_SALE_PRICE AS prmSalePrice
+			 , A.PRM_BUY_PRICE AS prmBuyPrice
+			 , A.PRM_GOODS_STATUS AS prmGoodsStatus
+		  FROM MIND_PROMOTION_GOODS A
+		  LEFT OUTER JOIN MIND_PROMOTION B ON A.PRM_CD = B.PRM_CD
+		  LEFT OUTER JOIN MIND_COMM_CD C ON B.PRM_STATUS = C.COMM_CD
+		 WHERE A.GOODS_CD = #{goodsCd}
+	</select>
+
+	<select id="getDlvrList" resultType="com.ezwel.admin.domain.entity.service.ServiceData">
+		SELECT DLVR_CD AS dlvrCd
+			 , DLVR_NM AS dlvrNm
+		  FROM MIND_DLVR
+		 WHERE USE_YN = 'Y'
+	</select>
+
+	<update id="updateDlvr" parameterType="com.ezwel.admin.service.service.dto.ServiceDto" >
+		UPDATE MIND_ORDER_GOODS
+		   SET DLVR_CD = #{dlvrCd}
+			 , DLVR_NO = #{dlvrNo}
+		 WHERE ORDER_NUM = #{orderNum}
+		   AND GOODS_CD = #{goodsCd}
+	</update>
+
+	<select id="getExcelSubGoodsList" resultType="com.ezwel.admin.domain.entity.service.ServiceData">
+			SELECT C.CLIENT_NM AS clientNm
+				 , A.CLIENT_CD AS clientCd
+				 , D.MENU_NM AS menuNm
+				 , B.USER_NM AS userNm
+				 , A.ORDER_NUM AS orderNum
+				 , DATE_FORMAT(A.ORDER_DT,'%Y-%m-%d %H:%i:%s') AS orderDt
+				 , DATE_FORMAT(A.CANCEL_DT,'%Y-%m-%d %H:%i:%s') AS cancelDt
+				 , A.ORDER_NM AS orderNm
+				 , FORMAT((SELECT SUM(DLVR_PRICE) FROM MIND_ORDER_GOODS WHERE ORDER_NUM = A.ORDER_NUM), 0) AS dlvrPrice
+				 , FORMAT((SELECT SUM(SALE_PRICE*ORDER_QTY) FROM MIND_ORDER_GOODS WHERE ORDER_NUM = A.ORDER_NUM), 0) AS salePrice
+				 , FORMAT(A.ORDER_AMT, 0) AS orderAmt
+				 , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.ORDER_TYPE) AS orderTypeNm
+				 , A.ORDER_TYPE AS orderType
+				 , E.COMM_NM AS orderStatusNm
+				 , A.ORDER_STATUS AS orderStatus
+			  FROM MIND_ORDER A
+			  LEFT OUTER JOIN MIND_USER B ON A.USER_KEY = B.USER_KEY
+			  LEFT OUTER JOIN MIND_CLIENT C ON A.CLIENT_CD = C.CLIENT_CD
+			  LEFT OUTER JOIN MIND_MENU_CD D ON A.MENU_CD = D.MENU_CD
+			  LEFT OUTER JOIN MIND_COMM_CD E ON A.ORDER_STATUS = E.COMM_CD AND E.HIGH_COMM_CD = '100781'
+			 WHERE A.COUNSEL_CD = -1
+			   AND A.ORDER_TYPE IN ('100959', '100978')
+			 <if test="isNotNull(searchYear)">
+			 	AND SUBSTR(A.ORDER_DT,1,4) = #{searchYear}
+			</if>
+			<if test="isNotNull(searchClientCd)">
+			 	AND A.CLIENT_CD = #{searchClientCd}
+			</if>
+			<if test="isNotNull(searchMenu)">
+			 	AND A.MENU_CD = #{searchMenu}
+			</if>
+			<if test="isNotNull(searchCspCd)">
+				AND A.ORDER_NUM IN (
+									SELECT DISTINCT(ORDER_NUM) 
+									  FROM MIND_ORDER_GOODS 
+									 WHERE ORDER_NUM = A.ORDER_NUM 
+									   AND CSP_CD IN (
+														SELECT CSP_CD
+														  FROM MIND_CSP
+														 WHERE CSP_CD = #{searchCspCd}
+													)
+									)
+			</if>
+			<if test="isNotNull(orderFromDt)">
+				AND A.ORDER_DT >= #{orderFromDt}
+			</if>
+			<if test="isNotNull(orderToDt)">
+				AND A.ORDER_DT &lt;= #{orderToDt}
+			</if>
+			<if test="isNotNull(modFromDt)">
+				AND A.MODI_DT >= #{modFromDt}
+			</if>
+			<if test="isNotNull(modToDt)">
+				AND A.MODI_DT &lt;= #{modToDt}
+			</if>
+			<if test="isNotNull(searchOrderNum)">
+				AND A.ORDER_NUM = #{searchOrderNum}
+			</if>
+			<if test="isNotNull(searchUserNm)">
+				AND B.USER_NM = #{searchUserNm}
+			</if>
+			<if test="isNotNull(searchRrn)">
+				AND B.RRN LIKE CONCAT('%', #{searchRrn},'%')
+			</if>
+			<if test="isNotNull(searchUserId)">
+				AND B.USER_ID = #{searchUserId}
+			</if>
+			<if test="isNotNull(searchOrderStatus)">
+				AND A.ORDER_STATUS = #{searchOrderStatus}
+			</if>
+			<if test="isNotNull(searchGoodsNm)">
+				AND A.ORDER_NUM IN (
+									SELECT DISTINCT(ORDER_NUM) 
+									  FROM MIND_ORDER_GOODS 
+									 WHERE ORDER_NUM = A.ORDER_NUM 
+									   AND GOODS_CD IN (
+														SELECT GOODS_CD
+														  FROM MIND_GOODS
+														 WHERE GOODS_NM LIKE CONCAT('%', #{searchGoodsNm},'%')
+													)
+									)
+			</if>
+			 ORDER BY A.ORDER_DT DESC
+	</select>
+</mapper>

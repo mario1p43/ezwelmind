@@ -1,0 +1,1386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.usermanager.UserManagerMapper">
+
+    
+	<select id="getUserManagerUseList" resultType="com.ezwel.admin.domain.entity.usermanager.UserManager">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+					SELECT  A.ORDER_NUM																				as orderNum
+					      , A.CLIENT_CD																				as clientCd
+					      , (SELECT CLIENT_NM FROM MIND_CLIENT WHERE CLIENT_CD = A.CLIENT_CD)						as clientNm
+					      , B.USER_ID																				as userId
+					      , B.USER_KEY																				as userKey
+					      , C.COUNSEL_CD																			as counselCd
+					      , DATE_FORMAT(STR_TO_DATE(a.ORDER_DT, '%Y%m%d%H%i%s'),'%Y.%m.%d %H:%i')					as orderDt
+					      , DATE_FORMAT(STR_TO_DATE(C.SCHEDULE_DT, '%Y%m%d%H%i%s'),'%Y.%m.%d  %H시')				as scheduleDt
+					      , D.COUNSEL_NM  /*신청자이름*/															as counselNm
+					      , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = D.RELATION)							as relation
+					      , D.RRN																					as rrn
+					      , CASE 
+					      	WHEN D.GENDER = 'M' THEN '남'
+					      	WHEN D.GENDER = 'F' THEN '여'
+					      	ELSE NULL END																			 as gender 
+					      , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = D.JOB)								as job
+					      , AES_DECRYPT(UNHEX(D.MOBILE),'1234')														as mobile
+					      , (SELECT CATEGORY_NM FROM MIND_COUNSEL_CATEGORY WHERE CATEGORY_CD = D.COUNSEL_DIV)		as counselDiv
+					      , D.CAUSE																					as cause
+					      , D.MEMO																					as memo
+					      , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = D.COUNSEL_TYPE)						as counselType
+					      , (SELECT CENTER_NM FROM MIND_CENTER WHERE CENTER_SEQ = C.CENTER_SEQ)						as centerSeq
+					      , C.COUNSELOR_ID																			as counselorId
+	     				  , (SELECT USER_NM  FROM MIND_MGR WHERE USER_ID = C.COUNSELOR_ID)                        as counselorNm
+					      , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.PAY_TYPE)							as payType
+					      , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.ORDER_STATUS)						as orderStatus
+					      , C.EXTENSION_NUM																			as extensionNum
+					      , DATE_FORMAT(STR_TO_DATE(C.CANCEL_DT, '%Y%m%d%H%i%s'),'%Y.%m.%d %H:%i')					as cancelDt
+						  , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.SITE_TYPE) AS siteType
+						  , FN_GET_COMM_NM(c.status) as statusNm
+						  , D.INTAKE_CD AS intakeCd
+ 						  , C.REG_ID AS orderId
+					  FROM MIND_ORDER A
+					  		 INNER JOIN MIND_USER B
+					  		      ON A.USER_KEY = B.USER_KEY
+					       LEFT OUTER JOIN MIND_COUNSEL C
+					       		ON A.COUNSEL_CD = C.COUNSEL_CD
+					       LEFT OUTER JOIN MIND_COUNSEL_INTAKE D
+					            ON C.INTAKE_CD = D.INTAKE_CD
+					   WHERE 1=1
+					     AND B.TEST_YN = 'N'
+					     
+					    <if test="isNotNull(clientCd)">
+							AND A.CLIENT_CD = #{clientCd}
+						</if>
+						<if test="isNotNull(userNm)">
+							AND D.COUNSEL_NM = #{userNm}
+						</if>
+						<if test="isNotNull(siteType)">
+							AND A.SITE_TYPE = #{siteType}
+						</if>  
+						<if test="isNotNull(userId)">
+							AND B.USER_ID = #{userId}
+						</if>    
+						<if test="isNotNull(searchStMonth)">
+							AND C.SCHEDULE_DT >= #{searchStMonth}
+						</if>  
+						<if test="isNotNull(searchEdMonth)">
+							AND C.SCHEDULE_DT &lt;= #{searchEdMonth}
+						</if>  
+					     
+					   ORDER BY ORDER_NUM DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+    
+   	<select id="getServiceUserListExcelDownload" resultType="com.ezwel.admin.domain.entity.usermanager.UserManager" timeout="2000">
+		SELECT
+		   A.ORDER_NUM																									as orderNum
+	      , A.CLIENT_CD																										as clientCd
+	      , (SELECT CLIENT_NM FROM MIND_CLIENT WHERE CLIENT_CD = A.CLIENT_CD)						as clientNm
+	      , B.USER_ID																											as userId
+	      , B.USER_KEY																										as userKey
+	      , C.COUNSEL_CD																									as counselCd
+	      , DATE_FORMAT(STR_TO_DATE(a.ORDER_DT, '%Y%m%d%H%i%s'),'%Y.%m.%d %H:%i')				as orderDt
+	      , DATE_FORMAT(STR_TO_DATE(C.SCHEDULE_DT, '%Y%m%d%H%i%s'),'%Y.%m.%d  %H시')			as scheduleDt
+	      , B.USER_NM 																										as userNm
+		  , floor((year(now()) - (if (mid(B.rrn, 8, 1) = '1' or mid(B.rrn, 8, 1) = '2', 1900, 2000) + left(B.rrn, 2)) + 1)/10)*10 as userAge
+   		  , YEAR(NOW()) - (IF (MID(B.rrn, 8, 1) = '1' OR MID(B.rrn, 8, 1) = '2', 1900, 2000) + LEFT(B.rrn, 2)) + 1  as age
+	      , CASE 
+	      	WHEN B.GENDER = 'M' THEN '남'
+	      	WHEN B.GENDER = 'F' THEN '여'
+	      	ELSE NULL END																			 as userGender 
+	      <!-- , IF(B.GENDER = 'M', '남', '여')																					as userGender -->
+	      , D.COUNSEL_NM  /*신청자이름*/																				as counselNm
+	      , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = D.RELATION)					as relation
+	      , AES_DECRYPT(UNHEX(D.MOBILE),'1234')														as mobile
+	      , A.ORDER_AMT																									as orderAmt
+	      , D.RRN																												as rrn
+	      , CASE 
+	      	WHEN D.GENDER = 'M' THEN '남'
+	      	WHEN D.GENDER = 'F' THEN '여'
+	      	ELSE NULL END																			 as gender 
+	      <!-- , IF(D.GENDER = 'M', '남', '여')																					as gender -->
+	      , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = D.JOB)							as job
+	      , (SELECT CATEGORY_NM FROM MIND_COUNSEL_CATEGORY WHERE CATEGORY_CD = D.COUNSEL_DIV)		as counselDiv
+	      , D.CAUSE																											as cause
+	      , D.MEMO																											as memo
+	      , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = D.COUNSEL_TYPE)				as counselType
+	      , (SELECT CENTER_NM FROM MIND_CENTER WHERE CENTER_SEQ = C.CENTER_SEQ)				as centerSeq
+	      , C.COUNSELOR_ID																								as counselorId
+	      , (SELECT USER_NM  FROM MIND_MGR WHERE USER_ID = C.COUNSELOR_ID)                        as counselorNm
+	      , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.PAY_TYPE)					as payType
+	      , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.ORDER_STATUS)				as orderStatus
+	      , C.EXTENSION_NUM																								as extensionNum
+	      , (SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE B.BRANCH_CD = COMM_CD AND CLIENT_CD = A.CLIENT_CD) as branchCd
+	      , (SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE B.DEPT_CD = COMM_CD   AND CLIENT_CD = A.CLIENT_CD) as deptCd
+	      , (SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE B.TEAM_CD = COMM_CD   AND CLIENT_CD = A.CLIENT_CD) as teamCd
+	      , (SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE B.PART_CD = COMM_CD   AND CLIENT_CD = A.CLIENT_CD) as partCd
+	      , (SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE B.GRADE_CD = COMM_CD  AND CLIENT_CD = A.CLIENT_CD) as gradeCd
+	      , DATE_FORMAT(STR_TO_DATE(C.CANCEL_DT, '%Y%m%d%H%i%s'),'%Y.%m.%d %H:%i')				as cancelDt
+	      , IF(e.RECORD_CD, 'O', 'X') 																						as record
+		   , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.SITE_TYPE) AS siteType
+	      , (SELECT IF(DD.RISKS = -1, '기타', CONCAT(DD.RISKS, '단계'))
+				FROM  MIND_COUNSEL AA
+						JOIN MIND_ORDER BB
+							ON AA.COUNSEL_CD = BB.COUNSEL_CD
+						JOIN MIND_USER CC
+							ON AA.USER_KEY = CC.USER_KEY
+						LEFT JOIN MIND_COUNSEL_RECORD DD
+							ON AA.COUNSEL_CD = DD.COUNSEL_CD
+				WHERE AA.COUNSEL_CD = A.COUNSEL_CD
+				AND BB.ORDER_STATUS = '100782' /* 주문완료 50%취소주문때문에 mind_counsel 대신 mind_order로 해야됨 */
+			  ) as risk
+	      , e.RISK_REASON 																									as riskReason
+	      , b.MARRY_YN															as marryYn
+	      , FN_GET_COMM_NM(c.status) as statusNm
+  		  , C.REG_ID AS orderId
+		FROM MIND_ORDER A
+	  		 INNER JOIN MIND_USER B
+	  		      ON A.USER_KEY = B.USER_KEY
+	       LEFT OUTER JOIN MIND_COUNSEL C
+	       		ON A.COUNSEL_CD = C.COUNSEL_CD
+	       LEFT OUTER JOIN MIND_COUNSEL_INTAKE D
+	            ON C.INTAKE_CD = D.INTAKE_CD
+	       LEFT OUTER JOIN MIND_COUNSEL_RECORD E
+	            ON C.COUNSEL_CD = E.COUNSEL_CD
+	   WHERE 1=1
+	     AND B.TEST_YN = 'N'
+	    <if test="isNotNull(clientCd)">
+			AND A.CLIENT_CD = #{clientCd}
+		</if>
+		<if test="isNotNull(userNm)">
+			AND D.COUNSEL_NM = #{userNm}
+		</if>
+		<if test="isNotNull(siteType)">
+			AND A.SITE_TYPE = #{siteType}
+		</if>  
+		<if test="isNotNull(userId)">
+			AND B.USER_ID = #{userId}
+		</if>    
+		<if test="isNotNull(searchStMonth)">
+			AND C.SCHEDULE_DT >= #{searchStMonth}
+		</if>  
+		<if test="isNotNull(searchEdMonth)">
+			AND C.SCHEDULE_DT &lt;= #{searchEdMonth}
+		</if>  
+	   ORDER BY ORDER_NUM DESC
+	</select>
+	
+	<select id="getNewEmpNumber"  resultType="com.ezwel.admin.domain.entity.usermanager.UserManager" >
+		SELECT 
+			   FORMAT(IFNULL(SUM(IF(A.MONTH = '01', 1, 0)), 0 ), 0)    AS m1
+      		 , FORMAT(IFNULL(SUM(IF(A.MONTH = '02', 1, 0)), 0 ), 0)    AS m2
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '03', 1, 0)), 0 ), 0)	AS m3
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '04', 1, 0)), 0 ), 0)	AS m4
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '05', 1, 0)), 0 ), 0)	AS m5
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '06', 1, 0)), 0 ), 0)	AS m6
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '07', 1, 0)), 0 ), 0)	AS m7
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '08', 1, 0)), 0 ), 0)	AS m8
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '09', 1, 0)), 0 ), 0)	AS m9
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '10', 1, 0)), 0 ), 0)	AS m10
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '11', 1, 0)), 0 ), 0)	AS m11
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '12', 1, 0)), 0 ), 0)	AS m12
+   			 , FORMAT(COUNT(*), 0 )							AS tot
+			 , GROUP_CONCAT(IF(A.MONTH = '01', A.USER_NM, '') ORDER BY A.USER_NM ) AS m1User
+			 , GROUP_CONCAT(IF(A.MONTH = '02', A.USER_NM, '') ORDER BY A.USER_NM ) AS m2User
+			 , GROUP_CONCAT(IF(A.MONTH = '03', A.USER_NM, '') ORDER BY A.USER_NM ) AS m3User
+			 , GROUP_CONCAT(IF(A.MONTH = '04', A.USER_NM, '') ORDER BY A.USER_NM ) AS m4User
+			 , GROUP_CONCAT(IF(A.MONTH = '05', A.USER_NM, '') ORDER BY A.USER_NM ) AS m5User
+			 , GROUP_CONCAT(IF(A.MONTH = '06', A.USER_NM, '') ORDER BY A.USER_NM ) AS m6User
+			 , GROUP_CONCAT(IF(A.MONTH = '07', A.USER_NM, '') ORDER BY A.USER_NM ) AS m7User
+			 , GROUP_CONCAT(IF(A.MONTH = '08', A.USER_NM, '') ORDER BY A.USER_NM ) AS m8User
+			 , GROUP_CONCAT(IF(A.MONTH = '09', A.USER_NM, '') ORDER BY A.USER_NM ) AS m9User
+			 , GROUP_CONCAT(IF(A.MONTH = '10', A.USER_NM, '') ORDER BY A.USER_NM ) AS m10User
+			 , GROUP_CONCAT(IF(A.MONTH = '11', A.USER_NM, '') ORDER BY A.USER_NM ) AS m11User
+			 , GROUP_CONCAT(IF(A.MONTH = '12', A.USER_NM, '') ORDER BY A.USER_NM ) AS m12User
+		 FROM
+		 	 (
+		 		SELECT A.MONTH
+		 				, A.USER_NM
+				  FROM
+						   (
+								SELECT  SUBSTR(MIN(A.SCHEDULE_DT), 5, 2) AS MONTH
+									 ,  SUBSTR(MIN(A.SCHEDULE_DT), 1, 4) AS YEAR
+							      	 ,  A.USER_KEY						 AS USER_KEY
+							      	 ,  C.USER_NM						 AS USER_NM 
+								  FROM  MIND_COUNSEL A
+											JOIN MIND_ORDER B
+												ON A.COUNSEL_CD = B.COUNSEL_CD
+											JOIN MIND_USER C
+											    ON A.USER_KEY = C.USER_KEY
+								  WHERE 1=1
+								   	<if test="isNotNull(clientCd)">
+								  		AND A.CLIENT_CD = #{clientCd}
+								  	</if>
+								    AND C.TEST_YN = 'N'
+									AND B.ORDER_STATUS = '100782' /* 주문완료 50%취소주문때문에 mind_counsel 대신 mind_order로 해야됨 */
+									<if test="isNotNull(startDd)">
+									   AND DATE_FORMAT(A.SCHEDULE_DT , '%Y%m%d') >= #{startDd} 
+									</if>
+									<if test="isNotNull(endDd)">
+									   AND DATE_FORMAT(A.SCHEDULE_DT , '%Y%m%d') &lt;= #{endDd} 
+									</if>
+									<choose>
+										<when test='totFlag == "Y"'>
+											AND DATE_FORMAT(A.SCHEDULE_DT , '%Y') &lt;= #{year}
+										</when>
+										<otherwise>
+											AND DATE_FORMAT(A.SCHEDULE_DT , '%Y') = #{year}
+										</otherwise>
+									</choose>
+								  GROUP BY A.USER_KEY 
+							) A , 
+							(					
+								SELECT  SUBSTR(MIN(A.SCHEDULE_DT), 1, 4) AS YEAR
+							     	  , A.USER_KEY
+								  FROM  MIND_COUNSEL A
+											JOIN MIND_ORDER B
+												ON A.COUNSEL_CD = B.COUNSEL_CD
+											JOIN MIND_USER C
+											    ON A.USER_KEY = C.USER_KEY
+								  WHERE 1=1
+							   	<if test="isNotNull(clientCd)">
+							  		AND A.CLIENT_CD = #{clientCd}
+							  	</if>
+								    AND C.TEST_YN = 'N'
+									AND B.ORDER_STATUS = '100782' 
+							<if test="isNotNull(startDd)">
+							   AND DATE_FORMAT(A.SCHEDULE_DT , '%Y%m%d') >= #{startDd} 
+							</if>
+							<if test="isNotNull(endDd)">
+							   AND DATE_FORMAT(A.SCHEDULE_DT , '%Y%m%d') &lt;= #{endDd} 
+							</if>
+								  GROUP BY A.USER_KEY 
+							 ) B
+				  WHERE A.YEAR = B.YEAR
+					AND A.USER_KEY = B.USER_KEY
+			 ) A
+	</select>
+	
+	
+	<select id="getReuseEmpNumber"  resultType="com.ezwel.admin.domain.entity.usermanager.UserManager" >
+		<if test='totFlag == "Y"'>
+			SELECT COUNT(*) 	tot
+			  FROM
+					(
+		</if>
+						SELECT SCHEDULE_DT     as scheduleDt
+						     , FORMAT(COUNT(*), 0)		   as cnt
+					  	  FROM 
+								(
+									SELECT A.USER_KEY   							USER_KEY
+										 , DATE_FORMAT(A.SCHEDULE_DT , '%Y%m')		SCHEDULE_DT
+									 FROM  MIND_COUNSEL A
+										   		JOIN MIND_ORDER B
+													ON A.COUNSEL_CD = B.COUNSEL_CD
+												JOIN MIND_USER C
+												    ON A.USER_KEY = C.USER_KEY
+									 WHERE 1=1
+									   	<if test="isNotNull(clientCd)">
+									  		AND A.CLIENT_CD = #{clientCd}
+									  	</if>
+									   AND C.TEST_YN = 'N'
+									   AND B.ORDER_STATUS = '100782'
+									   	
+										<if test="isNotNull(startDd)">
+										   AND DATE_FORMAT(A.SCHEDULE_DT , '%Y%m%d') >= #{startDd} 
+										</if>
+										<if test="isNotNull(endDd)">
+										   AND DATE_FORMAT(A.SCHEDULE_DT , '%Y%m%d') &lt;= #{endDd} 
+										</if>
+									
+										<choose>
+											<when test='totFlag == "Y"'>
+												AND DATE_FORMAT(A.SCHEDULE_DT , '%Y') &lt;= #{year}
+											</when>
+											<otherwise>
+												AND DATE_FORMAT(A.SCHEDULE_DT , '%Y') = #{year}
+											</otherwise>
+										</choose>
+									 GROUP BY A.USER_KEY , DATE_FORMAT(A.SCHEDULE_DT , '%Y%m')
+								) A
+						  WHERE NOT EXISTS 
+											(
+												SELECT USER_KEY
+													 , SCHEDULE_DT
+												  FROM 
+												  		(
+															SELECT USER_KEY
+																 , MIN(SCHEDULE_DT) AS SCHEDULE_DT
+															  FROM 
+																	(
+																		SELECT A.USER_KEY								USER_KEY
+																			 , DATE_FORMAT(A.SCHEDULE_DT, '%Y%m')		SCHEDULE_DT
+																		  FROM  MIND_COUNSEL A
+																					JOIN MIND_ORDER B
+																						ON A.COUNSEL_CD = B.COUNSEL_CD
+																					JOIN MIND_USER C
+																						ON A.USER_KEY = C.USER_KEY
+																		  WHERE 1=1
+																	   	<if test="isNotNull(clientCd)">
+																	  		AND A.CLIENT_CD = #{clientCd}
+																	  	</if>
+																			AND C.TEST_YN = 'N'
+																			AND B.ORDER_STATUS = '100782'
+																		<if test="isNotNull(startDd)">
+																		   AND DATE_FORMAT(A.SCHEDULE_DT , '%Y%m%d') >= #{startDd} 
+																		</if>
+																		<if test="isNotNull(endDd)">
+																		   AND DATE_FORMAT(A.SCHEDULE_DT , '%Y%m%d') &lt;= #{endDd} 
+																		</if>
+																		  GROUP BY A.USER_KEY , DATE_FORMAT(A.SCHEDULE_DT , '%Y%m')
+																	) A
+															  GROUP BY USER_KEY
+														) B
+												  WHERE A.USER_KEY = B.USER_KEY
+													AND A.SCHEDULE_DT = B.SCHEDULE_DT
+											)		
+						  GROUP BY SCHEDULE_DT
+		  <if test='totFlag == "Y"'>
+					) A
+		  </if>
+	</select>
+	
+	
+	<select id="getCounselNumber"  resultType="com.ezwel.admin.domain.entity.usermanager.UserManager" >
+		SELECT 
+		       FORMAT(IFNULL(SUM(IF(A.MONTH = '01', 1, 0)), 0 ), 0)    AS m1
+      		 , FORMAT(IFNULL(SUM(IF(A.MONTH = '02', 1, 0)), 0 ), 0)    AS m2
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '03', 1, 0)), 0 ), 0)	AS m3
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '04', 1, 0)), 0 ), 0)	AS m4
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '05', 1, 0)), 0 ), 0)	AS m5
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '06', 1, 0)), 0 ), 0)	AS m6
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '07', 1, 0)), 0 ), 0)	AS m7
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '08', 1, 0)), 0 ), 0)	AS m8
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '09', 1, 0)), 0 ), 0)	AS m9
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '10', 1, 0)), 0 ), 0)	AS m10
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '11', 1, 0)), 0 ), 0)	AS m11
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '12', 1, 0)), 0 ), 0)	AS m12
+   			 , FORMAT(COUNT(*), 0 )							AS tot
+		 FROM
+			   (
+					SELECT  SUBSTR(A.SCHEDULE_DT, 5, 2) AS MONTH
+					  FROM  MIND_COUNSEL A
+								JOIN MIND_ORDER B
+									ON A.COUNSEL_CD = B.COUNSEL_CD
+								JOIN MIND_USER C
+								    ON A.USER_KEY = C.USER_KEY
+					  WHERE 1=1
+					   	<if test="isNotNull(clientCd)">
+					  		AND A.CLIENT_CD = #{clientCd}
+					  	</if>
+					    AND C.TEST_YN = 'N'
+						AND B.ORDER_STATUS = '100782' /* 주문완료 50%취소주문때문에 mind_counsel 대신 mind_order로 해야됨 */
+						
+						<if test="isNotNull(startDd)">
+						   AND DATE_FORMAT(A.SCHEDULE_DT , '%Y%m%d') >= #{startDd} 
+						</if>
+						<if test="isNotNull(endDd)">
+						   AND DATE_FORMAT(A.SCHEDULE_DT , '%Y%m%d') &lt;= #{endDd} 
+						</if>
+						
+						<choose>
+							<when test='totFlag == "Y"'>
+								AND DATE_FORMAT(A.SCHEDULE_DT , '%Y') &lt;= #{year}
+							</when>
+							<otherwise>
+								AND DATE_FORMAT(A.SCHEDULE_DT , '%Y') = #{year}
+							</otherwise>
+						</choose>
+				) A
+	</select>
+	
+	<select id="getOnlineServiceUserList" resultType="com.ezwel.admin.domain.entity.usermanager.UserManager">
+		select a.mdc_reg_seq as mdcRegSeq, 
+				 a.user_order_num as userOrderNum, 
+				 a.user_client_cd as clientCd, 
+				 a.user_key as userKey, 
+				 C.user_nm  as userNm, 
+				 a.user_birth as userBirth,
+				 CASE 
+			      	WHEN a.USER_SEX = 'M' THEN '남'
+			      	WHEN a.USER_SEX = 'F' THEN '여'
+			      	ELSE NULL END		as gender,
+     	 		 ROUND((date_format(now(),'%Y') - date_format(A.USER_BIRTH,'%Y')) + 1, 0) as age,
+				 a.user_email as email,
+				 a.user_status as userStatus,
+				 DATE_FORMAT(STR_TO_DATE(a.USER_REG_DT, '%Y%m%d%H%i%s'),'%Y.%m.%d %H:%i')					as userRegDt,
+				 b.mdc_seq as mdcSeq,
+				 b.AREA_SEQ as areaSeq,
+				 b.RESULT_POINT as resultPoint,
+				 b.RESULT_TOT_YN as resultTotYn,
+				 b.POOL_ANALYSIS as poolAnalysis,
+				 b.POOL_RECOMMEND as poolRecommend,
+				(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE CLIENT_CD = A.USER_CLIENT_CD AND COMM_CD = C.BRANCH_CD) as branchCd,
+				(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE CLIENT_CD = A.USER_CLIENT_CD AND COMM_CD = C.DEPT_CD) as deptCd,
+				(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE CLIENT_CD = A.USER_CLIENT_CD AND COMM_CD = C.TEAM_CD) as teamCd,
+				(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE CLIENT_CD = A.USER_CLIENT_CD AND COMM_CD = C.PART_CD) as partCd,
+				(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE CLIENT_CD = A.USER_CLIENT_CD AND COMM_CD = C.GRADE_CD) as gradeCd
+		from (SELECT * FROM MIND_DIAGNOSIS_USER WHERE GRP_SEQ = 1 AND user_status = 'F' ) A
+			INNER JOIN (SELECT USER_KEY, USER_NM, BRANCH_CD, DEPT_CD, TEAM_CD, PART_CD, GRADE_CD FROM MIND_USER WHERE TEST_YN = 'N') C
+				ON A.USER_KEY = C.USER_KEY
+			JOIN MIND_ORDER D 
+				ON A.USER_ORDER_NUM = D.ORDER_NUM , mind_diagnosis_result b 
+		where  1=1
+		AND D.ORDER_STATUS = 100782
+		AND D.ORDER_TYPE = 100885
+	    <if test="isNotNull(clientCd)">
+			and a.user_client_cd = #{clientCd}
+		</if>
+	    <if test="isNotNull(startMonth)">
+			AND A.USER_REG_DT >= CONCAT(REPLACE(#{startMonth}, '/', ''), '000000')
+		</if>
+	    <if test="isNotNull(endMonth)">
+			AND A.USER_REG_DT &lt;= CONCAT(REPLACE(#{endMonth}, '/', ''), '235959')
+		</if>
+		and a.MDC_REG_SEQ = b.MDC_REG_SEQ
+		order by a.MDC_REG_SEQ
+	</select>
+	
+	<select id="getOnlineServiceUserStatus" resultType="com.ezwel.admin.domain.entity.usermanager.UserManager">
+		select 
+			A.user_key as userKey
+			, a.user_nm	as userNm
+			, count(a.user_key) as count
+			, GROUP_CONCAT(DATE_FORMAT(STR_TO_DATE(a.USER_REG_DT, '%Y%m%d%H%i%s'),'%Y.%m.%d %H:%i'))					as userRegDt
+			, a.user_client_cd as clientCd
+		from (SELECT * FROM MIND_DIAGNOSIS_USER WHERE GRP_SEQ = 1 ) A 
+			INNER JOIN (SELECT USER_KEY FROM MIND_USER WHERE TEST_YN = 'N') C
+				ON A.USER_KEY = C.USER_KEY 
+			JOIN MIND_ORDER B
+				ON A.USER_ORDER_NUM = B.ORDER_NUM
+		where A.user_status = 'F'
+			AND B.ORDER_STATUS = 100782
+			AND B.ORDER_TYPE = 100885
+		 <if test="isNotNull(clientCd)">
+			and a.user_client_cd = #{clientCd}
+		</if>
+	    <if test="isNotNull(startMonth)">
+			AND A.USER_REG_DT >= CONCAT(REPLACE(#{startMonth}, '/', ''), '000000')
+		</if>
+	    <if test="isNotNull(endMonth)">
+			AND A.USER_REG_DT &lt;= CONCAT(REPLACE(#{endMonth}, '/', ''), '235959')
+		</if>
+		group by a.user_key
+		order by a.user_reg_dt
+	</select>
+	
+	<select id="getServiceUserListV2" resultType="com.ezwel.admin.domain.entity.usermanager.UserManager">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+			SELECT  
+				  A.ORDER_NUM																			as orderNum
+			   , A.CLIENT_CD																				as clientCd
+  			   , E.CLIENT_NM																				as clientNm
+			   , B.USER_ID																					as userId
+			   , B.USER_NM																					as userNm
+			   , B.USER_KEY																					as userKey
+			   , GROUP_CONCAT(C.COUNSEL_CD ORDER BY C.SCHEDULE_DT desc)														as counselCd
+			   , GROUP_CONCAT(IF(A.ORDER_STATUS = 100782, C.COUNSEL_CD, '') ORDER BY C.SCHEDULE_DT desc)				as minCounselCd
+			   , DATE_FORMAT(STR_TO_DATE(MAX(a.ORDER_DT), '%Y%m%d%H%i%s'),'%Y.%m.%d %H:%i')	as orderDt
+			   , GROUP_CONCAT(DATE_FORMAT(STR_TO_DATE(C.SCHEDULE_DT, '%Y%m%d%H%i%s'),'%Y.%m.%d  %H시') ORDER BY C.SCHEDULE_DT desc) as scheduleDt
+			   , D.COUNSEL_NM  /*신청자이름*/													    	as counselNm
+			   , CASE 
+			   	WHEN D.GENDER = 'M' THEN '남'
+			   	WHEN D.GENDER = 'F' THEN '여'
+			   	ELSE NULL END																				as gender 
+			   , AES_DECRYPT(UNHEX(D.MOBILE),'1234')												as mobile
+			   , FN_GET_CATEGORY_NM(D.COUNSEL_DIV)												as counselDiv
+			   , FN_GET_COMM_NM(D.COUNSEL_TYPE)													as counselTypeNm
+   			   , D.COUNSEL_TYPE																			as counselType
+			   , (SELECT CENTER_NM FROM MIND_CENTER WHERE CENTER_SEQ = C.CENTER_SEQ)	as centerNm
+			   , C.COUNSELOR_ID																			as counselorId
+			   , (SELECT USER_NM  FROM MIND_MGR WHERE USER_ID = C.COUNSELOR_ID)   as counselorNm
+			   , DATE_FORMAT(STR_TO_DATE(C.CANCEL_DT, '%Y%m%d%H%i%s'),'%Y.%m.%d %H:%i') as cancelDt
+		       , GROUP_CONCAT(FN_GET_COMM_NM(A.ORDER_STATUS) ORDER BY C.SCHEDULE_DT desc)							as orderStatusNm
+			   , D.INTAKE_CD 																				as intakeCd
+			   , D.CONFIRM_CALL_YN 																		as confirmCallYn
+			   , D.SURVEY_CALL_YN 																		as surveyCallYn
+			   , D.COUNSEL_RESERV_CHK 																	as counselReservChk
+			FROM MIND_ORDER A
+				 INNER JOIN MIND_USER B
+				      ON A.USER_KEY = B.USER_KEY
+			    LEFT OUTER JOIN MIND_COUNSEL C
+			    		ON A.COUNSEL_CD = C.COUNSEL_CD
+			    LEFT OUTER JOIN MIND_COUNSEL_INTAKE D
+			         ON C.INTAKE_CD = D.INTAKE_CD
+			    LEFT OUTER JOIN MIND_CLIENT E
+			    		ON A.CLIENT_CD = E.CLIENT_CD
+			WHERE 1=1
+			  AND B.TEST_YN = 'N'
+ 			  AND A.ORDER_TYPE != 100885
+	    <if test="isNotNull(clientCd)">
+			AND A.CLIENT_CD = #{clientCd}
+		</if>
+	    <if test="isNotNull(counselCd)">
+			AND C.COUNSEL_CD = #{counselCd}
+		</if>
+	    <if test="isNotNull(userNm)">
+			AND B.USER_NM LIKE CONCAT('%', #{userNm},'%')
+		</if>
+	    <if test="isNotNull(counselNm)">
+			AND D.COUNSEL_NM LIKE CONCAT('%', #{counselNm},'%')
+		</if>
+	    <if test="isNotNull(centerSeq)">
+			AND C.CENTER_SEQ = #{centerSeq}
+		</if>
+	    <if test="isNotNull(counselorNm)">
+			AND C.COUNSELOR_ID IN (SELECT USER_ID FROM MIND_MGR WHERE USER_NM = #{counselorNm} AND USER_TYPE = 3001 )
+		</if>
+		<if test="isNotNull(counselStatusArr)">
+		    AND D.COUNSEL_DIV in
+			    <foreach collection="counselStatusArr" item="status" open="(" close=")" separator=",">
+					<if test="status == 100001">
+						100001, 100005, 100006, 100007, 100008, 100009, 100010, 100011, 100021
+					</if>
+					<if test="status == 100002">
+						100002, 100012, 100013, 100014
+					</if>
+					<if test="status == 100003">
+						100003, 100015
+					</if>
+				</foreach>
+		</if>
+		<if test="isNotNull(siteTypeArr)">
+		    AND A.SITE_TYPE in
+			    <foreach collection="siteTypeArr" item="siteType" open="(" close=")" separator=",">
+			    	#{siteType}
+				</foreach>
+		</if>
+		<if test="isNotNull(startMonth)">
+			AND C.SCHEDULE_DT >= CONCAT(REPLACE(#{startMonth}, '/', ''), '000000')
+		</if>
+		<if test="isNotNull(endMonth)">
+			AND C.SCHEDULE_DT &lt;= CONCAT(REPLACE(#{endMonth}, '/', ''), '235959')
+		</if>
+	    <if test="isNotNull(userId)">
+			AND B.USER_ID = #{userId}
+		</if>
+		
+	    <if test="isNotNull(mgrId)">
+			AND E.MGR_ID = #{mgrId}
+		</if>
+	    <if test="isNotNull(counselMgrId)">
+			AND E.COUNSEL_MGR_ID = #{counselMgrId}
+		</if>
+		
+		<if test="isNotNull(riskArr)">
+		    AND C.COUNSEL_CD in (
+				SELECT COUNSEL_CD
+				FROM MIND_COUNSEL_RECORD
+				WHERE RISKS IN 		    
+			    <foreach collection="riskArr" item="risk" open="(" close=")" separator=",">
+			    	#{risk}
+				</foreach>
+				)
+		</if>
+	    <if test="isNotNull(counselReservChk)">
+			AND D.COUNSEL_RESERV_CHK = #{counselReservChk}
+		</if>
+		<if test="isNotNull(counselMobile)">
+			AND AES_DECRYPT(UNHEX(D.MOBILE),'1234') REGEXP #{counselMobile}
+		</if>
+		<if test="isNotNull(mobile)">
+			AND AES_DECRYPT(UNHEX(B.MOBILE),'1234') REGEXP #{mobile}
+		</if>
+		<if test="isNotNull(orderStatusArr)">
+		    AND A.ORDER_STATUS in
+			    <foreach collection="orderStatusArr" item="orderStatus" open="(" close=")" separator=",">
+			    	#{orderStatus}
+				</foreach>
+		</if>
+			GROUP BY D.INTAKE_CD 
+			ORDER BY MAX(A.ORDER_DT) DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getServiceUserDetail" resultType="com.ezwel.admin.domain.entity.usermanager.UserManager">
+			SELECT  
+				  A.ORDER_NUM																			as orderNum
+			   , A.CLIENT_CD																				as clientCd
+			   , (SELECT CLIENT_NM FROM MIND_CLIENT WHERE CLIENT_CD = A.CLIENT_CD)	as clientNm
+			   , B.USER_ID																					as userId
+			   , B.USER_NM																					as userNm
+			   , B.USER_KEY																					as userKey
+			   , C.COUNSEL_CD																				as counselCd
+			   , DATE_FORMAT(STR_TO_DATE(C.SCHEDULE_DT, '%Y%m%d%H%i%s'),'%Y.%m.%d  %H시') as scheduleDt
+			   , D.COUNSEL_NM  /*신청자이름*/													   		 as counselNm
+			   , CASE 
+			   	WHEN D.GENDER = 'M' THEN '남'
+			   	WHEN D.GENDER = 'F' THEN '여'
+			   	ELSE NULL END																				as gender 
+			   , AES_DECRYPT(UNHEX(D.MOBILE),'1234')												as mobile
+			   , FN_GET_CATEGORY_NM(D.COUNSEL_DIV)												as counselDiv
+			   , FN_GET_COMM_NM(D.COUNSEL_TYPE)													as counselTypeNm
+   			   , D.COUNSEL_TYPE																			as counselType
+			   , (SELECT CENTER_NM FROM MIND_CENTER WHERE CENTER_SEQ = C.CENTER_SEQ)	as centerNm
+			   , C.COUNSELOR_ID																			as counselorId
+			   , (SELECT USER_NM  FROM MIND_MGR WHERE USER_ID = C.COUNSELOR_ID)	as counselorNm
+			   , DATE_FORMAT(STR_TO_DATE(C.CANCEL_DT, '%Y%m%d%H%i%s'),'%Y.%m.%d %H:%i') as cancelDt
+			   , D.INTAKE_CD 																				as intakeCd
+   			   , FN_GET_COMM_NM(A.ORDER_STATUS)													as orderStatus
+ 			   , FN_GET_COMM_NM(c.status) 															as statusNm
+  			   , DATE_FORMAT(STR_TO_DATE(C.CANCEL_DT, '%Y%m%d%H%i%s'),'%Y.%m.%d %H:%i')					as cancelDt
+  			   , FN_GET_COMM_NM(A.SITE_TYPE) 														as siteType
+  			   , C.REG_ID 																					as orderId
+  			   , C.RECORD_STATUS																			as recordStatus
+  			   , A.ORDER_AMT 																				as orderAmt
+  			   , A.ORDER_STATUS 																			as orderStatusCd
+  			   , (
+				SELECT GROUP_CONCAT(IF(DD.RISKS = -1, '기타', CONCAT(DD.RISKS, '단계')))
+				FROM MIND_COUNSEL_RECORD AS DD
+				WHERE DD.COUNSEL_CD = A.COUNSEL_CD
+			  ) as risk
+			FROM MIND_ORDER A
+				 INNER JOIN MIND_USER B
+				      ON A.USER_KEY = B.USER_KEY
+			    LEFT OUTER JOIN MIND_COUNSEL C
+			    		ON A.COUNSEL_CD = C.COUNSEL_CD
+			    LEFT OUTER JOIN MIND_COUNSEL_INTAKE D
+			         ON C.INTAKE_CD = D.INTAKE_CD
+			WHERE 1=1
+			  AND B.TEST_YN = 'N'
+			  AND A.ORDER_TYPE != 100885
+	    <if test="isNotNull(intakeCd)">
+			AND D.INTAKE_CD = #{intakeCd}
+		</if>
+			ORDER BY A.ORDER_DT DESC
+	</select>
+	
+    
+   	<select id="getServiceUserListExcelDownloadV2" resultType="com.ezwel.admin.domain.entity.usermanager.UserManager" timeout="2000">
+		SELECT
+		   A.ORDER_NUM																										as orderNum
+	      , A.CLIENT_CD																										as clientCd
+	      , (SELECT CLIENT_NM FROM MIND_CLIENT WHERE CLIENT_CD = A.CLIENT_CD)												as clientNm
+	      , B.USER_ID																										as userId
+	      , B.USER_KEY																										as userKey
+	      , C.COUNSEL_CD																									as counselCd
+	      , DATE_FORMAT(STR_TO_DATE(a.ORDER_DT, '%Y%m%d%H%i%s'),'%Y.%m.%d %H:%i')											as orderDt
+	      , DATE_FORMAT(STR_TO_DATE(C.SCHEDULE_DT, '%Y%m%d%H%i%s'),'%Y.%m.%d  %H시')											as scheduleDt
+	      , B.USER_NM 																										as userNm
+		  , floor((year(now()) - (if (mid(B.rrn, 8, 1) = '1' or mid(B.rrn, 8, 1) = '2', 1900, 2000) + left(B.rrn, 2)) + 1)/10)*10 as userAge
+   		  , YEAR(NOW()) - (IF (MID(B.rrn, 8, 1) = '1' OR MID(B.rrn, 8, 1) = '2', 1900, 2000) + LEFT(B.rrn, 2)) + 1  		as age
+		  , CASE 
+			 	WHEN B.GENDER = 'M' THEN '남'
+			   	WHEN B.GENDER = 'F' THEN '여'
+			   	ELSE NULL END																								as userGender 
+	      <!-- , IF(B.GENDER = 'M', '남', '여')																					as userGender -->
+	      , D.COUNSEL_NM  /*신청자이름*/																						as counselNm
+	      , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = D.RELATION)													as relation
+	      , AES_DECRYPT(UNHEX(D.MOBILE),'1234')																				as mobile
+	      , A.ORDER_AMT																										as orderAmt
+	      , D.RRN																											as rrn
+		  , CASE 
+			 	WHEN D.GENDER = 'M' THEN '남'
+			   	WHEN D.GENDER = 'F' THEN '여'
+			   	ELSE NULL END																								as gender 
+	      <!-- , IF(D.GENDER = 'M', '남', '여')																					as gender -->
+	      , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = D.JOB)														as job
+	      , (SELECT CATEGORY_NM FROM MIND_COUNSEL_CATEGORY WHERE CATEGORY_CD = D.COUNSEL_DIV)								as counselDiv
+	      , D.CAUSE																											as cause
+	      , D.MEMO																											as memo
+	      , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = D.COUNSEL_TYPE)												as counselType
+	      , (SELECT CENTER_NM FROM MIND_CENTER WHERE CENTER_SEQ = C.CENTER_SEQ)												as centerNm
+	      , (SELECT CENTER_SEQ FROM MIND_CENTER WHERE CENTER_SEQ = C.CENTER_SEQ)											as centerSeq
+	      , C.COUNSELOR_ID																									as counselorId
+	      , (SELECT USER_NM  FROM MIND_MGR WHERE USER_ID = C.COUNSELOR_ID)                        							as counselorNm
+	      , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.PAY_TYPE)													as payType
+	      , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.ORDER_STATUS)												as orderStatus
+	      , C.EXTENSION_NUM																									as extensionNum
+	      , (SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE B.BRANCH_CD = COMM_CD AND CLIENT_CD = A.CLIENT_CD) 				as branchCd
+	      , (SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE B.DEPT_CD = COMM_CD   AND CLIENT_CD = A.CLIENT_CD) 				as deptCd
+	      , (SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE B.TEAM_CD = COMM_CD   AND CLIENT_CD = A.CLIENT_CD) 				as teamCd
+	      , (SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE B.PART_CD = COMM_CD   AND CLIENT_CD = A.CLIENT_CD) 				as partCd
+	      , (SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE B.GRADE_CD = COMM_CD  AND CLIENT_CD = A.CLIENT_CD) 				as gradeCd
+	      , DATE_FORMAT(STR_TO_DATE(C.CANCEL_DT, '%Y%m%d%H%i%s'),'%Y.%m.%d %H:%i')											as cancelDt
+	      , IF(e.RECORD_CD, 'O', 'X') 																						as record
+		  , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.SITE_TYPE) 													AS siteType
+	      , (SELECT IF(DD.RISKS = -1, '기타', CONCAT(DD.RISKS, '단계'))
+				FROM  MIND_COUNSEL AA
+						JOIN MIND_ORDER BB
+							ON AA.COUNSEL_CD = BB.COUNSEL_CD
+						JOIN MIND_USER CC
+							ON AA.USER_KEY = CC.USER_KEY
+						LEFT JOIN MIND_COUNSEL_RECORD DD
+							ON AA.COUNSEL_CD = DD.COUNSEL_CD
+				WHERE AA.COUNSEL_CD = A.COUNSEL_CD
+				AND BB.ORDER_STATUS = '100782' /* 주문완료 50%취소주문때문에 mind_counsel 대신 mind_order로 해야됨 */
+			  ) 																											as risk
+	      , e.RISK_REASON 																									as riskReason
+	      , b.MARRY_YN																										as marryYn
+	      , FN_GET_COMM_NM(c.status) 																						as statusNm
+  		  , C.REG_ID 																										AS orderId
+  		  , FN_GET_COMM_NM(C.RECORD_STATUS) 																				AS recordStatusNm
+		FROM MIND_ORDER A
+	  		 INNER JOIN MIND_USER B
+	  		      ON A.USER_KEY = B.USER_KEY
+	       LEFT OUTER JOIN MIND_COUNSEL C
+	       		ON A.COUNSEL_CD = C.COUNSEL_CD
+	       LEFT OUTER JOIN MIND_COUNSEL_INTAKE D
+	            ON C.INTAKE_CD = D.INTAKE_CD
+	       LEFT OUTER JOIN MIND_COUNSEL_RECORD E
+	            ON C.COUNSEL_CD = E.COUNSEL_CD
+		WHERE 1=1
+		  AND B.TEST_YN = 'N'
+		  AND A.ORDER_TYPE != 100885
+			  
+	    <if test="isNotNull(clientCd)">
+			AND A.CLIENT_CD = #{clientCd}
+		</if>
+	    <if test="isNotNull(counselCd)">
+			AND C.COUNSEL_CD = #{counselCd}
+		</if>
+	    <if test="isNotNull(userNm)">
+			AND B.USER_NM = #{userNm}
+		</if>
+	    <if test="isNotNull(counselNm)">
+			AND D.COUNSEL_NM = #{counselNm}
+		</if>
+	    <if test="isNotNull(centerSeq)">
+			AND C.CENTER_SEQ = #{centerSeq}
+		</if>
+	    <if test="isNotNull(counselorNm)">
+			AND C.COUNSELOR_ID IN (SELECT USER_ID FROM MIND_MGR WHERE USER_NM = #{counselorNm} AND USER_TYPE = 3001 )
+		</if>
+		<if test="isNotNull(counselStatusArr)">
+		    AND D.COUNSEL_DIV in
+			    <foreach collection="counselStatusArr" item="status" open="(" close=")" separator=",">
+					<if test="status == 100001">
+						100001, 100005, 100006, 100007, 100008, 100009, 100010, 100011, 100021
+					</if>
+					<if test="status == 100002">
+						100002, 100012, 100013, 100014
+					</if>
+					<if test="status == 100003">
+						100003, 100015
+					</if>
+				</foreach>
+		</if>
+		<if test="isNotNull(siteTypeArr)">
+		    AND A.SITE_TYPE in
+			    <foreach collection="siteTypeArr" item="siteType" open="(" close=")" separator=",">
+			    	#{siteType}
+				</foreach>
+		</if>
+	    <if test="isNotNull(startMonth)">
+			AND C.SCHEDULE_DT >= CONCAT(REPLACE(#{startMonth}, '/', ''), '000000')
+		</if>
+	    <if test="isNotNull(endMonth)">
+			AND C.SCHEDULE_DT &lt;= CONCAT(REPLACE(#{endMonth}, '/', ''), '235959')
+		</if>
+	    <if test="isNotNull(userId)">
+			AND B.USER_ID = #{userId}
+		</if>
+		 
+			ORDER BY A.ORDER_DT DESC
+	</select>
+	
+	   	<select id="getServiceUserListExcelDownloadV3" resultType="com.ezwel.admin.domain.entity.usermanager.UserManager" timeout="2000">
+		SELECT
+		   A.ORDER_NUM																												as orderNum
+	      , A.CLIENT_CD																												as clientCd
+	      , (SELECT CLIENT_NM FROM MIND_CLIENT WHERE CLIENT_CD = A.CLIENT_CD)														as clientNm
+	      , B.USER_ID																												as userId
+	      , B.USER_KEY																												as userKey
+	      , C.COUNSEL_CD																											as counselCd
+	      , DATE_FORMAT(STR_TO_DATE(a.ORDER_DT, '%Y%m%d%H%i%s'),'%Y.%m.%d %H:%i')													as orderDt
+	      , DATE_FORMAT(STR_TO_DATE(C.SCHEDULE_DT, '%Y%m%d%H%i%s'),'%Y.%m.%d  %H시')													as scheduleDt
+	      , B.USER_NM 																												as userNm
+		  , floor((year(now()) - (if (mid(B.rrn, 8, 1) = '1' or mid(B.rrn, 8, 1) = '2', 1900, 2000) + left(B.rrn, 2)) + 1)/10)*10 	as userAge
+   		  , YEAR(NOW()) - (IF (MID(B.rrn, 8, 1) = '1' OR MID(B.rrn, 8, 1) = '2', 1900, 2000) + LEFT(B.rrn, 2)) + 1  				as age
+		  , CASE 
+			 	WHEN B.GENDER = 'M' THEN '남'
+			   	WHEN B.GENDER = 'F' THEN '여'
+			   	ELSE NULL END																										as userGender 
+	      , D.COUNSEL_NM  /*신청자이름*/																								as counselNm
+	      , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = D.RELATION)															as relation
+	      , AES_DECRYPT(UNHEX(D.MOBILE),'1234')																						as mobile
+	      , A.ORDER_AMT																												as orderAmt
+	      , D.RRN																													as rrn
+		  , CASE 
+			 	WHEN D.GENDER = 'M' THEN '남'
+			   	WHEN D.GENDER = 'F' THEN '여'
+			   	ELSE NULL END																										as gender 
+	      , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = D.JOB)																as job
+	      , (SELECT CATEGORY_NM FROM MIND_COUNSEL_CATEGORY WHERE CATEGORY_CD = D.COUNSEL_DIV)										as counselDiv
+	      , D.CAUSE																													as cause
+	      , D.MEMO																													as memo
+	      , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = D.COUNSEL_TYPE)														as counselType
+	      , (SELECT CENTER_NM FROM MIND_CENTER WHERE CENTER_SEQ = C.CENTER_SEQ)														as centerNm
+	      , (SELECT CENTER_SEQ FROM MIND_CENTER WHERE CENTER_SEQ = C.CENTER_SEQ)													as centerSeq
+	      , C.COUNSELOR_ID																											as counselorId
+	      , (SELECT USER_NM  FROM MIND_MGR WHERE USER_ID = C.COUNSELOR_ID)                        									as counselorNm
+	      , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.PAY_TYPE)															as payType
+	      , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.ORDER_STATUS)														as orderStatus
+	      , C.EXTENSION_NUM																											as extensionNum
+	      , (SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE B.BRANCH_CD = COMM_CD AND CLIENT_CD = A.CLIENT_CD)						as branchCd
+	      , (SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE B.DEPT_CD = COMM_CD   AND CLIENT_CD = A.CLIENT_CD)						as deptCd
+	      , (SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE B.TEAM_CD = COMM_CD   AND CLIENT_CD = A.CLIENT_CD) 						as teamCd
+	      , (SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE B.PART_CD = COMM_CD   AND CLIENT_CD = A.CLIENT_CD) 						as partCd
+	      , (SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE B.GRADE_CD = COMM_CD  AND CLIENT_CD = A.CLIENT_CD) 						as gradeCd
+	      , DATE_FORMAT(STR_TO_DATE(C.CANCEL_DT, '%Y%m%d%H%i%s'),'%Y.%m.%d %H:%i')													as cancelDt
+	      , IF(e.RECORD_CD, 'O', 'X') 																								as record
+		   , (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.SITE_TYPE) 														AS siteType
+	      , (SELECT IF(DD.RISKS = -1, '기타', CONCAT(DD.RISKS, '단계'))
+				FROM  MIND_COUNSEL AA
+						JOIN MIND_ORDER BB
+							ON AA.COUNSEL_CD = BB.COUNSEL_CD
+						JOIN MIND_USER CC
+							ON AA.USER_KEY = CC.USER_KEY
+						LEFT JOIN MIND_COUNSEL_RECORD DD
+							ON AA.COUNSEL_CD = DD.COUNSEL_CD
+				WHERE AA.COUNSEL_CD = A.COUNSEL_CD
+				AND BB.ORDER_STATUS = '100782' /* 주문완료 50%취소주문때문에 mind_counsel 대신 mind_order로 해야됨 */
+			  ) as risk
+	      , e.RISK_REASON 																											as riskReason
+	      , b.MARRY_YN																												as marryYn
+	      , FN_GET_COMM_NM(c.status) 																								as statusNm
+  		  , C.REG_ID																												AS orderId
+  		  , FN_GET_COMM_NM(C.RECORD_STATUS) 																						AS recordStatusNm		
+		  , E.GOAL 																													AS goal
+          , E.SUBJECT         																										AS subject
+		  , E.MAIN_ISSUE      																										AS mainIssue
+		  , E.INTERVENTION 																											AS intervention
+		  , E.FEEDBACK 																												AS feedback
+          , E.MEMO 																													AS counselMemo
+          , E.TIME 																													AS time
+          , E.RISKS 																												AS risks
+		  , E.RISK_REASON	    																									AS riskReason
+		  , E.CALLING_ISSUE																											AS callingIssue
+		  , E.NEXT_DT																												AS nextDt
+		  , F.FINAL_GOAL     																										AS finalGoal
+		  , F.COURSE_GOAL    																										AS courseGoal
+		  , F.COUNSEL_PLAN   																										AS counselPlan
+		  , T1.CONTENT   																											AS content6												
+		  , T2.CONTENT   																											AS content4
+		  , T3.CONTENT   																											AS content5
+		FROM MIND_ORDER A
+	  		 INNER JOIN MIND_USER B
+	  		      ON A.USER_KEY = B.USER_KEY
+	       LEFT OUTER JOIN MIND_COUNSEL C
+	       		ON A.COUNSEL_CD = C.COUNSEL_CD
+	       LEFT OUTER JOIN MIND_COUNSEL_INTAKE D
+	            ON C.INTAKE_CD = D.INTAKE_CD
+	       LEFT OUTER JOIN MIND_COUNSEL_RECORD E
+	            ON C.COUNSEL_CD = E.COUNSEL_CD
+	       LEFT OUTER JOIN MIND_COUNSEL_PLAN F 
+	            ON D.INTAKE_CD = F.INTAKE_CD AND D.CLIENT_CD = F.CLIENT_CD 
+	       LEFT OUTER JOIN MIND_COUNSEL_RECORD_TXT T1
+	            ON E.RECORD_CD=T1.RECORD_CD AND T1.RECORD_TYPE='100644'
+	       LEFT OUTER JOIN MIND_COUNSEL_RECORD_TXT T2
+	            ON E.RECORD_CD=T2.RECORD_CD AND T2.RECORD_TYPE='100642'
+	       LEFT OUTER JOIN MIND_COUNSEL_RECORD_TXT T3
+	            ON E.RECORD_CD=T3.RECORD_CD AND T3.RECORD_TYPE='100643'            
+		WHERE 1=1
+		  AND B.TEST_YN = 'N'
+		  AND A.ORDER_TYPE != 100885
+			  
+	    <if test="isNotNull(clientCd)">
+			AND A.CLIENT_CD = #{clientCd}
+		</if>
+	    <if test="isNotNull(counselCd)">
+			AND C.COUNSEL_CD = #{counselCd}
+		</if>
+	    <if test="isNotNull(userNm)">
+			AND B.USER_NM = #{userNm}
+		</if>
+	    <if test="isNotNull(counselNm)">
+			AND D.COUNSEL_NM = #{counselNm}
+		</if>
+	    <if test="isNotNull(centerSeq)">
+			AND C.CENTER_SEQ = #{centerSeq}
+		</if>
+	    <if test="isNotNull(counselorNm)">
+			AND C.COUNSELOR_ID IN (SELECT USER_ID FROM MIND_MGR WHERE USER_NM = #{counselorNm} AND USER_TYPE = 3001 )
+		</if>
+		<if test="isNotNull(counselStatusArr)">
+		    AND D.COUNSEL_DIV in
+			    <foreach collection="counselStatusArr" item="status" open="(" close=")" separator=",">
+					<if test="status == 100001">
+						100001, 100005, 100006, 100007, 100008, 100009, 100010, 100011, 100021
+					</if>
+					<if test="status == 100002">
+						100002, 100012, 100013, 100014
+					</if>
+					<if test="status == 100003">
+						100003, 100015
+					</if>
+				</foreach>
+		</if>
+		<if test="isNotNull(siteTypeArr)">
+		    AND A.SITE_TYPE in
+			    <foreach collection="siteTypeArr" item="siteType" open="(" close=")" separator=",">
+			    	#{siteType}
+				</foreach>
+		</if>
+	    <if test="isNotNull(startMonth)">
+			AND C.SCHEDULE_DT >= CONCAT(REPLACE(#{startMonth}, '/', ''), '000000')
+		</if>
+	    <if test="isNotNull(endMonth)">
+			AND C.SCHEDULE_DT &lt;= CONCAT(REPLACE(#{endMonth}, '/', ''), '235959')
+		</if>
+	    <if test="isNotNull(userId)">
+			AND B.USER_ID = #{userId}
+		</if>
+			ORDER BY A.ORDER_DT DESC
+	</select>
+	
+	<select id="getNewServiceUserDetail" resultType="com.ezwel.admin.domain.entity.usermanager.UserManager" >
+		SELECT 
+			   FORMAT(A.CNT, 0 )	AS employeeCnt
+			 , FORMAT(B.CNT, 0 )	AS employeeUseCnt
+			 , FORMAT(C.CNT, 0 )	AS allUseCnt
+			 , FORMAT(D.CNT, 0 )	AS counselCnt
+			 , FORMAT(E.CNT, 0 )	AS confirmCnt
+		  FROM
+		  		(
+					SELECT COUNT(*) CNT
+					  FROM MIND_USER
+					 WHERE 1=1 
+					<if test="isNotNull(clientCd)">
+					  AND CLIENT_CD = #{clientCd}
+					 </if>
+					   AND USE_YN = 'Y' 
+					   AND TEST_YN = 'N' 
+					   AND USER_STATUS != '100009' /*퇴직이 아닌사람 */
+		  		) A, 
+		  		(
+					SELECT COUNT(*) CNT
+					  FROM 
+							(
+								SELECT A.USER_KEY
+								  FROM MIND_COUNSEL A 
+								  		JOIN MIND_COUNSEL_INTAKE B 
+												ON A.INTAKE_CD = B.INTAKE_CD
+										JOIN MIND_USER C 
+									  			ON A.USER_KEY = C.USER_KEY
+									  	JOIN MIND_ORDER D
+												ON A.COUNSEL_CD = D.COUNSEL_CD
+								 WHERE 1=1 
+									<if test="isNotNull(clientCd)">
+									  AND A.CLIENT_CD = #{clientCd}
+									 </if>
+								   /*AND B.RELATION = '100441'  임직원 본인만 (20160129) 이용임직원은 아이디 기준으로 변경 */ 
+								   AND D.ORDER_STATUS = '100782' /* 주문완료 50%취소주문때문에 mind_counsel 대신 mind_order로 해야됨 */
+								   AND C.TEST_YN = 'N'
+								<if test="isNotNull(startDd)">
+								   AND DATE_FORMAT(A.SCHEDULE_DT , '%Y%m%d') >= #{startDd} 
+								</if>
+								<if test="isNotNull(endDd)">
+								   AND DATE_FORMAT(A.SCHEDULE_DT , '%Y%m%d') &lt;= #{endDd} 
+								</if>
+								 GROUP BY A.USER_KEY
+							 ) A
+		  		) B,
+		  		(
+					SELECT COUNT(*) CNT
+					  FROM
+				 		     (
+					   			SELECT A.RELATION
+						  			      ,A.GENDER
+									  FROM MIND_COUNSEL_INTAKE A
+											JOIN MIND_COUNSEL B
+												ON A.INTAKE_CD = B.INTAKE_CD
+											JOIN MIND_USER C
+												ON A.USER_KEY = C.USER_KEY
+											JOIN MIND_ORDER D
+												ON B.COUNSEL_CD = D.COUNSEL_CD
+									 WHERE 1=1 
+									<if test="isNotNull(clientCd)">
+									  AND A.CLIENT_CD = #{clientCd}
+									 </if>
+									   AND A.RELATION IN ('100441', '100442')
+									   AND C.TEST_YN = 'N'
+									   AND D.ORDER_STATUS = '100782' /* 주문완료 50%취소주문때문에 MIND_COUNSEL 대신 MIND_ORDER로 해야됨 */
+									<if test="isNotNull(startDd)">
+									   AND DATE_FORMAT(B.SCHEDULE_DT , '%Y%m%d') >= #{startDd} 
+									</if>
+									<if test="isNotNull(endDd)">
+									   AND DATE_FORMAT(B.SCHEDULE_DT , '%Y%m%d') &lt;= #{endDd} 
+									</if>
+									 GROUP BY A.USER_KEY, A.RELATION 
+								  UNION ALL  /************************* union all *********************/
+							  			/** 직원자녀  */
+									SELECT A.RELATION
+									      ,A.GENDER
+									  FROM MIND_COUNSEL_INTAKE A
+											JOIN MIND_COUNSEL B
+												ON A.INTAKE_CD = B.INTAKE_CD
+											JOIN MIND_USER C
+												ON A.USER_KEY = C.USER_KEY
+											JOIN MIND_ORDER D
+												ON B.COUNSEL_CD = D.COUNSEL_CD
+									 WHERE 1=1 
+									<if test="isNotNull(clientCd)">
+									  AND A.CLIENT_CD = #{clientCd}
+									 </if>
+									   AND A.RELATION = '100443'
+									   AND C.TEST_YN = 'N'
+									   AND D.ORDER_STATUS = '100782' /* 주문완료 50%취소주문때문에 MIND_COUNSEL 대신 MIND_ORDER로 해야됨 */
+										<if test="isNotNull(startDd)">
+										   AND DATE_FORMAT(B.SCHEDULE_DT , '%Y%m%d') >= #{startDd} 
+										</if>
+										<if test="isNotNull(endDd)">
+										   AND DATE_FORMAT(B.SCHEDULE_DT , '%Y%m%d') &lt;= #{endDd} 
+										</if>
+									 GROUP BY A.USER_KEY, A.COUNSEL_NM								
+								  UNION ALL  /************************* union all *********************/
+							  			/** 직원부모  */
+									SELECT A.RELATION
+									      ,A.GENDER
+									  FROM MIND_COUNSEL_INTAKE A
+											JOIN MIND_COUNSEL B
+												ON A.INTAKE_CD = B.INTAKE_CD
+											JOIN MIND_USER C
+												ON A.USER_KEY = C.USER_KEY
+											JOIN MIND_ORDER D
+												ON B.COUNSEL_CD = D.COUNSEL_CD
+									 WHERE 1=1 
+									<if test="isNotNull(clientCd)">
+									  AND A.CLIENT_CD = #{clientCd}
+									 </if>
+									   AND A.RELATION = '100444'
+									   AND C.TEST_YN = 'N'
+									   AND D.ORDER_STATUS = '100782' /* 주문완료 50%취소주문때문에 MIND_COUNSEL 대신 MIND_ORDER로 해야됨 */
+									<if test="isNotNull(startDd)">
+									   AND DATE_FORMAT(B.SCHEDULE_DT , '%Y%m%d') >= #{startDd} 
+									</if>
+									<if test="isNotNull(endDd)">
+									   AND DATE_FORMAT(B.SCHEDULE_DT , '%Y%m%d') &lt;= #{endDd} 
+									</if>
+									 GROUP BY A.USER_KEY, A.GENDER
+								) A
+		  		) C,
+		  		(
+					SELECT  COUNT(*) CNT
+					  FROM  MIND_COUNSEL A
+								JOIN MIND_ORDER B
+									ON A.COUNSEL_CD = B.COUNSEL_CD
+								JOIN MIND_USER C
+								    ON A.USER_KEY = C.USER_KEY
+					   WHERE 1=1 
+						<if test="isNotNull(clientCd)">
+						 AND A.CLIENT_CD = #{clientCd}
+						 </if>
+						 AND C.TEST_YN = 'N'
+						 AND B.ORDER_STATUS = '100782' /* 주문완료 50%취소주문때문에 mind_counsel 대신 mind_order로 해야됨 */
+						<if test="isNotNull(startDd)">
+						   AND DATE_FORMAT(A.SCHEDULE_DT , '%Y%m%d') >= #{startDd} 
+						</if>
+						<if test="isNotNull(endDd)">
+						   AND DATE_FORMAT(A.SCHEDULE_DT , '%Y%m%d') &lt;= #{endDd} 
+						</if>
+		  		) D,
+		  		(
+					SELECT COUNT(*) CNT
+					  FROM MIND_USER
+					 WHERE 1=1 
+					<if test="isNotNull(clientCd)">
+					  AND CLIENT_CD = #{clientCd}
+					 </if>
+					   AND IPIN_DI IS NOT NULL
+					   AND USE_YN = 'Y' 
+					   AND TEST_YN = 'N' 
+					   AND USER_STATUS != '100009' /*퇴직이 아닌사람 */
+		  		) E
+	</select>
+	
+	<select id="getKossDetail" resultType="com.ezwel.admin.domain.entity.usermanager.UserManager" >
+		SELECT ROUND(SUM(res.result_point) / (Select count(b.user_key) as cnt
+															From mind_diagnosis_user b INNER JOIN MIND_USER a on a.user_key = b.user_key and a.test_yn = 'N'
+															Where b.user_client_cd = #{clientCd }
+															and b.user_sex = #{userSex}
+															and b.user_status = 'F'
+															and b.grp_seq = 1
+														    <if test="isNotNull(startMonth)">
+																AND b.USER_REG_DT >= CONCAT(REPLACE(#{startMonth}, '/', ''), '000000')
+															</if>
+														    <if test="isNotNull(endMonth)">
+																AND b.USER_REG_DT &lt;= CONCAT(REPLACE(#{endMonth}, '/', ''), '235959')
+															</if>),1) as resultPoint
+			 , res.mdc_seq AS mdcSeq
+			 , res.area_seq AS areaSeq
+			 , (select area_nm from mind_diagnosis_area where res.area_seq = area_seq and res.mdc_seq = mdc_seq) as areaNm
+		  FROM MIND_DIAGNOSIS_RESULT res
+		 INNER JOIN (SELECT * FROM MIND_DIAGNOSIS_USER WHERE USER_STATUS = 'F' AND GRP_SEQ = 1 AND user_client_cd = #{clientCd } AND user_sex = #{userSex} )  usr ON res.mdc_reg_seq = usr.mdc_reg_seq
+		 INNER JOIN MIND_USER a on a.user_key = usr.user_key and a.test_yn = 'N'
+		 WHERE res.mdc_seq = 1
+		   AND result_tot_yn = 'N'
+	    <if test="isNotNull(startMonth)">
+			AND usr.USER_REG_DT >= CONCAT(REPLACE(#{startMonth}, '/', ''), '000000')
+		</if>
+	    <if test="isNotNull(endMonth)">
+			AND usr.USER_REG_DT &lt;= CONCAT(REPLACE(#{endMonth}, '/', ''), '235959')
+		</if>
+		 GROUP BY res.area_seq
+	</select>
+	
+	<select id="getKossStand" resultType="com.ezwel.admin.domain.entity.usermanager.UserManager" >
+		SELECT mdc_seq as mdcSeq
+				, area_seq as areaSeq
+				, pool_seq as poolSeq
+				, stand_disp_type as standDispType
+				, stand_risk_level as standRiskLevel
+				, stand_tot_yn as standTotYn
+				, stand_st_point as standStPoint
+				, stand_end_point as standEndPoint
+				, (select area_nm from mind_diagnosis_area where a.area_seq = area_seq and a.mdc_seq = mdc_seq) as areaNm
+		FROM mind_diagnosis_standard as a 
+		WHERE mdc_seq = 1
+		AND area_seq != 0
+	    <if test="isNotNull(standDispType)">
+			AND stand_disp_type = #{standDispType}
+		</if>
+		order by area_seq, stand_risk_level
+	</select>
+	
+	<select id="getOnlieCounselNumber" resultType="java.util.HashMap">
+		SELECT
+				FORMAT(IFNULL(SUM(IF(A.month = '01', 1, 0)), 0 ), 0) AS m1
+			,	FORMAT(IFNULL(SUM(IF(A.month = '02', 1, 0)), 0 ), 0) AS m2
+			,	FORMAT(IFNULL(SUM(IF(A.month = '03', 1, 0)), 0 ), 0) AS m3
+			,	FORMAT(IFNULL(SUM(IF(A.month = '04', 1, 0)), 0 ), 0) AS m4
+			,	FORMAT(IFNULL(SUM(IF(A.month = '05', 1, 0)), 0 ), 0) AS m5
+			,	FORMAT(IFNULL(SUM(IF(A.month = '06', 1, 0)), 0 ), 0) AS m6
+			,	FORMAT(IFNULL(SUM(IF(A.month = '07', 1, 0)), 0 ), 0) AS m7
+			,	FORMAT(IFNULL(SUM(IF(A.month = '08', 1, 0)), 0 ), 0) AS m8
+			,	FORMAT(IFNULL(SUM(IF(A.month = '09', 1, 0)), 0 ), 0) AS m9
+			,	FORMAT(IFNULL(SUM(IF(A.month = '10', 1, 0)), 0 ), 0) AS m10
+			,	FORMAT(IFNULL(SUM(IF(A.month = '11', 1, 0)), 0 ), 0) AS m11
+			,	FORMAT(IFNULL(SUM(IF(A.month = '12', 1, 0)), 0 ), 0) AS m12
+			,	FORMAT(count(*), 0) AS tot
+		FROM (
+			select
+				DATE_FORMAT(a.USER_REG_DT, '%m') as month
+			from (SELECT * FROM MIND_DIAGNOSIS_USER WHERE GRP_SEQ = 1) A
+				INNER JOIN (SELECT USER_KEY FROM MIND_USER WHERE TEST_YN = 'N') C
+					ON A.USER_KEY = C.USER_KEY
+				JOIN MIND_ORDER B
+					ON A.USER_ORDER_NUM = B.ORDER_NUM
+			where A.user_status = 'F'
+				AND B.ORDER_STATUS = 100782
+				AND B.ORDER_TYPE = 100885
+				<if test="isNotNull(startDd)">
+				   AND DATE_FORMAT(A.USER_REG_DT , '%Y%m%d') >= #{startDd} 
+				</if>
+				<if test="isNotNull(endDd)">
+				   AND DATE_FORMAT(A.USER_REG_DT , '%Y%m%d') &lt;= #{endDd} 
+				</if>
+					and DATE_FORMAT(a.USER_REG_DT, '%Y') =  #{year}
+				<if test="isNotNull(clientCd)">
+					and a.USER_CLIENT_CD = #{clientCd }
+				</if>
+			) A
+	</select>
+	
+	<select id="getOnlineNewEmpDetail" resultType="java.util.HashMap">
+		SELECT FORMAT(IFNULL(SUM(IF(A.MONTH = '01', 1, 0)), 0 ), 0)    AS m1
+      		 , FORMAT(IFNULL(SUM(IF(A.MONTH = '02', 1, 0)), 0 ), 0)    AS m2
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '03', 1, 0)), 0 ), 0)	AS m3
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '04', 1, 0)), 0 ), 0)	AS m4
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '05', 1, 0)), 0 ), 0)	AS m5
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '06', 1, 0)), 0 ), 0)	AS m6
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '07', 1, 0)), 0 ), 0)	AS m7
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '08', 1, 0)), 0 ), 0)	AS m8
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '09', 1, 0)), 0 ), 0)	AS m9
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '10', 1, 0)), 0 ), 0)	AS m10
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '11', 1, 0)), 0 ), 0)	AS m11
+   			 , FORMAT(IFNULL(SUM(IF(A.MONTH = '12', 1, 0)), 0 ), 0)	AS m12
+   			 , FORMAT(COUNT(*), 0 )	        AS tot
+		 FROM
+		 	 (
+		 		SELECT A.MONTH
+				  FROM
+						   (
+								SELECT  SUBSTR(MIN(A.USER_REG_DT), 5, 2) AS MONTH
+									 	, SUBSTR(MIN(A.USER_REG_DT), 1, 4) AS YEAR
+							      		, A.USER_KEY						AS USER_KEY
+								  FROM  MIND_DIAGNOSIS_USER A
+											JOIN MIND_ORDER B
+												ON A.USER_ORDER_NUM = B.ORDER_NUM
+											JOIN MIND_USER C
+											    ON A.USER_KEY = C.USER_KEY
+								  WHERE 1=1 
+								<if test="isNotNull(clientCd)">
+								    AND A.USER_CLIENT_CD = #{clientCd}
+								</if>
+								    AND A.USER_STATUS = 'F'
+								    AND A.GRP_SEQ = 1
+								    AND C.TEST_YN = 'N'
+									AND B.ORDER_STATUS = '100782' /* 주문완료 50%취소주문때문에 mind_counsel 대신 mind_order로 해야됨 */
+									AND B.ORDER_TYPE = 100885
+									<if test="isNotNull(startDd)">
+									   AND DATE_FORMAT(A.USER_REG_DT , '%Y%m%d') >= #{startDd} 
+									</if>
+									<if test="isNotNull(endDd)">
+									   AND DATE_FORMAT(A.USER_REG_DT , '%Y%m%d') &lt;= #{endDd} 
+									</if>
+									AND DATE_FORMAT(A.USER_REG_DT , '%Y') = #{year}
+								  GROUP BY A.USER_KEY 
+							) A , 
+							(					
+								SELECT  SUBSTR(MIN(A.USER_REG_DT), 1, 4) AS YEAR
+							     	  , A.USER_KEY
+								  FROM  MIND_DIAGNOSIS_USER A
+											JOIN MIND_ORDER B
+												ON A.USER_ORDER_NUM = B.ORDER_NUM
+											JOIN MIND_USER C
+											    ON A.USER_KEY = C.USER_KEY
+								  WHERE 1=1 
+								<if test="isNotNull(clientCd)">
+								    AND A.USER_CLIENT_CD = #{clientCd}
+								</if>
+								    AND A.GRP_SEQ = 1
+								    AND A.USER_STATUS = 'F'
+								    AND C.TEST_YN = 'N'
+									AND B.ORDER_STATUS = '100782' 
+									AND B.ORDER_TYPE = 100885
+							<if test="isNotNull(startDd)">
+							   AND DATE_FORMAT(A.USER_REG_DT , '%Y%m%d') >= #{startDd} 
+							</if>
+							<if test="isNotNull(endDd)">
+							   AND DATE_FORMAT(A.USER_REG_DT , '%Y%m%d') &lt;= #{endDd} 
+							</if>
+								  GROUP BY A.USER_KEY 
+							 ) B
+				  WHERE A.YEAR = B.YEAR
+					AND A.USER_KEY = B.USER_KEY
+			 ) A
+	</select>
+	
+	
+	<select id="getOnlineReuseEmpList" resultType="java.util.HashMap">
+		SELECT REG_DT     		as regDt
+		  		, COUNT(*)		as cnt
+	  	  FROM 
+				(
+					SELECT A.USER_KEY   							USER_KEY
+						 , DATE_FORMAT(A.USER_REG_DT , '%Y%m')		REG_DT
+					 FROM  MIND_DIAGNOSIS_USER A
+						   		JOIN MIND_ORDER B
+									ON A.USER_ORDER_NUM = B.ORDER_NUM
+								JOIN MIND_USER C
+								    ON A.USER_KEY = C.USER_KEY
+					 WHERE  1=1 
+					<if test="isNotNull(clientCd)">
+					    AND A.USER_CLIENT_CD = #{clientCd}
+					</if>
+					   AND A.USER_STATUS = 'F'
+					   AND A.GRP_SEQ = 1
+					   AND C.TEST_YN = 'N'
+					   AND B.ORDER_STATUS = '100782'
+					   AND B.ORDER_TYPE = 100885
+					   	
+						<if test="isNotNull(startDd)">
+						   AND DATE_FORMAT(A.USER_REG_DT , '%Y%m%d') >= #{startDd} 
+						</if>
+						<if test="isNotNull(endDd)">
+						   AND DATE_FORMAT(A.USER_REG_DT , '%Y%m%d') &lt;= #{endDd} 
+						</if>
+						AND DATE_FORMAT(A.USER_REG_DT , '%Y') = #{year}
+					 GROUP BY A.USER_KEY , DATE_FORMAT(A.USER_REG_DT , '%Y%m')
+				) A
+		  WHERE NOT EXISTS 
+							(
+								SELECT USER_KEY
+									 	, REG_DT
+								  FROM 
+								  		(
+											SELECT USER_KEY
+												 , MIN(REG_DT) AS REG_DT
+											  FROM 
+													(
+														SELECT A.USER_KEY								USER_KEY
+															 , DATE_FORMAT(A.USER_REG_DT, '%Y%m')		REG_DT
+														  FROM  MIND_DIAGNOSIS_USER A
+																	JOIN MIND_ORDER B
+																		ON A.USER_ORDER_NUM = B.ORDER_NUM
+																	JOIN MIND_USER C
+																		ON A.USER_KEY = C.USER_KEY
+														  WHERE 1=1 
+														<if test="isNotNull(clientCd)">
+														    AND A.USER_CLIENT_CD = #{clientCd}
+														</if>
+								    						AND A.USER_STATUS = 'F'
+								   							AND A.GRP_SEQ = 1
+															AND C.TEST_YN = 'N'
+															AND B.ORDER_STATUS = '100782'
+															AND B.ORDER_TYPE = 100885
+														<if test="isNotNull(startDd)">
+														   AND DATE_FORMAT(A.USER_REG_DT , '%Y%m%d') >= #{startDd} 
+														</if>
+														<if test="isNotNull(endDd)">
+														   AND DATE_FORMAT(A.USER_REG_DT , '%Y%m%d') &lt;= #{endDd} 
+														</if>
+														  GROUP BY A.USER_KEY , DATE_FORMAT(A.USER_REG_DT , '%Y%m')
+													) A
+											  GROUP BY USER_KEY
+										) B
+								  WHERE A.USER_KEY = B.USER_KEY
+									AND A.REG_DT = B.REG_DT
+							)		
+		  GROUP BY REG_DT
+	</select>
+		
+	<select id="getOrderChannel" resultType="com.ezwel.admin.domain.entity.usermanager.UserManager" >
+		SELECT 
+			FORMAT(IFNULL(SUM(IF(ISNULL(B.SITE_TYPE), 1, 0 )), 0 ), 0 ) as noSiteTypeCnt
+			,FORMAT(IFNULL(SUM(IF(B.SITE_TYPE = 101005, 1, 0)), 0 ), 0 ) as webCnt
+			,FORMAT(IFNULL(SUM(IF(B.SITE_TYPE = 101006, 1, 0)), 0 ), 0 ) as mobileWebCnt
+			,FORMAT(IFNULL(SUM(IF(B.SITE_TYPE = 101007, 1, 0)), 0 ), 0 ) as mobileAppCnt
+			,FORMAT(IFNULL(SUM(IF(B.SITE_TYPE = 101008, 1, 0)), 0 ), 0 ) as adminCnt
+			,FORMAT(IFNULL(SUM(IF(B.SITE_TYPE = 101009, 1, 0)), 0 ), 0 ) as excelCnt
+			,FORMAT(IFNULL(COUNT(B.USER_KEY), 0 ), 0 ) as orderTotCnt
+		  FROM  MIND_COUNSEL A
+					JOIN MIND_ORDER B
+						ON A.COUNSEL_CD = B.COUNSEL_CD
+					JOIN MIND_USER C
+					    ON A.USER_KEY = C.USER_KEY
+		WHERE B.ORDER_STATUS = 100782
+		AND C.TEST_YN = 'N'
+		<if test="isNotNull(startDd)">
+		   AND DATE_FORMAT(B.ORDER_DT , '%Y%m%d') >= #{startDd} 
+		</if>
+		<if test="isNotNull(endDd)">
+		   AND DATE_FORMAT(B.ORDER_DT , '%Y%m%d') &lt;= #{endDd} 
+		</if>
+		<if test="isNotNull(clientCd)">
+		    AND B.CLIENT_CD = #{clientCd}
+		</if>
+	</select>
+	
+	<delete id="delDiagnosisTargetUser" parameterType="map">
+		DELETE FROM MIND_DIAGNOSIS_TARGET_USER
+		WHERE CLIENT_CD = #{clientCd}		
+	</delete>
+	
+	<insert id="addDiagnosisTargetUser" parameterType="map">
+		INSERT INTO MIND_DIAGNOSIS_TARGET_USER
+		(CLIENT_CD, USER_ID)
+		VALUES(#{clientCd},#{userId})	
+	</insert>
+	
+</mapper>

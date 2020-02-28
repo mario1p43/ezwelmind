@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.menu.MenuMapper">
+
+	<select id="getMenuGroup" parameterType="String" resultType="java.util.HashMap" >
+		SELECT DISTINCT COMM_NM  as menuGroup
+		 FROM MIND_COMM_CD
+		 WHERE HIGH_COMM_CD = #{menuGroupCommCd}
+	</select>
+
+
+	<select id="getMaxMenuCd" resultType="int">
+		SELECT ifnull(MAX(level_cd), 0) + 1
+		  FROM MIND_MENU_LEVEL
+		 WHERE MENU_GROUP = #{menuGroup}
+	</select>
+
+
+	<select id="getMaxMenuSeq" resultType="int">
+		SELECT ifnull(MAX(menu_seq), 0) + 1
+		  FROM MIND_MENU_LEVEL
+		 WHERE MENU_GROUP = #{menuGroup}
+	</select>
+
+
+	<select id="getMenuGroupCnt" resultType="int">
+		SELECT COUNT(*)
+		  FROM MIND_MENU_LEVEL
+		 WHERE MENU_GROUP = #{menuGroup}
+	</select>
+	
+	
+	<select id="getMenu" resultType="String">
+		SELECT MENU_SEQ
+		  FROM MIND_MENU_LEVEL
+		 WHERE MENU_GROUP = #{menuGroup}
+	</select>
+
+
+	<delete id="removeMenu">
+		DELETE
+		  FROM MIND_MENU_LEVEL
+		 WHERE MENU_GROUP = #{menuGroup}
+	</delete>
+
+
+	<insert id="treeAddMenu">
+		INSERT INTO mind_menu_level (
+			<if test="isNotNull(menuSeq)">
+			  MENU_SEQ ,
+			</if>
+			 MENU_GROUP ,
+			 LEVEL_CD ,
+			 HIGH_LEVEL_CD ,
+			 MENU_NM ,
+             ORDER_NO ,
+             MENU_CD ,
+             IMG_URL ,
+             IMG_URL2 ,
+             MENU_TXT ,
+             EXPAND_YN ,
+             AUTH_CD ,
+             USE_YN ,
+             DISP_YN,
+             DEPTH
+		) VALUES (
+		   <if test="isNotNull(menuSeq)">
+			  #{menuSeq} ,
+		   </if>
+			 #{menuGroup} ,
+			 #{levelCd} ,
+			 #{highLevelCd} ,
+			 #{menuNm} ,
+			 #{orderNo} ,
+			 #{menuCd} ,
+             #{imgUrl} ,
+             #{imgUrl2} ,
+             #{menuTxt} ,
+             #{expandYn} ,
+             #{authCd} ,
+             #{useYn} ,
+             #{dispYn},
+             #{depth}
+		)
+	</insert>
+
+
+	<select id="getMenuList" resultType="com.ezwel.admin.domain.entity.menu.MenuLevel">
+		SELECT A.MENU_SEQ		AS menuSeq,
+			   B.MENU_GROUP 		AS menuGroup,
+		 	   A.LEVEL_CD 		as levelCd,
+		 	   A.HIGH_LEVEL_CD  	as highLevelCd,
+			   A.MENU_CD 			as menuCd,
+			   A.MENU_NM 			as menuNm,
+			   A.ORDER_NO 		as orderNo,
+			   A.IMG_URL        as imgUrl,
+			   A.IMG_URL2        as imgUrl2,
+			   A.MENU_TXT        as menuTxt,
+			   A.EXPAND_YN      as expandYn,
+			   A.AUTH_CD		AS authCd,
+			   A.DISP_YN		as dispYn,
+			   A.USE_YN			AS useYn,
+			   B.MENU_URL	    AS menuUrl
+		 FROM MIND_MENU_LEVEL A LEFT JOIN MIND_MENU_CD B
+		 		 ON A.MENU_CD = B.MENU_CD
+		 WHERE A.MENU_GROUP = #{menuGroup}
+	</select>
+
+
+	<select id="getMenuCd" resultType="com.ezwel.admin.domain.entity.menu.MenuCd">
+		SELECT MENU_CD 		AS menuCd,
+			   MENU_GROUP    AS menuGroup,
+			   MENU_NM      AS menuNm,
+			   MENU_URL     AS menuUrl,
+			   REG_ID       AS regId,
+			   REG_DT       AS regDt
+		  FROM MIND_MENU_CD
+	</select>
+
+
+	<select id="getClientList" resultType="com.ezwel.admin.domain.entity.menu.MenuClient">
+		SELECT A.MENU_SEQ		as menuSeq,
+			   A.MENU_GROUP		as menuGroup,
+			   A.CLIENT_CD		as clientCd,
+		   	   A.PAY_TYPE		as payType,
+		   	   A.USE_YN			as useYn,
+		   	   A.DISP_YN		as dispYn,
+		   	   A.MODI_ID		as modiId,
+		   	   A.MODI_DT		as modiDt,
+		   	   B.CLIENT_NM		as clientNm
+		 FROM MIND_MENU_CLIENT A LEFT JOIN MIND_CLIENT B
+		   ON A.CLIENT_CD = B.CLIENT_CD
+		WHERE A.MENU_SEQ = #{menuSeq}
+		  AND A.MENU_GROUP = #{menuGroup}
+		  AND B.USE_YN = 'Y'
+		<if test="isNotNull(clientNm)">
+			AND B.CLIENT_NM LIKE CONCAT('%',#{clientNm},'%')
+		</if>
+	</select>
+
+
+	<insert id="addClient">
+		INSERT INTO MIND_MENU_CLIENT (
+			MENU_SEQ,
+			MENU_GROUP,
+			CLIENT_CD,
+			PAY_TYPE,
+			USE_YN,
+			DISP_YN,
+			MODI_ID,
+			MODI_DT
+		) VALUES (
+			#{menuSeq},
+			#{menuGroup},
+			#{clientCd},
+			#{payType},
+			#{useYn},
+			#{dispYn},
+			#{modiId},
+			DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+	</insert>
+
+
+	<update id="modifyClient">
+		UPDATE MIND_MENU_CLIENT
+		   SET PAY_TYPE = #{payType}
+		   	  ,USE_YN = #{useYn}
+		   	  ,DISP_YN = #{dispYn}
+		   	  ,MODI_ID = #{modiId}
+		   	  ,MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE MENU_SEQ = #{menuSeq}
+		  AND MENU_GROUP = #{menuGroup}
+		  AND CLIENT_CD = #{clientCd}
+	</update>
+
+
+	<select id="getClientDetail" resultType="com.ezwel.admin.domain.entity.menu.MenuClient">
+		SELECT A.MENU_SEQ		as menuSeq,
+			   A.MENU_GROUP		as menuGroup,
+			   A.CLIENT_CD		as clientCd,
+		   	   A.PAY_TYPE		as payType,
+		   	   A.USE_YN			as useYn,
+		   	   A.DISP_YN		as dispYn,
+		   	   A.MODI_ID		as modiId,
+		   	   A.MODI_DT		as modiDt,
+		   	   CONCAT( B.CLIENT_NM, '(', A.CLIENT_CD, ')' )  AS CLIENT_NM
+		FROM MIND_MENU_CLIENT A LEFT JOIN MIND_CLIENT B
+		  ON A.CLIENT_CD = B.CLIENT_CD
+		WHERE A.MENU_SEQ = #{menuSeq}
+			AND A.MENU_GROUP = #{menuGroup}
+			AND A.CLIENT_CD = #{clientCd}
+			AND B.USE_YN = 'Y'
+	</select>
+
+
+	<select id="getMenuCdList" resultType="com.ezwel.admin.domain.entity.menu.MenuCd">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+				SELECT MENU_CD		as menuCd,
+					   MENU_GROUP	as menuGroup,
+					   MENU_DIV		as menuDiv,
+					   MENU_NM		as menuNm,
+					   MENU_URL		as menuUrl,
+					   REG_ID		as regId,
+					   REG_DT		as regDt,
+					   MODI_ID		as modiId,
+					   MODI_DT		as modiDt
+				  FROM MIND_MENU_CD
+				 WHERE 1=1
+				<if test="isNotNull(menuCd)">
+				  AND MENU_CD = #{menuCd}
+				</if>
+				<if test="isNotNull(menuGroup)">
+				  AND MENU_GROUP = #{menuGroup}
+				</if>
+				<if test="isNotNull(menuNm)">
+				  AND MENU_NM LIKE CONCAT('%',#{menuNm},'%')
+				</if>
+				<if test="isNotNull(menuUrl)">
+				  AND MENU_URL LIKE CONCAT('%',#{menuUrl},'%')
+				</if>
+				ORDER BY MENU_CD DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="getMenuCdDetail" resultType="com.ezwel.admin.domain.entity.menu.MenuCd">
+		SELECT MENU_CD		as menuCd,
+			   MENU_GROUP	as menuGroup,
+			   MENU_DIV		as menuDiv,
+			   MENU_NM		as menuNm,
+			   MENU_URL		as menuUrl,
+			   REG_ID		as regId,
+			   REG_DT		as regDt,
+			   MODI_ID		as modiId,
+			   MODI_DT		as modiDt
+		  FROM MIND_MENU_CD
+		 WHERE 1=1
+		   AND MENU_CD = #{menuCd}
+	</select>
+
+
+	<update id="modifyMenuCode">
+		UPDATE mind_menu_cd
+		   SET MENU_GROUP = #{menuGroup}
+		   	  ,MENU_DIV = #{menuDiv}
+		   	  ,MENU_NM = #{menuNm}
+		   	  ,MENU_URL = #{menuUrl}
+		   	  ,MODI_ID = #{modiId}
+		   	  ,MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE MENU_CD = #{menuCd}
+	</update>
+
+
+	<insert id="addMenuCode">
+		INSERT INTO mind_menu_cd (
+			 MENU_GROUP
+		   , MENU_DIV
+		   , MENU_NM
+		   , MENU_URL
+		   , REG_ID
+		   , REG_DT
+		) VALUES (
+			#{menuGroup},
+			#{menuDiv},
+			#{menuNm},
+			#{menuUrl},
+			#{regId},
+			DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+	</insert>
+
+
+	<select id="getCopyClient" resultType="com.ezwel.admin.domain.entity.menu.MenuClient">
+		SELECT DISTINCT A.CLIENT_CD		as clientCd,
+						B.CLIENT_NM		as clientNm
+		  FROM MIND_MENU_CLIENT A LEFT JOIN MIND_CLIENT B
+			ON A.CLIENT_CD = B.CLIENT_CD
+		 WHERE A.MENU_GROUP = #{menuGroup}
+			AND B.USE_YN = 'Y'
+	</select>
+
+
+	<delete id="removeMenuClient">
+		DELETE
+		  FROM MIND_MENU_CLIENT
+		 WHERE MENU_GROUP = #{menuGroup}
+		   AND CLIENT_CD = #{toClientCd}
+	</delete>
+
+
+	<insert id="addClientCopy">
+		 INSERT INTO MIND_MENU_CLIENT
+		SELECT MENU_SEQ, MENU_GROUP, #{toClientCd}, PAY_TYPE, USE_YN, DISP_YN, #{modiId}, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		  FROM MIND_MENU_CLIENT
+		 WHERE MENU_GROUP = #{menuGroup}
+		   AND CLIENT_CD = #{fromClientCd}
+	</insert>
+
+	<select id="getMenuClientList" resultType="com.ezwel.admin.domain.entity.menu.MenuClient" >
+		SELECT DISTINCT CLIENT_CD  as clientNm
+			, MENU_GROUP as menugroup
+		 FROM MIND_menu_client
+		 WHERE MENU_GROUP = #{menuGroup}
+	</select>
+	
+	<select id="getMenuGroupClientList" resultType="com.ezwel.admin.domain.entity.menu.MenuLevel">
+		SELECT A.MENU_SEQ		AS menuSeq,
+			   C.MENU_GROUP 		AS menuGroup,
+			   C.CLIENT_CD as clientCd,
+		 	   A.LEVEL_CD 		as levelCd,
+		 	   A.HIGH_LEVEL_CD  	as highLevelCd,
+			   A.MENU_CD 			as menuCd,
+			   A.MENU_NM 			as menuNm,
+			   A.ORDER_NO 		as orderNo,
+			   A.IMG_URL        as imgUrl,
+			   A.IMG_URL2        as imgUrl2,
+			   A.MENU_TXT        as menuTxt,
+			   A.EXPAND_YN      as expandYn,
+			   A.AUTH_CD		AS authCd,
+			   A.DISP_YN		as dispYn,
+			   A.USE_YN			AS useYn,
+			   B.MENU_URL	    AS menuUrl,
+			   C.PAY_TYPE		AS payType,
+			   C.USE_YN			AS clientUseYn,
+			   C.DISP_YN		AS clientDispYn
+		 FROM MIND_MENU_LEVEL A
+		 INNER JOIN MIND_MENU_CD B ON A.MENU_CD = B.MENU_CD
+		 INNER JOIN MIND_MENU_CLIENT C ON A.MENU_SEQ = C.MENU_SEQ AND A.MENU_GROUP = C.MENU_GROUP
+		 WHERE  A.MENU_GROUP = #{menuGroup}
+		 AND	C.CLIENT_CD = #{clientNm}
+		 <if test="isNotNull(menuNm)">
+		 AND	A.MENU_NM like CONCAT('%',#{menuNm},'%')
+		 </if>
+		 <if test="isNotNull(clientMenuNm)">
+		 AND	B.MENU_NM like CONCAT('%',#{clientMenuNm},'%')
+		 </if>
+		 <if test="isNotNull(clientMenuCd)">
+		 AND	B.MENU_CD = #{clientMenuCd}
+		 </if>
+		 <if test="isNotNull(clientMenuUrl)">
+		 AND	B.MENU_URL = #{clientMenuUrl}
+		 </if>
+		 <if test="isNotNull(highLevelCd)">
+		 AND	A.Level_Cd = #{highLevelCd}
+		 </if>
+		 order by A.HIGH_LEVEL_CD , A.ORDER_NO asc
+	</select>
+	
+	<select id="getTopMenu" resultType="com.ezwel.admin.domain.entity.menu.MenuVo">
+		SELECT  A.level_cd AS levelCd
+		       ,A.high_level_cd AS highLevelCd
+			   ,A.menu_cd AS menuCd
+			   ,A.menu_nm AS menuNm
+			   ,A.depth   AS depth
+			   ,A.order_no AS orderNo
+			   ,A.disp_yn  AS dispYn
+			   ,B.menu_url AS menuUrl
+		FROM MIND_MENU_LEVEL A
+		     INNER JOIN MIND_MENU_CD B ON B.MENU_CD = A.MENU_CD     
+		WHERE A.menu_group = #{menuLevelGroup}	  	
+		AND B.menu_group = #{menuCdGroup}	  
+		AND A.depth = 1
+		AND A.auth_cd IN
+	    <foreach collection="authList" item="item" index="index" open="(" separator="," close=")">
+				#{item}
+		</foreach>
+		ORDER BY depth, orderNo asc
+	</select>
+	
+	<select id="getLeftMenu" resultType="com.ezwel.admin.domain.entity.menu.MenuVo">
+		SELECT  levelCd
+		       ,highLevelCd
+		       ,menuCd
+		       ,menuNm
+		       ,depth
+		       ,orderNo
+		       ,dispYn
+		       ,menuUrl
+		FROM (
+			SELECT A.level_cd AS levelCd
+					,A.high_level_cd AS highLevelCd
+					,A.menu_cd AS menuCd
+					,A.menu_nm AS menuNm
+					,A.depth AS depth
+					,A.order_no AS orderNo
+					,A.disp_yn AS dispYn
+					,B.menu_url AS menuUrl
+			FROM MIND_MENU_LEVEL A
+			INNER JOIN MIND_MENU_CD B ON B.MENU_CD = A.MENU_CD
+			WHERE A.menu_group = #{menuLevelGroup} 
+			AND B.menu_group = #{menuCdGroup}
+			AND A.use_yn = 'Y'
+			<if test="isNotNull(authCdList)">
+				AND A.auth_cd IN 
+				<foreach collection="authCdList" item="item" index="index" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		) T
+		WHERE 1=1
+		<if test="menuUrl == null">
+			AND levelCd = #{levelCd}
+			<if test="isNotNull(highLevelCdList)">
+				OR highLevelCd IN
+				<foreach collection="highLevelCdList" item="item" index="index" open="(" separator="," close=")">
+						#{item}
+				</foreach>
+			</if>
+		</if>
+		<if test="isNotNull(menuUrl)">
+			AND depth != 1
+			AND menuUrl = #{menuUrl}
+		</if>
+		ORDER BY depth, orderNo ASC
+	</select>
+	
+
+</mapper>

@@ -1,0 +1,59 @@
+package com.ezwel.admin.domain.entity.employ;
+
+import com.ezwel.core.framework.web.vo.PagingVo;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
+public class EmployData extends PagingVo {
+
+	private String clientCd;
+	private String clientNm;
+	private String userKey;
+	private String userNm;
+	private String rrn;
+	private String gender;
+	private String userId;
+	private String empNum;
+	private String useYn;
+	private String userStatus;
+	private String userStatusNm;
+	
+	private String genderNm;
+	private String addr1;
+	private String addr2;
+	private String telNum;
+	private String homeTel;
+	private String mobile;
+	private String email;
+	private String branchCd;
+	private String branchNm;
+	private String deptCd;
+	private String deptNm;
+	private String teamCd;
+	private String teamNm;
+	private String partCd;
+	private String partNm;
+	private String gradeCd;
+	private String gradeNm;
+	private String birthDd;
+	
+	private String agreeCd;
+	private String agreeNm;
+	private String agreeYn;
+	private String agree;
+	private String agreeDt;
+	
+	private String interestCd;
+	private String highCd;
+	private String interestNm;
+	
+	private String commNm;
+	private String commCd;
+	private String encUserKey;
+	private String ipinDi;
+	
+	// 고객사 담당자 여부
+	private String clientMgrYn;
+}

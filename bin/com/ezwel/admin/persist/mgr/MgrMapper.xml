@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.mgr.MgrMapper">
+
+	<select id="getMgrList" resultType="com.ezwel.admin.domain.entity.mgr.MgrData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+				SELECT
+					 USER_ID	AS	userId
+					, USER_TYPE	AS	userType
+					,(CASE USER_TYPE WHEN 2001 THEN '관리자' WHEN 3001 THEN '제휴사' WHEN 4001 THEN '고객사' ELSE '' END)	AS	userTypeNm
+					,USER_NM	AS	userNm
+					,USER_PWD	AS	userPwd
+					,USE_YN	AS	useYn
+					,EMAIL	AS	email
+					,MOBILE	AS	mobile
+					,BRANCH_CD	AS	branchCd
+					,DEPT_CD	AS	deptCd
+					,TEAM_CD	AS	teamCd
+					,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = BRANCH_CD) AS branchNm
+					,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = DEPT_CD) AS deptNm
+					,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = TEAM_CD) AS teamNm
+					,DATE_FORMAT(STR_TO_DATE(REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt
+					,DATE_FORMAT(STR_TO_DATE(MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS modiDt
+				FROM MIND_MGR
+				WHERE 1=1
+				<if test="isNotNull(userId)">
+					AND USER_ID = #{userId}
+				</if>
+				<choose>
+	        	<when test="isNotNull(serviceType) and (serviceType == 'partner')">
+	        		AND USER_TYPE = 3001
+	        	</when>
+	        	<when test="isNotNull(serviceType) and (serviceType == 'cadm')">
+	        		AND USER_TYPE = 4001
+	        	</when>
+ 		       	<when test="isNotNull(serviceType) and (serviceType == 'madm')">
+	        		AND USER_TYPE = 2001
+	        	</when>
+				<otherwise></otherwise>	        	
+	        	</choose>
+				<if test="isNotNull(userNm)">
+					AND USER_NM LIKE CONCAT('%', #{userNm},'%')
+				</if>
+				<if test="isNotNull(useYn)">
+					AND USE_YN = #{useYn}
+				</if>
+				
+				ORDER BY REG_DT DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+
+	<insert id="insertMgr" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
+		INSERT INTO MIND_MGR (
+			  USER_ID
+			, USER_TYPE
+			, USER_NM
+			, USER_PWD
+			, USE_YN
+			, EMAIL
+			, MOBILE
+			, BRANCH_CD
+			, DEPT_CD
+			, TEAM_CD
+			<if test="isNotNull(cspCd)">
+			, CSP_CD
+			</if>
+			, REG_DT
+		) VALUES (
+			 #{userId}
+			,#{userType}
+			,#{userNm}
+			,#{userPwd}
+			,#{useYn}
+			,#{email}
+			,#{mobile}
+			<if test="isNull(branchCd)">
+			,null
+			</if>
+			<if test="isNotNull(branchCd)">
+			,#{branchCd}
+			</if>
+			<if test="isNull(deptCd)">
+			,null
+			</if>
+			<if test="isNotNull(deptCd)">
+			,#{deptCd}
+			</if>
+			<if test="isNull(teamCd)">
+			,null
+			</if>
+			<if test="isNotNull(teamCd)">
+			,#{teamCd}
+			</if>
+			<if test="isNotNull(cspCd)">
+			, #{cspCd}
+			</if>
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+	</insert>
+<!-- 이거 아님 -->
+	<select id="getMgrSelectOne" resultType="com.ezwel.admin.domain.entity.mgr.MgrData">
+		SELECT
+			 A.USER_ID	AS	userId
+			,A.USER_TYPE	AS	userType
+			,(CASE A.USER_TYPE WHEN 2001 THEN '관리자' WHEN 3001 THEN '제휴사' WHEN 4001 THEN '고객사' ELSE '' END)	AS	userTypeNm
+			,A.USER_NM	AS	userNm
+			,A.USER_PWD	AS	userPwd
+			,A.RRN	AS	rrn
+			,A.USE_YN	AS	useYn
+			,A.EMAIL	AS	email
+			,A.MOBILE	AS	mobile
+			,	SUBSTRING(SUBSTRING_INDEX(A.MOBILE, '-', 1), LENGTH(SUBSTRING_INDEX(A.MOBILE, '-', 1 - 1)) + 1)	AS mobile1
+			,	SUBSTRING(SUBSTRING_INDEX(A.MOBILE, '-', 2), LENGTH(SUBSTRING_INDEX(A.MOBILE, '-', 2 - 1)) + 2)	AS mobile2
+			,	SUBSTRING(SUBSTRING_INDEX(A.MOBILE, '-', 3), LENGTH(SUBSTRING_INDEX(A.MOBILE, '-', 3 - 1)) + 2)	AS mobile3
+			,A.TEL_NUM	AS	telNum
+			,	SUBSTRING(SUBSTRING_INDEX(A.TEL_NUM, '-', 1), LENGTH(SUBSTRING_INDEX(A.TEL_NUM, '-', 1 - 1)) + 1)	AS telNum1
+			,	SUBSTRING(SUBSTRING_INDEX(A.TEL_NUM, '-', 2), LENGTH(SUBSTRING_INDEX(A.TEL_NUM, '-', 2 - 1)) + 2)	AS telNum2
+			,	SUBSTRING(SUBSTRING_INDEX(A.TEL_NUM, '-', 3), LENGTH(SUBSTRING_INDEX(A.TEL_NUM, '-', 3 - 1)) + 2)	AS telNum3
+			,A.BRANCH_CD	AS	branchCd
+			,A.DEPT_CD	AS	deptCd
+			,A.TEAM_CD	AS	teamCd
+			,A.MGR_STATUS AS mgrStatus
+			,A.TEL_NUM AS telNum
+			,A.MEMO AS memo
+			,(SELECT CSP_NM FROM MIND_CSP WHERE CSP_CD = A.CSP_CD) AS cspNm
+			,(SELECT USER_NM FROM MIND_MGR WHERE USER_ID = A.REG_ID) AS regNm
+			,(SELECT USER_NM FROM MIND_MGR WHERE USER_ID = A.MODI_ID) AS modiNm
+			,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.BRANCH_CD) AS branchNm
+			,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.DEPT_CD) AS deptNm
+			,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.TEAM_CD) AS teamNm
+			,DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt
+			,DATE_FORMAT(STR_TO_DATE(A.MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS modiDt
+		FROM MIND_MGR A
+		WHERE 1=1
+		<if test="isNotNull(userId)">
+			AND USER_ID = #{userId}
+		</if>
+		<if test="isNotNull(userType)">
+			AND USER_TYPE = #{userType}
+		</if>
+		ORDER BY REG_DT DESC
+	</select>
+
+	<update id="updateMgr" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
+		UPDATE MIND_MGR
+		SET
+			  MOBILE = #{mobile}
+			,EMAIL = #{email}
+			<if test="isNotNull(userNm)">
+			,USER_NM = #{userNm}
+			</if>
+			<if test="isNotNull(useYn)">
+			,USE_YN = #{useYn}
+			</if>
+			<if test="isNotNull(userPwd)">
+				,USER_PWD = #{userPwd}
+			</if>
+			<if test="isNull(branchCd)">
+				,BRANCH_CD = null
+			</if>
+			<if test="isNotNull(branchCd)">
+				,BRANCH_CD = #{branchCd}
+			</if>
+			<if test="isNull(deptCd)">
+				,DEPT_CD = null
+			</if>
+			<if test="isNotNull(deptCd)">
+				,DEPT_CD = #{deptCd}
+			</if>
+			<if test="isNull(teamCd)">
+				,TEAM_CD = null
+			</if>
+			<if test="isNotNull(teamCd)">
+				,TEAM_CD = #{teamCd}
+			</if>
+			<if test="isNotNull(imsiPwdYn)">
+				,IMSI_PWD_YN = #{imsiPwdYn}
+			</if>
+			,MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE USER_ID = #{userId}
+	</update>
+	
+	<select id="getMgrSubSelectOne" resultType="com.ezwel.admin.domain.entity.mgr.MgrSub">
+		SELECT
+			 USER_ID			AS	userId
+			, GENDER				AS	gender
+			, EDUCATION			AS	education 
+			, UNIVERSITY			AS	university
+			, DEPARTMENT			AS	department
+			, CAREER				AS	career 
+			, MEMO				AS	memo
+			, FILE_NM			AS	fileNm 
+		 	, FILE_PATH			AS	filePath
+		 	, CENTER_TYPE		AS	centerType
+		 	, WORK_TYPE			AS	workType
+		 	, CHANNEL_TYPE		AS	channelType
+		 	, MENTAL_AGES		AS	mentalAges
+		 	, MENTAL_DIV			AS	mentalDiv
+		 	, MENTAL_DIV_ETC		AS	mentalDivEtc
+		 	, MENTAL_TYPE		AS	mentalType
+		 	, LAW_DIV			AS	lawDiv
+		 	, LAW_TYPE			AS	lawType
+		 	, FINANCE_DIV		AS	financeDiv
+		 	, FINANCE_TYPE		AS	financeType
+		 	, DIAGNOSIS_AGES		AS	diagnosisAges
+		 	, DIAGNOSIS_DIV		AS	diagnosisDiv
+		 	, DIAGNOSIS_DIV_ETC	AS	diagnosisDivEtc
+		 	, DIAGNOSIS_TYPE		AS	diagnosisType
+		FROM MIND_MGR_SUB
+		WHERE 1=1
+		<if test="isNotNull(userId)">
+			AND USER_ID = #{userId}
+		</if>
+	</select>
+	
+	<select id="getMgrCertList" resultType="com.ezwel.admin.domain.entity.mgr.MgrCert">
+			SELECT
+			 USER_ID		AS	userId
+		 	,CERT_CD		AS	certCd
+		 	,ETC			AS	etc
+		 	,FILE_NM		AS	fileNm
+		 	,FILE_PATH		AS	filePath
+		 	,ORDER_NO		AS	orderNo
+		 	,ORGANIZATION_NM			AS	orgNm
+		 	,CERT_NM		AS	certNm
+		 	,GRADE			AS	grade
+		 	,CERT_YEAR		AS	certYear
+		FROM MIND_MGR_CERT
+		WHERE 1=1
+		<if test="isNotNull(userId)">
+			AND USER_ID = #{userId}
+		</if>
+	
+	</select>	
+		<select id="getMgrCertList2" resultType="com.ezwel.admin.domain.entity.mgr.MgrCert">
+			SELECT
+			 USER_ID		AS	userId
+		 	,CERT_CD		AS	certCd
+		 	,ETC			AS	etc
+		 	,FILE_NM		AS	fileNm
+		 	,FILE_PATH		AS	filePath
+		 	,ORDER_NO		AS	orderNo
+		FROM MIND_MGR_CERT
+		WHERE 1=1
+		<if test="isNotNull(userId)">
+			AND USER_ID = #{userId}
+		</if>
+	
+	</select>	
+	
+	
+	<update id="updateMgrSub" parameterType="com.ezwel.admin.service.mgr.dto.MgrSubDto">
+		UPDATE MIND_MGR_SUB
+		SET
+				EDUCATION	= #{education}
+			,	UNIVERSITY	= #{university}
+			,	DEPARTMENT	= #{department}
+			,	CAREER		= #{career}
+			,	MEMO		= #{memo}
+			<if test="isNotNull(fileNm)">
+			,	FILE_NM		= #{fileNm}
+			</if>
+			<if test="isNotNull(filePath)">
+			,	FILE_PATH	= #{filePath}
+			</if>
+		WHERE USER_ID = #{userId}
+	</update>
+	
+	<insert id="insertMgrCert" parameterType="com.ezwel.admin.service.mgr.dto.MgrCertDto">
+		INSERT INTO MIND_MGR_CERT (
+			  USER_ID
+			, CERT_CD
+			, ETC
+			, FILE_NM
+			, FILE_PATH
+			, ORDER_NO
+			, ORGANIZATION_NM
+			, CERT_NM
+			, GRADE
+			, CERT_YEAR
+		) VALUES (
+			 #{userId}
+			,#{certCd}
+			,#{etc}
+			,#{fileNm}
+			,#{filePath}
+			,#{orderNo}
+			,#{orgNm}
+			,#{certNm}
+			,#{grade}
+			,#{certYear}
+		)
+	</insert>
+
+	<delete id="deleteMgrCert" parameterType="com.ezwel.admin.service.mgr.dto.MgrCertDto">
+		DELETE	FROM MIND_MGR_CERT
+		WHERE	USER_ID = #{userId}
+	</delete>
+
+	<select id="selectMgrList" resultType="com.ezwel.admin.domain.entity.mgr.MgrData">
+		SELECT 
+				USER_ID	AS	userId
+				, USER_TYPE	AS	userType
+				,USER_NM	AS	userNm
+				,USER_PWD	AS	userPwd
+				,USE_YN	AS	useYn
+				,EMAIL	AS	email
+				,MOBILE	AS	mobile
+				,BRANCH_CD	AS	branchCd
+				,DEPT_CD	AS	deptCd
+				,TEAM_CD	AS	teamCd
+				,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = BRANCH_CD) AS branchNm
+				,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = DEPT_CD) AS deptNm
+				,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = TEAM_CD) AS teamNm
+				,DATE_FORMAT(STR_TO_DATE(REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt
+				,DATE_FORMAT(STR_TO_DATE(MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS modiDt
+		FROM	MIND_MGR
+		WHERE	1=1
+		AND		CSP_CD = #{cspCd}
+	
+	</select>
+
+	<select id="getCspMgrList" resultType="com.ezwel.admin.domain.entity.mgr.MgrData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+				SELECT
+					 A.USER_ID	AS	userId
+					,A.USER_TYPE	AS	userType
+					,(CASE A.USER_TYPE WHEN 2001 THEN '관리자' WHEN 3001 THEN '제휴사' WHEN 4001 THEN '고객사' ELSE '' END)	AS	userTypeNm
+					,A.USER_NM	AS	userNm
+					,A.USER_PWD	AS	userPwd
+					,A.USE_YN	AS	useYn
+					,A.EMAIL	AS	email
+					,A.MOBILE	AS	mobile
+					,A.TEL_NUM	AS	telNum
+					,A.BRANCH_CD	AS	branchCd
+					,A.DEPT_CD	AS	deptCd
+					,A.TEAM_CD	AS	teamCd
+					,A.CSP_CD	AS	cspCd
+					,(CASE A.MGR_STATUS WHEN 'Y' THEN '승인' WHEN 'N' THEN '정지' WHEN 'S' THEN '대기' WHEN 'R' THEN '반려' ELSE '' END)	AS mgrStatus
+					,(SELECT CSP_NM FROM MIND_CSP WHERE CSP_CD = A.CSP_CD) AS cspNm
+					,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.BRANCH_CD) AS branchNm
+					,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.DEPT_CD) AS deptNm
+					,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.TEAM_CD) AS teamNm
+					,DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d') AS regDt
+					,DATE_FORMAT(STR_TO_DATE(A.MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d') AS modiDt
+				FROM MIND_MGR A
+				WHERE 1=1
+					AND A.USE_YN = 'Y'
+	        		AND A.USER_TYPE = 3001
+				<if test="isNotNull(sMgrStatue)">
+					AND		A.MGR_STATUS in
+					    <foreach collection="sMgrStatue" item="statue" open="(" close=")" separator=",">
+							#{statue}
+						</foreach>
+			</if>
+				<if test="isNotNull(cspCd)">
+					AND A.CSP_CD = #{cspCd}
+				</if>
+				<if test="isNotNull(userNm)">
+					AND A.USER_NM LIKE CONCAT('%', #{userNm},'%')
+				</if>
+				<if test="isNotNull(startDt)">
+				AND 	DATE_FORMAT(CONVERT(A.REG_DT, DATE), '%Y%m%d') &gt;= #{startDt}
+				</if>
+				<if test="isNotNull(endDt)">
+				AND 	DATE_FORMAT(CONVERT(A.REG_DT, DATE), '%Y%m%d') &lt;= #{endDt}
+				</if>
+				AND	CSP_CD IS NOT NULL
+				ORDER BY REG_DT DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+
+	<insert id="insertCspMgr" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
+		INSERT INTO MIND_MGR (
+			  USER_ID
+			, USER_TYPE
+			, USER_NM
+			, USER_PWD
+			, USE_YN
+			, EMAIL
+			<if test="isNotNull(mobile)">
+			, MOBILE
+			</if>
+			<if test="isNotNull(telNum)">
+			, TEL_NUM
+			</if>
+			, CSP_CD
+			, MGR_STATUS
+			<if test="isNotNull(memo)">
+			, MEMO
+			</if>
+			, REG_ID
+			, REG_DT
+		) VALUES (
+			 #{userId}
+			,'3001'
+			,#{userNm}
+			,#{userPwd}
+			,'Y'
+			,#{email}
+			<if test="isNotNull(mobile)">
+			,#{mobile}
+			</if>
+			<if test="isNotNull(telNum)">
+			,#{telNum}
+			</if>
+			,#{cspCd}
+			,'Y'
+			<if test="isNotNull(memo)">
+			,#{memo}
+			</if>
+			,#{regId}
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertAclUserAuth" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
+		INSERT INTO acl_user_auth
+		(
+			USER_AUTH_KEY
+			, AUTH_CD
+			, REG_DT
+		)
+		VALUES (
+			CONCAT(#{userId},'3001')
+			, 'ROLE_PARTNER_CSP'
+			, date_format(now(), '%Y%m%d%h%i%s')
+		)
+	</insert>
+
+
+	<update id="updateCspMgr" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
+		UPDATE MIND_MGR
+		SET
+				USER_NM		= #{userNm}
+			,	MGR_STATUS	= #{mgrStatus}
+			,	EMAIL		= #{email}
+			<if test="isNotNull(memo)">
+			,	MEMO		= #{memo}
+			</if>
+			<if test="isNotNull(mobile)">
+			,	MOBILE		= #{mobile}
+			</if>
+			<if test="isNotNull(telNum)">
+			,	TEL_NUM		= #{telNum}
+			</if>
+			,	MODI_ID		= #{modiId}
+			,	MODI_DT		= date_format(now(), '%Y%m%d%h%i%s')
+		WHERE USER_ID = #{userId}
+	</update>
+
+	<update id="useNoCspMgr" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
+		UPDATE MIND_MGR
+		SET
+				USE_YN		= 'N'
+			,	MODI_ID		= #{modiId}
+			,	MODI_DT		= date_format(now(), '%Y%m%d%h%i%s')
+		WHERE USER_ID = #{userId}
+	</update>
+
+	<update id="userImsiPwdUpdate">
+		UPDATE MIND_MGR
+		SET
+				USER_PWD	= #{userPwd}
+			,   IMSI_PWD_YN	= 'Y'
+			,	MODI_ID		= #{modiId}
+			,	MODI_DT		= date_format(now(), '%Y%m%d%h%i%s')
+		WHERE USER_ID = #{userId}	
+	</update>
+	
+	<update id="userImsiModiRefuse">
+		UPDATE MIND_MGR
+		SET
+			MODI_YN		= 'Y'
+		WHERE USER_ID = #{userId}	
+	</update>
+	
+	
+	<!-- 메일링 대상자 리스트 -->
+	<select id="getMgrMailList" parameterType="map" resultType="String">
+		SELECT 
+			 distinct(EMAIL) as email
+		FROM MIND_MGR
+	    WHERE USER_TYPE = '2001'
+	      <if test="isNotNull(branchCd)">
+		  AND BRANCH_CD = #{branchCd}
+		  </if>
+		  <if test="teamList != null">		  
+		  AND TEAM_CD IN		  
+		  <foreach collection="teamList" item="item" index="index" open="(" close=")" separator=",">
+		   		#{item}
+		  </foreach>
+		  </if>
+		  AND USE_YN = 'Y'
+		  AND EMAIL != ''
+	</select>
+	
+	<!-- SMS 대상자 리스트 -->
+	<select id="getMgrSmsList" parameterType="map" resultType="String">
+		SELECT
+ 			 distinct(MOBILE) as mobile			 
+		FROM MIND_MGR
+	    WHERE USER_TYPE = '2001'
+	      <if test="isNotNull(branchCd)">
+		  AND BRANCH_CD = #{branchCd}
+		  </if>
+		  <if test="teamList != null">		  
+		  AND TEAM_CD IN		  
+		  <foreach collection="teamList" item="item" index="index" open="(" close=")" separator=",">
+		   		#{item}
+		  </foreach>
+		  </if>
+		  AND USE_YN = 'Y'
+		  AND MOBILE != ''
+	</select>	
+	<select id="getMgrCareerList" parameterType="String" resultType="com.ezwel.admin.domain.entity.mgr.MgrCareer">
+		SELECT
+			 USER_ID		AS	userId
+		 	,ORGANIZATION_NM AS	organizationName
+		 	,GRADE			AS	role
+		 	,GRADE_START_DT		AS	roleStartDate
+		 	,GRADE_END_DT		AS	roleEndDate
+		FROM mind_mgr_career
+		WHERE 1=1
+	 	  AND USER_ID = #{userId}	
+	</select>
+	
+	<select id="getMgrCareerExtraList" parameterType="String" resultType="com.ezwel.admin.domain.entity.mgr.MgrCareer">
+		SELECT
+			 USER_ID		AS	userId
+		 	,ORGANIZATION_NM AS	organizationName
+		 	,GRADE			AS	role
+		 	,GRADE_START_DT		AS	roleStartDate
+		 	,GRADE_END_DT		AS	roleEndDate
+		FROM extra_mind_mgr_career
+		WHERE 1=1
+	 	  AND USER_ID = #{userId}	
+	</select>	
+	<select id="getMgrBookList" parameterType="String" resultType="com.ezwel.admin.domain.entity.mgr.MgrBook">
+		SELECT
+			 USER_ID		AS	userId
+		 	,PAPER_TITLE AS	bookTitle
+		 	,PAPER_ORG			AS	bookOrg
+		 	,AUTHOR		AS	author
+		 	,YEAR		AS	bookYear
+		FROM MIND_MGR_PAPER
+		WHERE 1=1
+	 	  AND USER_ID = #{userId}	
+	</select>	
+
+</mapper>

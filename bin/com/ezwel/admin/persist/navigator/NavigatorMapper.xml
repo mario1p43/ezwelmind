@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ezwel.admin.persist.navigator.NavigatorMapper">
+
+<select id="getSelectList" resultType="com.ezwel.admin.domain.entity.navigator.NavigatorData">
+	SELECT	A.NAVI_SEQ	AS	naviSeq
+		,	A.HIGH_NAVI_SEQ	AS	highNaviSeq
+		,	A.NAVI_TITLE	AS	naviTitle
+		,	A.NAVI_STATUS	AS	naviStatus
+		,	A.NAVI_SORT	AS	naviSort
+		,	A.NAVI_CHECK	AS	naviCheck
+	FROM	MIND_NAVIGATOR A
+	WHERE 1=1
+	<if test="isNotNull(naviSeq)">
+	AND	HIGH_NAVI_SEQ = #{naviSeq}
+	</if>
+	<if test="isNull(naviSeq)">
+	AND HIGH_NAVI_SEQ IS NULL
+	</if>
+	ORDER BY A.NAVI_SORT, A.REG_DT ASC
+</select>
+
+<insert id="addNavigator" keyProperty="naviSeq" useGeneratedKeys="true" parameterType="com.ezwel.admin.service.navigator.dto.NavigatorDto">
+	INSERT INTO MIND_NAVIGATOR(
+		NAVI_TITLE
+		<if test="isNotNull(naviSeq)">
+	,	HIGH_NAVI_SEQ
+		</if>
+	,	NAVI_STATUS
+	,	NAVI_SORT
+	,	NAVI_CHECK
+	,	REG_DT
+	)VALUES(
+		#{naviTitle}
+		<if test="isNotNull(naviSeq)">
+	,	#{naviSeq}
+		</if>
+	,	#{naviStatus}
+	,	#{naviSort}
+	,	#{naviCheck}
+	,	DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+	)
+
+</insert>
+
+<insert id="addNavigatorTarget" parameterType="com.ezwel.admin.service.navigator.dto.NavigatorDto">
+	INSERT INTO MIND_NAVIGATOR_TARGET(
+		NAVI_SEQ
+	,	TARGET_NM
+	,	TARGET_URL	
+		<if test="(targetType != 0)">
+	,	TARGET_TYPE
+		</if>
+		<if test="(targetCd != 0)">
+	,	TARGET_CD
+		</if>
+		<if test="(targetStatus != 0)">
+	,	TARGET_STATUS
+		</if>
+	)VALUES(
+		#{naviSeq}
+	,	#{targetNm}
+	,	#{targetUrl}
+		<if test="(targetType != 0)">
+	,	#{(targetType}
+		</if>
+		<if test="(targetCd != 0)">
+	,	#{(targetCd}
+		</if>
+		<if test="(targetStatus != 0)">
+	,	#{(targetStatus}
+		</if>
+	)
+
+</insert>
+
+<select id="getSelectOne" resultType="com.ezwel.admin.domain.entity.navigator.NavigatorData">
+SELECT		A.HIGH_NAVI_SEQ	AS	highNaviSeq
+		,	A.NAVI_TITLE	AS	naviTitle
+		,	A.NAVI_STATUS	AS	naviStatus
+		,	A.NAVI_SORT	AS	naviSort
+		,	A.NAVI_CHECK	AS	naviCheck
+		,	(SELECT NAVI_TITLE FROM MIND_NAVIGATOR WHERE NAVI_SEQ = A.HIGH_NAVI_SEQ) AS upTitle
+	FROM	MIND_NAVIGATOR A
+	WHERE 	1=1
+	AND		NAVI_SEQ = #{naviSeq} 
+
+</select>
+
+
+
+<select id="getSelectOneTarget" resultType="com.ezwel.admin.domain.entity.navigator.NavigatorData">
+SELECT	TARGET_NM	AS	targetNm
+	,	TARGET_URL	AS	targetUrl
+FROM	MIND_NAVIGATOR_TARGET
+WHERE	NAVI_SEQ = #{naviSeq} 
+</select>
+
+
+<update id="modifyNavigetor"  parameterType="com.ezwel.admin.service.navigator.dto.NavigatorDto">
+UPDATE MIND_NAVIGATOR
+		SET
+			NAVI_TITLE	= #{naviTitle}
+		,	NAVI_SORT	= #{naviSort}
+		,	NAVI_STATUS	= #{naviStatus}
+		,	NAVI_CHECK	= #{naviCheck}
+		WHERE NAVI_SEQ = #{naviSeq}
+
+
+</update>
+
+
+<update id="modifyCounselNavigatorList" parameterType="com.ezwel.admin.service.navigator.dto.NavigatorDto">
+UPDATE MIND_NAVIGATOR
+		SET
+			NAVI_SORT	= #{naviSort}
+		,	NAVI_STATUS	= #{naviStatus}
+		WHERE NAVI_SEQ = #{naviSeq}
+
+
+</update>
+
+	<delete id="deleteNavigetorTarget">
+		DELETE FROM MIND_NAVIGATOR_TARGET 
+		WHERE NAVI_SEQ = ${naviSeq}
+	</delete>
+
+
+<select id="getPreStepNaviSeq" resultType="com.ezwel.admin.domain.entity.navigator.NavigatorData">
+	SELECT	A.NAVI_SEQ	AS	naviSeq
+		,	A.HIGH_NAVI_SEQ	AS	highNaviSeq
+		,	A.NAVI_TITLE	AS	title
+		,	(select navi_title from mind_navigator where navi_seq = A.HIGH_NAVI_SEQ)	AS	naviTitle
+		,	A.NAVI_STATUS	AS	naviStatus
+		,	A.NAVI_SORT	AS	naviSort
+		,	A.NAVI_CHECK	AS	naviCheck
+	FROM	MIND_NAVIGATOR A
+	WHERE	NAVI_SEQ = #{naviSeq}
+	AND		NAVI_STATUS	=	100001
+</select>
+
+
+
+
+</mapper>

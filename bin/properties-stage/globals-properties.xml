@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>globals-properties stage</comment>
+	<entry key="server.type">stage</entry>								<!-- 서버정보[local,dev,stage,real] -->
+
+	<entry key="content.key.result.code">result</entry>					<!-- 결과 코드 Key -->
+	<entry key="content.key.result.message">message</entry>				<!-- 결과 메시지 Key -->
+	<entry key="content.value.success">0000</entry>						<!-- 처리 성공 -->
+	<entry key="content.value.exception">9001</entry>					<!-- 처리 실패 -->
+	<entry key="content.value.badcreden">8001</entry>					<!-- 권한 획득 실패 -->
+	<entry key="content.value.notauth">8002</entry>						<!-- 권한 없음 -->
+
+	<entry key="view.jsp.error">error/error</entry>						<!-- 에러 페이지 -->
+	<entry key="view.jsp.failauth">error/failAuth</entry>				<!-- 권한 획득 실패(로그인 실패) -->
+	<entry key="view.jsp.notauth">error/notAuth</entry>					<!-- 권한 없음 -->
+
+	<entry key="page.main.url">/</entry>								<!-- 메인 페이지 -->
+	
+	<!-- =======================로그인 관련=============================================== -->
+	<entry key="page.login.form.url">/login/form</entry>				<!-- 로그인 폼  페이지[PMS는 이 단계에서 GW와 연동처리] -->
+	<entry key="page.login.url">/login</entry>							<!-- 로그인 처리 페이지[Spring j_spring_security_check 대체] -->
+	<entry key="page.logout.url">/login/logout</entry>					<!-- 로그아웃 완료 페이지 -->
+	<entry key="page.accessDenied.url">/accessDenied</entry>			<!-- 권한 없음 -->
+	<entry key="page.login.success.url">/</entry>			<!-- 로그인 완료 페이지 -->
+	<entry key="page.logout.success.url">/login/form</entry>			<!-- 로그아웃 완료 페이지 -->
+	<entry key="page.ssl.channel">https</entry>							<!-- 페이지 SSL 설정 -->
+	<entry key="page.add.counsel.enctyp.key">sangdam4@addcoun</entry>	<!-- 상담포유 상담신청용 암호화키 -->
+	<!-- =======================로그인 관련=============================================== -->
+
+	<entry key="redis.host">10.10.10.236</entry>
+	<entry key="redis.port">6379</entry>
+	<entry key="redis.pool.maxTotal">100</entry>
+	<entry key="redis.pool.maxIdle">20</entry>
+	<entry key="redis.pool.minIdle">10</entry>
+
+	<entry key="mail.server">localhost</entry>
+	<entry key="mail.admin">admin@ezwel.com</entry>
+	<entry key="mail.sangdam4u">sangdam4u@ezwelmind.com</entry>
+
+	<entry key="site.url">http://stage-admin.ezwelmind.com</entry>
+	<entry key="site.url.partner">http://stage-partner.ezwelmind.com</entry>
+	<entry key="site.domain">stage-admin.ezwelmind.com</entry>
+
+	<!-- =======================파일 업로드, 다운로드 관련=============================================== -->
+	<entry key="resource.imgEzwel">http://img.ezwelmind.co.kr</entry>
+	<entry key="resource.imgEzwels">https://img.ezwelmind.co.kr</entry>
+	
+	<entry key="upload.dir">/data/nas_image/ezwelmind-upload</entry>		<!-- 업로드 경로 -->
+	<entry key="upload.dir.img">/data/nas_image/image-ezwelmind</entry>		<!-- 이미지서버 업로드 경로 -->
+	<entry key="upload.http.img">http://img.ezwelmind.co.kr</entry>			<!-- 이미지서버 HTTP 접근 Domain -->
+	<!-- =======================파일 업로드, 다운로드 관련=============================================== -->
+	
+	<!-- cp사이트 코드명 -->
+	<entry key="cp.site.code">stage-partner</entry>
+	
+	<entry key="phone.admin.number">16444474</entry>
+	
+	<entry key="rabbitmq.host">192.168.112.21:5673,192.168.112.22:5673</entry>
+	<entry key="rabbitmq.username">ezwel</entry>
+	<entry key="rabbitmq.password">ezwel</entry>
+	<entry key="rabbitmq.ezwelmind.virtualHost">ezwelmind</entry>
+	
+	<!-- =======================PUSH 관련=============================================== -->
+	<entry key="push.cert.path">/WEB-INF/config/cert/dis_apnsFFL.p12</entry>	<!-- certification real path -->
+	<entry key="push.cert.pwd">ezwelmind</entry>								<!-- certification password -->
+	<entry key="push.production">false</entry>									<!-- production -->
+	<!-- =======================PUSH 관련=============================================== -->
+</properties>

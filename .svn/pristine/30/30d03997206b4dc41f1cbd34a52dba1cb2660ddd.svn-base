@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.client.ClientPollMapper">
+	
+	<!-- 온라인진단 상세를 조회하는 result map -->
+	<resultMap type="com.ezwel.admin.service.client.dto.ClientPollDto" id="getPollDetailInfo">
+		<id property="pollSeq" column="POLL_SEQ"/>
+		<result property="pollNm" column="POLL_NM" /> 
+		<result property="stepCnt" column="STEP_CNT" /> 
+		<result property="programNm" column="PROGRAM_NM" /> 
+		<result property="topImgPath" column="TOP_IMG_PATH" /> 
+		<result property="leftLogoPath" column="LEFT_LOGO_PATH" /> 
+		<result property="rightLogoPath" column="RIGHT_LOGO_PATH" /> 
+		<result property="topContents" column="TOP_CONTENTS" /> 
+		<result property="cautionContents" column="CAUTION_CONTENTS" /> 
+		<result property="agreeUseYn" column="AGREE_USE_YN" /> 
+		<result property="agreeContents" column="AGREE_CONTENTS" /> 
+		<result property="replayUseYn" column="REPLAY_USE_YN" /> 
+		<result property="tmpltSeq" column="TMPLT_SEQ" />
+		
+		<collection property="fields" ofType="com.ezwel.admin.service.client.dto.ClientPollDto">
+			<id property="fieldSeq" column="FIELD_SEQ"/>
+			<result property="infoType" column="INFO_TYPE" /> 
+			<result property="fieldNm" column="FIELD_NM" /> 
+			<result property="fieldType" column="FIELD_TYPE" /> 
+			<result property="fieldRequiredYn" column="FIELD_REQUIRED_YN" /> 
+			<result property="fieldRequiredMsg" column="FIELD_REQUIRED_MSG" /> 
+			<result property="fieldValue" column="FIELD_VALUE" /> 
+			<result property="useYn" column="USE_YN" /> 
+			<result property="orderNo" column="ORDER_NO" /> 
+			<result property="checkUseYn" column="CHECK_USE_YN" /> 
+			<result property="branchUseYn" column="BRANCH_USE_YN" /> 
+			<result property="gradeUseYn" column="GRADE_USE_YN" /> 
+		</collection> 
+	</resultMap>
+	
+	<!-- 조회하는 result map -->
+	<resultMap type="com.ezwel.admin.service.client.dto.ClientPollDto" id="getCommQstGrpMap">
+		<id property="grpSeq" column="GRP_SEQ" />
+		<result property="grpNm" column="GRP_NM" /> 
+		<result property="contents" column="CONTENTS" /> 
+		<result property="qstCnt" column="QST_CNT" /> 
+		<result property="regId" column="REG_ID" /> 
+		<result property="regDt" column="REG_DT" />
+		<result property="resultType" column="RESULT_TYPE" />
+		
+		<collection property="questions" ofType="com.ezwel.admin.service.client.dto.ClientPollDto">
+			<id property="qstNum" column="QST_NUM" />
+			<result property="question" column="QUESTION" /> 
+			<result property="qstDesc" column="QST_DESC" /> 
+			<result property="maxCnt" column="MAX_CNT" />
+			
+			<collection property="answers" ofType="com.ezwel.admin.service.client.dto.ClientPollDto">
+				<id property="qstItemNum" column="QST_ITEM_NUM" />
+				<result property="orderNo" column="ORDER_NO" />
+				<result property="answerNum" column="ANSWER_NUM" />
+				<result property="answer" column="ANSWER" />
+			</collection> 
+		</collection> 
+	</resultMap>
+	
+	<select id="getPollDetailInfo" resultMap="getPollDetailInfo">
+		SELECT 
+			A.POLL_SEQ,
+			A.POLL_NM,
+			A.STEP_CNT,
+			A.PROGRAM_NM,
+			A.TOP_IMG_PATH,
+			A.LEFT_LOGO_PATH,
+			A.RIGHT_LOGO_PATH,
+			A.TOP_CONTENTS,
+			A.CAUTION_CONTENTS,
+			A.AGREE_USE_YN,
+			A.AGREE_CONTENTS,
+			A.REPLAY_USE_YN,
+			A.TMPLT_SEQ,
+			B.FIELD_SEQ,
+			B.INFO_TYPE,
+			B.FIELD_NM,
+			B.FIELD_TYPE,
+			B.FIELD_REQUIRED_YN,
+			B.FIELD_REQUIRED_MSG,
+			B.FIELD_VALUE,
+			B.USE_YN,
+			B.ORDER_NO,
+			B.CHECK_USE_YN,
+			B.BRANCH_USE_YN,
+			B.GRADE_USE_YN
+		FROM MIND_POLL_INFO A
+		LEFT JOIN MIND_POLL_FIELD B
+		ON A.POLL_SEQ = B.POLL_SEQ
+		WHERE A.POLL_SEQ = #{pollSeq}
+	</select>
+	
+	<update id="modifyPollDetailInfo">
+		UPDATE MIND_POLL_INFO
+		SET PROGRAM_NM = #{programNm},
+			TOP_IMG_PATH = #{topImgPath},
+			LEFT_LOGO_PATH = #{leftLogoPath},
+			RIGHT_LOGO_PATH = #{rightLogoPath},
+			TOP_CONTENTS = #{topContents},
+			CAUTION_CONTENTS = #{cautionContents},
+			AGREE_USE_YN = #{agreeUseYn},
+			AGREE_CONTENTS = #{agreeContents},
+			REPLAY_USE_YN = #{replayUseYn},
+			<if test="isNotNull(tmpltSeq)">
+			TMPLT_SEQ = #{tmpltSeq},
+			</if>
+			<if test="isNotNull(qstSetSeq)">
+			QUESTION_SET_SEQ = #{qstSetSeq},
+			</if>	
+			STEP_CNT = #{stepCnt}
+			
+		WHERE POLL_SEQ = #{pollSeq}
+	</update>
+	
+	<insert id="registPollField">
+		INSERT INTO MIND_POLL_FIELD(
+			POLL_SEQ,
+			FIELD_SEQ,
+			INFO_TYPE,
+			FIELD_NM,
+			FIELD_TYPE,
+			FIELD_REQUIRED_YN,
+			FIELD_REQUIRED_MSG,
+			FIELD_VALUE,
+			USE_YN,
+			ORDER_NO,
+			CHECK_USE_YN,
+			BRANCH_USE_YN,
+			GRADE_USE_YN
+		) VALUES (
+			#{pollSeq},
+			#{fieldSeq},
+			#{infoType},
+			#{fieldNm},
+			#{fieldType},
+			#{fieldRequiredYn},
+			#{fieldRequiredMsg},
+			#{fieldValue},
+			#{useYn},
+			#{orderNo},
+			#{checkUseYn},
+			#{branchUseYn},
+			#{gradeUseYn}
+		)
+	</insert>
+	
+	<delete id="removePollField">
+		DELETE
+		FROM MIND_POLL_FIELD
+		WHERE POLL_SEQ = #{pollSeq}
+	</delete>
+	
+	<select id="getNextQstSetSeq" resultType="String">
+		SELECT 
+			(MAX(QUESTION_SET_SEQ) + 1) AS QUESTION_SET_SEQ 
+		FROM MIND_POLL_QUESTION
+	</select>
+	
+	<insert id="registPollQuestion">
+		INSERT INTO MIND_POLL_QUESTION (QUESTION_SET_SEQ, QUESTION_NUM, QUESTION_GROUP, QUESTION, POLL_DESC, MAX_CNT)
+		SELECT #{qstSetSeq}, CONCAT((A.ORDER_NO + 1), '-', B.QST_NUM), (A.ORDER_NO + 1) , B.QUESTION, B.QST_DESC, B.MAX_CNT 
+		FROM MIND_POLL_QST_TMPLT_GRP A
+		INNER JOIN MIND_POLL_COMM_QST B
+		ON A.GRP_SEQ = B.GRP_SEQ
+		WHERE A.TMPLT_SEQ = #{tmpltSeq}
+		ORDER BY A.ORDER_NO, B.QST_NUM
+	</insert>
+	
+	<insert id="registPollQuestionItem">
+		INSERT INTO MIND_POLL_QUESTION_ITEM (QUESTION_SET_SEQ, QUESTION_NUM, ORDER_NO, ANSWER_NUM, ANSWER)
+		SELECT #{qstSetSeq}, CONCAT((A.ORDER_NO + 1), '-', B.QST_NUM), C.ORDER_NO, C.ANSWER_NUM, C.ANSWER
+		FROM MIND_POLL_QST_TMPLT_GRP A
+		INNER JOIN MIND_POLL_COMM_QST B
+		ON A.GRP_SEQ = B.GRP_SEQ
+		INNER JOIN MIND_POLL_COMM_QST_ITEM C
+		ON A.GRP_SEQ = C.GRP_SEQ
+		AND B.QST_NUM = C.QST_NUM
+		WHERE A.TMPLT_SEQ = #{tmpltSeq}
+		ORDER BY A.ORDER_NO, B.QST_NUM, C.ORDER_NO
+	</insert>
+	
+	<select id="getPollCommQstGrp" resultMap="getCommQstGrpMap">
+		SELECT 
+			A.GRP_SEQ,
+			A.GRP_NM,
+			A.CONTENTS,
+			A.QST_CNT,
+			A.REG_ID,
+			A.REG_DT,
+			B.QST_NUM,
+			B.QUESTION,
+			B.QST_DESC,
+			B.MAX_CNT,
+			C.QST_ITEM_NUM,
+			C.ORDER_NO,
+			C.ANSWER_NUM,
+			C.ANSWER,
+			A.RESULT_TYPE
+		FROM MIND_POLL_COMM_QST_GRP A 
+			LEFT JOIN MIND_POLL_COMM_QST B
+			ON A.GRP_SEQ = B.GRP_SEQ
+			LEFT JOIN MIND_POLL_COMM_QST_ITEM C
+			ON A.GRP_SEQ = C.GRP_SEQ
+			AND B.QST_NUM = C.QST_NUM
+		WHERE A.GRP_SEQ = #{grpSeq}
+		ORDER BY B.QST_NUM, C.ORDER_NO
+	</select>
+	
+	<!-- 공통 설문지 등록 -->
+	<insert id="registPollCommQstGrp">
+		INSERT INTO MIND_POLL_COMM_QST_GRP(GRP_NM, CONTENTS, QST_CNT, REG_ID, REG_DT, RESULT_TYPE)
+		VALUES (#{grpNm}, #{contents}, #{qstCnt}, #{regId}, DATE_FORMAT(NOW(), "%Y%m%d%H%i%s"), #{resultType})
+		<selectKey resultType="String" keyProperty="grpSeq" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<!-- 공통 설문지 수정 -->
+	<update id="modifyPollCommQstGrp">
+		UPDATE MIND_POLL_COMM_QST_GRP
+		SET GRP_NM = #{grpNm},
+			CONTENTS = #{contents},
+			QST_CNT = #{qstCnt},
+			RESULT_TYPE = #{resultType}
+		WHERE GRP_SEQ = #{grpSeq}
+	</update>
+	
+	<!-- 질문 등록 -->
+	<insert id="registPollCommQst">
+		INSERT INTO MIND_POLL_COMM_QST(GRP_SEQ, QST_NUM, QUESTION, QST_DESC, MAX_CNT)
+		VALUES (#{grpSeq}, #{qstNum}, #{question}, #{qstDesc}, #{maxCnt})
+	</insert>
+	
+	<!-- 질문 삭제 -->
+	<delete id="removePollCommQst">
+		DELETE 
+		FROM MIND_POLL_COMM_QST
+		WHERE GRP_SEQ = #{grpSeq}
+	</delete>
+
+	<!-- 답변 등록 -->	
+	<insert id="registPollCommQstItem">
+		INSERT INTO MIND_POLL_COMM_QST_ITEM(QST_NUM, QST_ITEM_NUM, ORDER_NO, ANSWER_NUM, ANSWER, GRP_SEQ)
+		VALUES (#{qstNum}, #{qstItemNum}, #{orderNo}, #{answerNum}, #{answer}, #{grpSeq})
+	</insert>
+	
+	<!-- 답변 삭제 -->
+	<delete id="removePollCommQstItem">
+		DELETE 
+		FROM MIND_POLL_COMM_QST_ITEM
+		WHERE GRP_SEQ = #{grpSeq}
+	</delete>
+	
+	<select id="getPollQstTmpltList" resultType="com.ezwel.admin.service.client.dto.ClientPollDto">
+			SELECT 
+				A.TMPLT_SEQ, 
+				A.TMPLT_NM, 
+				REPLACE(A.CONTENTS, '\r\n', <![CDATA['<br/>']]>) AS CONTENTS, 
+				A.USE_YN, 
+				A.REG_ID, 
+				A.REG_DT,
+				GROUP_CONCAT(C.GRP_NM ORDER BY B.ORDER_NO ASC) AS GRP_NM, 
+				GROUP_CONCAT(B.GRP_SEQ ORDER BY B.ORDER_NO ASC) AS GRP_SEQ
+			FROM MIND_POLL_QST_TMPLT A
+			LEFT JOIN MIND_POLL_QST_TMPLT_GRP B
+			ON A.TMPLT_SEQ = B.TMPLT_SEQ
+			LEFT JOIN MIND_POLL_COMM_QST_GRP C 
+			ON B.GRP_SEQ = C.GRP_SEQ
+			GROUP BY A.TMPLT_SEQ, A.TMPLT_NM, A.CONTENTS, A.USE_YN, A.REG_ID, A.REG_DT
+			ORDER BY A.TMPLT_SEQ DESC, B.ORDER_NO ASC
+	</select>
+	
+	<!-- 목록 조회 -->
+	<select id="getPollCommQstGrpList" resultType="com.ezwel.admin.service.client.dto.ClientPollDto">
+		SELECT 
+			GRP_SEQ,
+			GRP_NM,
+			CONTENTS,
+			QST_CNT,
+			REG_ID,
+			DATE_FORMAT(STR_TO_DATE(REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS REG_DT,
+			RESULT_TYPE
+		FROM MIND_POLL_COMM_QST_GRP
+		ORDER BY REG_DT DESC
+	</select>
+	
+	<!-- 템플릿 등록 -->
+	<insert id="registPollQstTmplt">
+		INSERT INTO MIND_POLL_QST_TMPLT(TMPLT_NM, CONTENTS, USE_YN, REG_ID, REG_DT)
+		VALUES (#{tmpltNm}, #{contents}, #{useYn}, #{regId}, DATE_FORMAT(NOW(), "%Y%m%d%H%i%s"))
+		<selectKey resultType="String" keyProperty="tmpltSeq" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<!-- 템플릿 수정 -->
+	<update id="modifyPollQstTmplt">
+		UPDATE MIND_POLL_QST_TMPLT
+		SET TMPLT_NM = #{tmpltNm},
+			CONTENTS = #{contents},
+			USE_YN = #{useYn}
+		WHERE TMPLT_SEQ = #{tmpltSeq}
+	</update>
+	
+	<!-- 템플릿 매핑 등록 -->
+	<insert id="registPollQstTmpltGrp">
+		INSERT INTO MIND_POLL_QST_TMPLT_GRP(TMPLT_SEQ, GRP_SEQ, ORDER_NO)
+		VALUES (#{tmpltSeq}, #{grpSeq}, #{orderNo})
+	</insert>
+	
+	<!-- 템플릿 매핑 삭제 -->
+	<delete id="removePollQstTmpltGrp">
+		DELETE FROM MIND_POLL_QST_TMPLT_GRP
+		WHERE TMPLT_SEQ = #{tmpltSeq}
+	</delete>
+	
+	<!-- 템플릿 목록 조회 -->
+	<select id="getUsePollQstTmpltList" resultType="com.ezwel.admin.service.client.dto.ClientPollDto">
+		SELECT 
+			TMPLT_SEQ, 
+			TMPLT_NM, 
+			CONTENTS 
+		FROM MIND_POLL_QST_TMPLT
+		WHERE USE_YN = 'Y'
+	</select>
+	
+</mapper>	

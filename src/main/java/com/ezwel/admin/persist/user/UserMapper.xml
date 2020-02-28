@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.user.UserMapper">
+
+
+
+	<insert id="addUser">
+		INSERT INTO MIND_USER (
+			  CLIENT_CD
+			, USER_ID
+			, USER_NM
+			, USER_PWD
+			, EMP_NUM
+			, USE_YN
+			, DEL_YN
+			, USER_STATUS			
+			, PWD_IMSI_YN
+			, ASSIGN_TYPE
+			, TEST_YN
+			, REG_DT
+			, BRANCH_CD
+			, GRADE_CD	
+			, EMAIL		
+		<if test="isNotNull(rrn)">
+			, RRN
+		</if>
+		) VALUES ( 
+			  #{clientCd}
+			, #{userId}
+			, #{userNm}
+			, #{userPwd}
+			, #{empNum}
+			, 'Y'
+			, 'N'
+			, '100007'			
+			, 'Y'
+			, '100396' /* 관리자 등록*/
+			, 'N'
+			, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			, #{branch}
+			, #{grade}	
+			, #{email}
+		<if test="isNotNull(rrn)">
+			, #{rrn}
+		</if>		
+		) ON DUPLICATE KEY UPDATE 
+			MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		<if test="isNotNull(branch)">
+			, BRANCH_CD = #{branch}
+		</if>
+		<if test="isNotNull(grade)">
+			, GRADE_CD = #{grade}
+		</if>
+		<if test="isNotNull(email)">
+			, EMAIL = #{email}
+		</if>
+		<if test="isNotNull(rrn)">
+			, RRN = #{rrn}
+		</if>	
+	</insert>
+	
+	<select id="getUserList" resultType="com.ezwel.admin.domain.entity.usermanager.UserManager">
+		SELECT
+			USER_KEY as userKey
+			, USER_ID as userId
+			, USER_NM as userNm
+			, DEVICE_ID as deviceId
+			, PUSH_SOUND as pushSound
+		FROM
+			mind_user
+		WHERE
+			1=1
+			AND USE_YN = 'Y'
+			AND DEVICE_ID is not null
+			<if test="isNotNull(pushYn)">
+			AND PUSH_YN='Y'
+			</if>
+			<if test="isNull(allClientYn) or allClientYn != 'Y' ">
+				<if test="isNotNull(clientCd)">
+				AND CLIENT_CD = #{clientCd}
+				</if>
+			</if>
+	</select>
+	
+	<select id="getUser" resultType="map">
+		SELECT
+			  USER_KEY as userKey
+			, USER_ID as userId
+			, USER_NM as userNm
+			, DEVICE_ID as deviceId
+			, PUSH_SOUND as pushSound
+			, CLIENT_CD  as clientCd
+		FROM
+			mind_user
+		WHERE 1=1
+		AND user_id = #{userId}
+		AND client_cd = #{clientCd}
+	</select>
+	
+	<select id="getUserInfo" resultType="com.ezwel.admin.domain.entity.user.User">
+		SELECT    USER_KEY userKey
+				, CLIENT_CD clientCd
+				, USER_ID userId
+				, USER_NM userNm
+				, USER_PWD 
+				, RRN rrn
+				, EMP_NUM empNum
+				, USE_YN 
+				, DEL_YN
+				, USER_STATUS
+				, POST
+				, ADDR1
+				, ADDR2
+				, EMAIL email
+				, EMAIL_RECV_YN
+				, AES_DECRYPT(UNHEX(HOME_TEL),'1234') as homeTel
+				, AES_DECRYPT(UNHEX(OFFICE_TEL),'1234') as officeTel
+				, AES_DECRYPT(UNHEX(MOBILE),'1234') as mobile
+				, SMS_RECV_YN
+				, BIRTH_DD birthDd
+				, BIRTH_TYPE
+				, GENDER gender
+				, FOREIGN_YN
+				, AREA
+				, JOB_FAMILY
+				, JOB_SERIAL
+				, BRANCH_CD
+				, DEPT_CD
+				, TEAM_CD
+				, PART_CD
+				, GRADE_CD
+				, COMPANY_JOIN_DD
+				, IPIN_DI
+		FROM MIND_USER
+		WHERE USER_KEY = #{userKey}
+	</select>
+	
+	<select id="getUserSurveyInfo" resultType="com.ezwel.admin.domain.entity.user.User">
+		select a.userKey,
+				 a.clientCd,
+				 (select client_nm from mind_client where client_cd = a.clientCd) as clientNm,
+				 a.counselNm,
+				 a.counselCd,
+				 a.counselEmail,
+				 a.userNm,
+				 a.email,
+				 a.smsRecvYn,
+				 a.emailRecvYn,
+		         IF(DATE_FORMAT(NOW(),'%Y%m%d') &lt;= b.end_dd, 'Y', 'N') as jedoYn,
+	 			 DATE_FORMAT(STR_TO_DATE(a.scheduleDt, '%Y%m%d%H%i%s'),'%Y년%m월%d일%H시') 	AS scheduleDt,
+				 DATE_FORMAT(STR_TO_DATE(a.scheduleDtMonth, '%Y%m%d%H%i%s'),'%m월%d일 %H시') 		AS scheduleDtMonth,
+				 a.centerTelNum,
+				 a.centerNm,
+				 a.centerAddr1,
+				 a.centerAddr2,
+				 a.counselorNm,
+				 a.counselorMobile,
+				 a.counselType,
+				 AES_DECRYPT(UNHEX(a.MOBILE),'1234') as mobile,
+				 AES_DECRYPT(UNHEX(a.cMobile),'1234') as counselMobile,
+				 IF(a.siteNm IS NULL or a.siteNm = '', '상담포유', a.siteNm) as siteNm		
+		from (
+		select userInfo.user_key as userKey,
+				 userInfo.client_cd as clientCd,
+				 userInfo.counsel_nm as counselNm,
+				 userInfo.counsel_cd as counselCd,
+				 userInfo.email as counselEmail,
+				 mu.user_nm as userNm,
+				 mu.EMAIL as email,
+				 mu.SMS_RECV_YN as smsRecvYn,
+				 mu.EMAIL_RECV_YN as emailRecvYn,
+				 mu.MOBILE as mobile,
+				 userInfo.scheduleDt, userInfo.scheduleDtMonth, userInfo.centerTelNum, userInfo.centerNm,
+				 userInfo.centerAddr1, userInfo.centerAddr2, userInfo.counselorNm, userInfo.counselorMobile,
+				 userInfo.counselType, userInfo.cMobile,
+				 userInfo.siteNm
+		from 
+			(select a.user_key, a.client_cd, b.counsel_nm, a.counsel_cd, b.MOBILE as cMobile, b.email,
+					  a.scheduleDt, a.scheduleDtMonth, a.centerTelNum, a.centerNm,
+					  a.centerAddr1, a.centerAddr2, a.counselorNm, a.counselorMobile,
+					  a.counselType, a.siteNm
+			 from	
+			 	(select b.user_key, b.CLIENT_CD, b.intake_cd, b.counsel_cd,
+			 			  B.SCHEDULE_DT 		AS scheduleDt,
+						  B.SCHEDULE_DT 		AS scheduleDtMonth,
+						  C.TEL_NUM 			as centerTelNum,
+						  C.CENTER_NM			as centerNm,
+						  C.ADDR1 				as centerAddr1,
+						  C.ADDR2 				as centerAddr2,
+						  D.USER_NM 			as counselorNm,
+						  D.MOBILE 				as counselorMobile,
+						  B.COUNSEL_TYPE     AS counselType,
+						  E.SITE_NM				as siteNm
+				 from mind_counsel b INNER JOIN MIND_CENTER C
+				   ON B.CENTER_SEQ = C.CENTER_SEQ
+				   INNER JOIN MIND_MGR D
+				   ON B.COUNSELOR_ID = D.USER_ID 
+				   INNER JOIN MIND_CLIENT E
+				   ON E.CLIENT_CD=B.CLIENT_CD
+				where counsel_cd = #{counselCd}
+				 ) as a left join mind_counsel_intake as b on a.intake_cd = b.intake_cd) as userInfo,
+			 mind_user as mu
+		where mu.user_key = userInfo.user_key ) a left join (select * from mind_client_jedo_period where date_format(now(), "%Y%m%d") >= start_dd and date_format(now(), "%Y%m%d") &lt;= end_dd) as b on a.clientCd = b.client_cd
+	</select>
+</mapper>

@@ -1,0 +1,156 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ include file="/WEB-INF/jsp/layout/inc/tags.jspf"%>
+<html>
+<head>
+<title>멘탈헬스 자가진단</title>
+<script language="JavaScript" type="text/javascript" src="/resources/js/bcrypt.js"></script>
+<script type="text/javascript">
+j$(document).ready(function(){
+
+	j$(".diagnosisDetail").click(function(){
+		var pollSeq =  bEnco(j$("#pollSeq").val());
+		var pollUserSeq = bEnco(j$(this).attr("value"));
+		var questionSetSeq =  bEnco(j$("#questionSetSeq").val());
+		location.href = "/madm/diagnosis/diagnosisDetail?pollSeq="+pollSeq+"&pollUserSeq="+pollUserSeq+"&questionSetSeq="+questionSetSeq;
+		return false;
+	});
+	
+	j$(".downBtn").click(function(){
+		var pollSeq = bEnco(j$("#pollSeq").val());
+		var questionSetSeq = j$("#questionSetSeq").val();
+		j$(".downBtn").hide();
+		location.href = "/madm/diagnosis/excelDownload?pollSeq="+pollSeq+"&questionSetSeq="+questionSetSeq;
+	});
+
+	j$("#calendar1").click(function(){
+		var time = new Date();
+		var yearStart = time.getFullYear();
+		time
+		var monthStart = time.getMonth()+1;
+		if(monthStart < 10){
+			monthStart = '0'+monthStart;
+		}
+		var dayStart = '01';
+		var dayEnd = ( new Date( yearStart, monthStart, 0) ).getDate();
+		
+		var start = yearStart+"/"+monthStart+"/"+dayStart;
+		var end = yearStart+"/"+monthStart+"/"+dayEnd;
+		
+		$(".date_timepicker_start").val(start);
+		$(".date_timepicker_end").val(end);
+	});
+});
+</script>
+</head>
+<body>
+
+<form:form id="searchInfo" modelAttribute="diagnosisDto" action="/madm/diagnosis/userList" method="GET">
+<input type="hidden" id="pollSeq" name="pollSeq" value="${pollSeq}" />
+<input type="hidden" id="questionSetSeq" name="questionSetSeq" value="${questionSetSeq}" />
+<table cellpadding="0" cellspacing="0" border="0" width="95%">
+<tr>
+	<td height="20px"></td>
+</tr>
+
+<tr>
+	<td>
+		<!-- 버튼 영역 시작 -->
+		<table cellpadding="5" cellspacing="0" border="0" width="100%" align="center" style="border-bottom: 1px solid silver;">
+			<tr>
+				<td align="left" class="subtitle">멘탈헬스 자가진단 진단자 정보</td>
+			</tr>
+		</table>
+		<!-- 버튼 영역 종료 -->
+
+		<table cellpadding="0" cellspacing="0" border="0" width="100%" align="center">
+			<tr>
+				<td>
+					<table cellpadding="5" cellspacing="0" border="0" width="100%" style="border-collapse:collapse; margin: 15px auto 5px auto;">
+						<tr>
+							<td align="center">
+								기간
+								<input type="text" id="startDt" name="startDt" size="10" class="date_timepicker_start" value="${param.startDt}"/>
+								<img id="btstartDt" src="${url:img('/images/icon02.jpg')}"border="0" />
+								&nbsp;~&nbsp;
+								<input type="text" id="endDt" name="endDt" size="10" class="date_timepicker_end" value="${param.endDt}"/>
+								<img id="btendDt" src="${url:img('/images/icon02.jpg')}"border="0" />								
+								<input id="calendar1" type="button" value="1개월" />								
+							</td> 						
+						</tr>
+						<tr>
+							<td align="right" width="30%">
+								<input type="button" class="downBtn" value="엑셀다운" style="height:30px; width:100px;">
+							</td>
+						</tr>
+						<tr>
+							<td align="left" width="30%">
+								<strong>
+									총 ${paging.totalCount}건
+								</strong>
+							</td>														
+						</tr>						
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table class="" cellpadding="5" align="" id="chRow" cellspacing="0" border="1" width="100%" style="text-align:center; border-collapse:collapse;">
+						<thead>
+							<tr>
+								<th width="5%" >순번</th>
+								<th width="5%" >진단번호</th>
+								<th width="10%" >사번</th>
+								<th width="10%" >성명</th>
+								<th width="15%">진단일시</th>
+								<th width="10%">성별</th>
+								<th width="10%">연령(만)</th>
+								<th width="20%">근무지역</th>
+								<th width="20%">직군</th>
+								<th width="15%">비고</th>
+							</tr>
+						</thead>
+
+						<tbody>
+						<c:forEach var="list" items="${paging.list}" varStatus="status">
+							<tr align="" height="50px">
+								<td class="" width="" align="" bgcolor="">
+									${(paging.totalCount - ((paging.currentPage-1) * paging.pageSize)) - status.index}
+								</td>
+								<td>
+									<a href="#" class="diagnosisDetail" value="${list.pollUserSeq}"><strong>${list.pollUserSeq}</strong>
+								</td>
+								<td>${list.empNum}</td>
+								<td>${list.name}</td>
+								<td>${list.regDt}</td>
+								<td>${list.gender}</td>
+								<td>${list.age}</td>
+								<td>${list.branch} ${list.dept}</td>
+								<td>${list.businessDiv} ${list.businessDivEtc}</td>
+								<td></td>
+							</tr>
+						</c:forEach>
+						</tbody>
+					</table>
+					</div>
+					<br>
+					<table cellpadding="2" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
+						<tr>
+							<td align="center">
+  								<ui:paging value="${paging}"
+  									btnFirst="${url:img('/images/btn_first.jpg')}"
+  									btnPrev="${url:img('/images/btn_prev.jpg')}"
+  									btnNext="${url:img('/images/btn_next.jpg')}"
+  									btnLast="${url:img('/images/btn_last.jpg')}" />
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+</table>
+</form:form>
+</body>
+</html>
+

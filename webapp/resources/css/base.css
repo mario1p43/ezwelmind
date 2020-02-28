@@ -1,0 +1,227 @@
+@charset "utf-8";
+
+#divPaging .num { border-left: 1px solid #ddd; padding-left: 6px; padding-right: 6px; }
+#divPaging .curr { font-weight: bold; }
+#divPaging a { text-decoration: none; color: #666 }
+footer{
+	position:fixed; 
+	z-index: 3;
+  left:0px; 
+  bottom:0px;
+	width:100%;
+}
+/* 비디앱스 추가 시작*/
+@media(min-width:800px) {
+	.mobile {
+		 display:none 
+	}
+} 
+
+@media(max-width:800px) { 
+	.web {
+		 display:none 
+	}
+}
+.web {
+	width:100%;
+}
+.mobile {
+	width:100%; 
+}
+.mobile_nav{
+	border-top: 1px solid #bdbdbd;
+	position:absolute;
+	width:100%;
+    bottom:0;
+    background: white;
+}
+
+.mobile_nav ul{
+	display: flex;
+	padding: 0px;
+	list-style-type: none;
+	
+}
+.mobile_nav ul li{
+	flex: 1;
+	align-items: center;
+    text-align: center;
+    height: 20px;
+    padding: 5px;
+}
+
+.top_nav{
+	width:100%;
+    background: white;
+}
+
+.top_nav ul{
+	display: flex;
+	padding: 0px;
+	list-style-type: none;
+	
+}
+.top_nav ul li{
+	flex: 1;
+	align-items: center;
+    text-align: center;
+    height: 20px;
+    padding: 5px;
+}
+
+/* margin */
+.mt5 {margin-top:5px !important;}
+.mt10 {margin-top:10px !important;}
+.mt15 {margin-top:15px !important;}
+.mt20 {margin-top:20px !important;}
+.mt25 {margin-top:25px !important;}
+.mt30 {margin-top:30px !important;}
+.mt35 {margin-top:35px !important;}
+.mt40 {margin-top:40px !important;}
+.mt45 {margin-top:45px !important;}
+.mt50 {margin-top:50px !important;}
+.mt55 {margin-top:55px !important;}
+.mt60 {margin-top:60px !important;}
+.mt65 {margin-top:65px !important;}
+.mt70 {margin-top:70px !important;}
+.mt75 {margin-top:75px !important;}
+.mt80 {margin-top:80px !important;}
+.mt85 {margin-top:85px !important;}
+.mt90 {margin-top:90px !important;}
+.mt95 {margin-top:95px !important;}
+.mt100 {margin-top:100px !important;}
+
+.mb5 {margin-bottom:5px !important;}
+.mb10 {margin-bottom:10px !important;}
+.mb15 {margin-bottom:15px !important;}
+.mb20 {margin-bottom:20px !important;}
+.mb25 {margin-bottom:25px !important;}
+.mb30 {margin-bottom:30px !important;}
+.mb35 {margin-bottom:35px !important;}
+.mb40 {margin-bottom:40px !important;}
+.mb45 {margin-bottom:45px !important;}
+.mb50 {margin-bottom:50px !important;}
+.mb55 {margin-bottom:55px !important;}
+.mb60 {margin-bottom:60px !important;}
+.mb65 {margin-bottom:65px !important;}
+.mb70 {margin-bottom:70px !important;}
+.mb75 {margin-bottom:75px !important;}
+.mb80 {margin-bottom:80px !important;}
+.mb85 {margin-bottom:85px !important;}
+.mb90 {margin-bottom:90px !important;}
+.mb95 {margin-bottom:95px !important;}
+.mb100 {margin-bottom:100px !important;}
+
+.ml5 {margin-left:5px !important;}
+.ml10 {margin-left:10px !important;}
+.ml15 {margin-left:15px !important;}
+.ml20 {margin-left:20px !important;}
+.ml25 {margin-left:25px !important;}
+.ml30 {margin-left:30px !important;}
+.ml35 {margin-left:35px !important;}
+.ml40 {margin-left:40px !important;}
+.ml45 {margin-left:45px !important;}
+.ml50 {margin-left:50px !important;}
+.ml55 {margin-left:55px !important;}
+.ml60 {margin-left:60px !important;}
+.ml65 {margin-left:65px !important;}
+.ml70 {margin-left:70px !important;}
+.ml75 {margin-left:75px !important;}
+.ml80 {margin-left:80px !important;}
+.ml85 {margin-left:85px !important;}
+.ml90 {margin-left:90px !important;}
+.ml95 {margin-left:95px !important;}
+.ml100 {margin-left:100px !important;}
+
+.mr5 {margin-right:5px !important;}
+.mr10 {margin-right:10px !important;}
+.mr15 {margin-right:15px !important;}
+.mr20 {margin-right:20px !important;}
+.mr25 {margin-right:25px !important;}
+.mr30 {margin-right:30px !important;}
+.mr35 {margin-right:35px !important;}
+.mr40 {margin-right:40px !important;}
+.mr45 {margin-right:45px !important;}
+.mr50 {margin-right:50px !important;}
+.mr55 {margin-right:55px !important;}
+.mr60 {margin-right:60px !important;}
+.mr65 {margin-right:65px !important;}
+.mr70 {margin-right:70px !important;}
+.mr75 {margin-right:75px !important;}
+.mr80 {margin-right:80px !important;}
+.mr85 {margin-right:85px !important;}
+.mr90 {margin-right:90px !important;}
+.mr95 {margin-right:95px !important;}
+.mr100 {margin-right:100px !important;}
+
+.margin5p {margin:5% !important;}
+
+.padding10{padding:10px !important;}
+.padding15{padding:15px !important;}
+.padding20{padding:20px !important;}
+.padding25{padding:25px !important;}
+
+.pl10{padding-left:10px !important;}
+.pr10{padding-right:10px !important;}
+
+.pd-t15{padding-top: 15px;}
+
+.lh150{line-height: 150px !important;}
+.lh100{line-height: 100px !important;}
+.lh80{line-height: 80px !important;}
+.lh70{line-height: 70px !important;}
+.lh60{line-height: 60px !important;}
+.lh50{line-height: 50px !important;}
+.lh40{line-height: 40px !important;}
+.lh32{line-height: 32px !important;}
+.lh30{line-height: 30px !important;}
+.lh20{line-height: 20px !important;}
+
+
+.h150{height: 150px !important;}
+.h100{height: 100px !important;}
+.h50{height: 50px !important;}
+.h40{height: 40px !important;}
+.h38{height: 38px !important;}
+.h30{height: 30px !important;}
+.h20{height: 20px !important;}
+
+.wd100{width: 100% !important;}
+.wd90{width: 90% !important;}
+.wd80{width: 80% !important;}
+.wd70{width: 70% !important;}
+.wd60{width: 60% !important;}
+.wd55{width: 55% !important;}
+.wd50{width: 50% !important;}
+.wd45{width: 45% !important;}
+.wd40{width: 40% !important;}
+.wd35{width: 35% !important;}
+.wd30{width: 30% !important;}
+.wd25{width: 25% !important;}
+
+.pt_size14{font-size: 14px !important;}
+.pt_size15{font-size: 15px !important;}
+.pt_size16{font-size: 16px !important;}
+.pt_size18{font-size: 18px !important;}
+.pt_size20{font-size: 20px !important;}
+.pt_size30{font-size: 30px !important;}
+.pt_size40{font-size: 40px !important;}
+.pt_size50{font-size: 50px !important;}
+.pt_size60{font-size: 60px !important;}
+
+.bd_gray{border:1px solid #999999;}
+.back_gray{background: #eeeeee;}
+.border_top_gray{border-top:1px solid #999999;}
+.cl_white{color: #fff !important;}
+.cl_grey{color: #999999 !important;}
+.cl_gray{color: #666666 !important;}
+.float_left{float:left !important;}
+.float_right{float:right !important;}
+.display_none{display: none;}
+.cursor_pointer{cursor: pointer;}
+.text_align_center{text-align: center;}
+.text_align_right{text-align: right;}
+.border_zero{border:0px solid; !important;}
+.clear_both{clear: both; !important;}
+.round_btn{border: 1px solid gray;border-radius: 15px;width: 200px;margin: 5px;text-align: center;padding: 5px 20px;}
+/* 비디앱스 추가 끝*/

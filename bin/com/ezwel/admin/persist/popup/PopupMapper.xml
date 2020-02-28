@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.popup.PopupMapper">
+	<select id="getPopupList" resultType="com.ezwel.admin.domain.entity.popup.InvPopup">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+			SELECT 
+				POPUP_SEQ AS popupSeq,
+				SERVICE_TYPE AS serviceType,
+				USE_YN AS useYn,
+				SCROLL_USE_YN AS scrollUseYn,
+				RESIZE_USE_YN AS resizeUseYn,
+				COOKIE_USE_YN AS cookieUseYn,
+				COOKIE_LIMIT_DAY AS cookieLimitDay,
+				POPUP_TITLE AS popupTitle,
+				POPUP_URL AS popupUrl,
+				POPUP_WIDTH AS popupWidth,
+				POPUP_HEIGHT AS popupHeight,
+				TOP_POSITION AS topPosition,
+				LEFT_POSITION AS leftPosition,
+				DATE_FORMAT( START_DT,'%Y-%m-%d %H:%i' ) AS startDt,
+				DATE_FORMAT( END_DT,'%Y-%m-%d %H:%i' ) AS endDt,
+				MENU_URL AS menuUrl,
+				ALL_CLIENT_YN AS allClientYn,
+				POPUP_CONTENT AS popupContent,
+				POPUP_TYPE AS popupType,
+				LAYER_YN AS layerYn,
+				ORDER_NO AS orderNo,
+				AUTO_APPLY_YN AS autoApplyYn,
+				DEL_YN AS delYn,
+				REG_ID AS regId,
+				DATE_FORMAT( REG_DT,'%Y-%m-%d %H:%i' ) AS regDt,
+				MODI_ID AS modiId,
+				DATE_FORMAT( MODI_DT,'%Y-%m-%d %H:%i' ) AS modiDt
+			FROM MIND_POPUP
+			WHERE 1=1
+			<choose>
+				<when test='isNotNull(isMobilePopup) and isMobilePopup.equals("Y")'>
+					<choose>
+						<when test="isNotNull(serviceType)">
+							AND SERVICE_TYPE = CONCAT('MOBILE_', #{serviceType})
+						</when>
+						<otherwise>
+							AND SERVICE_TYPE LIKE '%MOBILE_%'
+						</otherwise>
+					</choose>
+				</when>
+				<otherwise>
+					<choose>
+						<when test="isNotNull(serviceType)">
+							AND SERVICE_TYPE = #{serviceType}
+						</when>
+						<otherwise>
+							AND SERVICE_TYPE NOT LIKE '%MOBILE_%'
+						</otherwise>
+					</choose>
+				</otherwise>
+			</choose>
+
+			<if test="isNotNull(startDt)">
+				AND START_DT >= #{startDt}
+			</if>
+			
+			<if test="isNotNull(endDt)">
+				AND END_DT &lt;= #{endDt}
+			</if>
+			
+			<if test="isNotNull(popupTitle)">
+				AND POPUP_TITLE LIKE CONCAT (#{popupTitle},'%')
+			</if>
+			
+			<if test="isNotNull(popupUrl)">
+				AND POPUP_URL LIKE CONCAT (#{popupUrl},'%')
+			</if>
+			
+			<if test="isNotNull(menuUrl)">
+				AND MENU_URL = #{menuUrl}
+			</if>
+			
+			ORDER BY REG_DT DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+
+	<insert id="insertPopup" keyProperty="popupSeq" useGeneratedKeys="true">
+		INSERT INTO MIND_POPUP (
+			SERVICE_TYPE,
+			USE_YN,
+			<if test="isNotNull(scrollUseYn)">
+				SCROLL_USE_YN,
+			</if>
+			<if test="isNotNull(resizeUseYn)">
+				RESIZE_USE_YN,
+			</if>
+			<if test="isNotNull(cookieUseYn)">
+				COOKIE_USE_YN,
+			</if>
+			<if test="isNotNull(cookieLimitDay)">
+				COOKIE_LIMIT_DAY,
+			</if>
+			POPUP_TITLE,
+			POPUP_URL,
+			POPUP_WIDTH,
+			POPUP_HEIGHT,
+			TOP_POSITION,
+			LEFT_POSITION,
+			START_DT,
+			END_DT,
+			MENU_URL,
+			<if test="isNotNull(allClientYn)">
+				ALL_CLIENT_YN,
+			</if>
+			POPUP_CONTENT,
+			POPUP_TYPE,
+			<if test="isNotNull(layerYn)">
+				LAYER_YN,
+			</if>
+			ORDER_NO,
+			<if test="isNotNull(autoApplyYn)">
+				AUTO_APPLY_YN,
+			</if>
+			<if test="isNotNull(delYn)">
+				DEL_YN,
+			</if>
+			<if test="isNotNull(targetUrl)">
+				TARGET_URL,
+			</if>
+			REG_ID,
+			REG_DT			
+		) VALUES (
+			#{serviceType},
+			#{useYn},
+			<if test="isNotNull(scrollUseYn)">
+				#{scrollUseYn},
+			</if>
+			<if test="isNotNull(resizeUseYn)">
+				#{resizeUseYn},
+			</if>
+			<if test="isNotNull(cookieUseYn)">
+				#{cookieUseYn},
+			</if>
+			<if test="isNotNull(cookieLimitDay)">
+				#{cookieLimitDay},
+			</if>
+			#{popupTitle},
+			#{popupUrl},
+			#{popupWidth},
+			#{popupHeight},
+			#{topPosition},
+			#{leftPosition},
+			CONCAT(#{startDt},#{startTime}),
+			CONCAT(#{endDt},#{endTime}),
+			#{menuUrl},
+			<if test="isNotNull(allClientYn)">
+				#{allClientYn},
+			</if>
+			#{popupContent},
+			#{popupType},
+			<if test="isNotNull(layerYn)">
+				#{layerYn},
+			</if>
+			#{orderNo},
+			<if test="isNotNull(autoApplyYn)">
+				#{autoApplyYn},
+			</if>
+			<if test="isNotNull(delYn)">
+				#{delYn},
+			</if>
+			<if test="isNotNull(targetUrl)">
+				#{targetUrl},
+			</if>
+			#{regId},
+			DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+	</insert>
+	
+	<select id="modifyPopupDetail" resultType="com.ezwel.admin.domain.entity.popup.InvPopup">
+		SELECT POPUP_SEQ AS popupSeq,
+			SERVICE_TYPE AS serviceType,
+			USE_YN AS useYn,
+			SCROLL_USE_YN AS scrollUseYn,
+			RESIZE_USE_YN AS resizeUseYn,
+			COOKIE_USE_YN AS cookieUseYn,
+			COOKIE_LIMIT_DAY AS cookieLimitDay,
+			POPUP_TITLE AS popupTitle,
+			POPUP_URL AS popupUrl,
+			POPUP_WIDTH AS popupWidth,
+			POPUP_HEIGHT AS popupHeight,
+			TOP_POSITION AS topPosition,
+			LEFT_POSITION AS leftPosition,
+			START_DT AS startDt,
+			END_DT AS endDt,
+			MENU_URL AS menuUrl,
+			ALL_CLIENT_YN AS allClientYn,
+			POPUP_CONTENT AS popupContent,
+			POPUP_TYPE AS popupType,
+			LAYER_YN AS layerYn,
+			ORDER_NO AS orderNo,
+			AUTO_APPLY_YN AS autoApplyYn,
+			DEL_YN AS delYn,
+			REG_ID AS regId,
+			DATE_FORMAT( REG_DT,'%Y-%m-%d %H:%i' ) AS regDt,
+			MODI_ID AS modiId,
+			DATE_FORMAT( MODI_DT,'%Y-%m-%d %H:%i' ) AS modiDt,
+			TARGET_URL as targetUrl
+		FROM MIND_POPUP
+		WHERE 1=1 
+		<if test="isNotNull(popupSeq)">
+			AND POPUP_SEQ = #{popupSeq}
+		</if>
+		<if test="isNotNull(menuUrl)">
+			AND MENU_URL = #{menuUrl}
+		</if>
+	</select>
+	
+	
+	<delete id="modifyPopupDelete">
+		DELETE FROM MIND_POPUP WHERE POPUP_SEQ = ${popupSeq}
+	</delete>
+	
+	<update id="modifyPopupUpdate">
+		UPDATE MIND_POPUP
+		   SET 
+		   		POPUP_TITLE = #{popupTitle},
+				<if test="isNotNull(scrollUseYn)">	
+					SCROLL_USE_YN = #{scrollUseYn},
+				</if>
+				<if test="isNotNull(resizeUseYn)">
+					RESIZE_USE_YN = #{resizeUseYn},
+				</if>
+				<if test="isNotNull(cookieUseYn)">
+					COOKIE_USE_YN = #{cookieUseYn},
+				</if>
+				<if test="isNotNull(cookieLimitDay)">
+					COOKIE_LIMIT_DAY = #{cookieLimitDay},
+				</if>
+				<if test="isNotNull(useYn)">
+				USE_YN = #{useYn},
+				</if>
+				POPUP_URL = #{popupUrl},
+				POPUP_WIDTH = #{popupWidth},
+				POPUP_HEIGHT = #{popupHeight},
+				TOP_POSITION = #{topPosition},
+				LEFT_POSITION = #{leftPosition},
+				START_DT = CONCAT(#{startDt},#{startTime}),
+				END_DT = CONCAT(#{endDt},#{endTime}),
+				MENU_URL = #{menuUrl},
+				<if test="isNotNull(allClientYn)">
+		   			ALL_CLIENT_YN = #{allClientYn},
+		   		</if>
+		   		<if test="isNull(allClientYn)">
+		   			ALL_CLIENT_YN = 'N',
+		   		</if>
+				POPUP_CONTENT = #{popupContent},
+				POPUP_TYPE = #{popupType}, 
+				<if test="isNotNull(layerYn)">
+					LAYER_YN = #{layerYn},
+				</if>
+				ORDER_NO = #{orderNo},
+				<if test="isNotNull(autoApplyYn)">
+					AUTO_APPLY_YN = #{autoApplyYn},
+				</if>
+				<if test="isNotNull(delYn)">
+					DEL_YN = #{delYn},
+				</if>
+				MODI_ID = #{modiId},
+				MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE POPUP_SEQ = #{popupSeq}
+	</update>
+	
+	<insert id="insertClientCd">
+		INSERT INTO MIND_POPUP_CLIENT
+		( POPUP_SEQ,
+		  CLIENT_CD )
+		VALUES
+		(#{param1},  
+		 #{param2})
+		ON DUPLICATE KEY 
+		UPDATE POPUP_SEQ = #{param1}
+		,      CLIENT_CD = #{param2}
+	</insert>
+	
+	<select id="getClientList" resultType="com.ezwel.admin.domain.entity.popup.InvPopup">
+		SELECT   A.POPUP_SEQ AS popupSeq
+				,  B.CLIENT_CD AS clientCd
+				,  B.CLIENT_NM AS clientNm
+		FROM MIND_POPUP_CLIENT A RIGHT JOIN MIND_CLIENT B
+			ON A.CLIENT_CD = B.CLIENT_CD
+			<if test="isNotNull(popupSeq)">
+				AND A.POPUP_SEQ = #{popupSeq}
+			</if>
+	</select> 
+	
+	<delete id="deleteClientCd">
+		DELETE FROM MIND_POPUP_CLIENT
+		WHERE POPUP_SEQ = #{popupSeq}
+	</delete>
+	
+	<select id="getPopupSeq" resultType="String">
+		SELECT 	POPUP_SEQ AS popupSeq
+		FROM 	MIND_POPUP
+		WHERE 	SERVICE_TYPE = #{serviceType}
+		AND 	POPUP_TITLE  = #{popupTitle}
+		AND		POPUP_URL	 = #{popupUrl}
+	</select>
+</mapper>

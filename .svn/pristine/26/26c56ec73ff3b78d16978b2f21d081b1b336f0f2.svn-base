@@ -1,0 +1,605 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ include file="/WEB-INF/jsp/layout/inc/tags.jspf"%>
+<%@ page import="java.util.GregorianCalendar,java.util.Calendar,java.util.Date,java.text.SimpleDateFormat.*,java.text.SimpleDateFormat"%>
+<%@ page import="com.ezwel.core.support.util.DateUtils"%>
+
+<%!
+	public int nullIntconv(String inv) {
+		int conv = 0;
+
+		try {
+			conv = Integer.parseInt(inv);
+		} catch (Exception e) {
+		}
+		return conv;
+	}
+%>
+<%
+	int iYear = nullIntconv(request.getParameter("iYear"));
+	int iMonth = nullIntconv(request.getParameter("iMonth"));
+
+	Calendar ca = new GregorianCalendar();
+	int iTDay = ca.get(Calendar.DATE);
+	int iTYear = ca.get(Calendar.YEAR);
+	int iTMonth = ca.get(Calendar.MONTH);
+	int iTTime = ca.get(Calendar.HOUR);
+
+	if (iYear == 0) {
+		iYear = iTYear;
+		iMonth = iTMonth;
+	}
+
+	GregorianCalendar cal = new GregorianCalendar(iYear, iMonth, 1);
+
+	int days = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+	int weekStartDay = cal.get(Calendar.DAY_OF_WEEK);
+
+	cal = new GregorianCalendar(iYear, iMonth, days);
+	int iTotalweeks = cal.get(Calendar.WEEK_OF_MONTH);
+
+	String sMonth = new SimpleDateFormat("MM").format(new Date(2008, iMonth, 01));
+	GregorianCalendar thisDayCal = new GregorianCalendar(iYear, iMonth, 1);
+
+	String toDate = DateUtils.toDateStringYMDHMS();
+	String toMonth = toDate.substring(0, 6);
+	String toDay = toDate.substring(6, 8);
+	String toTime = toDate.substring(8, 10);
+	String thisMonth = "" + thisDayCal.get(Calendar.YEAR) + sMonth;
+
+	String flagTime = "Y";
+	if (Integer.parseInt(toMonth) > Integer.parseInt(thisMonth)) {
+		flagTime = "P"; // 이전 년월
+	} else if (toMonth.equals(thisMonth)) {
+		flagTime = "E"; // 현재와같은 년월
+	}
+%>
+<html>
+<head>
+<title>전체상담일정</title>
+<script>
+$(document).ready(function(){
+	
+	$("#preMonth").click(function(){
+		var year = <%=iYear %>;
+		var month = <%=iMonth %>+1; 
+		var ymd;
+		var cYear;
+		var cMonth;
+		
+		if (month == 1) {
+			month = 12;
+			year = year - 1;
+		} else {
+			month = month - 1;
+			year = year;
+		}
+			cYear = year;
+			cMonth = month - 1;
+		if (month < 10) {
+			ymd = year+"0"+month;
+		} else {
+			ymd = year+""+month;
+		}
+		
+		location.href = "/partner/pCounselorMgr/pCounselSchedule?iYear=" + cYear + "&iMonth=" + cMonth + "&thisMonth=" + ymd + "&selectId=" + $("[name='selectId']").val(); 
+		return false;
+	});	
+	
+	$("#nextMonth").click(function(){
+		var year = <%=iYear %>;
+		var month = <%=iMonth %>+1; 
+		var ymd;
+		var cYear;
+		var cMonth;
+		
+		if (month == 12) {
+			month = 1;
+			year = year + 1;
+		} else {
+			month = month + 1;
+			year = year;
+		}
+		
+		cYear = year;
+		cMonth = month-1;
+		if (month < 10) {
+			ymd = year+"0"+month;
+		} else {
+			ymd = year+""+month;
+		}
+		
+		location.href = "/partner/pCounselorMgr/pCounselSchedule?iYear=" + cYear + "&iMonth=" + cMonth + "&thisMonth=" + ymd  + "&selectId=" + $("[name='selectId']").val(); 
+		return false;
+	});	
+
+	$('#updateBtn').click(function() {
+		
+		var counselorName =  $("[name='selectId'] option:selected").text();
+		if (counselorName != "") {
+			counselorName += " 상담사의 일정을\n"
+		}
+		
+		$.alert(counselorName + '수정하시겠습니까?',function(){
+			
+			$(".idx").each(function(){
+				var idx = $(this).attr("name").split("_");
+				if($(".sangdam_"+idx[1]).is(':checked') || $(".gumsa_"+idx[1]).is(':checked')) {
+					$("#idx_"+idx[1]).val(idx[1]);
+				}
+			});
+			
+			if( "<%=flagTime%>" == "E" ) {
+				$("#humu_"+"<%=toDay%>").attr("disabled", false);
+			}
+			
+			$("#frm").submit();
+		 	return false;
+		 },function(){
+		 	return false;
+		 }
+ 	);
+	return false;
+	});		
+		
+	$("#searchBtn").click(function(){
+		$("#frm").submit();
+		return false;
+	});
+	
+	
+	// 로딩시 휴무일 초기화
+	for(var i=1;i<31;i++) {
+		var strDay = "";
+		if(i < 10)
+			strDay = "0"+i;
+		else 
+			strDay = ""+i;
+		
+		if($("#humu_"+strDay).is(":checked")) {
+			$(".sangdamAll_"+strDay).attr("disabled", true);
+			$(".gumsaAll_"+strDay).attr("disabled", true);
+			$(".sangdam_"+strDay).attr("disabled", true);
+			$(".gumsa_"+strDay).attr("disabled", true);
+		}
+	}
+	
+	// 현재월 현재시간 이전 데이터 수정불가
+	if( "<%=flagTime%>" == "P" ) {
+		$("#tableMonth :checkbox").attr("disabled", true);
+	} else if( "<%=flagTime%>" == "E" ) {
+		for(var i=1;i<31;i++) {
+			var strDay = "";
+			if(i < 10)
+				strDay = "0"+i;
+			else 
+				strDay = ""+i;
+			
+			if( i < <%=toDay%> ) {
+				$("#table_"+strDay + " :checkbox").attr("disabled", true);
+			} else if ( i == <%=toDay%> ) {
+
+				//당일은 휴무일 지정불가
+				$("#humu_" + strDay).attr("disabled", true);
+				for(var j=7;j<23;j++) {
+					var strTime = "";
+					if(j < 10)
+						strTime = "0"+j;
+					else 
+						strTime = ""+j;
+					
+					if( j <= <%=toTime%> ) {
+						$("#sangdam_"+strDay+"_"+strTime).attr("disabled", true);
+						$("#gumsa_"+strDay+"_"+strTime).attr("disabled", true);
+					}
+				}
+			}
+		}
+	}
+});
+
+//스케쥴체크
+function checkboxClick(type,day,time) {
+	if(type == 'sangdam') {
+		if($("#sangdam_"+day+"_"+time).is(":checked")) {
+			$("#gumsa_"+day+"_"+time).prop("checked",false);
+		}
+	} else if(type == 'gumsa') {
+		if($("#gumsa_"+day+"_"+time).is(":checked")) {
+			$("#sangdam_"+day+"_"+time).prop("checked",false);
+		}
+	}
+	
+}
+
+//휴무
+function humuCheck(day) {
+	var check = $("#humu_"+day).is(":checked");
+	
+	if( !("<%=flagTime%>" == "E" && day == <%=toDay%>) ) {
+		if(check == true) { //휴무에 체크일경우
+			$(".sangdamAll_"+day).attr("disabled", true);
+			$(".gumsaAll_"+day).attr("disabled", true);
+			$(".sangdam_"+day).attr("disabled", true);
+			$(".gumsa_"+day).attr("disabled", true);
+		} else { //휴무에 체크가 아닐경우
+			$(".sangdamAll_"+day).attr("disabled", false);
+			$(".gumsaAll_"+day).attr("disabled", false);
+			$(".sangdam_"+day).attr("disabled", false);
+			$(".gumsa_"+day).attr("disabled", false);
+		}
+	}
+}
+
+//상담
+function sangdamAllCheck(day) {
+	var check = $("#sangdamAll_"+day).is(":checked");
+	
+	if( !("<%=flagTime%>" == "E" && day == <%=toDay%>) ) {
+		$("#gumsaAll_"+day).prop("checked",false);
+		
+		if(check == true){ //상담에 체크일경우
+			$(".sangdam_"+day).prop("checked", true);
+			$(".gumsa_"+day).prop("checked", false);
+		}else{ //상담에 체크가 아닐경우
+			$(".sangdam_"+day).prop("checked", false);
+		}
+	}
+}
+
+//검사
+function gumsaAllCheck(day) {
+	var check = $("#gumsaAll_"+day).is(":checked");
+	
+	if( !("<%=flagTime%>" == "E" && day == <%=toDay%>) ) {
+		$("#sangdamAll_"+day).prop("checked",false);
+		
+		if(check == true){ //상담에 체크일경우
+			$(".sangdam_"+day).prop("checked", false);
+			$(".gumsa_"+day).prop("checked", true);
+		}else{ //상담에 체크가 아닐경우
+			$(".gumsa_"+day).prop("checked", false);
+		}
+	}
+}
+
+
+/**
+ * 센터장일때 다른 상담사 선택
+ */
+function counselorChange() {
+	location.href = "/partner/pCounselorMgr/pCounselSchedule?selectId=" + $("[name='selectId']").val();
+}
+
+</script>
+</head>
+
+<body>
+<form id="frm" modelAttribute="mindScheduleDto" method="post" action="/partner/pCounselorMgr/updadeSchedule">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td>
+		<table cellpadding="5" cellspacing="0" border="0" width="95%" style="border-bottom: 1px solid silver;">
+			<tr>
+				<td height="20px"></td>
+			</tr>
+			<tr>
+				<td align="left" class="subtitle">일정등록/수정</td>
+			</tr>
+		</table>
+		</td> 
+	</tr>
+		
+	<!-- 달력 년도 -->
+	<tr>
+		<td>
+			<table width="95%" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td width="40">
+						<input type="hidden" name="thisYm" value="<%=iYear%><%=sMonth%>">
+						<input type="button" id="preMonth" value="&lt;">
+					</td>
+					<td width="80" align="left">
+						<h3><%=iYear%>. <%=sMonth%></h3>
+					</td>
+					<td width="40">
+						<input type="button" id="nextMonth" value="&gt;">
+					</td>
+					
+					<!-- 검색창 -->
+					<td align="right">
+						<c:choose>
+							<c:when test="${not empty counselorList }">
+								상담사&nbsp;
+								<select name="selectId" onchange="counselorChange();" >
+									<c:forEach var="list" items="${counselorList }">
+										<option value="${list.userId }" <c:if test="${selectId eq list.userId }"> selected </c:if> >${list.userNm }</option>
+									</c:forEach>
+								</select>	
+							</c:when>
+							<c:otherwise>
+								<input type="hidden" name="selectId" value="${selectId}">
+							</c:otherwise>
+						</c:choose>
+					</td>
+					<td width="5"></td>
+					
+					<!-- 검색창 끝 -->
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<!-- 달력 년도 끝 -->
+	<tr>
+		<td><strong>* 상담이 가능하신 일정에 체크를 해주시기 바랍니다.	</strong></td>
+	</tr>	 
+	<tr>
+	    <td>
+	    <table border="1" cellpadding="5" cellspacing="0" width="95%" id="tableMonth">
+	    	<tbody>
+		      <tr>
+		          <th><font color="red">일요일</font></th>
+		          <th>월요일</th>
+		          <th>화요일</th>
+		          <th>수요일</th>
+		          <th>목요일</th>
+		          <th>금요일</th>
+		          <th><font color="#529dbc">토요일</font></th>
+		      </tr>
+			<%
+				int cnt = 1;
+				for (int i = 1; i <= iTotalweeks; i++) {
+			%>
+				<tr>
+				<%
+					for (int j = 1; j <= 7; j++) {
+						if (cnt < weekStartDay || (cnt - weekStartDay + 1) > days) {
+				%>
+						<td align="center">&nbsp;</td>
+				<% 
+						} else {
+				%>
+							<!-- 일 시작 -->
+							<td align="left" width="10%" id="day_<%=(cnt-weekStartDay+1)%>">
+								<span>
+								<% if (j == 1) { %>
+									<font color="red" size="4">
+								<% } else if (j==7) { %>
+									<font color="#529dbc" size="4">
+								<% } else { %>
+									<font size="4">
+								<% } %>
+									<b> <%=(cnt - weekStartDay + 1)%> </b>
+									</font>
+								</span>
+								<c:set var="day" value="<%=(cnt - weekStartDay + 1)%>"/>
+								
+								<fmt:formatNumber type="number" pattern="00" value="${day}" var="cDay" />
+								
+								<table cellpadding="5" cellspacing="0" border="1" width="100%" style="border-collapse:collapse;" bordercolor="#DDDDDD" align="center" id="table_${cDay}">
+									<tr>
+										<td colspan="4" align="right">
+											<c:set var="humuDay" value="humu_${cDay}"/>
+											<input type="checkbox" name="humu_${cDay}" id="humu_${cDay}" value="<%=iYear %><%=sMonth %>${cDay}" onclick="humuCheck('${cDay}')"  ${scheduleMap[humuDay].holidayYn == 'Y'  ? 'checked':''} >휴무
+											<input type="hidden" class="idx" name="idx_${cDay}" id="idx_${cDay}" value="">
+										</td>
+									</tr>
+									<tr>
+										<td rowspan="2">시간</td>
+										<td>상담</td>
+										<td>검사</td>
+									</tr>
+									<tr>
+										<td>
+											<input type="checkbox" class="sangdamAll_${cDay}" name="sangdamAll_${cDay}" id="sangdamAll_${cDay}" onclick="sangdamAllCheck('${cDay}')" />
+										</td>
+										<td>
+											<input type="checkbox" class="gumsaAll_${cDay}" name="gumsaAll_${cDay}" id="gumsaAll_${cDay}" onclick="gumsaAllCheck('${cDay}')" />
+										</td>
+									</tr>
+									<tr>
+										<td>07:00</td>
+										<td>
+											<c:set var="sangdamTime07" value="sangdam_${cDay}_07"/>
+											<input type="checkbox" class="sangdam_${cDay}" name="sangdam_${cDay}_07" id="sangdam_${cDay}_07" value="<%=iYear %><%=sMonth %>${cDay}-0700-0800" ${scheduleMap[sangdamTime07].ymd ne null  ? 'checked':''} onchange="checkboxClick('sangdam','${cDay}','07')" />
+										</td>
+										<td>
+											<c:set var="gumsaTime07" value="gumsa_${cDay}_07"/>
+											<input type="checkbox" class="gumsa_${cDay}" name="gumsa_${cDay}_07" id="gumsa_${cDay}_07" value="<%=iYear %><%=sMonth %>${cDay}-0700-0800" ${scheduleMap[gumsaTime07].ymd ne null  ? 'checked':''} onchange="checkboxClick('gumsa','${cDay}','07')" />
+										</td>
+									</tr>
+									<tr>
+										<td>08:00</td>
+										<td>
+											<c:set var="sangdamTime08" value="sangdam_${cDay}_08"/>
+											<input type="checkbox" class="sangdam_${cDay}" name="sangdam_${cDay}_08" id="sangdam_${cDay}_08" value="<%=iYear %><%=sMonth %>${cDay}-0800-0900" ${scheduleMap[sangdamTime08].ymd ne null  ? 'checked':''} onchange="checkboxClick('sangdam','${cDay}','08')" />
+										</td>
+										<td>
+											<c:set var="gumsaTime08" value="gumsa_${cDay}_08"/>
+											<input type="checkbox" class="gumsa_${cDay}" name="gumsa_${cDay}_08" id="gumsa_${cDay}_08" value="<%=iYear %><%=sMonth %>${cDay}-0800-0900" ${scheduleMap[gumsaTime08].ymd ne null  ? 'checked':''} onchange="checkboxClick('gumsa','${cDay}','08')" />
+										</td>
+									</tr>
+									<tr>
+										<td>09:00</td>
+										<td>
+											<c:set var="sangdamTime09" value="sangdam_${cDay}_09"/>
+											<input type="checkbox" class="sangdam_${cDay}" name="sangdam_${cDay}_09" id="sangdam_${cDay}_09" value="<%=iYear %><%=sMonth %>${cDay}-0900-1000" ${scheduleMap[sangdamTime09].ymd ne null  ? 'checked':''} onchange="checkboxClick('sangdam','${cDay}','09')" />
+										</td>
+										<td>
+											<c:set var="gumsaTime09" value="gumsa_${cDay}_09"/>
+											<input type="checkbox" class="gumsa_${cDay}" name="gumsa_${cDay}_09" id="gumsa_${cDay}_09" value="<%=iYear %><%=sMonth %>${cDay}-0900-1000" ${scheduleMap[gumsaTime09].ymd ne null  ? 'checked':''} onchange="checkboxClick('gumsa','${cDay}','09')" />
+										</td>
+									</tr>
+									<tr>
+										<td>10:00</td>
+										<td>
+											<c:set var="sangdamTime10" value="sangdam_${cDay}_10"/>
+											<input type="checkbox" class="sangdam_${cDay}" name="sangdam_${cDay}_10" id="sangdam_${cDay}_10" value="<%=iYear %><%=sMonth %>${cDay}-1000-1100" ${scheduleMap[sangdamTime10].ymd ne null  ? 'checked':''} onchange="checkboxClick('sangdam','${cDay}','10')" />
+										</td>
+										<td>
+											<c:set var="gumsaTime10" value="gumsa_${cDay}_10"/>
+											<input type="checkbox" class="gumsa_${cDay}" name="gumsa_${cDay}_10" id="gumsa_${cDay}_10" value="<%=iYear %><%=sMonth %>${cDay}-1000-1100" ${scheduleMap[gumsaTime10].ymd ne null  ? 'checked':''} onchange="checkboxClick('gumsa','${cDay}','10')" />
+										</td>
+									</tr>
+									<tr>
+										<td>11:00</td>
+										<td>
+											<c:set var="sangdamTime11" value="sangdam_${cDay}_11"/>
+											<input type="checkbox" class="sangdam_${cDay}" name="sangdam_${cDay}_11" id="sangdam_${cDay}_11" value="<%=iYear %><%=sMonth %>${cDay}-1100-1200" ${scheduleMap[sangdamTime11].ymd ne null  ? 'checked':''} onchange="checkboxClick('sangdam','${cDay}','11')" />
+										</td>
+										<td>
+											<c:set var="gumsaTime11" value="gumsa_${cDay}_11"/>
+											<input type="checkbox" class="gumsa_${cDay}" name="gumsa_${cDay}_11" id="gumsa_${cDay}_11" value="<%=iYear %><%=sMonth %>${cDay}-1100-1200" ${scheduleMap[gumsaTime11].ymd ne null  ? 'checked':''} onchange="checkboxClick('gumsa','${cDay}','11')" />
+										</td>
+									</tr>
+									<tr>
+										<td>12:00</td>
+										<td>
+											<c:set var="sangdamTime12" value="sangdam_${cDay}_12"/>
+											<input type="checkbox" class="sangdam_${cDay}" name="sangdam_${cDay}_12" id="sangdam_${cDay}_12" value="<%=iYear %><%=sMonth %>${cDay}-1200-1300" ${scheduleMap[sangdamTime12].ymd ne null  ? 'checked':''} onchange="checkboxClick('sangdam','${cDay}','12')" />
+										</td>
+										<td>
+											<c:set var="gumsaTime12" value="gumsa_${cDay}_12"/>
+											<input type="checkbox" class="gumsa_${cDay}" name="gumsa_${cDay}_12" id="gumsa_${cDay}_12" value="<%=iYear %><%=sMonth %>${cDay}-1200-1300" ${scheduleMap[gumsaTime12].ymd ne null  ? 'checked':''} onchange="checkboxClick('gumsa','${cDay}','12')" />
+										</td>
+									</tr>
+									<tr>
+										<td>13:00</td>
+										<td>
+											<c:set var="sangdamTime13" value="sangdam_${cDay}_13"/>
+											<input type="checkbox" class="sangdam_${cDay}" name="sangdam_${cDay}_13" id="sangdam_${cDay}_13" value="<%=iYear %><%=sMonth %>${cDay}-1300-1400" ${scheduleMap[sangdamTime13].ymd ne null  ? 'checked':''} onchange="checkboxClick('sangdam','${cDay}','13')" />
+										</td>
+										<td>
+											<c:set var="gumsaTime13" value="gumsa_${cDay}_13"/>
+											<input type="checkbox" class="gumsa_${cDay}" name="gumsa_${cDay}_13" id="gumsa_${cDay}_13" value="<%=iYear %><%=sMonth %>${cDay}-1300-1400" ${scheduleMap[gumsaTime13].ymd ne null  ? 'checked':''} onchange="checkboxClick('gumsa','${cDay}','13')" />
+										</td>
+									</tr>
+									<tr>
+										<td>14:00</td>
+										<td>
+											<c:set var="sangdamTime14" value="sangdam_${cDay}_14"/>
+											<input type="checkbox" class="sangdam_${cDay}" name="sangdam_${cDay}_14" id="sangdam_${cDay}_14" value="<%=iYear %><%=sMonth %>${cDay}-1400-1500" ${scheduleMap[sangdamTime14].ymd ne null  ? 'checked':''} onchange="checkboxClick('sangdam','${cDay}','14')" />
+										</td>
+										<td>
+											<c:set var="gumsaTime14" value="gumsa_${cDay}_14"/>
+											<input type="checkbox" class="gumsa_${cDay}" name="gumsa_${cDay}_14" id="gumsa_${cDay}_14" value="<%=iYear %><%=sMonth %>${cDay}-1400-1500" ${scheduleMap[gumsaTime14].ymd ne null  ? 'checked':''} onchange="checkboxClick('gumsa','${cDay}','14')" />
+										</td>
+									</tr>
+									<tr>
+										<td>15:00</td>
+										<td>
+											<c:set var="sangdamTime15" value="sangdam_${cDay}_15"/>
+											<input type="checkbox" class="sangdam_${cDay}" name="sangdam_${cDay}_15" id="sangdam_${cDay}_15" value="<%=iYear %><%=sMonth %>${cDay}-1500-1600" ${scheduleMap[sangdamTime15].ymd ne null  ? 'checked':''} onchange="checkboxClick('sangdam','${cDay}','15')" />
+										</td>
+										<td>
+											<c:set var="gumsaTime15" value="gumsa_${cDay}_15"/>
+											<input type="checkbox" class="gumsa_${cDay}" name="gumsa_${cDay}_15" id="gumsa_${cDay}_15" value="<%=iYear %><%=sMonth %>${cDay}-1500-1600" ${scheduleMap[gumsaTime15].ymd ne null  ? 'checked':''} onchange="checkboxClick('gumsa','${cDay}','15')" />
+										</td>
+									</tr>
+									<tr>
+										<td>16:00</td>
+										<td>
+											<c:set var="sangdamTime16" value="sangdam_${cDay}_16"/>
+											<input type="checkbox" class="sangdam_${cDay}" name="sangdam_${cDay}_16" id="sangdam_${cDay}_16" value="<%=iYear %><%=sMonth %>${cDay}-1600-1700" ${scheduleMap[sangdamTime16].ymd ne null  ? 'checked':''} onchange="checkboxClick('sangdam','${cDay}','16')" />
+										</td>
+										<td>
+											<c:set var="gumsaTime16" value="gumsa_${cDay}_16"/>
+											<input type="checkbox" class="gumsa_${cDay}" name="gumsa_${cDay}_16" id="gumsa_${cDay}_16" value="<%=iYear %><%=sMonth %>${cDay}-1600-1700" ${scheduleMap[gumsaTime16].ymd ne null  ? 'checked':''} onchange="checkboxClick('gumsa','${cDay}','16')" />
+										</td>
+									</tr>
+									<tr>
+										<td>17:00</td>
+										<td>
+											<c:set var="sangdamTime17" value="sangdam_${cDay}_17"/>
+											<input type="checkbox" class="sangdam_${cDay}" name="sangdam_${cDay}_17" id="sangdam_${cDay}_17" value="<%=iYear %><%=sMonth %>${cDay}-1700-1800" ${scheduleMap[sangdamTime17].ymd ne null  ? 'checked':''} onchange="checkboxClick('sangdam','${cDay}','17')" />
+										</td>
+										<td>
+											<c:set var="gumsaTime17" value="gumsa_${cDay}_17"/>
+											<input type="checkbox" class="gumsa_${cDay}" name="gumsa_${cDay}_17" id="gumsa_${cDay}_17" value="<%=iYear %><%=sMonth %>${cDay}-1700-1800" ${scheduleMap[gumsaTime17].ymd ne null  ? 'checked':''} onchange="checkboxClick('gumsa','${cDay}','17')" />
+										</td>
+									</tr>
+									<tr>
+										<td>18:00</td>
+										<td>
+											<c:set var="sangdamTime18" value="sangdam_${cDay}_18"/>
+											<input type="checkbox" class="sangdam_${cDay}" name="sangdam_${cDay}_18" id="sangdam_${cDay}_18" value="<%=iYear %><%=sMonth %>${cDay}-1800-1900" ${scheduleMap[sangdamTime18].ymd ne null  ? 'checked':''} onchange="checkboxClick('sangdam','${cDay}','18')" />
+										</td>
+										<td>
+											<c:set var="gumsaTime18" value="gumsa_${cDay}_18"/>
+											<input type="checkbox" class="gumsa_${cDay}" name="gumsa_${cDay}_18" id="gumsa_${cDay}_18" value="<%=iYear %><%=sMonth %>${cDay}-1800-1900" ${scheduleMap[gumsaTime18].ymd ne null  ? 'checked':''} onchange="checkboxClick('gumsa','${cDay}','18')" />
+										</td>
+									</tr>
+									<tr>
+										<td>19:00</td>
+										<td>
+											<c:set var="sangdamTime19" value="sangdam_${cDay}_19"/>
+											<input type="checkbox" class="sangdam_${cDay}" name="sangdam_${cDay}_19" id="sangdam_${cDay}_19" value="<%=iYear %><%=sMonth %>${cDay}-1900-2000" ${scheduleMap[sangdamTime19].ymd ne null  ? 'checked':''} onchange="checkboxClick('sangdam','${cDay}','19')" />
+										</td>
+										<td>
+											<c:set var="gumsaTime19" value="gumsa_${cDay}_19"/>
+											<input type="checkbox" class="gumsa_${cDay}" name="gumsa_${cDay}_19" id="gumsa_${cDay}_19" value="<%=iYear %><%=sMonth %>${cDay}-1900-2000" ${scheduleMap[gumsaTime19].ymd ne null  ? 'checked':''} onchange="checkboxClick('gumsa','${cDay}','19')" />
+										</td>
+									</tr>
+									<tr>
+										<td>20:00</td>
+										<td>
+											<c:set var="sangdamTime20" value="sangdam_${cDay}_20"/>
+											<input type="checkbox" class="sangdam_${cDay}" name="sangdam_${cDay}_20" id="sangdam_${cDay}_20" value="<%=iYear %><%=sMonth %>${cDay}-2000-2100" ${scheduleMap[sangdamTime20].ymd ne null  ? 'checked':''} onchange="checkboxClick('sangdam','${cDay}','20')" />
+										</td>
+										<td>
+											<c:set var="gumsaTime20" value="gumsa_${cDay}_20"/>
+											<input type="checkbox" class="gumsa_${cDay}" name="gumsa_${cDay}_20" id="gumsa_${cDay}_20" value="<%=iYear %><%=sMonth %>${cDay}-2000-2100" ${scheduleMap[gumsaTime20].ymd ne null  ? 'checked':''} onchange="checkboxClick('gumsa','${cDay}','20')" />
+										</td>
+									</tr>
+									<tr>
+										<td>21:00</td>
+										<td>
+											<c:set var="sangdamTime21" value="sangdam_${cDay}_21"/>
+											<input type="checkbox" class="sangdam_${cDay}" name="sangdam_${cDay}_21" id="sangdam_${cDay}_21" value="<%=iYear %><%=sMonth %>${cDay}-2100-2200" ${scheduleMap[sangdamTime21].ymd ne null  ? 'checked':''} onchange="checkboxClick('sangdam','${cDay}','21')" />
+										</td>
+										<td>
+											<c:set var="gumsaTime21" value="gumsa_${cDay}_21"/>
+											<input type="checkbox" class="gumsa_${cDay}" name="gumsa_${cDay}_21" id="gumsa_${cDay}_21" value="<%=iYear %><%=sMonth %>${cDay}-2100-2200" ${scheduleMap[gumsaTime21].ymd ne null  ? 'checked':''} onchange="checkboxClick('gumsa','${cDay}','21')" />
+										</td>
+									</tr>
+									<tr>
+										<td>22:00</td>
+										<td>
+											<c:set var="sangdamTime22" value="sangdam_${cDay}_22"/>
+											<input type="checkbox" class="sangdam_${cDay}" name="sangdam_${cDay}_22" id="sangdam_${cDay}_22" value="<%=iYear %><%=sMonth %>${cDay}-2200-2300" ${scheduleMap[sangdamTime22].ymd ne null  ? 'checked':''} onchange="checkboxClick('sangdam','${cDay}','22')" />
+										</td>
+										<td>
+											<c:set var="gumsaTime22" value="gumsa_${cDay}_22"/>
+											<input type="checkbox" class="gumsa_${cDay}" name="gumsa_${cDay}_22" id="gumsa_${cDay}_22" value="<%=iYear %><%=sMonth %>${cDay}-2200-2300" ${scheduleMap[gumsaTime22].ymd ne null  ? 'checked':''} onchange="checkboxClick('gumsa','${cDay}','22')" />
+										</td>
+									</tr>
+								</table>
+							</td>
+							<!-- 일 종료 -->
+				<% 
+						}
+			        	cnt++;
+					}
+				%>
+				</tr>
+			<% 
+				}
+			%>
+			</tbody>
+		</table>
+
+		<!-- 수정버튼 영역 -->
+		<table cellpadding="5" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
+			<tr align="center" height="50px">
+				<td class="" colspan="2" align="center">
+					<input type="button" id="updateBtn" value="수정" style="height:30px; width:100px;">
+					<span style="margin-left: 20px;"></span>
+				</td>
+			</tr>
+		</table>
+		<!-- 수정버튼 영역 끝 -->
+		</td>
+	</tr>
+</table>
+</form>
+</body>
+</html>

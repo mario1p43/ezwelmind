@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.hue.HueContactMapper">
+
+	<select id="getContactList" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+				SELECT  
+				 CONTACT_NO AS contactNo
+				,COUNSEL_NM AS counNm
+				,MOBILE AS mobile
+				,REG_DT AS regDt
+				,DATE AS date
+				,TIME AS time
+				,C_DATE AS cdate
+				,C_TIME AS ctime
+				,C_STATUS AS cstatus
+				,GENDER AS gender
+				 from hue_counsel_contact
+				 
+				WHERE 1=1
+				<if test="isNotNull(searchNm)">
+					AND COUNSEL_NM LIKE CONCAT('%', #{searchNm},'%') 
+				</if>
+				<if test="isNotNull(searchMobile)">
+					AND MOBILE  LIKE CONCAT('%', #{searchMobile},'%') 
+				</if>
+				<if test="isNotNull(genderArr)">
+					AND GENDER = #{genderArr}
+				</if>
+				
+				<if test="isNotNull(searchArr)">
+					AND C_STATUS REGEXP #{searchArr}
+				</if>
+				<if test="isNotNull(startRDt)">
+					AND REG_DT between  CONCAT(#{startRDt}, ' 00:00:00') and  CONCAT(#{endRDt}, ' 23:59:59') 
+				</if>				
+				<if test="isNotNull(startDt)">
+					AND DATE between #{startDt} and #{endDt} 
+				</if>				
+				<if test="isNotNull(startCDt)">
+					AND C_DATE between #{startCDt} and #{endCDt} 
+				</if>												
+				
+				ORDER BY CONTACT_NO DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="getExcelContactList" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+				SELECT  
+				 CONTACT_NO AS contactNo
+				,COUNSEL_NM AS counNm
+				,MOBILE AS mobile
+				,REG_DT AS regDt
+				,DATE AS date
+				,TIME AS time
+				,C_DATE AS cdate
+				,C_TIME AS ctime
+				,C_STATUS AS cstatus
+				,GENDER AS gender
+				 from hue_counsel_contact
+				 
+				WHERE 1=1
+				<if test="isNotNull(searchNm)">
+					AND COUNSEL_NM LIKE CONCAT('%', #{searchNm},'%') 
+				</if>
+				<if test="isNotNull(searchMobile)">
+					AND MOBILE  LIKE CONCAT('%', #{searchMobile},'%') 
+				</if>
+				<if test="isNotNull(genderArr)">
+					AND GENDER = #{genderArr}
+				</if>
+				
+				<if test="isNotNull(searchArr)">
+					AND C_STATUS REGEXP #{searchArr}
+				</if>
+				<if test="isNotNull(startRDt)">
+					AND REG_DT between  CONCAT(#{startRDt}, ' 00:00:00') and  CONCAT(#{endRDt}, ' 23:59:59') 
+				</if>				
+				<if test="isNotNull(startDt)">
+					AND DATE between #{startDt} and #{endDt} 
+				</if>				
+				<if test="isNotNull(startCDt)">
+					AND C_DATE between #{startCDt} and #{endCDt} 
+				</if>												
+				
+				ORDER BY CONTACT_NO DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>			
+		</choose>
+	</select>
+	
+	<select id="getContact" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		SELECT  
+				 CONTACT_NO AS contactNo
+				,COUNSEL_NM AS counNm
+				,MOBILE AS mobile
+				,GENDER AS gender
+				,RRN AS rrn
+				,DATE AS date
+				,TIME AS time
+				,CAUSE AS cause
+				,MEMO AS memo
+				,REG_DT AS regDt				
+				,C_DATE AS cdate
+				,C_TIME AS ctime
+				,C_STATUS AS cstatus
+				,C_MEMO AS cmemo
+				 from hue_counsel_contact
+		WHERE CONTACT_NO = #{dataSeq}
+	</select>
+	
+	<insert id="addContactReply">
+		INSERT INTO MIND_BBS_DATA (
+			 BBS_CD
+			,HIGH_DATA_SEQ
+			,CLIENT_CD
+			,SERVICE_TYPE
+			,CONTENT
+			,STATUS
+			,REG_ID
+			,REG_NM
+			,REG_DT
+		) VALUES (
+			 #{bbsCd}
+			,#{highDataSeq}
+			,#{clientCd}
+			,'SANGDAM4U'
+			,#{content}
+			,#{status}
+			,#{regId}
+			,#{regNm}
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+	</insert>
+</mapper>

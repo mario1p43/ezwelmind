@@ -1,0 +1,76 @@
+package com.ezwel.admin.service.counsel.dto;
+
+import java.io.Serializable;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
+@SuppressWarnings({ "squid:S1068", "serial" })
+public class CounselIntakeDto implements Serializable {
+	
+	private String intakeCd;
+	
+	private String gender;
+	
+	private String rrn;
+	
+	private String ageDiv;
+	
+	private String channelType;
+	
+	private String counselType;
+	
+	private String clientCd;
+	
+	private String mobile;
+	
+	private String email;
+	
+	private String counselDiv;
+	
+	private String education;
+	
+	private String session;
+	
+	private String job;
+	
+	private String counselNm;
+	
+	private String cause;
+	
+	private String memo;
+	
+	private String counselAges;
+	
+	private String userKey;
+	
+	private String regId;
+	
+	private String relation;
+	
+	private String relationEtc;
+	
+	private String centerSeq;
+	
+	private String payType;
+	
+	private String intakeNum;
+
+	private String branchCd;
+	
+	private String deptCd;
+	
+	private String teamCd;
+	
+	private String partCd;
+	
+	private String gradeCd;
+
+	private String homeTel;
+	
+	private String userStatus;
+	
+	private String counselReservChk;
+
+}

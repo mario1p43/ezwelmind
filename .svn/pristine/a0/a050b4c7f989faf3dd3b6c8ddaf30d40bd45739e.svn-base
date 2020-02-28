@@ -1,0 +1,162 @@
+package com.ezwel.admin.service.client.dto;
+
+import java.io.File;
+
+import com.ezwel.admin.domain.file.FileMind;
+import com.ezwel.core.support.util.DateUtils;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
+@SuppressWarnings("squid:S1068")
+public class ClientDto extends FileMind{
+
+	/**
+	 * 고객사 정보
+	 */
+	private static final long serialVersionUID = -1877806181703548776L;
+
+	private String clientCd;
+
+	private String domainCd;
+
+	private String clientNm;
+
+	private String clientType;
+
+	private String clientTypeNm;
+
+	private String divCd;
+
+	private String divCdNm;
+
+	private String ceoNm;
+
+	private String bsnsNum;
+
+	private String bsnsKind;
+
+	private String bcond;
+
+	private String bitem;
+
+	private String bitemNm;
+
+	private String post;
+
+	private String addr1;
+
+	private String addr2;
+
+	private String faxNum;
+
+	private String telNum;
+
+	private String menuGroup;
+
+	private String siteNm;
+
+	private String pointNm;
+
+	private String openDd;
+
+	private String calcDd;
+
+	private String calcType;
+
+	private String calcTypeNm;
+
+	private String pointBringYn;
+
+	private String contractType;
+
+	private String contractTypeNm;
+
+	private String areaCd;
+
+	private String areaCdNm;
+
+	private String totEmploy;
+
+	private String oldFileNm;
+
+	private String oldFilePath;
+
+	private String useType;
+
+	private String useService;
+
+	private String useChannel;
+
+	private String joinType;
+
+	private String loginType;
+
+	private String useYn;
+
+	private String openYn;
+
+	private String delYn;
+
+	private String emsRecvYn;
+
+	private String smsRecvYn;
+
+	private String dutyYn;
+
+	private String taxYn;
+
+	private String receiptPointYn;
+
+	private String receiptAccountYn;
+
+	private String delDt;
+
+	private String regId;
+
+	private String regDt;
+
+	private String modiId;
+
+	private String modiDt;
+	
+	
+	private String userType;
+	private String mgrId;
+	private String budget;
+	private String memo;
+	
+	private String zip1;
+	private String zip2;
+
+	private String startEmploy;	//검색(시작인원)
+	private String endEmploy;	//검색(종료인원)
+	
+	private int startEmp;	//검색(시작인원)
+	private int endEmp;		//검색(종료인원)
+	
+	private String commCd;
+	private String optionCd;
+	
+	private String mobileYn;
+	
+	private String payNm;
+	
+	private String highCommCd;
+	private String commNm ;
+	private String commDesc ;
+	private String modiType ;
+	private String loginTxt;
+	
+	private String counselMgrId;
+	
+	private String counselDate;
+	private String nowDate;
+	private String ymd;
+	
+	@Override
+	public String contextFilePath(String fileNm) {
+		return File.separator + "madm" + File.separator + "client" + File.separator + DateUtils.getDateFormat("yyyy") + File.separator + DateUtils.getDateFormat("MM");
+	}
+}

@@ -1,0 +1,664 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.hue.HueCounselMapper">
+	<select id="getCounselList" resultType="com.ezwel.admin.domain.entity.hue.CenterCounsel">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+			select 
+				A.INTAKE_CD as intakeCd 
+				,B.COUNSEL_CD as counselCd
+				,A.USER_NM as counselNm
+				,AES_DECRYPT(UNHEX(A.MOBILE),'1234') as mobile
+				,B.COUNSEL_DD as counselDd
+				,B.ST_DT as stDt
+				,B.ED_DT as edDt
+				,A.CAUSE as cause
+				,A.STATUS as status
+				,B.COUNSELOR_ID as counselorId
+				,B.REG_DT as regDt
+				,B.MODI_DT as modiDt
+				,(SELECT USER_NM FROM mind_mgr WHERE USER_ID = B.COUNSELOR_ID) AS counselorNm
+				,B.MODI_ID as modiId
+				,(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE CLIENT_CD = 'hue' AND COMM_CD = A.CAUSE) AS strCause
+				,(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE CLIENT_CD = 'hue' AND COMM_CD = A.STATUS) AS strStatus
+				,(SELECT USER_NM FROM mind_mgr WHERE USER_ID = B.REG_ID) AS regNm
+				,(SELECT USER_NM FROM mind_mgr WHERE USER_ID = B.MODI_ID) AS modiNm
+				from center_intake AS A 
+					left join center_counsel AS B on A.INTAKE_CD = B.INTAKE_CD
+				WHERE 1=1
+				
+				<if test="isNotNull(userId)">
+					AND B.COUNSELOR_ID=  #{userId} 
+				</if>
+				
+				<if test="isNotNull(counselNm)">
+					AND A.USER_NM = #{counselNm }
+				</if>
+				
+				<if test="isNotNull(cause)">
+					AND A.CAUSE = #{cause }
+				</if>
+				
+				<if test="isNotNull(counselorId)">
+					AND B.COUNSELOR_ID = #{counselorId }
+				</if>
+				
+				<if test="isNotNull(status)">
+					AND A.STATUS = #{status }
+				</if>
+				
+				<if test="isNotNull(startDt)">
+					 AND B.MODI_DT between  CONCAT(#{startDt}, ' 00:00:00') and  CONCAT(#{endDt}, ' 23:59:59')
+				</if>
+				
+				<if test="isNotNull(counselStDd)">
+					 AND B.COUNSEL_DD between  CONCAT(#{counselStDd}, ' 00:00:00') and  CONCAT(#{counselEdDd}, ' 23:59:59')
+				</if>
+				
+				<if test="isNotNull(mobile)">
+					AND A.MOBILE = HEX(AES_ENCRYPT(#{mobile},'1234'))
+				</if>
+				
+				ORDER BY A.REG_DT DESC, A.INTAKE_CD DESC, B.COUNSEL_CD DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+
+	<insert id="insertHueCounselIntake">
+		INSERT INTO CENTER_INTAKE (
+			USER_NM
+			,GENDER
+			,RRN
+			,MOBILE
+			,EMAIL
+			,MARRY			
+			,EDUCATION	
+			,SESSION
+			,JOB
+			,CAUSE
+			,REG_DT
+			,REG_ID
+		) VALUES (
+			#{counselNm}
+			,#{gender}
+			,#{rrn}
+			,HEX(AES_ENCRYPT(#{mobile},'1234'))
+			,#{email}
+			,#{marry}					
+			,#{education}
+			,#{session}
+			,#{job}	
+			,#{cause}
+			,now()
+			,#{regId}
+		)
+		<selectKey resultType="String" keyProperty="intakeCd" order="AFTER" >
+        	SELECT LAST_INSERT_ID()
+    	</selectKey>
+	</insert>	
+	
+	<insert id="insertHueCounselFamily">
+		INSERT INTO HUE_COUNSEL_FAMILY (
+			INTAKE_CD
+			,NAME
+			,RELATION
+			,AGE
+			,JOB
+			,GRADE			
+		) VALUES (
+			#{intakeCd}
+			,#{fname}
+			,#{frelation}
+			,#{fage}
+			,#{fjob}
+			,#{fgrade}			
+		)
+	</insert>
+	
+	<insert id="insertHueCounselMgr">
+		INSERT INTO CENTER_COUNSEL(
+			INTAKE_CD
+			,COUNSEL_DD
+			,COUNSELOR_ID
+			,ST_DT
+			,ED_DT
+			,SUBJECT
+			,MAIN_ISSUE
+			,GOAL
+			<if test="isNotNull(file1)">
+				,FILE_NM
+				,FILE_PATH
+			</if>
+			,REG_DT
+			,REG_ID
+		) VALUES (
+			#{intakeCd}
+			,#{counselDd}
+			,#{counselorId}
+			,#{stDt}
+			,#{edDt}
+			,#{subject}
+			,#{mainIssue}
+			,#{goal}
+			<if test="isNotNull(file1)">	  			    
+				,#{file1}
+				,#{fileP1}
+			</if>
+			,now()
+			,#{regId}	
+		)
+	</insert>	
+	
+	<update id="updateHueCounselIntake">
+		UPDATE CENTER_INTAKE
+		SET  
+			USER_NM = #{counselNm}
+			,GENDER = #{gender}
+			,RRN = #{rrn}
+			,MOBILE = HEX(AES_ENCRYPT(#{mobile},'1234'))
+			,EMAIL = #{email}
+			,MARRY	 = #{marry}		
+			,EDUCATION	 = #{education}
+			,SESSION	 = #{session}			
+			,CAUSE	 = #{cause}			
+			,JOB = #{job}	
+			,CAUSE = #{cause}
+			,MODI_DT = now()
+			,MODI_ID	 = #{regId}
+		WHERE INTAKE_CD = #{intakeCd}
+	</update>	
+	
+	<delete id="deleteHueCounselFamily">
+		DELETE FROM HUE_COUNSEL_FAMILY
+		WHERE INTAKE_CD = #{intakeCd }
+	</delete>
+	
+	<update id="updateCounselMgr">
+		UPDATE CENTER_COUNSEL
+		SET  
+			COUNSELOR_ID=#{userNm}
+			,MODI_DT=now()
+			,MODI_ID=#{regId}
+			,SUBJECT = #{subject}
+			,MAIN_ISSUE = #{mainIssue}
+			,GOAL = #{goal}
+			,COUNSEL_DD = #{counselDd}
+			,ST_DT	 = #{stDt}
+			,ED_DT = #{edDt}	
+		   <if test="isNotNull(file1)">
+				,FILE_NM1	 = #{file1}
+				,FILE_PATH1	 = #{fileP1}
+			</if>
+		WHERE INTAKE_CD = #{intakeCd}
+		AND COUNSEL_CD = #{counselCd}
+	</update>		
+	
+	<select id="getExcelCounselList" resultType="com.ezwel.admin.domain.entity.hue.CenterCounsel">
+			<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+			select 
+				A.INTAKE_CD as intakeCd 
+				,B.COUNSEL_CD as counselCd
+				,A.USER_NM as counselNm
+				,AES_DECRYPT(UNHEX(A.MOBILE),'1234') as mobile
+				,B.COUNSEL_DD as counselDd
+				,B.ST_DT as stDt
+				,B.ED_DT as edDt
+				,A.CAUSE as cause
+				,A.STATUS as status
+				,B.COUNSELOR_ID as counselorId
+				,B.REG_DT as regDt
+				,B.MODI_DT as modiDt
+				,(SELECT USER_NM FROM mind_mgr WHERE USER_ID = B.COUNSELOR_ID) AS counselorNm
+				,B.MODI_ID as modiId
+				,(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE CLIENT_CD = 'hue' AND COMM_CD = A.CAUSE) AS strCause
+				,(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE CLIENT_CD = 'hue' AND COMM_CD = A.STATUS) AS strStatus
+				,(SELECT USER_NM FROM mind_mgr WHERE USER_ID = B.REG_ID) AS regNm
+				,(SELECT USER_NM FROM mind_mgr WHERE USER_ID = B.MODI_ID) AS modiNm
+				from center_intake AS A 
+					left join center_counsel AS B on A.INTAKE_CD = B.INTAKE_CD
+				WHERE 1=1
+				
+				<if test="isNotNull(userId)">
+					AND B.COUNSELOR_ID=  #{userId} 
+				</if>
+				
+				<if test="isNotNull(counselNm)">
+					AND A.USER_NM = #{counselNm }
+				</if>
+				
+				<if test="isNotNull(cause)">
+					AND A.CAUSE = #{cause }
+				</if>
+				
+				<if test="isNotNull(counselorId)">
+					AND B.COUNSELOR_ID = #{counselorId }
+				</if>
+				
+				<if test="isNotNull(status)">
+					AND A.STATUS = #{status }
+				</if>
+				
+				<if test="isNotNull(startDt)">
+					 AND B.MODI_DT between  CONCAT(#{startDt}, ' 00:00:00') and  CONCAT(#{endDt}, ' 23:59:59')
+				</if>
+				
+				<if test="isNotNull(counselStDd)">
+					 AND B.COUNSEL_DD between  CONCAT(#{counselStDd}, ' 00:00:00') and  CONCAT(#{counselEdDd}, ' 23:59:59')
+				</if>
+				
+				<if test="isNotNull(mobile)">
+					AND A.MOBILE = HEX(AES_ENCRYPT(#{mobile},'1234'))
+				</if>
+				
+				ORDER BY A.REG_DT DESC, A.INTAKE_CD DESC, B.COUNSEL_CD DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>			
+		</choose>
+	</select>
+	
+	<select id="getCounsel" resultType="com.ezwel.admin.domain.entity.hue.CenterCounsel">
+			SELECT  
+				A.INTAKE_CD as intakeCd 
+				,B.COUNSEL_CD as counselCd
+				,A.USER_NM as counselNm
+				,AES_DECRYPT(UNHEX(A.MOBILE),'1234') as mobile
+				,B.COUNSEL_DD as counselDd
+				,B.ST_DT as stDt
+				,B.ED_DT as edDt
+				,A.CAUSE as cause
+				,A.STATUS as status
+				,B.COUNSELOR_ID as counselorId
+				,B.REG_DT as regDt
+				,B.MODI_DT as modiDt
+				,(SELECT USER_NM FROM mind_mgr WHERE USER_ID = B.COUNSELOR_ID) AS userNm
+				,B.MODI_ID as modiId
+				,A.GENDER as gender
+				,A.RRN as rrn					
+				,A.EMAIL as email
+				,A.MARRY as marry
+				,A.EDUCATION as education
+				,A.SESSION as session				
+				,B.SUBJECT as subject
+				,B.MAIN_ISSUE as mainIssue
+				,B.GOAL as goal
+				,B.COUNSEL_TEXT as counselText
+				,B.FILE_NM as fileNm
+				,B.FILE_PATH as filePath																			
+				,A.STATUS as status
+				,(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE CLIENT_CD = 'hue' AND COMM_CD = A.STATUS) AS strStatus
+				,(SELECT USER_NM FROM mind_mgr WHERE USER_ID = B.COUNSELOR_ID) AS counselorNm	
+				,(SELECT USER_NM FROM mind_mgr WHERE USER_ID = B.REG_ID) AS regNm
+				,A.JOB AS job
+				,B.OPINION as opnion
+				,B.RISK_DEGREE as riskDegree
+				,B.RISK_REASON as riskReason
+				,B.PLAN as plan
+				,B.FINAL_GOAL as finalGoal
+				,B.INTERVENTION as intervention
+				,B.OPINION as opinion
+				,B.NEXT_PLAN as nextPlan
+				,B.MEMO as memo
+				,B.FILE_NM as fileNm
+				,B.FILE_PATH as filePath
+			from center_intake AS A 
+			right join  center_counsel AS B on A.INTAKE_CD = B.INTAKE_CD				 				
+			WHERE B.COUNSEL_CD = #{counselCd}
+	</select>	
+
+	<select id="getSangdamList" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+			select 
+					A.INTAKE_CD as intakeCd 
+					,B.COUNSEL_NO as counselNo
+					,A.COUNSEL_NM as counselNm
+					,A.MOBILE as mobile
+					,B.CAUSE as cause
+					,B.STATUS as status
+					,B.USER_ID as userId
+					,B.REG_DT as regDt
+					,B.MODI_DT as modiDt
+					,(SELECT USER_NM FROM mind_mgr WHERE USER_ID=B.USER_ID) AS userNm
+					, (CASE WHEN B.R_STATUS = '1' THEN '진행'
+							WHEN B.R_STATUS = '2' THEN 'N/S'
+							WHEN B.R_STATUS = '3' THEN '종결'
+							WHEN B.R_STATUS = '4' THEN '미등록'
+							END) AS rstatus
+					,(SELECT DATE from hue_counsel_record where COUNSEL_NO=B.COUNSEL_NO order by COUNSEL_CD desc limit 1) AS date
+					,(SELECT TIME from hue_counsel_record where COUNSEL_NO=B.COUNSEL_NO order by COUNSEL_CD desc limit 1) AS time1
+					,(SELECT TIME2 from hue_counsel_record where COUNSEL_NO=B.COUNSEL_NO order by COUNSEL_CD desc limit 1) AS time2
+					,B.INTAKE_NUM as intakeNum
+					,B.MODI_ID as modiId
+					, (CASE WHEN SUBSTRING(B.CAUSE,1,1) = '1' THEN '건강한 마음'
+							WHEN SUBSTRING(B.CAUSE,1,1) = '2' THEN '성장하는 삶'
+							WHEN SUBSTRING(B.CAUSE,1,1) = '3' THEN '행복한 가정'
+							WHEN SUBSTRING(B.CAUSE,1,1) = '4' THEN '즐거운 직장'
+							WHEN SUBSTRING(B.CAUSE,1,1) = '5' THEN '기타'
+							END) AS strCause
+					, (CASE 
+							WHEN B.STATUS = '' THEN '상담예정'
+							WHEN B.STATUS IS NULL THEN '상담예정'
+							WHEN B.STATUS = '1' THEN '상담예정'
+							WHEN B.STATUS = '2' THEN '상담진행'
+							WHEN B.STATUS = '3' THEN '상담종결' END) AS strStatus
+
+					,(SELECT USER_NM FROM mind_mgr WHERE USER_ID=B.MODI_ID) AS modiNm
+					,A.REG_DT
+					 ,A.INTAKE_CD
+					 ,COUNSEL_NO
+ 					from hue_counsel_intake AS A 
+ 					left join  hue_counsel_mgr AS B on A.INTAKE_CD=B.INTAKE_CD
+				WHERE 1=1
+				AND B.USER_ID !=''
+				<if test="isNotNull(checkUserId)">
+					AND B.USER_ID=  #{checkUserId} 
+				</if>
+				<if test="isNotNull(centerNm)">
+					AND B.CAUSE LIKE CONCAT('%', #{centerNm},'%') 
+				</if>
+				<if test="isNotNull(searchNm)">
+					AND A.COUNSEL_NM LIKE CONCAT('%', #{searchNm},'%') 
+				</if>
+				<if test="isNotNull(searchArr)">
+					AND	 R_STATUS REGEXP #{searchArr}
+				</if>
+				<if test="isNotNull(userNm)">
+					AND B.USER_ID = #{userNm} 
+				</if>								
+				<if test="isNotNull(searchCnt)">
+					AND B.INTAKE_NUM = #{searchCnt} 
+				</if>				
+				<if test="isNotNull(startDt)">
+					 AND B.MODI_DT between  CONCAT(#{startDt}, ' 00:00:00') and  CONCAT(#{endDt}, ' 23:59:59')
+				</if>		
+				ORDER BY A.REG_DT DESC, A.INTAKE_CD DESC, COUNSEL_NO DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getExcelSangdamList" resultType="com.ezwel.admin.domain.entity.hue.CenterCounsel">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+			select 
+				A.INTAKE_CD as intakeCd 
+				,B.COUNSEL_CD as counselCd
+				,A.USER_NM as counselNm
+				,AES_DECRYPT(UNHEX(A.MOBILE),'1234') as mobile
+				,B.COUNSEL_DD as counselDd
+				,B.ST_DT as stDt
+				,B.ED_DT as edDt
+				,A.CAUSE as cause
+				,A.STATUS as status
+				,B.COUNSELOR_ID as counselorId
+				,B.REG_DT as regDt
+				,B.MODI_DT as modiDt
+				,(SELECT USER_NM FROM mind_mgr WHERE USER_ID = B.COUNSELOR_ID) AS counselorNm
+				,B.MODI_ID as modiId
+				,(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE CLIENT_CD = 'hue' AND COMM_CD = A.CAUSE) AS strCause
+				,(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE CLIENT_CD = 'hue' AND COMM_CD = A.STATUS) AS strStatus
+				,(SELECT USER_NM FROM mind_mgr WHERE USER_ID = B.REG_ID) AS regNm
+				,(SELECT USER_NM FROM mind_mgr WHERE USER_ID = B.MODI_ID) AS modiNm
+				from center_intake AS A 
+					left join center_counsel AS B on A.INTAKE_CD = B.INTAKE_CD
+				WHERE 1=1
+				
+				<if test="isNotNull(userId)">
+					AND B.COUNSELOR_ID=  #{userId} 
+				</if>
+				
+				<if test="isNotNull(counselNm)">
+					AND A.USER_NM = #{counselNm }
+				</if>
+				
+				<if test="isNotNull(cause)">
+					AND A.CAUSE = #{cause }
+				</if>
+				
+				<if test="isNotNull(counselorId)">
+					AND B.COUNSELOR_ID = #{counselorId }
+				</if>
+				
+				<if test="isNotNull(status)">
+					AND A.STATUS = #{status }
+				</if>
+				
+				<if test="isNotNull(startDt)">
+					 AND B.MODI_DT between  CONCAT(#{startDt}, ' 00:00:00') and  CONCAT(#{endDt}, ' 23:59:59')
+				</if>
+				
+				ORDER BY A.REG_DT DESC, A.INTAKE_CD DESC, B.COUNSEL_CD DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+		</choose>
+	</select>	
+		
+	<select id="getRecord" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+			select 
+				RECORD_CD as recordCd
+				,COUNSEL_NO as counselNo
+				,COUNSEL_CD as counselCd
+				,DATE as date
+				,TIME as time1
+				,TIME2 as time2
+				,SUBJECT as subject
+				,MAIN_ISSUE as mainIssue
+				,GOAL as goal
+				,INTERVENTION as intervention
+				,FEEDBACK as feedback
+				,MEMO1 as rmemo1
+				,MEMO2 as rmemo2
+				,MEMO3 as rmemo3
+				,MEMO4 as rmemo4
+				,MEMO5 as rmemo5
+				,MEMO6 as rmemo6
+				,MEMO7 as rmemo7
+				,FILE_NM1 as fileNm1
+				,FILE_PATH1 as filePath1
+				,FILE_NM2 as fileNm2
+				,FILE_PATH2 as filePath2					
+				,RISKS as risks
+				,RISK_REASON as riskReason
+				,ISSUE as issue
+				,CALLING_ISSUE as callingIssue
+				,STATUS as status
+				,NEXT_DT as nextDt
+				,NEXT_TIME as nextTime
+				,REG_DT as regDt
+				,MODI_DT as modiDt
+				,NEXT_FLAG as nextFlag
+				,NEXT_STR as nextStr
+			FROM hue_counsel_record
+			where COUNSEL_NO=#{dataSeq} 
+			  and COUNSEL_CD=#{pageNum}		 				
+	</select>	
+
+	<update id="updateRecord" parameterType="com.ezwel.admin.service.hue.dto.BBSAdd2Dto">
+		UPDATE hue_counsel_record
+		SET  
+			SUBJECT=#{subject}
+			<if test="isNotNull(date)">
+			,DATE=#{date}
+			,TIME=#{time1}
+			,TIME2=#{time2}			
+			</if>			
+			,MAIN_ISSUE=#{mainIssue}
+			,GOAL=#{goal}
+			,INTERVENTION=#{intervention}
+			,FEEDBACK	=#{feedback}		
+			,MEMO1=#{rmemo1}
+			,MEMO2=#{rmemo2}
+			,MEMO3=#{rmemo3}
+			,MEMO4=#{rmemo4}
+			,MEMO5=#{rmemo5}
+			,MEMO6=#{rmemo6}
+			,MEMO7	=#{rmemo7}
+			,NEXT_FLAG=#{nextFlag}
+			,NEXT_STR=#{nextStr}
+			<if test="isNotNull(fileNm1)">	
+			,FILE_NM1=#{fileNm1}			
+			,FILE_PATH1=#{filePath1}
+			</if>
+			<if test="isNotNull(fileNm2)">
+			,FILE_NM2=#{fileNm2}
+			,FILE_PATH2=#{filePath2}
+			</if>
+			,RISKS=#{risks}			
+			,RISK_REASON=#{riskReason}
+			,ISSUE=#{issue}
+			,CALLING_ISSUE=#{callingIssue}
+			,STATUS=#{status}
+			<if test="isNotNull(nextDt)">
+			,NEXT_DT=#{nextDt}			
+			,NEXT_TIME=#{nextTime}
+			</if>			
+			,MODI_DT=now()			
+			,MODI_ID=#{regId}					    
+		WHERE  RECORD_CD =#{recordCd}
+	</update>
+	
+	<update id="updateCounsel" parameterType="com.ezwel.admin.service.hue.dto.CenterCounselDto">
+		UPDATE CENTER_COUNSEL
+		SET  RISK_DEGREE	= #{riskDegree}
+		    ,RISK_REASON 	= #{riskReason}
+			,FINAL_GOAL	  	= #{finalGoal}
+			,PLAN  = #{plan}
+			,MAIN_ISSUE  = #{mainIssue}
+			,GOAL  = #{goal}
+			,INTERVENTION  = #{intervention}
+		    <if test="isNotNull(counselText)">
+				,COUNSEL_TEXT = #{counselText}
+			</if>
+			<if test="isNotNull(opinion)">
+				,OPINION = #{opinion}
+			</if>
+			<if test="isNotNull(nextPlan)">
+				,NEXT_PLAN = #{nextPlan}
+			</if>
+			<if test="isNotNull(memo)">
+				,MEMO = #{memo}
+			</if>
+			<if test="isNotNull(fileNm)">
+				,FILE_NM = #{fileNm}
+			</if>
+			<if test="isNotNull(filePath)">
+				,FILE_PATH = #{filePath}
+			</if>
+				,MODI_DT = now()			
+				,MODI_ID = #{regId}
+		WHERE  COUNSEL_CD =#{counselCd}
+	</update>
+	
+	<insert id="insertRecord" keyProperty="dataSeq" useGeneratedKeys="true" parameterType="com.ezwel.admin.service.hue.dto.BBSAdd2Dto">
+		INSERT INTO hue_counsel_record (
+			 COUNSEL_NO
+			,COUNSEL_CD
+			<if test="isNotNull(date)">
+			,DATE
+			,TIME
+			,TIME2			
+			</if>
+			,SUBJECT
+			,MAIN_ISSUE
+			,GOAL
+			,INTERVENTION
+			,FEEDBACK			
+			,MEMO1
+			,MEMO2
+			,MEMO3
+			,MEMO4
+			,MEMO5
+			,MEMO6
+			,MEMO7			
+			,FILE_NM1
+			,FILE_PATH1
+			,FILE_NM2
+			,FILE_PATH2
+			,RISKS			
+			,RISK_REASON
+			,ISSUE
+			,CALLING_ISSUE
+			,STATUS
+			<if test="isNotNull(nextDt)">
+			,NEXT_DT			
+			,NEXT_TIME
+			</if>
+			,NEXT_FLAG
+			,NEXT_STR
+			,REG_DT
+			,REG_ID
+			,MODI_DT
+			,MODI_ID			
+		) VALUES (
+			 #{counselNo}			
+			,#{pageNum2}
+			<if test="isNotNull(date)">
+			,#{date}
+			,#{time1}
+			,#{time2}			
+			</if>
+			,#{subject}
+			,#{mainIssue}
+			,#{goal}
+			,#{intervention}
+			,#{feedback}			
+			,#{rmemo1}
+			,#{rmemo2}
+			,#{rmemo3}
+			,#{rmemo4}
+			,#{rmemo5}
+			,#{rmemo6}
+			,#{rmemo7}			
+			,#{fileNm1}
+			,#{filePath1}
+			,#{fileNm2}
+			,#{filePath2}
+			,#{risks}			
+			,#{riskReason}
+			,#{issue}
+			,#{callingIssue}
+			,#{status}
+			<if test="isNotNull(nextDt)">
+			,#{nextDt}
+			,#{nextTime}			
+			</if>
+			,#{nextFlag}
+			,#{nextStr}
+			,now()
+			,#{regId}
+			,now()
+			,#{regId}
+		)
+	</insert>	
+</mapper>

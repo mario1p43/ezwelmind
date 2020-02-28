@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.counsel.CounselMapper">
+
+	<select id="getCounseList" resultType="com.ezwel.admin.domain.entity.counsel.Counsel">
+		SELECT A.COUNSEL_CD
+			 , A.INTAKE_CD
+			 , A.CLIENT_CD
+			 , A.COUNSEL_TYPE
+			 , A.CENTER_SEQ
+			 , (SELECT CENTER_NM FROM MIND_CENTER  WHERE CENTER_SEQ = A.CENTER_SEQ)  AS centerNm
+			 , (SELECT USER_NM FROM MIND_MGR  WHERE USER_ID = A.COUNSELOR_ID)  AS counselorNm
+			 , A.COUNSELOR_ID
+			 , A.SCHEDULE_DT
+		  FROM MIND_COUNSEL A
+		 WHERE 1=1
+		<if test="isNotNull(counselCd)">
+		   AND A.COUNSEL_CD = #{counselCd}
+		</if>
+	</select>
+	
+	
+	<select id="getCounselAfterSmsList" resultType="com.ezwel.admin.domain.entity.sms.SmsResult">
+		/* 상담완료후 sms보내기 */
+		SELECT 
+				A.COUNSEL_CD
+			  , A.INTAKE_CD
+			  , A.COUNSEL_TYPE
+			  , A.CLIENT_CD
+			  , B.COUNSEL_NM																		as sndNm
+			  , AES_DECRYPT(UNHEX(B.MOBILE),'1234') 												as sndMobile
+			  , DATE_FORMAT(STR_TO_DATE(A.SCHEDULE_DT, '%Y%m%d%H%i%s'),'%Y년%m월%d일%H시') 		as scheduleDt
+			  , (SELECT USER_NM FROM MIND_MGR WHERE USER_ID = A.COUNSELOR_ID) 				 		as counselorNm
+			  , (SELECT CENTER_NM FROM MIND_CENTER WHERE CENTER_SEQ = A.CENTER_SEQ)        			as centerNm
+			  , A.center_seq																		as centerSeq
+			  , IF(C.SITE_NM IS NULL or C.SITE_NM = '', '상담포유', C.SITE_NM) as siteNm		
+		FROM  MIND_COUNSEL A
+				INNER JOIN MIND_COUNSEL_INTAKE B
+					ON A.INTAKE_CD = B.INTAKE_CD			
+	            INNER JOIN MIND_CLIENT C
+	            ON A.CLIENT_CD =C.CLIENT_CD			 
+		WHERE DATE_FORMAT(DATE_ADD(A.SCHEDULE_DT, INTERVAL 90 MINUTE), '%Y%m%d%H%i') &lt; DATE_FORMAT(NOW(), '%Y%m%d%H%i') /* 상담시작 시간데이터 90분후하고 현재시간을 비교해서 데이터를 전송한다.*/
+		AND   A.STATUS != '100522'  /* 취소가 아닌거 */
+		AND   A.SMS_RESULT_YN = 'N' /* 완료문자가 보내지 않은거 */
+		AND   A.COUNSEL_TYPE IN ('100433', '100434') /* 대면상담만, 전화상담 추가 */
+		AND   A.CLIENT_CD != 'police'
+	</select>
+	
+	
+	<update id="modifySmsResultYn">
+		/* 상담완료문자를 보낸상담건은 Y로 업데이트를 한다. (다음에 또 안보내기 위해서.)*/
+		UPDATE 
+				MIND_COUNSEL A
+		   SET  SMS_RESULT_YN = 'Y'
+		 WHERE  DATE_FORMAT(DATE_ADD(A.SCHEDULE_DT, INTERVAL 90 MINUTE), '%Y%m%d%H%i') &lt; DATE_FORMAT(NOW(), '%Y%m%d%H%i') 
+		   AND  A.STATUS != '100522' 
+		   AND  A.SMS_RESULT_YN = 'N'
+   		   AND  A.CLIENT_CD != 'police'
+	</update>
+	
+	<select id="getCounselAfterSmsPoliceList" resultType="com.ezwel.admin.domain.entity.sms.SmsResult">
+		/* 상담완료후 sms보내기 */
+		SELECT 
+				A.COUNSEL_CD
+			  , A.INTAKE_CD
+			  , A.COUNSEL_TYPE
+			  , A.CLIENT_CD
+			  , B.COUNSEL_NM																		as sndNm
+			  , AES_DECRYPT(UNHEX(B.MOBILE),'1234') 												as sndMobile
+			  , DATE_FORMAT(STR_TO_DATE(A.SCHEDULE_DT, '%Y%m%d%H%i%s'),'%Y년%m월%d일%H시') 		as scheduleDt
+			  , (SELECT USER_NM FROM MIND_MGR WHERE USER_ID = A.COUNSELOR_ID) 				 		as counselorNm
+			  , (SELECT CENTER_NM FROM MIND_CENTER WHERE CENTER_SEQ = A.CENTER_SEQ)        			as centerNm	
+			  , A.center_seq																		as centerSeq	
+			  , IF(C.SITE_NM IS NULL or C.SITE_NM = '', '상담포유', C.SITE_NM) as siteNm		
+		FROM  MIND_COUNSEL A
+				INNER JOIN MIND_COUNSEL_INTAKE B
+					ON A.INTAKE_CD = B.INTAKE_CD			
+	            INNER JOIN MIND_CLIENT C
+	            ON A.CLIENT_CD =C.CLIENT_CD				 
+		WHERE DATE_FORMAT(DATE_ADD(A.SCHEDULE_DT, INTERVAL 90 MINUTE), '%Y%m%d%H%i') &lt; DATE_FORMAT(NOW(), '%Y%m%d%H%i') /* 상담시작 시간데이터 90분후하고 현재시간을 비교해서 데이터를 전송한다.*/
+		AND   A.STATUS != '100522'  /* 취소가 아닌거 */
+		AND   A.SMS_RESULT_YN = 'N' /* 완료문자가 보내지 않은거 */
+		AND   A.COUNSEL_TYPE = '100433' /* 대면상담만 */
+		AND   A.CLIENT_CD = 'police'
+	</select>
+	
+	
+	<update id="modifySmsResultYnPolice">
+		/* 상담완료문자를 보낸상담건은 Y로 업데이트를 한다. (다음에 또 안보내기 위해서.)*/
+		UPDATE 
+				MIND_COUNSEL A
+		   SET  SMS_RESULT_YN = 'Y'
+		 WHERE  DATE_FORMAT(DATE_ADD(A.SCHEDULE_DT, INTERVAL 90 MINUTE), '%Y%m%d%H%i') &lt; DATE_FORMAT(NOW(), '%Y%m%d%H%i') 
+		   AND  A.STATUS != '100522' 
+		   AND  A.SMS_RESULT_YN = 'N'
+	   	   AND   A.CLIENT_CD = 'police'
+	</update>
+	
+	<select id="getSchedule" resultType="com.ezwel.admin.domain.entity.counsel.Schedule">
+		SELECT COUNSEL_CD  		as counselCd
+		 	  ,SCHEDULE_SEQ  	as scheduleSeq
+		  FROM MIND_SCHEDULE
+		 WHERE USER_ID = #{userId}
+		   AND YMD = #{ymd}
+		   AND ST_TIME = #{stTime}
+	</select>
+	
+	
+	<update id="modifyScheduleCancel">
+		UPDATE 
+				MIND_SCHEDULE
+		   SET  COUNSEL_CD = '0'
+		   	  , MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		   	  , MODI_ID = #{modiId}
+		 WHERE  COUNSEL_CD = #{counselCd} 
+	</update>
+	
+	
+	<update id="modifyScheduleRegister">
+		UPDATE 
+				MIND_SCHEDULE
+		   SET  COUNSEL_CD = #{counselCd}
+		   	  , CENTER_SEQ = #{centerSeq}
+		   	  , MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		   	  , MODI_ID = #{modiId}
+		 WHERE  SCHEDULE_SEQ = #{scheduleSeq}
+	</update>
+	
+	
+	<update id="modifyCounselChange">
+		UPDATE 
+				MIND_COUNSEL
+		   SET  COUNSELOR_ID = #{counselorId}
+		   	  , CENTER_SEQ = #{centerSeq}
+		      , SCHEDULE_SEQ = #{scheduleSeq}
+		      , SCHEDULE_DT = #{scheduleDt}
+		 WHERE  COUNSEL_CD = #{counselCd} 
+	</update>
+
+
+	<insert id="addSchedule" keyProperty="scheduleSeq" useGeneratedKeys="true" parameterType="com.ezwel.admin.service.counsel.dto.CounselDto">
+		INSERT INTO MIND_SCHEDULE (
+			  CENTER_SEQ
+			, COUNSEL_CD
+			, USER_ID
+			, HOLIDAY_YN
+			, YMD
+			, SCHEDULE_TYPE
+			, ST_TIME
+			, ED_TIME
+			, REG_DT
+			, REG_ID
+		) VALUES ( 
+			  #{centerSeq}
+			, #{counselCd}
+			, #{userId}
+			, #{holidayYn}
+			, #{ymd}
+			, #{scheduleType}
+			, #{stTime}
+			, #{edTime}
+			, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			, #{regId}
+		)   
+	</insert>
+	
+	
+	<insert id="addCounselIntake" keyProperty="intakeCd" useGeneratedKeys="true" parameterType="com.ezwel.admin.service.counsel.dto.CounselIntakeDto">
+		INSERT INTO MIND_COUNSEL_INTAKE (
+			  CLIENT_CD
+			, USER_KEY
+			, HIGH_INTAKE_CD
+			, RELATION
+			, RELATION_ETC
+			, COUNSEL_NM
+			, GENDER
+			, RRN
+			<if test="isNotNull(channelType)">
+			, CHANNEL_TYPE
+			</if>
+			<if test="isNotNull(counselAges)">
+			, COUNSEL_AGES
+			</if>
+			<if test="isNotNull(counselDiv)">
+			, COUNSEL_DIV
+			</if>
+			<if test="isNotNull(counselType)">
+			, COUNSEL_TYPE
+			</if>
+			, EDUCATION
+			, MOBILE
+			, EMAIL
+			, CAUSE
+			, MEMO
+			, STATUS
+			, INTAKE_NUM
+			, REG_DT
+			, REG_ID
+			<if test="isNotNull(intakeCd)">
+			, INTAKE_CD
+			</if>
+			<if test="isNotNull(session)">
+			, SESSION
+			</if>
+			<if test="isNotNull(job)">
+			, JOB
+			</if>
+			<if test="isNotNull(counselReservChk)">
+			, COUNSEL_RESERV_CHK
+			</if>
+		) VALUES (
+			  #{clientCd}
+			, #{userKey}
+			, '-1'
+			, #{relation}
+			, #{relationEtc}
+			, #{counselNm}
+			, #{gender}
+			, #{rrn}
+			<if test="isNotNull(channelType)">
+			, #{channelType}
+			</if>
+			<if test="isNotNull(counselAges)">
+			, #{counselAges}
+			</if>
+			<if test="isNotNull(counselDiv)">
+			, #{counselDiv}
+			</if>
+			<if test="isNotNull(counselType)">
+			, #{counselType}
+			</if>
+			, #{education}
+			, HEX(AES_ENCRYPT(#{mobile},'1234'))
+			, #{email}
+			, #{cause}
+			, #{memo}
+			, '100699' -- 대기 결제되기전, 결제완료될때 업데이트
+			, '1' -- 1회차
+			, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			, #{regId}
+			<if test="isNotNull(intakeCd)">
+			, #{intakeCd}
+			</if>
+			<if test="isNotNull(session)">
+			, #{session}
+			</if>
+			<if test="isNotNull(job)">
+			, #{job}
+			</if>
+			<if test="isNotNull(counselReservChk)">
+			, #{counselReservChk}
+			</if>
+		)
+	</insert>
+	
+	<update id="updateEmpInfo" parameterType="com.ezwel.admin.service.counsel.dto.CounselIntakeDto">
+		UPDATE 
+				MIND_USER
+		   SET  gender = #{gender}
+		   		, rrn = #{rrn}
+			<if test="isNotNull(branchCd)">
+		   		, branch_cd = #{branchCd}
+			</if>
+			<if test="isNotNull(deptCd)">
+		   		, dept_cd = #{deptCd}
+			</if>
+			<if test="isNotNull(teamCd)">
+		   		, team_cd = #{teamCd}
+			</if>
+			<if test="isNotNull(partCd)">
+		   		, part_cd = #{partCd}
+			</if>
+			<if test="isNotNull(gradeCd)">
+		   		, grade_cd = #{gradeCd}
+			</if>
+			<if test="isNotNull(mobile)">
+		   		, mobile = HEX(AES_ENCRYPT(#{mobile},'1234'))
+			</if>
+			<if test="isNotNull(email)">
+		   		, email = #{email}
+			</if>
+			<if test="isNotNull(homeTel)">
+		   		, home_tel = HEX(AES_ENCRYPT(#{homeTel},'1234'))
+			</if>
+			<if test="isNotNull(userStatus)">
+		   		, user_status = #{userStatus}
+			</if>
+		 WHERE USER_KEY = #{userKey}
+	</update>
+	
+	<update id="updateIntakeInfo" parameterType="com.ezwel.admin.service.counsel.dto.CounselIntakeDto">
+		UPDATE 
+				MIND_COUNSEL_INTAKE
+		   SET  
+		   		RELATION = #{relation}
+			<if test="isNotNull(rrn)">
+		   		, RRN = REPLACE(#{rrn}, '-', '')
+			</if>
+			<if test="isNotNull(gender)">
+		   		, GENDER = #{gender}
+			</if>
+			<if test="isNotNull(counselNm)">
+		   		, COUNSEL_NM = #{counselNm}
+			</if>
+			<if test="isNotNull(education)">
+		   		, EDUCATION = #{education}
+			</if>
+			<if test="isNotNull(session)">
+		   		, SESSION = #{session}
+			</if>
+			<if test="isNotNull(job)">
+		   		, JOB = #{job}
+			</if>
+			<if test="isNotNull(counselDiv)">
+		   		, COUNSEL_DIV = #{counselDiv}
+			</if>
+			<if test="isNotNull(counselType)">
+		   		, COUNSEL_TYPE = #{counselType}
+			</if>
+			<if test="isNotNull(cause)">
+		   		, CAUSE = #{cause}
+			</if>
+			<if test="isNotNull(mobile)">
+		   		, mobile = HEX(AES_ENCRYPT(#{mobile},'1234'))
+			</if>
+			<if test="isNotNull(email)">
+		   		, email = #{email}
+			</if>
+			<if test="isNotNull(memo)">
+		   		, memo = #{memo }
+			</if>
+		 WHERE INTAKE_CD = #{intakeCd}
+	</update>
+	
+	<select id="getCounselCategoryList" resultType="com.ezwel.admin.domain.entity.counsel.Counsel">
+		SELECT CATEGORY_CD
+		     , CATEGORY_NM
+		  FROM MIND_COUNSEL_CATEGORY
+		 WHERE USE_YN = 'Y'
+		AND HIGH_CATEGORY_CD = #{highCategoryCd}
+		ORDER BY CATEGORY_CD DESC 
+	</select>
+	
+	<select id="getCounselCategoryClientList" resultType="com.ezwel.admin.domain.entity.counsel.Counsel">
+		SELECT A.CATEGORY_CD
+		     , A.CATEGORY_NM
+		     , B.DISP_YN
+		     , B.GUBUN_TYPE
+		  FROM MIND_COUNSEL_CATEGORY A
+		  		INNER JOIN MIND_CLIENT_SUB B
+		  			ON A.CATEGORY_CD = B.DISP_TYPE
+		 WHERE A.USE_YN = 'Y'
+		   AND A.HIGH_CATEGORY_CD = #{highCategoryCd}
+		   AND B.CLIENT_CD = #{clientCd}
+		   AND B.GUBUN_TYPE = CONCAT('CHANNEL_', #{highCategoryCd}, '_SUB')
+		ORDER BY A.CATEGORY_CD DESC 
+	</select>
+	
+	<select id="getCounselExtensionList" resultType="com.ezwel.admin.domain.entity.counsel.Counsel">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+					SELECT  A.COUNSEL_CD
+						  , A.INTAKE_CD
+						  , B.COUNSEL_NM
+						  , B.GENDER
+						  , B.RRN
+						  , B.CHANNEL_TYPE
+						  , A.COUNSELOR_ID
+						  , A.COUNSEL_PRICE
+						  , A.COUNSEL_TYPE
+						  ,(SELECT CATEGORY_NM FROM MIND_COUNSEL_CATEGORY WHERE CATEGORY_CD = A.CATEGORY_CD) as categoryNm
+						  , DATE_FORMAT(STR_TO_DATE(a.SCHEDULE_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')		as scheduleDt
+						  , DATE_FORMAT(STR_TO_DATE(a.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')		as regDt
+					 FROM MIND_COUNSEL A
+							INNER JOIN MIND_COUNSEL_INTAKE B
+								ON A.INTAKE_CD = B.INTAKE_CD
+					WHERE A.USER_KEY = #{userKey}
+					  AND IFNULL(EXTENSION_STATUS, '0000') != '100932'
+				 	  AND CANCEL_DT IS NULL
+				 	  AND A.STATUS IN ('100520', '100521')
+				  	  /*AND IF(DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') > a.SCHEDULE_DT , 'Y', 'N') = 'Y'*/
+				  	  AND A.COUNSEL_TYPE != '100435'
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				ORDER BY COUNSEL_CD DESC
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+			
+	</select>
+	
+	
+	<select id="didSmsCounselDtChange" resultType="com.ezwel.admin.domain.entity.sms.SmsResult">
+        SELECT A.ORDER_NUM,
+			   E.COUNSEL_NM	as sndNm,
+			   AES_DECRYPT(UNHEX(IFNULL(E.MOBILE,A.SND_MOBILE)),'1234') as sndMobile,/* 인테이크에 입력한 휴대폰번호로 메시지가 날라가도록 수정, 인테이크에 입력된 정보가 없으면 주문에 있는 휴대펀번호로  */
+			   B.COUNSELOR_ID,
+			   B.COUNSEL_CD,
+			   DATE_FORMAT(STR_TO_DATE(B.SCHEDULE_DT, '%Y%m%d%H%i%s'),'%Y년%m월%d일%H시') AS scheduleDt,
+			   C.TEL_NUM 			as centerTelNum,
+			   C.CENTER_NM			as centerNm,
+			   C.ADDR1 				as centerAddr1,
+			   C.ADDR2 				as centerAddr2,
+			   D.USER_NM 			as counselorNm,
+			   D.MOBILE 			as counselorMobile,
+			   A.CLIENT_CD			as clientCd,
+			   B.COUNSEL_TYPE       AS counselType,
+			   B.center_seq			as centerSeq,
+			   IF(F.SITE_NM IS NULL or F.SITE_NM = '', '상담포유', F.SITE_NM) as siteNm	
+          FROM MIND_ORDER A INNER JOIN MIND_COUNSEL B
+            ON A.COUNSEL_CD = B.COUNSEL_CD
+            INNER JOIN MIND_CENTER C
+            ON B.CENTER_SEQ = C.CENTER_SEQ
+            INNER JOIN MIND_MGR D
+            ON B.COUNSELOR_ID = D.USER_ID
+            LEFT JOIN MIND_COUNSEL_INTAKE E
+            ON B.INTAKE_CD=E.INTAKE_CD
+            INNER JOIN MIND_CLIENT F
+            ON A.CLIENT_CD =F.CLIENT_CD            
+         WHERE 1=1
+           AND B.COUNSEL_CD = #{counselCd}
+           AND A.CLIENT_CD != 'police'
+	</select>
+		
+	<select id="didSmsCounselDtChangePolice" resultType="com.ezwel.admin.domain.entity.sms.SmsResult">
+        SELECT A.ORDER_NUM,
+			   E.COUNSEL_NM	as sndNm,
+			   AES_DECRYPT(UNHEX(IFNULL(E.MOBILE,A.SND_MOBILE)),'1234') as sndMobile,/* 인테이크에 입력한 휴대폰번호로 메시지가 날라가도록 수정, 인테이크에 입력된 정보가 없으면 주문에 있는 휴대펀번호로  */
+			   B.COUNSELOR_ID,
+			   B.COUNSEL_CD,
+			   DATE_FORMAT(STR_TO_DATE(B.SCHEDULE_DT, '%Y%m%d%H%i%s'),'%Y년%m월%d일%H시') AS scheduleDt,
+			   C.TEL_NUM 			as centerTelNum,
+			   C.CENTER_NM			as centerNm,
+			   C.ADDR1 				as centerAddr1,
+			   C.ADDR2 				as centerAddr2,
+			   D.USER_NM 			as counselorNm,
+			   D.MOBILE 			as counselorMobile,
+			   A.CLIENT_CD			as clientCd,
+			   B.COUNSEL_TYPE       AS counselType,
+			   B.center_seq			as centerSeq,
+			   IF(F.SITE_NM IS NULL or F.SITE_NM = '', '상담포유', F.SITE_NM) as siteNm		
+          FROM MIND_ORDER A INNER JOIN MIND_COUNSEL B
+            ON A.COUNSEL_CD = B.COUNSEL_CD
+            INNER JOIN MIND_CENTER C
+            ON B.CENTER_SEQ = C.CENTER_SEQ
+            INNER JOIN MIND_MGR D
+            ON B.COUNSELOR_ID = D.USER_ID
+            LEFT JOIN MIND_COUNSEL_INTAKE E
+            ON B.INTAKE_CD=E.INTAKE_CD
+            INNER JOIN MIND_CLIENT F
+            ON A.CLIENT_CD =F.CLIENT_CD  
+         WHERE 1=1
+           AND B.COUNSEL_CD = #{counselCd}
+           AND A.CLIENT_CD = 'police'
+	</select>
+	
+	<select id="getCounselMemo" resultType="com.ezwel.admin.domain.entity.counsel.Counsel">
+		SELECT 
+				CLIENT_CD,
+				MEMO
+		FROM MIND_COUNSEL_INTAKE
+		WHERE INTAKE_CD = #{intakeCd}
+	</select>
+	
+	<select id="searchCenter" resultType="com.ezwel.admin.domain.entity.center.CenterInfo">
+		SELECT 
+			CENTER_SEQ AS centerSeq
+			 , CENTER_NM AS centerNm
+		FROM MIND_CENTER
+		WHERE CENTER_NM REGEXP #{searchCenter}	
+		ORDER BY CENTER_NM
+	</select>
+	
+</mapper>

@@ -1,0 +1,128 @@
+package com.ezwel.admin.service.usermanager;
+
+import java.util.HashMap;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.ezwel.admin.domain.entity.usermanager.UserManager;
+import com.ezwel.admin.persist.usermanager.UserManagerMapper;
+import com.ezwel.admin.service.usermanager.dto.UserManagerDto;
+import com.ezwel.core.framework.web.vo.Paging;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public class UserManagerService {
+
+	@Resource
+	private UserManagerMapper userManagerMapper;
+	
+	public Paging<UserManager> getUserManagerUseList(UserManagerDto userManagerDto) {
+		
+		Paging<UserManager> paging = new Paging<UserManager>();
+		paging.setPaging(userManagerDto);
+		paging.setList(userManagerMapper.getUserManagerUseList(userManagerDto));
+		userManagerDto.setPageCommonFlag(true);
+		paging.setTotalCount(userManagerMapper.getUserManagerUseList(userManagerDto).get(0).getPageCommonCount());
+		
+		return paging;
+		
+	}
+	
+	public List<UserManager> getServiceUserListExcelDownload(UserManagerDto userManagerDto) {
+		return userManagerMapper.getServiceUserListExcelDownload(userManagerDto);
+	}
+	
+	public Paging<UserManager> getOnlineServiceUserList(UserManagerDto userManagerDto) {
+		
+		Paging<UserManager> paging = new Paging<UserManager>();
+		paging.setPaging(userManagerDto);
+		paging.setList(userManagerMapper.getOnlineServiceUserList(userManagerDto));
+		userManagerDto.setPageCommonFlag(true);
+		paging.setTotalCount(userManagerMapper.getOnlineServiceUserList(userManagerDto).get(0).getPageCommonCount());
+		
+		return paging;
+		
+	}
+	
+	public List<UserManager> excelOnlineServiceUserList(UserManagerDto userManagerDto) {
+		return userManagerMapper.getOnlineServiceUserList(userManagerDto);
+	}
+	
+	public List<UserManager> getOnlineServiceUserStatus(UserManagerDto userManagerDto) {
+		return userManagerMapper.getOnlineServiceUserStatus(userManagerDto);
+	}
+	
+	public Paging<UserManager> getServiceUserListV2(UserManagerDto userManagerDto) {
+		
+		Paging<UserManager> paging = new Paging<UserManager>();
+		paging.setPaging(userManagerDto);
+		paging.setList(userManagerMapper.getServiceUserListV2(userManagerDto));
+		userManagerDto.setPageCommonFlag(true);
+		paging.setTotalCount(userManagerMapper.getServiceUserListV2(userManagerDto).get(0).getPageCommonCount());
+		
+		return paging;
+		
+	}
+	
+	public List<UserManager> getServiceUserDetail(UserManagerDto userManagerDto){
+		return userManagerMapper.getServiceUserDetail(userManagerDto);
+	}
+
+	public List<UserManager> getServiceUserListExcelDownloadV2(UserManagerDto userManagerDto) {
+		return userManagerMapper.getServiceUserListExcelDownloadV2(userManagerDto);
+	}
+	
+	public List<UserManager> getServiceUserListExcelDownloadV3(UserManagerDto userManagerDto) {
+		return userManagerMapper.getServiceUserListExcelDownloadV3(userManagerDto);
+	}
+	
+	public List<UserManager> getOnlineServiceCnt(UserManagerDto userManagerDto) {
+		return userManagerMapper.getOnlineServiceCnt(userManagerDto);
+	}
+	
+	public UserManager getNewServiceUserDetail(UserManagerDto userManagerDto){
+		return userManagerMapper.getNewServiceUserDetail(userManagerDto);
+	}
+	
+	public UserManager getNewEmpNumber(UserManagerDto userManagerDto){
+		return userManagerMapper.getNewEmpNumber(userManagerDto);
+	}
+	
+	public List<UserManager> getReuseEmpNumber(UserManagerDto userManagerDto){
+		return userManagerMapper.getReuseEmpNumber(userManagerDto);
+	}
+	
+	public UserManager getCounselNumber(UserManagerDto userManagerDto){
+		return userManagerMapper.getCounselNumber(userManagerDto);
+	}
+
+	public List<UserManager> getKossDetail(UserManagerDto userManagerDto) {
+		return userManagerMapper.getKossDetail(userManagerDto);
+	}
+	
+	public List<UserManager> getKossStand(UserManagerDto userManagerDto) {
+		return userManagerMapper.getKossStand(userManagerDto);
+	}
+	
+	public HashMap<String, Object> getOnlieCounselNumber(UserManagerDto userManagerDto) {
+		return userManagerMapper.getOnlieCounselNumber(userManagerDto);
+	}
+
+	public HashMap<String, Object> getOnlineNewEmpDetail(UserManagerDto userManagerDto) {
+		return userManagerMapper.getOnlineNewEmpDetail(userManagerDto);
+	}
+	
+	public List<HashMap<String, Object>> getOnlineReuseEmpList(UserManagerDto userManagerDto) {
+		return userManagerMapper.getOnlineReuseEmpList(userManagerDto);
+	}
+	
+	public UserManager getOrderChannel(UserManagerDto userManagerDto) {
+		return userManagerMapper.getOrderChannel(userManagerDto);
+	}
+
+}

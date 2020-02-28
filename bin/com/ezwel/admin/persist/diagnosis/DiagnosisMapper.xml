@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.diagnosis.DiagnosisMapper">
+
+	<select id="getDiagnosisInfoList" resultType="com.ezwel.admin.domain.entity.diagnosis.PollInfo">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+				SELECT
+					 POLL_SEQ	AS	pollSeq
+					,QUESTION_SET_SEQ as questionSetSeq
+					,POLL_NM	AS	pollNm
+					,ALL_CLIENT_YN	AS	allClientYn
+					,CLIENT_CD	AS	clientCd
+					,DATE_FORMAT(STR_TO_DATE(START_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d')	AS	startDt
+					,DATE_FORMAT(STR_TO_DATE(END_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d')	AS	endDt
+					,DATE_FORMAT(STR_TO_DATE(START_DT, '%Y%m%d%H%i%s'),'%H:%i')	AS	startTime
+					,DATE_FORMAT(STR_TO_DATE(END_DT, '%Y%m%d%H%i%s'),'%H:%i')	AS	endTime
+					,USE_YN	AS	useYn
+					,REG_ID	AS	regId
+					,DATE_FORMAT(STR_TO_DATE(REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')	AS	regDt
+				FROM MIND_POLL_INFO
+				WHERE 1=1
+				<if test="isNotNull(pollSeq)">
+					AND POLL_SEQ = #{pollSeq}
+				</if>
+				<if test="isNotNull(pollNm)">
+					AND POLL_NM LIKE CONCAT('%', #{pollNm},'%')
+				</if>
+				ORDER BY REG_DT DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="getDiagnosisUserList" resultType="com.ezwel.admin.domain.entity.diagnosis.PollUser">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+				SELECT
+					 A.POLL_USER_SEQ	AS	pollUserSeq
+					,A.POLL_SEQ	AS	pollSeq
+					,B.QUESTION_SET_SEQ as questionSetSeq
+					,A.GENDER	AS	gender
+					,A.AGE	AS	age
+					,A.BUSINESS_DIV	AS	businessDiv
+					,A.BUSINESS_DIV_ETC	AS	businessDivEtc
+					,A.GRADE	AS	grade
+					,A.DEPT	AS	dept
+					,A.BRANCH	AS	branch
+					,A.WORK_YEAR	AS	workYear
+					,DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')	AS	regDt
+					,A.EMP_NUM AS empNum
+					,A.NAME AS name
+				FROM MIND_POLL_USER A
+				     left outer join mind_poll_info B on a.poll_seq = b.poll_seq
+				WHERE 1=1
+				<if test="isNotNull(pollSeq)">
+					AND A.POLL_SEQ = #{pollSeq}
+				</if>
+				<if test="isNotNull(pollUserSeq)">
+					AND A.POLL_USER_SEQ = #{pollUserSeq}
+				</if>
+				ORDER BY A.REG_DT DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="getDiagnosisUserDetail" resultType="com.ezwel.admin.domain.entity.diagnosis.PollUser">
+		SELECT
+			POLL_USER_SEQ	AS	pollUserSeq
+			,POLL_SEQ	AS	pollSeq
+			,GENDER	AS	gender
+			,AGE	AS	age
+			,BUSINESS_DIV	AS	businessDiv
+			,BUSINESS_DIV_ETC	AS	businessDivEtc
+			,GRADE	AS	grade
+			,DEPT	AS	dept
+			,BRANCH	AS	branch
+			,WORK_YEAR	AS	workYear
+			,DATE_FORMAT(STR_TO_DATE(REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')	AS	regDt
+			,EMP_NUM AS empNum
+			,NAME AS name
+			,MARRY_YN AS marryYn
+		FROM MIND_POLL_USER
+		WHERE 1=1
+		<if test="isNotNull(pollSeq)">
+			AND POLL_SEQ = #{pollSeq}
+		</if>
+		<if test="isNotNull(pollUserSeq)">
+			AND POLL_USER_SEQ = #{pollUserSeq}
+		</if>
+	</select>
+
+	<select id="getDiagnosisQuestionList" resultType="com.ezwel.admin.domain.entity.diagnosis.PollQuestion">
+		SELECT
+			  question_num	AS questionNum
+			, question_set_seq AS questionSetSeq
+			, question_group AS questionGroup
+			, CONCAT(CONVERT(substring_index(question_num,'-',-1), unsigned),'. ', question) AS question
+			, poll_desc		AS pollDesc
+			, max_cnt		  AS maxCnt
+		FROM MIND_POLL_QUESTION
+		WHERE question_set_seq = #{questionSetSeq}
+		ORDER BY question_group, CONVERT(substring_index(question_num,'-',-1), unsigned) ASC
+	</select>
+
+	<select id="getDiagnosisAnswerList" resultType="com.ezwel.admin.domain.entity.diagnosis.PollAnswer">
+		SELECT
+			ANSWER_SEQ	AS	answerSeq
+			,question_set_seq AS questionSetSeq
+			,POLL_USER_SEQ	AS	pollUserSeq
+			,QUESTION_NUM	AS	questionNum
+			,ANSWER_NUM	AS	answerNum
+			,ANSWER	AS	answer
+		FROM MIND_POLL_ANSWER
+		WHERE question_set_seq = #{questionSetSeq}
+			AND poll_user_seq = #{pollUserSeq}
+		ORDER BY CONVERT(substring_index(question_num,'-',-1), unsigned) ASC
+	</select>
+	
+	<select id="getDiagnosisExcelDownload" resultType="com.ezwel.admin.domain.entity.diagnosis.PollExcel" timeout="3000">
+		select   u.poll_user_seq as pollUserSeq
+		        ,u.poll_seq as pollSeq
+		        ,u.emp_num as empNum
+		        ,u.name
+		        ,u.gender
+		        ,u.age
+		        ,u.business_div as businessDiv
+		        ,u.BUSINESS_DIV_ETC as businessDivEtc
+		        ,u.GRADE
+		        ,u.BRANCH
+		        ,u.dept
+		        ,u.work_year as workYear
+		        ,u.marry_yn as marryYn
+		        ,DATE_FORMAT( u.REG_DT,'%Y-%m-%d %H:%i' ) as regDt
+		        ,a.ANSWER_SEQ as answerSeq
+		        ,a.QUESTION_NUM as questionNum
+		        ,a.ANSWER_NUM as answerNum
+		        ,a.ANSWER as answer
+		from mind_poll_user u
+		     left join mind_poll_answer a
+		     on u.POLL_USER_SEQ = a.POLL_USER_SEQ
+		where u.poll_seq = #{pollSeq}
+		ORDER BY u.POLL_USER_SEQ ,CONVERT(substring_index(a.question_num,'-',1), unsigned) , CONVERT(substring_index(a.question_num,'-',-1), unsigned) ASC 
+	</select>
+	
+	<select id="getQuestionListCount" resultType="int">
+		select count(*) from mind_poll_question
+		where question_set_seq = #{questionSetSeq}
+	
+	</select>
+
+
+	<update id="updateDateAndTime" parameterType="com.ezwel.admin.domain.entity.diagnosis.PollInfo">
+		UPDATE mind_poll_info
+		SET
+		<if test="isNotNull(startDt)">
+			start_dt = concat(#{startDt}, substring(start_dt from 9))
+		</if>
+		<if test="isNotNull(endDt)">
+			end_dt = concat(#{endDt}, substring(start_dt from 9))
+		</if>
+		<if test="isNotNull(startTime)">
+			start_dt = concat(substring(start_dt,1,8),#{startTime},'00')
+		</if>
+		<if test="isNotNull(endTime)">
+			end_dt = concat(substring(end_dt,1,8),#{endTime},'00')
+		</if>
+		WHERE poll_seq = #{pollSeq}
+	</update>
+	
+	<select id="getDiagnosisDetail" resultType="com.ezwel.admin.domain.entity.diagnosis.PollInfo">
+		SELECT POLL_SEQ AS pollSeq
+				, QUESTION_SET_SEQ AS questionSetSeq
+				, POLL_NM AS pollNm
+				, ALL_CLIENT_YN AS allClientYn
+				, CLIENT_CD AS clientCd
+				, DATE_FORMAT(STR_TO_DATE(START_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d')	AS	startDt
+				, DATE_FORMAT(STR_TO_DATE(END_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d')	AS	endDt
+				, DATE_FORMAT(STR_TO_DATE(START_DT, '%Y%m%d%H%i%s'),'%H:%i')	AS	startTime
+				, DATE_FORMAT(STR_TO_DATE(END_DT, '%Y%m%d%H%i%s'),'%H:%i')	AS	endTime
+				, USE_YN AS useYn
+				, REG_ID AS regId
+				, REG_DT AS regDt
+				, STEP_CNT AS stepCnt
+		FROM MIND_POLL_INFO
+		WHERE  poll_seq = #{pollSeq}
+	</select>
+	
+	<update id="pollModify" parameterType="com.ezwel.admin.service.diagnosis.dto.DiagnosisDto">
+		UPDATE mind_poll_info
+		SET
+			POLL_NM = #{pollNm}
+			, CLIENT_CD = #{clientCd}
+		WHERE poll_seq = #{pollSeq}
+	</update>
+	
+	<select id="checkClientCd" parameterType="com.ezwel.admin.service.diagnosis.dto.DiagnosisDto" resultType="int">
+		SELECT COUNT(CLIENT_CD)
+		FROM MIND_POLL_INFO
+		WHERE CLIENT_CD = #{clientCd}
+	</select>
+	
+	<insert id="insertDiagnosis" parameterType="com.ezwel.admin.service.diagnosis.dto.DiagnosisDto">
+		INSERT INTO MIND_POLL_INFO (
+			QUESTION_SET_SEQ
+			, POLL_NM
+			, CLIENT_CD
+			, START_DT
+			, END_DT
+			, REG_ID
+			, REG_DT
+			, STEP_CNT
+		) VALUES (
+			#{questionSetSeq}
+			, #{pollNm}
+			, #{clientCd}
+			, #{startDt}
+			, #{endDt}
+			, #{regId}
+			, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			, #{stepCnt}
+		)
+	</insert>
+	
+</mapper>

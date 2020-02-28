@@ -1,0 +1,98 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ include file="/WEB-INF/jsp/layout/inc/tags.jspf"%>
+<html>
+	<head>
+		<title>Main</title>
+		<script type="text/javascript">
+		
+			function test_sso(ssoUrl){
+				alert(ssoUrl);
+				
+				if(confirm("테스트?")){
+					window.open(ssoUrl, "sso테스트");
+				}
+			}
+
+			$(document).ready(function(){
+
+				$(".ssoTest").click(function(){
+					
+					var params = {};
+					var clientCd = $("#clientCd").val();
+					var userId = $("#userId").val();
+					var type = $(this).attr("ssoType");					
+					var url = "";
+					
+					if(type == "excel"){
+						url = "http://"+clientCd + ".sangdam4u.com/sso?userId=";
+					}else if(type == "join"){
+						url = "http://"+clientCd + ".sangdam4u.com/ssoV2?userId=";
+					}
+					var enUserId = "";
+
+					if(clientCd == ""){
+						alert("고객사 코드를 입력하세요");
+						return false;
+					}
+					
+					if(userId == ""){
+						alert("사용자 아이디를 입력하세요");
+						return false;
+					}
+					
+					params.clientCd 	= clientCd;
+					params.userId  	= userId;
+
+					$.ajax({
+						url: '/madm/main/ssoTest',
+						data: params,
+						dataType: 'json',
+						type: 'GET',
+						cache:true,
+						success: function(data, textStatus){
+							url += data.enUserId;
+							alert(url);
+							if(confirm("테스트?")){
+								window.open(url, "sso테스트");
+							}
+						}
+					});
+					
+					return false;
+				});
+			});  // end ready
+		</script>
+	</head>
+	<body>
+		<h1>main</h1>
+		이  름 : <sec:authentication property="principal.user.userNm"/><br>
+		아이디 : <sec:authentication property="principal.user.userId"/><br>
+		모바일 : <sec:authentication property="principal.user.mobile"/><br>
+		이메일 : <sec:authentication property="principal.user.email"/> <br>
+		
+		<sec:authorize access="isAuthenticated()">
+			<sec:authentication var="sesUser" property="principal.user" />
+		</sec:authorize>
+		<c:if test="${sesUser.userId eq '20141025'}">
+			<br><br><br><br><br>
+			<form action="/madm/main/sendSms" method="post">
+			<h3>문자발송테스트</h3>
+			수신 : <input type="text" name="recive"/><br>
+			발신 : <input type="text" name="send"><br>
+			내용 : <input type="text" name="txt" size="150"> <br><br>
+			<input type="submit" value="전송" style="height:30px; width:100px;">
+			</form>
+			
+			<br><br><br><br><br>
+			<input type="button" onclick="javascript:test_sso('${ssoUrl }');" value="sso테스트">
+			
+		</c:if>
+		<br><br><br><br><br>
+		<h3>SSO 로그인 테스트</h3>
+		고객사코드 : <input type="text"  id="clientCd"/><br>
+		아   이  디 : <input type="text"  id="userId"><br><br>
+		<input type="button" class="ssoTest" value="SSO 테스트(엑셀업로드)" 	ssoType="excel"	style="height:30px; width:150px;">
+		<input type="button" class="ssoTest" value="SSO 테스트(회원가입)" 		ssoType="join"	style="height:30px; width:150px;">
+	</body>
+</html>
+

@@ -1,0 +1,75 @@
+package com.ezwel.admin.controller.partner.bbs;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.ezwel.admin.domain.entity.bbs.BBSData;
+import com.ezwel.admin.service.bbs.BBSService;
+import com.ezwel.admin.service.bbs.dto.BBSAddDto;
+import com.ezwel.core.support.util.BBSFileData;
+
+
+@Controller
+@RequestMapping("/partner/bbsNotice")
+public class NoticeController {
+	
+	@Resource
+	private BBSService bbsService;
+
+	private void setMenu(Model model) {
+		String menuStr = "커뮤니티";
+		model.addAttribute("menu", menuStr);
+	}
+	
+	@RequestMapping(value = "/list")
+	public String bbs4uNotice(@ModelAttribute BBSAddDto bbsAddDto, Model model) {
+		setMenu(model);
+		bbsAddDto.setBbsCd("notice");
+		model.addAttribute(bbsService.getBbsList(bbsAddDto));
+		model.addAttribute("alertMsg", bbsAddDto.getAlertMsg());
+		return "partner/bbs/bbsNotice";
+	}
+
+	
+	@RequestMapping(value = "/noticeDetailForm")
+	public String bbsNoticeDetail(@ModelAttribute BBSAddDto bbsDto, Model model) {
+		setMenu(model);
+
+		BBSData bbsData = bbsService.getBbsSelectOne(bbsDto);
+		model.addAttribute("vo", bbsData);
+
+//		파일 가져오기 추가 시작
+		List<BBSFileData> listFile = bbsService.getBbsSelectFiles(bbsDto);
+
+		String filePath = "";
+		String ext = "";
+		for (int i = 0; i < listFile.size(); i++) {
+
+			filePath = listFile.get(i).getFilePath();
+			ext = filePath.substring(filePath.lastIndexOf(".") + 1).toLowerCase();
+			if (ext.equals("jpg") || ext.equals("png") || ext.equals("gif") || ext.equals("jpeg") || ext.equals("bmp")) {
+				ext = "img";
+			} else {
+				ext = "notImg";
+			}
+			model.addAttribute("imgChk" + (i + 1), ext);
+			model.addAttribute("files" + (i + 1), listFile.get(i));
+		}
+//		파일 가져오기 추가 종료
+		
+		return "partner/bbs/bbsNoticeDetail";
+
+	}
+	
+	
+	
+	
+	
+	
+}

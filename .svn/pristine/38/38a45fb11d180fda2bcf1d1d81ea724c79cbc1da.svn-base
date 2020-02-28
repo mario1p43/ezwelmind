@@ -1,0 +1,27 @@
+package com.ezwel.admin.service.client;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.ezwel.admin.domain.entity.client.ClientSub;
+import com.ezwel.admin.persist.client.ClientMapper;
+
+@Service
+public class ClientPollService {
+	
+	@Resource
+	private ClientMapper clientMapper;
+
+
+	/**
+	 * 현재 고객사가 법인홈페이지 온라인자가진단 체크리스트
+	 * @param clientCd
+	 * @return
+	 */
+	public List<ClientSub> getClientOnlinePollList(String clientCd) {
+		return clientMapper.getClientOnlinePollList(clientCd);
+	}
+}

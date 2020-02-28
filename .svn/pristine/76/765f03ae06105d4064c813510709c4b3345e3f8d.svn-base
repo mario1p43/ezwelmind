@@ -1,0 +1,239 @@
+package com.ezwel.admin.controller.madm.counsel;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.collections.MapUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.ezwel.admin.domain.entity.counsel.Counsel;
+import com.ezwel.admin.domain.entity.user.User;
+import com.ezwel.admin.service.center.CenterService;
+import com.ezwel.admin.service.center.dto.CenterDto;
+import com.ezwel.admin.service.common.ApiService;
+import com.ezwel.admin.service.common.CommonService;
+import com.ezwel.admin.service.counsel.CounselOrderService;
+import com.ezwel.admin.service.counsel.CounselService;
+import com.ezwel.admin.service.counsel.dto.CounselDto;
+import com.ezwel.admin.service.counsel.dto.CounselIntakeDto;
+import com.ezwel.admin.service.employee.EmployeeService;
+import com.ezwel.admin.service.employee.dto.EmployeeDto;
+import com.ezwel.admin.service.security.UserDetailsHelper;
+import com.ezwel.admin.service.user.UserService;
+import com.ezwel.core.framework.web.GlobalsProperties;
+import com.ezwel.core.support.util.StringUtils;
+
+@Controller
+public class CounselOrderController {
+	
+	@Resource
+	private EmployeeService employeeService;
+	
+	@Resource
+	private UserService userService;
+	
+	@Resource
+	private CenterService centerService;
+	
+	@Resource
+	private ApiService apiService;
+	
+	@Resource
+	private CounselOrderService counselOrderService;
+	
+	@Resource
+	private CounselService counselService;
+	
+	@Resource
+	private GlobalsProperties globalsProperties;
+	
+	@Resource
+	private CommonService commonService;
+	
+	
+	private void setMenu(Model model) {
+		String menuStr = "상담센터";
+		model.addAttribute("menu", menuStr);
+	}
+	
+
+	/**
+	 * 임직원 페이지에서 주문할 대상 리스트
+	 * @param employeeDto
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/madm/counsel/counselOrder")
+	public String empList(@ModelAttribute EmployeeDto employeeDto, Model model) {
+		setMenu(model);
+		
+		employeeDto.setExcelFlag("list");
+		model.addAttribute("emplist", employeeService.getEmplist(employeeDto));
+		model.addAttribute(employeeService.getList(employeeDto));
+		
+		model.addAttribute("orderFlag", "Y");
+		
+		return "madm/employee/employeeList";
+	}
+	
+	
+	/**
+	 * 상담신청 메인정보 페이지 
+	 * @param employeeDto
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/madm/counsel/adminCounselForm")
+	public String adminCounselForm(@RequestParam String userKey, String counselCd, Model model) {
+		setMenu(model);
+
+		User user = userService.getUserInfo(userKey);
+		
+		model.addAttribute("user", user);
+		model.addAttribute("centerList", centerService.getCenterLocationList(new CenterDto()));
+		model.addAttribute("categoryList", counselOrderService.getCounselCategoryList("100001"));
+		
+		if (StringUtils.isNotNull(counselCd)) {
+			Counsel counsel = counselService.getCounseList(counselCd).get(0);
+			model.addAttribute("intakeCd", counsel.getIntakeCd());
+			model.addAttribute("counsel", counsel);
+		}
+				
+		Map<String, Object> params = new HashMap<>();
+		params.put("clientCd", user.getClientCd());
+		params.put("userKey", userKey);
+		Map<String, Object> resultMap = apiService.doApi(params, "/api/admin/getPoint", false);
+		
+		model.addAttribute("privateRemainPoint", MapUtils.isNotEmpty(resultMap) ? apiService.toPointFormat((String) resultMap.get("privateRemainPoint")) : "");
+		model.addAttribute("clientRemainPoint", MapUtils.isNotEmpty(resultMap) ? apiService.toPointFormat((String) resultMap.get("clientRemainPoint")) : "");
+		model.addAttribute("ceiling", commonService.getClientCeiling(user.getClientCd()));
+		
+		return "madm/counsel/adminCounselForm";
+	}
+	
+	
+	/**
+	 * 상담신청 메인정보 페이지 
+	 * @param employeeDto
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/madm/counsel/adminCounselMain")
+	public String counselMain(CounselDto counselDto, Model model) {
+		setMenu(model);
+		
+		String userKey = counselDto.getUserKey();
+		User user = userService.getUserInfo(userKey);
+		model.addAttribute("user", user);
+		
+		
+		Map<String, Object> params = new HashMap<>();
+		params.put("clientCd", user.getClientCd());
+		params.put("userKey", userKey);
+		Map<String, Object> resultMap = apiService.doApi(params, "/api/admin/getPoint", false);
+		
+		model.addAttribute("privateRemainPoint", MapUtils.isNotEmpty(resultMap) ? apiService.toPointFormat((String) resultMap.get("privateRemainPoint")) : "");
+		model.addAttribute("clientRemainPoint", MapUtils.isNotEmpty(resultMap) ? apiService.toPointFormat((String) resultMap.get("clientRemainPoint")) : "");
+		model.addAttribute("ceiling", commonService.getClientCeiling(user.getClientCd()));
+		
+		String serverType = globalsProperties.getProperty("server.type");
+		model.addAttribute("serverType", serverType.equals("real") ? "cadm" : serverType + "-cadm");
+		
+		
+		model.addAttribute("paging", counselService.getCounselExtensionList(counselDto));
+		
+		return "madm/counsel/adminCounselMain";
+	}
+	
+	
+	@RequestMapping(value="/madm/counsel/getCounselCategoryList")
+	public void getCounselCategoryList(@RequestParam String highCategoryCd, Model model) throws Exception {
+		model.addAttribute("counselorList", counselOrderService.getCounselCategoryList(highCategoryCd));
+	}
+	
+	
+	@RequestMapping(value="/madm/counsel/addCounselIntake")
+	public void addCounselIntake(CounselIntakeDto counselIntakeDto, Model model) {
+		model.addAttribute("resultValue", counselOrderService.addCounselIntake(counselIntakeDto));
+		model.addAttribute("intakeCd", counselIntakeDto.getIntakeCd());
+	}
+	
+	@RequestMapping(value="/madm/counsel/updateEmpInfo")
+	public void updateEmpInfo(CounselIntakeDto counselIntakeDto, Model model) {
+		model.addAttribute("resultValue", counselOrderService.updateEmpInfo(counselIntakeDto));
+	}
+	
+	@RequestMapping(value="/madm/counsel/updateIntakeInfo")
+	public void updateIntakeInfo(CounselIntakeDto counselIntakeDto, Model model) {
+		model.addAttribute("resultValue", counselOrderService.updateIntakeInfo(counselIntakeDto));
+	}
+	
+	/**
+	 * 상담신청전 가격/ 현재포인트 상담 가능한지 체크 
+	 * @param employeeDto
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/madm/counsel/getOrderInfo")
+	public void isCounselPoint(@RequestParam String userKey,
+			@RequestParam String clientCd,
+			@RequestParam String intakeCd,
+			@RequestParam String ymd, Model model) {
+		
+		Map<String, Object> params = new HashMap<>();
+		params.put("clientCd", clientCd);
+		params.put("userKey", userKey);
+		params.put("intakeCd", intakeCd);
+		params.put("ymd", ymd);
+		Map<String, Object> resultMap = apiService.doApi(params, "/api/admin/isCounselPoint", false);
+		
+		model.addAttribute("price", MapUtils.isNotEmpty(resultMap) ? apiService.toPointFormat((String) resultMap.get("price")) : "");
+		model.addAttribute("resultValue", resultMap.get("resultValue"));
+	}
+	
+	
+	/**
+	 * 상담신청전 가격/ 현재포인트 상담 가능한지 체크 
+	 * @param employeeDto
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/madm/counsel/doOrder")
+	public void doOrder(@RequestParam String userKey,
+			@RequestParam String clientCd,
+			@RequestParam String intakeCd,
+			@RequestParam String scheduleSeq,
+			@RequestParam String ceilingCategoryCd,
+			@RequestParam String smsYn, Model model) {
+		
+		Map<String, Object> params = new HashMap<>();
+		params.put("userKey", userKey);
+		params.put("clientCd", clientCd);
+		params.put("intakeCd", intakeCd);
+		params.put("scheduleSeq", scheduleSeq);
+		params.put("ceilingCategoryCd", ceilingCategoryCd);
+		params.put("smsYn", smsYn);
+		params.put("regId", UserDetailsHelper.getAuthenticatedUser().getUserId());
+		
+		Map<String, Object> resultMap = apiService.doApi(params, "/api/admin/adminOrder", false);
+		model.addAttribute("resultValue", resultMap.get("resultValue"));
+	}
+	
+	/**
+	 * 상담신청전 가격/ 현재포인트 상담 가능한지 체크 
+	 * @param employeeDto
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/madm/counsel/searchCenter")
+	public void searchCenter(@RequestParam String searchCenter, Model model) {
+		model.addAttribute("resultValue", counselOrderService.searchCenter(searchCenter));
+	}
+	
+}

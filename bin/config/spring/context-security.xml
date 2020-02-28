@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+			 xmlns:beans="http://www.springframework.org/schema/beans"
+			 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/security
+                        http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<http pattern="/info.jsp" security="none" />
+	<http pattern="/test" security="none" />
+	<http pattern="/resources/**" security="none" />
+	<http pattern="/**/*.html" security="none" />
+
+	<http auto-config="true" use-expressions="true" disable-url-rewriting="true">
+		<intercept-url pattern="${page.login.form.url}" 	access="permitAll" 		requires-channel="${page.ssl.channel}"/>
+		
+		<intercept-url pattern="/" 							access="permitAll" 		requires-channel="http"/>
+		<intercept-url pattern="/error" 					access="permitAll" 		requires-channel="http"/>
+		<intercept-url pattern="/error/**" 					access="permitAll" 		requires-channel="http"/>
+		<intercept-url pattern="/accessDenied" 				access="permitAll" 		requires-channel="http"/>
+		<intercept-url pattern="/authenticationFailure" 	access="permitAll" 		requires-channel="http"/>
+		
+		<intercept-url pattern="${page.login.success.url}" 	access="authenticated" 	requires-channel="http"/>
+		
+		<form-login login-page="${page.login.form.url}"
+					login-processing-url="${page.login.url}"
+					username-parameter="userId"
+					password-parameter="userPwd"
+					always-use-default-target="true"
+					default-target-url="${page.login.success.url}"
+					authentication-failure-url="${page.login.form.url}?success=false" />  <!-- 기본 공통처리 /authenticationFailure -->
+		<logout logout-url="${page.logout.url}" logout-success-url="${page.logout.success.url}" />
+		<access-denied-handler ref="ezAccessDeniedHandler" />
+
+
+		<!-- 이중 로그인 관리 -->
+		<!-- <session-management invalid-session-url="${page.login.form.url}" session-fixation-protection="none">
+			<concurrency-control max-sessions="1" error-if-maximum-exceeded="true" expired-url="${page.login.form.url}" />
+		</session-management> -->
+		<custom-filter ref="ezSecurityInterceptor" before="FILTER_SECURITY_INTERCEPTOR" />
+	</http>
+
+	<beans:bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
+
+	<authentication-manager alias="ezAuthenticationManager">
+		<authentication-provider user-service-ref="ezUserDetailsService">
+			<!-- <password-encoder hash="md5" base64="false" /> -->
+			<password-encoder ref="passwordEncoder" />
+		</authentication-provider>
+	</authentication-manager>
+
+
+	<beans:bean id="ezAccessDeniedHandler" class="com.ezwel.core.security.access.EzAccessDeniedHandler">
+		<beans:property name="redirectPage" value="${page.accessDenied.url}" />
+	</beans:bean>
+
+	<beans:bean id="ezSecurityInterceptor" class="com.ezwel.core.security.access.interceptor.EzSecurityInterceptor">
+		<beans:property name="authenticationManager" ref="ezAuthenticationManager" />
+		<beans:property name="accessDecisionManager" ref="ezAccessDescisionManager" />
+		<beans:property name="securityMetadataSource" ref="ezSecurityMetadataSource" />
+	</beans:bean>
+
+
+
+	<beans:bean id="ezUserDetailsService" class="com.ezwel.core.security.EzUserDetailsServiceImpl">
+		<beans:property name="dataSource" ref="dataSource"/>
+		<beans:property name="userQuery" value="SELECT
+													USER_ID, USER_TYPE, IF(USE_YN='Y', 1, 0) AS ENABLED,
+													USER_NM,
+													USER_PWD,
+													USE_YN,
+													(SELECT AUTH_CD FROM ACL_USER_AUTH WHERE USER_AUTH_KEY = CONCAT(USER_ID,USER_TYPE)) AS AUTH_CD,
+													(SELECT AUTH_NM FROM ACL_AUTH WHERE AUTH_CD = (SELECT AUTH_CD FROM ACL_USER_AUTH WHERE USER_AUTH_KEY = CONCAT(USER_ID,USER_TYPE) )) AS userTypeNm,
+													EMAIL,
+													MOBILE,
+													BRANCH_CD,
+													DEPT_CD,
+													TEAM_CD,
+													REG_DT,
+													MODI_DT,
+													MGR_STATUS,
+													CENTER_SEQ,
+													CENTER_OWNER_YN,
+													IMSI_PWD_YN,
+													CSP_CD
+												FROM MIND_MGR
+                                                WHERE USE_YN='Y' AND CONCAT(USER_ID, USER_TYPE) = ?"/>
+		<beans:property name="authoritiesQuery" value="SELECT AUTH_CD
+													   FROM ACL_USER_AUTH
+													   WHERE USER_AUTH_KEY = ?"/><!-- 필드 무조건 한개(CONCAT(USER_ID, USER_TYPE)) -->
+
+
+	   <beans:property name="roleHierarchy" ref="roleHierarchy"/>
+	   <beans:property name="mapClass" value="com.ezwel.admin.service.security.SessionMapping"/><!-- 각 사이트별 userQuery에서 사용자 정보 셋팅! -->
+	</beans:bean>
+
+	<beans:bean id="ezSecurityMetadataSource" class="com.ezwel.core.security.access.interceptor.EzSecurityMetadataSource">
+		<beans:constructor-arg name="ezAuthService" ref="ezAuthService"></beans:constructor-arg>
+		<beans:constructor-arg name="ezResourceService" ref="ezResourceService"></beans:constructor-arg>
+	</beans:bean>
+
+	<beans:bean id="ezAccessDescisionManager" class="com.ezwel.core.security.access.EzAccessDescisionManager" />
+
+
+	<beans:bean id="roleHierarchy" class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl">
+		<beans:property name="hierarchy" ref="hierarchyStrings" />
+	</beans:bean>
+
+
+	<beans:bean id="hierarchyStrings" class="com.ezwel.core.security.hierarchicalroles.EzHierarchyStringsFactoryBean" init-method="init">
+		<beans:property name="ezAuthService" ref="ezAuthService" />
+	</beans:bean>
+
+	<beans:bean id="ezAuthService" class="com.ezwel.core.security.service.EzAuthServiceImpl">
+		<beans:property name="dataSource" ref="dataSource"/>
+		<beans:property name="totalAuthsQuery" value="SELECT AUTH_CD
+													  FROM ACL_AUTH"/><!-- 필드 무조건 한개 -->
+		<beans:property name="authHierarchyQuery" value="SELECT CONCAT(PARENT_AUTH_CD, ' > ', CHILD_AUTH_CD)
+														 FROM ACL_AUTH_HIERARCHY"/>
+	</beans:bean>
+
+	<beans:bean id="ezResourceService" class="com.ezwel.core.security.service.EzResourceServiceImpl">
+		<beans:property name="dataSource" ref="dataSource"/>
+		<beans:property name="authResourceUrlQuery" value="SELECT RESOURCE_URL
+														   FROM ACL_RESOURCE R, ACL_AUTH_RESOURCE AR
+														   WHERE R.RESOURCE_CD = AR.RESOURCE_CD
+														   AND AUTH_CD = ?"/><!-- 필드 무조건 한개 -->
+	</beans:bean>
+</beans:beans>

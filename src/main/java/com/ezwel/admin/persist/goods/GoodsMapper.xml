@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.goods.GoodsMapper">
+	
+	<select id="getGoods" resultType="com.ezwel.admin.domain.entity.goods.Goods">
+		SELECT GOODS_CD, 
+			   GOODS_TYPE, 
+			   RECEIPT_YN, 
+			   DUTY_YN, 
+			   GOODS_CATE1, 
+			   GOODS_CATE2, 
+			   GOODS_NM, 
+			   GOODS_AUTH, 
+			   GOODS_SALE_ST,
+			   GOODS_SALE_ED, 
+			   GOODS_REG_ST, 
+			   GOODS_REG_ED, 
+			   GOODS_STOCK, 
+			   GOODS_TARGET, 
+			   GOODS_DES, 
+			   GOODS_PAY_YN, 
+			   GOODS_STATUS, 
+			   GOODS_REMARK, 
+			   CSP_CD, 
+			   GOODS_NORMAL_PRICE, 
+			   GOODS_BUY_PRICE, 
+			   GOODS_DIS_RATE, 
+			   GOODS_SALE_PRICE, 
+			   REG_ID,
+			   REG_DT,
+			   MODI_ID,
+			   MODI_DT
+		FROM MIND_GOODS
+	   WHERE GOODS_CD = #{goodsCd} 
+	</select>
+
+	
+</mapper>

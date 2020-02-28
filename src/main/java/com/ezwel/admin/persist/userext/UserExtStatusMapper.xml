@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.userext.UserExtStatusMapper">
+
+	<select id="getUserExtStatusList" resultType="com.ezwel.admin.domain.entity.userext.UserExtStatusDto">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+				SELECT	(SELECT CLIENT_NM FROM MIND_CLIENT WHERE CLIENT_CD = A.CLIENT_CD)	as	clientNm
+					,C.COUNSEL_NM 	as	counselNm
+					,CT.OWNER_NM as ownerNm					
+					,AES_DECRYPT(UNHEX(C.MOBILE),'1234')	as	mobile
+					,C.COUNSEL_DIV	as	counselDiv
+					,C.COUNSEL_TYPE	as	counselType
+					,C.CHANNEL_TYPE as channelType
+					,DATE_FORMAT(CONVERT(C.REG_DT, DATE), '%Y-%m-%d')	as	ymd
+					,D.USER_NM	as	counselorNm
+					,A.COUNSEL_CD	as	counselCd	
+					,A.COUNSELOR_ID	as	counselorId
+					,A.INTAKE_CD as intakeCd
+					,A.USER_KEY as userKey
+					,A.CENTER_SEQ as centerSeq
+					,A.CLIENT_CD as clientCd
+					, (SELECT CENTER_NM FROM MIND_CENTER WHERE CENTER_SEQ = A.CENTER_SEQ) as centerNm
+					, IF((SELECT ORDER_STATUS FROM MIND_ORDER WHERE COUNSEL_CD = A.COUNSEL_CD) = '100960', 'Y', 'N') as needPay
+					,A.RECORD_STATUS as recordStatus
+					,A.EXTENSION_STATUS   as extensionStatus
+					,E.USER_NM as counselMgrNm
+					,C.COUNSEL_RESERV_CHK
+					,'date' AS orderByNm
+					,'DESC' AS orderByType
+                    ,F.File_NM AS filename1
+                    ,F.FILE_PATH AS filefath1
+                    ,F.APPR_STATUS AS apprStatus1
+                    ,F.REG_ID AS regId1
+                    ,DATE_FORMAT(CONVERT(F.REG_DT, DATE), '%Y-%m-%d') AS regDt1  
+                    ,G.File_NM AS filename2
+                    ,G.FILE_PATH AS filefath2
+                    ,G.APPR_STATUS AS apprStatus2
+                    ,G.REG_ID AS regId2
+                    ,DATE_FORMAT(CONVERT(G.REG_DT, DATE), '%Y-%m-%d') AS regDt2  
+                    ,H.File_NM AS filename3
+                    ,H.FILE_PATH AS filefath3
+                    ,H.APPR_STATUS AS apprStatus3
+                    ,H.REG_ID AS regId3
+                    ,DATE_FORMAT(CONVERT(H.REG_DT, DATE), '%Y-%m-%d') AS regDt3
+                    ,(select risks from MIND_COUNSEL_RECORD where COUNSEL_CD = A.COUNSEL_CD and risks is not null ) as risk
+				FROM	MIND_COUNSEL A 
+                LEFT JOIN (SELECT AA.USER_NM, BB.CLIENT_CD FROM MIND_MGR AA LEFT JOIN MIND_CLIENT BB ON AA.USER_ID = BB.COUNSEL_MGR_ID ) as E 
+                ON A.CLIENT_CD = E.CLIENT_CD
+                LEFT JOIN (SELECT File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='1' ) as F 
+                ON A.COUNSEL_CD = F.COUNSEL_CD
+                LEFT JOIN (SELECT File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='2' ) as G 
+                ON A.COUNSEL_CD = G.COUNSEL_CD
+                LEFT JOIN (SELECT File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='3' ) as H 
+                ON A.COUNSEL_CD = H.COUNSEL_CD
+                JOIN  MIND_COUNSEL_INTAKE C, MIND_MGR D,MIND_CENTER CT                
+				WHERE	1=1
+				AND		A.CENTER_SEQ = CT.CENTER_SEQ
+				AND		C.INTAKE_CD = A.INTAKE_CD
+				AND		A.STATUS in ('100520', '100521')
+				AND		A.COUNSELOR_ID = D.USER_ID
+				AND A.COUNSEL_CD != '91756'
+		<choose>
+		
+				<when test="pageCommonFlag == true">
+					) A
+				</when>
+				<otherwise>
+					LIMIT #{firstIndex} , #{pageSize}
+				</otherwise>
+
+		</choose>
+	</select>
+</mapper>

@@ -1,0 +1,66 @@
+<%@ page language="java" contentType="application/vnd.ms-excel; charset=utf-8" pageEncoding="utf-8"%>
+<%@ include file="/WEB-INF/jsp/layout/inc/tags.jspf"%>
+
+<html>
+<head>
+<title></title>
+<%
+ response.setHeader("Content-Type", "application/vnd.ms-xls");
+ response.setHeader("Content-Disposition", "inline; filename=payCheck.xls");
+%>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+<table cellpadding="0" cellspacing="0" border="0" width="95%">
+<tr>
+	<td height="20px"></td>
+</tr>
+<tr>
+	<td>
+		<table class="" cellpadding="10" align="" id="chRow" cellspacing="0" border="1" width="100%" style="text-align:center; border-collapse:collapse;">
+			<thead>
+                <tr>
+                  <th rowspan="1" width="8%">상담코드</th>
+                  <th rowspan="1" width="">고객사</th>
+                  <th rowspan="1" width="">상담일시</th>
+                  <th colspan="1" width="">임직원</th>
+                  <th rowspan="1" width="">내담자</th>
+                  <th rowspan="1" width="">상담타입</th>
+                  <th rowspan="1" width="">상담상태</th>
+                  <th rowspan="1" width="">상담기관</th>
+                  <th rowspan="1" width="">상담기관코드</th>
+                  <th rowspan="1" width="">상담사</th>
+                  <th rowspan="1" width="">상담사ID</th>
+                  <th rowspan="1" width="">세금구분</th>
+                  <th rowspan="1" width="">은행명</th>
+                  <th rowspan="1" width="">예금주</th>
+                </tr>
+            </thead>
+
+			<tbody>
+			<c:forEach var="list" items="${paging.list}" varStatus="status">
+				<tr align="" height="50px">
+					<td>${list.counselCd}</td>
+					<td>${list.clientNm}</td>
+					<td>${list.scheduleDt}</td>
+					<td>${list.staffNm}</td>
+					<td>${list.mgrNm}</td>
+					<td>${list.counselType}</td>
+					<td>${list.counselStatus}</td>
+					<td>${list.centerNm}</td>
+					<td>${list.centerSeq}</td>
+					<td>${list.counselorNm}</td>
+					<td>${list.counselorId}</td>
+					<td>${list.price}</td>
+					<td>${list.taxType}</td>
+					<td>${list.bankNm}</td>
+					<td>${list.accountOwner}</td>
+				</tr>
+			</c:forEach>
+			</tbody>
+		</table>
+	</td>
+</tr>
+</table>
+</body>
+</html>

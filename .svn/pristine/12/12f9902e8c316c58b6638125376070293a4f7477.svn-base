@@ -1,0 +1,284 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ include file="/WEB-INF/jsp/layout/inc/tags.jspf"%>
+<% pageContext.setAttribute("newLineChar", "\r\n"); %>
+<html>
+<head>
+<title>마음왕진 | 참여자 정보</title>
+<link href="${url:resource('/resources/js/plugin/jquery-ui-1.8.9.custom-datepicker.css')}" rel="stylesheet" type="text/css" />
+<link href="${url:resource('/resources/js/plugin/jquery.timepicker.min.css')}" rel="stylesheet" type="text/css" />
+<script src="${url:resource('/resources/js/plugin/jquery.timepicker.min.js')}"></script>
+<script src="${url:resource('/resources/js/jquery-ui-1.10.3.min.js')}"></script>
+
+<c:if test="${!empty msg }">
+<script>
+	alert("${msg }");
+</script>
+</c:if>
+
+<script type="text/javascript">
+j$(document).ready(function(){
+	
+});
+
+var DISPATCH = {
+	update : function(obj, seq) {
+		
+		var $this = $(obj);
+		var $status = $this.parent().parent().parent().find("[name=status]");
+		var $memo = $this.parent().parent().parent().find("[name=memo]");
+		
+		
+		$.ajax({
+			type: "POST",
+			url: "/madm/dispatch/updateIntakeMemo",
+			dataType : "json",
+			data : {
+					counselIntakeSeq : seq, 
+					status : $status.val(), 
+					memo : $memo.val()
+			},
+			success: function(data){
+				if(data == "0") {
+					alert("수정 도중 오류가 발생했습니다.");
+				} else {
+					alert("수정되었습니다.");
+				}
+			},
+			error: function(data){
+				alert("ajax error");
+				console.log(data);	
+			}
+		});
+	},
+	list : function() {
+		history.back();
+	}
+};
+</script>
+</head>
+<body>
+
+<form id="saveForm" name="saveForm">
+<table cellpadding="0" cellspacing="0" border="0" width="95%">
+<tr>
+	<td height="20px"></td>
+</tr>
+
+<tr>
+	<td>
+		<!-- 버튼 영역 시작 -->
+		<table cellpadding="5" cellspacing="0" border="0" width="100%" align="center" style="border-bottom: 1px solid silver;">
+			<tr>
+				<td align="left" class="subtitle">마음왕진 | 참여자 정보</td>
+			</tr>
+		</table>
+		<!-- 버튼 영역 종료 -->
+	</td>
+</tr>
+
+<tr>
+	<td height="20px"></td>
+</tr>
+
+<tr>
+	<td>
+		<!-- 버튼 영역 시작 -->
+		<table cellpadding="5" cellspacing="0" border="1" width="100%" align="left" style="border-collapse:collapse;">
+			<tr align="left" height="50px">
+				<th class="line" width="15%" align="center" bgcolor="#F5F5F5">고객사명</th>
+		    	<td width="35%">
+		    		${bean.clientNm }
+		    	</td>
+		    	<th class="line" width="15%" align="center" bgcolor="#F5F5F5">고객명</th>
+		    	<td width="35%">
+		    		${bean.userNm }
+		    	</td>
+		    </tr>
+			<tr align="left" height="50px">
+				<th class="line" width="15%" align="center" bgcolor="#F5F5F5">아이디</th>
+		    	<td width="35%">
+		    		${bean.userId }
+		    	</td>
+		    	<th class="line" width="15%" align="center" bgcolor="#F5F5F5">사번</th>
+		    	<td width="35%">
+		    		${bean.empNum }
+		    	</td>
+		    </tr>
+			<tr align="left" height="50px">
+				<th class="line" width="15%" align="center" bgcolor="#F5F5F5">생년월일</th>
+		    	<td width="35%">
+		    		${bean.rrn }
+		    	</td>
+		    	<th class="line" width="15%" align="center" bgcolor="#F5F5F5">성별</th>
+		    	<td width="35%">
+		    		${bean.gender eq 'M' ? '남성' : '여성' }
+		    	</td>
+		    </tr>
+			<tr align="left" height="50px">
+				<th class="line" width="15%" align="center" bgcolor="#F5F5F5">소속</th>
+		    	<td width="35%">
+		    		${bean.branchCd } ${bean.deptCd } ${bean.teamCd } 
+		    	</td>
+		    	<th class="line" width="15%" align="center" bgcolor="#F5F5F5">직급</th>
+		    	<td width="35%">
+		    		${bean.gradeCd }
+		    	</td>
+		    </tr>
+			<tr align="left" height="50px">
+				<th class="line" width="15%" align="center" bgcolor="#F5F5F5">핸드폰번호</th>
+		    	<td width="35%">
+		    		${bean.mobile }
+		    	</td>
+		    	<th class="line" width="15%" align="center" bgcolor="#F5F5F5">이메일</th>
+		    	<td width="35%">
+		    		${bean.email }
+		    	</td>
+		    </tr>
+		    <tr align="center" height="60px">
+				<td colspan="4">
+					<input type="button" value="목록" onclick="DISPATCH.list()" />
+				</td>
+			</tr>
+			<%-- <tr align="center" height="60px">
+				<td colspan="4">
+					<c:choose>
+						<c:when test="${!empty bean.infoSeq }">
+							<input type="button" value="수정" onclick="DISPATCH.update()" />
+						</c:when>
+						<c:otherwise>
+							<input type="button" value="저장" onclick="DISPATCH.regist()" />
+						</c:otherwise>
+					</c:choose>
+					
+				</td>
+			</tr> --%>
+		</table>
+		<!-- 버튼 영역 종료 -->
+	</td>
+</tr>
+
+<tr>
+	<td height="20px"></td>
+</tr>
+
+<tr>
+	<td>
+		<!-- 버튼 영역 시작 -->
+		<table cellpadding="5" cellspacing="0" border="0" width="100%" align="center" style="border-bottom: 1px solid silver;">
+			<tr>
+				<td align="left" class="subtitle">마음왕진 | 인테이크 정보</td>
+			</tr>
+		</table>
+		<!-- 버튼 영역 종료 -->
+	</td>
+</tr>
+
+<tr>
+	<td height="20px"></td>
+</tr>
+
+<c:forEach var="list" items="${intakes }">
+<tr>
+	<td>
+		<!-- 버튼 영역 시작 -->
+		<table cellpadding="5" cellspacing="0" border="1" width="100%" align="left" style="border-collapse:collapse;">
+			<tr align="left" height="50px">
+				<th class="line" width="15%" align="center" bgcolor="#F5F5F5">상담대상자</th>
+		    	<td colspan="3">
+		    		${list.relation }
+		    	</td>
+		    </tr>
+			<tr align="left" height="50px">
+				<th class="line" width="15%" align="center" bgcolor="#F5F5F5">이름</th>
+		    	<td width="35%">
+		    		${list.counselNm }
+		    	</td>
+		    	<th class="line" width="15%" align="center" bgcolor="#F5F5F5">핸드폰번호</th>
+		    	<td width="35%">
+		    		${list.mobile }
+		    	</td>
+		    </tr>
+			<tr align="left" height="50px">
+				<th class="line" width="15%" align="center" bgcolor="#F5F5F5">생년월일</th>
+		    	<td width="35%">
+		    		${list.rrn }
+		    	</td>
+		    	<th class="line" width="15%" align="center" bgcolor="#F5F5F5">성별</th>
+		    	<td width="35%">
+		    		${list.gender eq 'M' ? '남성' : '여성' }
+		    	</td>
+		    </tr>
+			<tr align="left" height="50px">
+				<th class="line" width="15%" align="center" bgcolor="#F5F5F5">지역</th>
+		    	<td width="35%">
+		    		${list.area1 } ${list.area2 }
+		    	</td>
+		    	<th class="line" width="15%" align="center" bgcolor="#F5F5F5">연령대</th>
+		    	<td width="35%">
+		    		${list.counselAge }
+		    	</td>
+		    </tr>
+			<tr align="left" height="50px">
+				<th class="line" width="15%" align="center" bgcolor="#F5F5F5">상담방법</th>
+		    	<td width="35%">
+		    		${list.counselType }
+		    	</td>
+		    	<th class="line" width="15%" align="center" bgcolor="#F5F5F5">상담센터</th>
+		    	<td width="35%">
+		    		${list.centerNm } <br/>
+		    		(${list.centerAddr })
+		    	</td>
+		    </tr>
+			<tr align="left" height="50px">
+				<th class="line" width="15%" align="center" bgcolor="#F5F5F5">상담 주제<br/>(주호소 내용)</th>
+		    	<td colspan="3">
+		    		${fn:replace(list.counselCause, newLineChar, '<br/>') }
+		    	</td>
+		    </tr>
+			<tr align="left" height="50px">
+				<th class="line" width="15%" align="center" bgcolor="#F5F5F5">희망일정</th>
+		    	<td colspan="3">
+		    		${fn:replace(list.scheduleContents, newLineChar, '<br/>') }
+		    	</td>
+		    </tr>
+			<tr align="left" height="50px">
+				<th class="line" width="15%" align="center" bgcolor="#F5F5F5">처리현황</th>
+		    	<td colspan="3">
+		    		<select name="status">
+		    			<option value="100001" ${list.status eq '100001' ? 'selected' : '' }>신청</option>
+		    			<option value="100002" ${list.status eq '100002' ? 'selected' : '' }>협약중</option>
+		    			<option value="100003" ${list.status eq '100003' ? 'selected' : '' }>의뢰전</option>
+		    			<option value="100007" ${list.status eq '100007' ? 'selected' : '' }>의뢰중</option>
+		    			<option value="100004" ${list.status eq '100004' ? 'selected' : '' }>접수(처리)완료</option>
+		    			<option value="100005" ${list.status eq '100005' ? 'selected' : '' }>내담자 답변 대기중</option>
+		    			<option value="100006" ${list.status eq '100006' ? 'selected' : '' }>보류/취소</option>
+		    		</select>
+		    	</td>
+		    </tr>
+			<tr align="left" height="50px">
+				<th class="line" width="15%" align="center" bgcolor="#F5F5F5">자유기술</th>
+		    	<td colspan="3">
+		    		<textarea rows="4" style="width: 98%" name="memo">${list.memo }</textarea>
+		    	</td>
+		    </tr>
+			<tr align="center" height="60px">
+				<td colspan="4">
+					<input type="button" value="저장" onclick="DISPATCH.update(this, '${list.counselIntakeSeq}')" />
+				</td>
+			</tr>
+		</table>
+		<!-- 버튼 영역 종료 -->
+	</td>
+</tr>
+
+<tr>
+	<td height="20px"></td>
+</tr>
+</c:forEach>
+
+
+</table>
+</form>
+</body>
+</html>
+

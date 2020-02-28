@@ -1,0 +1,310 @@
+package com.ezwel.admin.service.client;
+
+import java.util.HashMap;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import com.ezwel.admin.domain.entity.client.Client;
+import com.ezwel.admin.domain.entity.client.ClientCommCd;
+import com.ezwel.admin.domain.entity.client.ClientSub;
+import com.ezwel.admin.persist.client.ClientMapper;
+import com.ezwel.admin.service.client.dto.ClientDivisionDto;
+import com.ezwel.admin.service.client.dto.ClientDto;
+import com.ezwel.admin.service.client.dto.ClientSubDto;
+import com.ezwel.core.framework.web.vo.Paging;
+import com.ezwel.core.support.util.Base64Utils;
+import com.ezwel.core.support.util.FileUploadUtils;
+import com.ezwel.core.support.util.FileUtils;
+import com.ezwel.core.support.util.StringUtils;
+
+@Service
+public class ClientService {
+
+	@Resource
+	private ClientMapper clientMapper;
+
+	private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+
+	/**
+	 * 고객사 리스트
+	 * @param clientDto
+	 * @return
+	 */
+	public List<Client> getClientList(ClientDto clientDto) {
+		return clientMapper.getClientList(clientDto);
+	}
+
+	/**
+	 * 고객사 정보
+	 * @param clientDto
+	 * @return
+	 */
+	public Client getClientSelectOne(ClientDto clientDto) {
+
+		//base64 디코딩
+		clientDto.setClientCd( Base64Utils.decode( StringUtils.defaultString(clientDto.getClientCd()) ) );
+
+		Client clientInfo = clientMapper.getClientSelectOne(clientDto);
+		if(clientInfo != null && StringUtils.isNotEmpty(clientInfo.getPost())) {
+			clientInfo.setZip1(StringUtils.substringBefore(clientInfo.getPost(), "-"));
+			clientInfo.setZip2(StringUtils.substringAfter(clientInfo.getPost(), "-"));
+		}
+		return clientInfo;
+	}
+
+	/**
+	 * 고객사 등록
+	 * @param clientDto
+	 * @return
+	 */
+	public void makeClient(ClientDto clientDto) throws Exception {
+
+		try {
+			insertClientSetting(clientDto);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("고객사 등록시 문제가 발생 하였습니다.");
+		}
+	}
+
+	//고객사 등록 후 테스트 Id, 고객사 관리자 Id, 공통코드 생성
+	public void insertClientSetting(ClientDto clientDto) throws Exception {
+		int clientCnt = 0;
+
+		//고객사 중복 체크
+		clientCnt = clientMapper.getClientCnt(clientDto);
+		if(clientCnt > 0) {
+			throw new Exception("이미 고객사코드가 존재합니다.");
+		} else {
+
+			logger.info("1.고객사 등록");
+			clientMapper.insertClient(clientDto);
+
+			logger.info("2.테스트 유저 등록");
+			clientMapper.insertTestUser(clientDto);
+
+			logger.info("3.고객사 제도 등록");
+			clientMapper.insertJedoPeriod(clientDto);
+
+			logger.info("4.고객사 관리자 등록");
+			clientMapper.insertMgr(clientDto);
+
+			logger.info("5.고객사 공통코드 등록");
+			clientMapper.insertClientCommCd(clientDto);
+
+			logger.info("6.고객사 관리자 메뉴권한 등록");
+			clientMapper.insertAclUserAuth(clientDto);
+			
+			logger.info("7.계약정보 내용 등록");
+			clientMapper.updateClientJedo(clientDto);
+
+			FileUtils.fileAddUpload(clientDto, FileUploadUtils.UPLOAD_DIR_IMG_PROP);
+		}
+/*	롤백테스트
+		if( true ) {
+			logger.debug("final 강제 에러 생성");
+			throw new RuntimeException("강제 에러");
+		}
+*/
+	}
+
+	/**
+	 * 고객사 정보수정
+	 * @param clientDto
+	 * @return
+	 */
+	public void updateClient(ClientDto clientDto) {
+		clientMapper.updateClient(clientDto);
+		
+		FileUtils.fileAddUpload(clientDto, FileUploadUtils.UPLOAD_DIR_IMG_PROP);
+	}
+
+	public List<Client> getmgrList(String userType, String branchCd) {
+		return clientMapper.getmgrList(userType, branchCd);
+	}
+
+	public List<ClientCommCd> getCommCdList(ClientDto clientDto) {
+		return clientMapper.getCommCdList(clientDto);
+	}
+	
+	public List<ClientCommCd> getCommClientList(HashMap<String,String> paramMap) {
+		return clientMapper.getCommClientList(paramMap);
+	}
+	
+	public List<ClientCommCd> getPopCommCdList(ClientDto clientDto) {
+		return clientMapper.getPopCommCdList(clientDto);
+	}
+	
+	/**
+	 * 부서 등록시 부서코드를 반환한다.
+	 * @param clientCd
+	 * @return
+	 */
+	public int getMaxClientCommCd(String clientCd) {
+		return clientMapper.getMaxClientCommCd(clientCd);
+	}
+	
+	/**
+	 * 부서 등록시 트리구조여서 기존꺼를 모두삭제하고 다시 저장한다.
+	 * @param clientCd
+	 * @return
+	 */
+	public int removeClientDivision(String clientCd) {
+		return clientMapper.removeClientDivision(clientCd);
+	}
+	
+	/**
+	 * 상담주제 등록시 트리구조여서 기존꺼를 모두삭제하고 다시 저장한다.
+	 * @param clientCd
+	 * @return
+	 */
+	public int removeClientTopic(String clientCd) {
+		return clientMapper.removeClientTopic(clientCd);
+	}
+	
+	/**
+	 * 부서 등록을 한다.
+	 * @param clientDivisionDto
+	 * @return
+	 */
+	public int addClientCommCdDivision(ClientDivisionDto clientDivisionDto) {
+		return clientMapper.addClientCommCdDivision(clientDivisionDto);
+	}
+	
+	/**
+	 * 부서정보를 얻는다.
+	 * @param clientCd
+	 * @return
+	 */
+	public List<String> getClientDivision(String clientCd) {
+		return clientMapper.getClientDivision(clientCd);
+	}
+	
+	/**
+	 * 상담주제 정보 조회
+	 * @param clientCd
+	 * @return
+	 */
+	public List<String> getClientTopic(String clientCd) {
+		return clientMapper.getClientTopic(clientCd);
+	}
+	
+	/**
+	 * 현재 고객사가 상담포유의 개인정보내역에 노출하고 있는 리스트
+	 * @param clientCd
+	 * @return
+	 */
+	public List<ClientSub> getClientMyPrivateList(String clientCd) {
+		return clientMapper.getClientMyPrivateList(clientCd);
+	}
+	
+	/**
+	 * mind_client_sub 테이블 등록
+	 * @param clientSubDto
+	 * @return
+	 */
+	public int addClientSub(ClientSubDto clientSubDto) {
+		return clientMapper.addClientSub(clientSubDto);
+	}
+	
+	/**
+	 * mind_client_sub 데이터 삭제
+	 * @param clientSubDto
+	 * @return
+	 */
+	public int deleteClientSub(ClientSubDto clientSubDto) {
+		return clientMapper.deleteClientSub(clientSubDto);
+	}
+	
+	/**
+	 * mind_client_sub 업데이트
+	 * @param clientSubDto
+	 * @return
+	 */
+	public int updateClientSub(ClientSubDto clientSubDto) {
+		return clientMapper.updateClientSub(clientSubDto);
+	}
+	
+	/**
+	 * 메뉴 URL 고객사리스트
+	 * @param String
+	 * @return
+	 */
+	public List<Client> getMenuURLtoClientList(String menuUrl) {
+		return clientMapper.getMenuURLtoClientList(menuUrl);
+	}
+	
+	public int getMenuCdCnt(String menuCd) {
+		return clientMapper.getMenuCdCnt(menuCd);
+	}
+	public List<Client> getBBSClient(String dataSeq) {
+		return clientMapper.getBBSClient(dataSeq);
+	}
+
+	
+	
+	/**
+	 * 
+	 * @param clientSubDto
+	 * @return
+	 */
+	public List<ClientSub> getClientSub(ClientSubDto clientSubDto) {
+		return clientMapper.getClientSub(clientSubDto);
+	}
+	
+	public String getCounselCdClientCd(String counselCd) {
+		return clientMapper.getCounselCdClientCd(counselCd);
+	}
+	
+	public Paging<Client> getClientPagingList(ClientDto clientDto) {
+		
+		Paging<Client> paging = new Paging<Client>();
+		paging.setPaging(clientDto);
+		paging.setList(clientMapper.getClientPagingList(clientDto));
+		clientDto.setPageCommonFlag(true);
+		paging.setTotalCount(clientMapper.getClientPagingList(clientDto).get(0).getPageCommonCount());
+		
+		return paging;
+		
+	}
+	
+	/**
+	 * 고객사 정보
+	 * @param clientDto
+	 * @return
+	 */
+	public Client getClientDetail(ClientDto clientDto) {
+		return clientMapper.getClientSelectOne(clientDto);
+	}
+	
+	public void insertGradeCd(ClientDto clientDto) {
+		clientMapper.insertGradeCd(clientDto);
+	}
+	
+	public void modifyGradeCd(ClientDto clientDto) {
+		clientMapper.modifyGradeCd(clientDto);
+	}
+	
+	public void ajaxModifyGradeCdUseYn(ClientDto clientDto) {
+		clientMapper.ajaxModifyGradeCdUseYn(clientDto);
+	}
+	
+	public void modifyClientLogin(ClientDto clientDto) {
+		clientMapper.modifyClientLogin(clientDto);
+		FileUtils.fileAddUpload(clientDto, FileUploadUtils.UPLOAD_DIR_IMG_PROP);
+	}
+	
+	public List<Client> getClientStatusList(ClientDto clientDto){
+		return clientMapper.getClientStatusList(clientDto);
+	}
+	
+	public String getClientJedoPeriod(ClientDto clientDto) {
+		return clientMapper.getClientJedoPeriod(clientDto);
+	}
+
+}

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.counselor.CounselorMapper">
+
+	<select id="getCounselorList" resultType="com.ezwel.admin.domain.entity.counselor.ReqCounselor">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+				SELECT REQ_SEQ                         as reqSeq,              
+					   REQ_TYPE                        as reqType,             
+					   ifnull(REQ_NM, MANAGER)         as reqNm,               
+					   MANAGER                         as manager,              
+					   TEL_NUM                         as telNum,              
+					   MOBILE                          as mobile,               
+					   AGE                             as age,                  
+					   GENDER                          as gender,               
+					   AREA1                           as area1,                
+					   AREA2                           as area2,                
+					   POST                            as post,                 
+					   ADDR1                           as addr1,                
+					   ADDR2                           as addr2,                
+					   EMAIL                           as email,                
+					   HOMEPAGE                        as homepage,             
+					   CONSULT_TARGET                  as consultTarget,       
+					   CONSULT_DIV                     as consultDiv,          
+					   CONSULT_DIV_ETC                 as consultDivEtc,      
+					   CONSULT_TYPE                    as consultType,         
+					   CONSULT_TYPE_ETC                as consultTypeEtc,     
+					   CONSULT_EXP_YN                  as consultExpYn,       
+					   CONSULT_EXP                     as consultExp,          
+					   INFRA_PERSONAL_CNT              as infraPersonalCnt,   
+					   INFRA_WAIT_ROOM_YN              as infraWaitRoomYn,   
+					   INFRA_PLAY_ROOM_CNT             as infraPlayRoomCnt,  
+					   INFRA_EDU_ROOM_YN               as infraEduRoomYn,    
+					   INFRA_ETC                       as infraEtc,            
+					   TOT_MEMBER                      as totMember,           
+					   FILE_NM                         as fileNm,              
+					   FILE_PATH                       as filePath,            
+					   REG_ID                          as regId,               
+					   REG_NM                          as regNm,               
+					   DATE_FORMAT(STR_TO_DATE(REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt           
+				  FROM mind_req_counselor
+				  WHERE 1=1
+					<if test="isNotNull(searchNm)">
+					 AND ifnull(REQ_NM, MANAGER) LIKE CONCAT('%', #{searchNm},'%')
+					</if>
+				 ORDER BY REG_DT DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<select id="getCounselorDetail" resultType="com.ezwel.admin.domain.entity.counselor.ReqCounselor">
+		SELECT REQ_SEQ                         as reqSeq,              
+			   REQ_TYPE                        as reqType,             
+			   REQ_NM				           as reqNm,               
+			   MANAGER                         as manager,              
+			   TEL_NUM                         as telNum,              
+			   MOBILE                          as mobile,               
+			   AGE                             as age,                  
+			   GENDER                          as gender,               
+			   (select comm_nm from mind_comm_cd a where AREA1 = a.COMM_CD)   as area1,                
+			   (select comm_nm from mind_comm_cd a where AREA2 = a.COMM_CD)   as area2,                
+			   POST                            as post,                 
+			   ADDR1                           as addr1,                
+			   ADDR2                           as addr2,                
+			   EMAIL                           as email,                
+			   HOMEPAGE                        as homepage,             
+			   CONSULT_TARGET                  as consultTarget,       
+			   CONSULT_DIV                     as consultDiv,          
+			   CONSULT_DIV_ETC                 as consultDivEtc,      
+			   CONSULT_TYPE                    as consultType,         
+			   CONSULT_TYPE_ETC                as consultTypeEtc,     
+			   CONSULT_EXP_YN                  as consultExpYn,       
+			   CONSULT_EXP                     as consultExp,          
+			   INFRA_PERSONAL_CNT              as infraPersonalCnt,   
+			   INFRA_WAIT_ROOM_YN              as infraWaitRoomYn,   
+			   INFRA_PLAY_ROOM_CNT             as infraPlayRoomCnt,  
+			   INFRA_EDU_ROOM_YN               as infraEduRoomYn,    
+			   INFRA_ETC                       as infraEtc,            
+			   TOT_MEMBER                      as totMember,           
+			   FILE_NM                         as fileNm,              
+			   FILE_PATH                       as filePath,            
+			   REG_ID                          as regId,               
+			   REG_NM                          as regNm,               
+			   DATE_FORMAT(STR_TO_DATE(REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt               
+		  FROM mind_req_counselor
+		 WHERE REQ_SEQ = #{reqSeq}
+	</select>
+	
+	
+	<select id="getReqCounselorCertList" resultType="com.ezwel.admin.domain.entity.counselor.ReqCounselorCert">
+		SELECT  CERT_SEQ						as certSeq,						
+				REQ_SEQ                         as reqSeq, 
+				cert_cd							as certCd,
+				b.comm_nm						as commNm,
+				CERT1							as cert1,
+				CERT2							as cert2,
+				CERT_CNT1						as certCnt1,
+				CERT_PART_CNT1					as certPartCnt1,
+				CERT_CNT2						as certCnt2,
+				CERT_PART_CNT2					as certPartCnt2,
+				ETC								as etc
+		  FROM mind_req_counselor_cert a LEFT JOIN mind_comm_cd b
+		    ON A.CERT_CD = B.COMM_CD
+		 WHERE REQ_SEQ = #{reqSeq}
+	</select>
+	
+	
+	<select id="getCounselor" resultType="com.ezwel.admin.domain.entity.mgr.MgrData">
+		SELECT A.USER_ID as userId
+			 , A.USER_NM as userNm
+		  FROM MIND_MGR A 
+		     	INNER JOIN MIND_MGR_SUB B
+		    		ON A.USER_ID = B.USER_ID
+		 WHERE CENTER_SEQ = #{centerSeq}
+		   AND USE_YN = 'Y'
+	</select>
+
+	
+</mapper>

@@ -1,0 +1,131 @@
+package com.ezwel.admin.service.evaluation;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.ezwel.admin.domain.entity.evaluation.Evaluation;
+import com.ezwel.admin.persist.evaluation.EvaluationMapper;
+import com.ezwel.admin.service.evaluation.dto.EvaluationDto;
+import com.ezwel.core.framework.web.vo.Paging;
+import com.ezwel.core.support.util.StringUtils;
+
+@Service
+public class EvaluationService {
+
+	@Resource
+	private EvaluationMapper evaluationMapper;
+
+
+
+	public Paging<Evaluation> getSurveyAnsList(EvaluationDto evalDto) {
+		Paging<Evaluation> paging = new Paging<Evaluation>();
+		paging.setPaging(evalDto);
+		List<Evaluation> evalList = evaluationMapper.getSurveyAnsList(evalDto) ; 
+		/*for(int idx = 0; idx < evalList.size(); idx++){
+			
+			String[] ansArr = StringUtils.split(evalList.get(idx).getAnsArr(), "▒");
+			
+			for(int i = 0; i < ansArr.length; i++){
+				switch (i) {
+					case 0:
+						evalList.get(idx).setItem01Ans(ansArr[i]);
+						break;
+					case 1:
+						evalList.get(idx).setItem02Ans(ansArr[i]);
+						break;
+					case 2:
+						evalList.get(idx).setItem03Ans(ansArr[i]);
+						break;
+					case 3:
+						evalList.get(idx).setItem04Ans(ansArr[i]);
+						break;
+					case 4:
+						evalList.get(idx).setItem05Ans(ansArr[i]);
+						break;
+					case 5:
+						evalList.get(idx).setItem06Ans(ansArr[i]);
+						break;
+	
+					default:
+						break;
+				}
+			}
+		}*/
+		paging.setList(evalList);
+		evalDto.setPageCommonFlag(true);
+		paging.setTotalCount(evaluationMapper.getSurveyAnsList(evalDto).get(0).getPageCommonCount());
+		return paging;
+	}
+
+	public List<Evaluation> getSurveyItemList(EvaluationDto evalDto) {
+		return evaluationMapper.getSurveyItemList(evalDto);
+	}
+	
+	public Evaluation getSurveyAnsAverage(EvaluationDto evalDto) {
+		return evaluationMapper.getSurveyAnsAverage(evalDto);
+	}
+	
+	public List<Evaluation> getSurveyExcelList(EvaluationDto evalDto) {
+		List<Evaluation> evalList = evaluationMapper.getSurveyAnsListExcel(evalDto) ; 
+		
+		/*for(int idx = 0; idx < evalList.size(); idx++){
+			
+			String[] ansArr = StringUtils.split(evalList.get(idx).getAnsArr(), "▒");
+			
+			for(int i = 0; i < ansArr.length; i++){
+				switch (i) {
+					case 0:
+						evalList.get(idx).setItem01Ans(ansArr[i]);
+						break;
+					case 1:
+						evalList.get(idx).setItem02Ans(ansArr[i]);
+						break;
+					case 2:
+						evalList.get(idx).setItem03Ans(ansArr[i]);
+						break;
+					case 3:
+						evalList.get(idx).setItem04Ans(ansArr[i]);
+						break;
+					case 4:
+						evalList.get(idx).setItem05Ans(ansArr[i]);
+						break;
+					case 5:
+						evalList.get(idx).setItem06Ans(ansArr[i]);
+						break;
+	
+					default:
+						break;
+				}
+			}
+		}*/
+		
+		return evalList;
+	}
+	
+	public String	 getEvalSeq(EvaluationDto evalDto) {
+		return evaluationMapper.getEvalSeq(evalDto);
+	}
+	
+	public List<Evaluation> getSurveyAnsDetail(EvaluationDto evalDto){
+		return evaluationMapper.getSurveyAnsDetail(evalDto) ; 
+	}
+	
+	public void insertHappyCall(EvaluationDto evalDto){
+		String[] itemAns = evalDto.getItemAnsMerge().split(",");
+
+		evaluationMapper.deleteHappyCall(evalDto);
+		
+		for(int i=0; i< itemAns.length; i++){
+			evalDto.setItemAns(itemAns[i]);
+			evalDto.setItemSeq(i+1);
+			evaluationMapper.insertHappyCall(evalDto);
+		}
+		
+		evaluationMapper.updateHappayCallYn(evalDto);
+		
+	}
+	
+}

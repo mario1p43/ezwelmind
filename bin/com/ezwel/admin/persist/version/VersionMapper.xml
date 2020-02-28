@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.version.VersionMapper">
+
+	<select id="versionList" resultType="com.ezwel.admin.domain.entity.version.VersionData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+				SELECT
+					APP_SEQ as appSeq
+					, OS_TYPE as osType
+					, USE_YN as useYn
+					, RELEASE_TYPE as releaseType
+					, VERSION_CD as versionCd
+					, DATE_FORMAT(UPDATE_DT,'%Y-%m-%d') as updateDt
+					, CONTENT as content
+					, APK_PATH as apkPath
+					, IPA_PATH as ipaPath
+					, REG_ID as regId
+					, DATE_FORMAT(STR_TO_DATE(REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt
+					, MODI_ID as modiId
+					, DATE_FORMAT(STR_TO_DATE(MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS modiDt
+				FROM
+					mind_app_version
+			  WHERE 1=1
+			<if test="isNotNull(osType)">
+			  AND OS_TYPE = #{osType}	
+			</if>
+			ORDER BY APP_SEQ DESC
+		<choose>
+				<when test="pageCommonFlag == true">
+					) A
+				</when>
+				<otherwise>
+					LIMIT #{firstIndex} , #{pageSize}
+				</otherwise>
+		</choose>
+	</select>
+
+	<select id="versionDetail" resultType="com.ezwel.admin.domain.entity.version.VersionData">
+		SELECT 
+				APP_SEQ as appSeq
+				, OS_TYPE as osType
+				, USE_YN as useYn
+				, RELEASE_TYPE as releaseType
+				, VERSION_CD as versionCd
+				, DATE_FORMAT(UPDATE_DT,'%Y/%m/%d') AS updateDt
+				, CONTENT as content
+				, APK_PATH as apkPath
+				, IPA_PATH as ipaPath
+				, REG_ID as regId
+				, DATE_FORMAT(STR_TO_DATE(REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt
+				, MODI_ID as modiId
+				, DATE_FORMAT(STR_TO_DATE(MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS modiDt
+
+			FROM MIND_APP_VERSION
+		<if test="isNotNull(appSeq)">
+		  WHERE APP_SEQ = #{appSeq}
+		</if>
+	</select>
+
+	<insert id="insertVersion" keyProperty="appSeq" useGeneratedKeys="true" parameterType="com.ezwel.admin.service.version.dto.VersionDto" >
+		INSERT INTO MIND_APP_VERSION (
+			OS_TYPE
+			, USE_YN
+			, RELEASE_TYPE
+			, VERSION_CD
+			, UPDATE_DT
+			, CONTENT
+			, APK_PATH
+			, IPA_PATH
+			, REG_ID
+			, REG_DT
+		) VALUE (
+			#{osType}
+			, #{useYn}
+			, #{releaseType}
+			, #{versionCd}
+			, DATE_FORMAT(#{updateDt}, '%Y%m%d%H%i%s')
+			, #{content}
+			, #{apkPath}
+			, #{ipaPath}
+			, #{regId}
+		 	, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<update id="modifyVersion"  parameterType="com.ezwel.admin.service.version.dto.VersionDto">
+		UPDATE MIND_APP_VERSION
+		SET 
+			OS_TYPE = #{osType}
+			, USE_YN = #{useYn}
+			, RELEASE_TYPE = #{releaseType}
+			, VERSION_CD = #{versionCd}
+			, UPDATE_DT = DATE_FORMAT(#{updateDt}, '%Y%m%d%H%i%s')
+			, CONTENT = #{content}
+			<if test="isNotNull(apkPath)">, APK_PATH = #{apkPath}</if>
+			<if test="isNotNull(ipaPath)">, IPA_PATH = #{ipaPath}</if>
+			, MODI_ID = #{modiId}
+			, MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE APP_SEQ = #{appSeq}
+	</update>
+	
+	<delete id="deleteVersion" parameterType="com.ezwel.admin.service.version.dto.VersionDto">
+		DELETE FROM MIND_APP_VERSION WHERE APP_SEQ = ${appSeq}
+	</delete>
+</mapper>

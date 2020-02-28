@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+
+	<Resource name="jdbc/mariadb_ezwel_mind"
+		auth="Container"
+		type="javax.sql.DataSource"
+		driverClassName="com.mysql.jdbc.Driver"
+		url="jdbc:mysql://192.168.112.100:4406/ez_mind"
+		username="mind"
+		password="ezmind_0606" />
+</Context>

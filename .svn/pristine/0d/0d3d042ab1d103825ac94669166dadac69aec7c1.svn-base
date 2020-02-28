@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.common.service.acl.user.comp.mapper.UserAuthMapper">
+	<sql id="pagingLimit">
+		LIMIT #{firstIndex} , #{pageSize}
+	</sql>
+
+	<select id="getList" resultType="com.ezwel.common.service.acl.user.comp.vo.UserAuthVo">
+		/*
+			User 정보 Object Or List
+			getList
+			com/ezwel/sample/service/user/mapper/user-mapper.xml
+		*/
+		SELECT
+			  U.USER_ID AS userId
+			, U.USER_TYPE AS userType
+			, CASE WHEN U.USER_TYPE = '1001' THEN '사용자'
+					WHEN U.USER_TYPE = '2001' THEN '관리자'
+					WHEN U.USER_TYPE = '3001' THEN '제휴사'
+					WHEN U.USER_TYPE = '4001' THEN '고객사' END as userTypeNm
+			, CONCAT(U.USER_ID, U.USER_TYPE) AS userAuthKey
+			, U.USER_NM AS userNm
+            , UA.AUTH_CD AS authCd
+            , A.AUTH_NM AS authNm
+		FROM MIND_MGR U LEFT OUTER JOIN ACL_USER_AUTH UA ON (CONCAT(U.USER_ID, U.USER_TYPE) = UA.USER_AUTH_KEY)
+		LEFT OUTER JOIN ACL_AUTH A USING (AUTH_CD)
+		<where>
+	        <if test="isNotNull(searchKwd)">
+				AND ${searchKey} like '%${searchKwd}%'
+			</if>
+	        <if test="isNotNull(userId)">
+	        	AND U.USER_ID = ${userId}
+	        </if>
+	        <choose>
+	        	<when test="isNotNull(serviceType) and (serviceType == 'partner')">
+	        		AND U.USER_TYPE = 3001
+	        	</when>
+	        	<when test="isNotNull(serviceType) and (serviceType == 'cadm')">
+	        		AND U.USER_TYPE = 4001
+	        	</when>
+ 		       	<when test="isNotNull(serviceType) and (serviceType == 'madm')">
+	        		AND U.USER_TYPE = 2001
+	        	</when>
+				<otherwise></otherwise>	        	
+	        </choose>
+	        <if test="isNotNull(searchAuthCode)">
+	            AND UA.AUTH_CD = #{searchAuthCode}
+	        </if>
+	        
+				AND U.USE_YN = 'Y'
+		</where>
+		ORDER BY U.USER_NM
+		<include refid="pagingLimit" />
+	</select>
+
+	<select id="getListCnt" resultType="int">
+		/*
+			user List Cnt
+			getListCnt
+			com/ezwel/sample/service/user/mapper/user-mapper.xml
+		*/
+		SELECT COUNT(*)
+		FROM MIND_MGR U LEFT OUTER JOIN ACL_USER_AUTH UA ON (CONCAT(U.USER_ID, U.USER_TYPE) = UA.USER_AUTH_KEY)
+		LEFT OUTER JOIN ACL_AUTH A USING (AUTH_CD)
+		<where>
+	        <if test="isNotNull(searchKwd)">
+				AND ${searchKey} like '%${searchKwd}%'
+			</if>
+	        <if test="isNotNull(userId)">
+	        	AND U.USER_ID = ${userId}
+	        </if>
+	        <choose>
+	        	<when test="isNotNull(serviceType) and (serviceType == 'partner')">
+	        		AND U.USER_TYPE = 3001
+	        	</when>
+	        	<when test="isNotNull(serviceType) and (serviceType == 'cadm')">
+	        		AND U.USER_TYPE = 4001
+	        	</when>
+ 		       	<when test="isNotNull(serviceType) and (serviceType == 'madm')">
+	        		AND U.USER_TYPE = 2001
+	        	</when>
+				<otherwise></otherwise>	        	
+	        </choose>	        
+	       	<if test="isNotNull(searchAuthCode)">
+	            AND UA.AUTH_CD = #{searchAuthCode}
+	        </if>
+	        
+				AND U.USE_YN = 'Y'
+	    </where>
+		ORDER BY U.USER_NM
+	</select>
+
+</mapper>

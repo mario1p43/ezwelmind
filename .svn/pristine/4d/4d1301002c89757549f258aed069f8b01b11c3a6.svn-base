@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.controller.partner.payCheck.PayCheckMapper">
+
+
+
+	<insert id="addPayCheck">
+		INSERT INTO MIND_PAY_CHECK (
+			  CLIENT_CD
+			, CLIENT_NM
+			, COUNSEL_CD
+			, SCHEDULE_DT
+			, STAFF_NM
+			, USER_NM
+			, COUNSEL_TYPE
+			, STATUS
+			, CENTER_NM			
+			, CENTER_SEQ
+			, COUNSELOR_NM
+			, COUNSELOR_ID
+			, PRICE
+			, TAX_TYPE
+			, BANK_NM	
+			, ACCOUNT_HOLDER		
+		) VALUES ( 
+			  #{clientCd}
+			, #{clientNm}
+			, #{counselCd}
+			, #{scheduleDt}
+			, #{staffNm}
+			, #{userNm}
+			, #{counselType}
+			, #{status}
+			, #{centerNm}
+			, #{centerSeq}
+			, #{counselorNm}
+			, #{counselorId}
+			, #{price}
+			, #{taxType}
+			, #{bankNm}
+			, #{accountHolder}
+		) ON DUPLICATE KEY UPDATE 
+			COUNSEL_CD = #{counselCd}
+		<if test="isNotNull(clientCd)">
+			, CLIENT_CD = #{clientCd}
+		</if>
+		<if test="isNotNull(clientNm)">
+			, CLIENT_NM = #{clientNm}
+		</if>
+		<if test="isNotNull(scheduleDt)">
+			, SCHEDULE_DT = #{scheduleDt}
+		</if>
+		<if test="isNotNull(staffNm)">
+			, STAFF_NM = #{staffNm}
+		</if>
+		<if test="isNotNull(counselType)">
+			, COUNSEL_TYPE = #{counselType}
+		</if>
+		<if test="isNotNull(status)">
+			, STATUS = #{status}
+		</if>
+		<if test="isNotNull(centerNm)">
+			, CENTER_NM = #{centerNm}
+		</if>
+		<if test="isNotNull(centerSeq)">
+			, CENTER_SEQ = #{centerSeq}
+		</if>
+		<if test="isNotNull(counselorNm)">
+			, COUNSELOR_NM = #{counselorNm}
+		</if>
+		<if test="isNotNull(counselorId)">
+			, COUNSELOR_ID = #{counselorId}
+		</if>
+		<if test="isNotNull(price)">
+			, PRICE = #{price}
+		</if>
+		<if test="isNotNull(taxType)">
+			, TAX_TYPE = #{taxType}
+		</if>
+		<if test="isNotNull(bankNm)">
+			, BANK_NM = #{bankNm}
+		</if>
+		<if test="isNotNull(accountHolder)">
+			, ACCOUNT_HOLDER = #{accountHolder}
+		</if>
+	</insert>
+	
+	<select id="getPayCheckList" resultType="com.ezwel.admin.controller.partner.payCheck.PayCheckAddDto">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+				SELECT	CLIENT_CD
+					, CLIENT_NM
+					, COUNSEL_CD
+					, DATE_FORMAT(STR_TO_DATE(SCHEDULE_DT, '%Y%m%d%H%i%s'),'%Y/%m/%d %H:%i') 	AS scheduleDt
+					, STAFF_NM
+					, USER_NM
+					, COUNSEL_TYPE
+					, STATUS
+					, CENTER_NM			
+					, CENTER_SEQ
+					, COUNSELOR_NM
+					, COUNSELOR_ID
+					, PRICE
+					, TAX_TYPE
+					, BANK_NM	
+					, ACCOUNT_HOLDER
+				FROM 	MIND_PAY_CHECK
+				WHERE	1=1
+				<if test="isNotNull(centerSeq) and centerSeq != '' ">
+					AND		CENTER_SEQ = #{centerSeq}
+				</if>
+				<if test="isNotNull(counselorId)">
+					AND		COUNSELOR_ID = #{counselorId}
+				</if>
+				<if test="isNotNull(clientCd) and clientCd != '' ">
+					AND		CLIENT_CD = #{clientCd}
+				</if>
+				<if test="isNotNull(staffNm)">
+					AND		STAFF_NM = #{staffNm}
+				</if>
+				<if test="isNotNull(userNm)">
+					AND		USER_NM = #{userNm}
+				</if>
+				<if test="isNotNull(counselorNm)">
+					AND		COUNSELOR_NM = #{counselorNm}
+				</if>
+				<if test="isNotNull(searchCenterSeq) and searchCenterSeq != '' ">
+					AND		CENTER_SEQ = #{searchCenterSeq}
+				</if>
+				<if test="isNotNull(startDt)">
+					AND		SCHEDULE_DT >= #{startDt}
+				</if>
+				<if test="isNotNull(endDt)">
+					AND		SCHEDULE_DT &lt;= #{endDt}
+				</if>
+				ORDER BY SCHEDULE_DT DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	
+	</select>
+	
+	<select id="getPayCheckPriceSum" resultType="String">
+			SELECT IFNULL(SUM(PRICE), 0)
+			FROM 	MIND_PAY_CHECK
+			WHERE	1=1
+			<if test="isNotNull(centerSeq) and centerSeq != '' ">
+				AND		CENTER_SEQ = #{centerSeq}
+			</if>
+			<if test="isNotNull(counselorId)">
+				AND		COUNSELOR_ID = #{counselorId}
+			</if>
+			<if test="isNotNull(clientCd) and clientCd != '' ">
+				AND		CLIENT_CD = #{clientCd}
+			</if>
+			<if test="isNotNull(staffNm)">
+				AND		STAFF_NM = #{staffNm}
+			</if>
+			<if test="isNotNull(userNm)">
+				AND		USER_NM = #{userNm}
+			</if>
+			<if test="isNotNull(counselorNm)">
+				AND		COUNSELOR_NM = #{counselorNm}
+			</if>
+			<if test="isNotNull(searchCenterSeq) and searchCenterSeq != '' ">
+				AND		CENTER_SEQ = #{searchCenterSeq}
+			</if>
+	</select>
+	
+	<select id="getPayCheckPop" resultType="com.ezwel.admin.controller.partner.payCheck.PayCheckAddDto">
+			SELECT	CLIENT_CD
+				, CLIENT_NM
+				, COUNSEL_CD
+				, DATE_FORMAT(STR_TO_DATE(SCHEDULE_DT, '%Y%m%d%H%i%s'),'%Y/%m/%d %H:%i') 	AS scheduleDt
+				, STAFF_NM
+				, USER_NM
+				, COUNSEL_TYPE
+				, STATUS
+				, CENTER_NM			
+				, CENTER_SEQ
+				, COUNSELOR_NM
+				, COUNSELOR_ID
+				, PRICE
+				, TAX_TYPE
+				, BANK_NM	
+				, ACCOUNT_HOLDER
+			FROM 	MIND_PAY_CHECK
+			WHERE	COUNSEL_CD = #{counselCd}
+	</select>
+	
+	<update id="updatePayCheck">
+		UPDATE MIND_PAY_CHECK
+		   SET CLIENT_CD = #{clientCd}
+		   		,CLIENT_NM = #{clientNm}
+		   		<if test="isNotNull(scheduleDt)">
+		   		,SCHEDULE_DT = #{scheduleDt}
+		   		</if>
+		   		<if test="isNotNull(staffNm)">
+		   		,STAFF_NM = #{staffNm}
+		   		</if>
+		   		<if test="isNotNull(userNm)">
+		   		,USER_NM = #{userNm}
+		   		</if>
+		   		<if test="isNotNull(counselType)">
+		   		,COUNSEL_TYPE = #{counselType}
+		   		</if>
+		   		<if test="isNotNull(status)">
+		   		,STATUS = #{status}
+		   		</if>
+		   		<if test="isNotNull(centerNm)">
+		   		,CENTER_NM = #{centerNm}
+		   		</if>
+		   		<if test="isNotNull(centerSeq)">
+		   		,CENTER_SEQ = #{centerSeq}
+		   		</if>
+		   		<if test="isNotNull(counselorNm)">
+		   		,COUNSELOR_NM = #{counselorNm}
+		   		</if>
+		   		<if test="isNotNull(counselorId)">
+		   		,COUNSELOR_ID = #{counselorId}
+		   		</if>
+		   		<if test="isNotNull(price)">
+		   		,PRICE = #{price}
+		   		</if>
+		   		<if test="isNotNull(taxType)">
+		   		,TAX_TYPE = #{taxType}
+		   		</if>
+		   		<if test="isNotNull(bankNm)">
+		   		,BANK_NM = #{bankNm}
+		   		</if>
+		   		<if test="isNotNull(accountHolder)">
+		   		,ACCOUNT_HOLDER = #{accountHolder}
+		   		</if>
+		WHERE COUNSEL_CD = #{counselCd}
+	</update>
+	
+	<delete id="deletePayCheck">
+		DELETE FROM MIND_PAY_CHECK WHERE COUNSEL_CD = ${counselCd}
+	</delete>
+	
+	<select id="getPayCheckConfirm" resultType="com.ezwel.admin.controller.partner.payCheck.PayCheckAddDto">
+		SELECT	WRITE_MONTH
+			, WRITE_DAY
+			, ISSUE_MONTH
+			, ISSUE_DAY
+			, ISSUE_HOUR
+			, EMAIL
+		FROM 	MIND_PAY_CHECK_CONFIRM
+	</select>
+	
+	<update id="updatePaycheckConfirm">
+		UPDATE MIND_PAY_CHECK_CONFIRM
+		   SET WRITE_MONTH = #{writeMonth}
+		   		, WRITE_DAY = #{writeDay}
+		   		, ISSUE_MONTH = #{issueMonth}
+		   		, ISSUE_DAY = #{issueDay}
+		   		, ISSUE_HOUR = #{issueHour}
+		   		, EMAIL = #{email}
+	</update>
+	
+</mapper>

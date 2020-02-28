@@ -1,0 +1,729 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.ezwel.admin.persist.center.CenterMapper">
+    
+    
+    <select id="getExtraList" resultType="com.ezwel.admin.domain.entity.center.CenterInfo">
+		SELECT 
+			APPEND_NM AS extraNm
+			,APPEND_SEQ AS extraIdx
+			,APPEND_TARGET AS extraTarget
+			,APPEND_COST AS extraCost
+			,REG_DT AS regDt
+		FROM MIND_MGR_APPEND
+		WHERE 1=1
+		AND USE_YN = 'Y'
+		<if test="isNotNull(highCommCd)">
+			AND HIGH_COMM_CD = #{highCommCd}
+		</if>
+		<if test="isNotNull(userId)">
+			AND USER_ID = #{userId}
+		</if>
+		<if test="isNotNull(centerSeq)">
+			AND CENTER_SEQ = #{centerSeq}
+		</if>
+	</select>
+	
+	<update id="updateExtraExam" >
+	 	INSERT INTO 
+		MIND_MGR_APPEND (
+			HIGH_COMM_CD
+			, APPEND_SEQ
+			, CENTER_SEQ
+			, USER_ID
+			, APPEND_NM
+			, APPEND_COST
+			, APPEND_TARGET
+			, USE_YN
+			, REG_DT
+		) VALUES (
+			#{highCommCd}
+			, #{extraIdx}
+			, #{centerSeq}
+			, #{userId}
+			, #{extraNm}
+			, #{extraCost}
+			, #{extraTarget}
+			, 'Y'
+			, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+	ON DUPLICATE KEY UPDATE
+		APPEND_NM = #{extraNm}
+		,APPEND_TARGET = #{extraTarget}
+		,APPEND_COST = #{extraCost}
+		,REG_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')   
+		
+	</update>
+    
+    <delete id="deleteExtraExam">
+    DELETE FROM 
+    	MIND_MGR_APPEND 
+	WHERE APPEND_SEQ = #{extraIdx}
+    </delete>
+    
+    
+    
+    <select id="getCenterInfo" resultType="com.ezwel.admin.domain.entity.center.CenterInfo">
+		SELECT 	CENTER_SEQ AS centerSeq
+			,	CENTER_NM AS centerNm
+			,	CENTER_TYPE AS centerType
+			,	CENTER_INTRO AS centerIntro
+			,	HOMEPAGE AS homepage
+			,	AREA1 AS area1
+			,	AREA2 AS area2
+			,	POST AS post
+			,	ADDR1 AS addr1
+			,	ADDR2 AS addr2
+			,	INFRA_PERSONAL_CNT AS infraPersonalCnt
+			,	INFRA_WAIT_ROOM_YN AS infraWaitRoomYn
+			,	INFRA_PLAY_ROOM_CNT AS infraPlayRoomCnt
+			,	INFRA_EDU_ROOM_YN AS infraEduRoomYn
+			,	INFRA_ETC AS infraEtc
+			,	OWNER_NM AS ownerNm
+			,	BSNS_NUM AS bsnsNum
+			,	BCOND AS bcond
+			,	BITEM AS bitem
+			,	TEL_NUM	AS telNum
+			,	SUBSTRING(SUBSTRING_INDEX(TEL_NUM, '-', 1), LENGTH(SUBSTRING_INDEX(TEL_NUM, '-', 1 - 1)) + 1)	AS telNum1
+			,	SUBSTRING(SUBSTRING_INDEX(TEL_NUM, '-', 2), LENGTH(SUBSTRING_INDEX(TEL_NUM, '-', 2 - 1)) + 2)	AS telNum2
+			,	SUBSTRING(SUBSTRING_INDEX(TEL_NUM, '-', 3), LENGTH(SUBSTRING_INDEX(TEL_NUM, '-', 3 - 1)) + 2)	AS telNum3
+			,	FAX_NUM AS faxNum
+			,	SUBSTRING(SUBSTRING_INDEX(FAX_NUM, '-', 1), LENGTH(SUBSTRING_INDEX(FAX_NUM, '-', 1 - 1)) + 1)	AS faxNum1
+			,	SUBSTRING(SUBSTRING_INDEX(FAX_NUM, '-', 2), LENGTH(SUBSTRING_INDEX(FAX_NUM, '-', 2 - 1)) + 2)	AS faxNum2
+			,	SUBSTRING(SUBSTRING_INDEX(FAX_NUM, '-', 3), LENGTH(SUBSTRING_INDEX(FAX_NUM, '-', 3 - 1)) + 2)	AS faxNum3
+			,	BANK_CD AS bankCd
+			,	BANK_NM AS bankNum
+			,	BANK_ORDER AS bankOrder
+			,	FILE_NM1 AS fileNm1
+			,	FILE_PATH1 AS filePath1
+			,	FILE_NM2 AS fileNm2
+			,	FILE_PATH2 AS filePath2
+			,	FILE_NM3 AS fileNm3
+			,	FILE_PATH3 AS filePath3
+			,	DATE_FORMAT(STR_TO_DATE(REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt
+			,	REG_ID AS regId
+			,	DATE_FORMAT(STR_TO_DATE(MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS modiDt
+			,	MODI_ID AS modiId
+			,	CALC_TYPE AS calcType
+			,	CALC_DD1 AS calcDd1
+			,	CALC_DD2 AS calcDd2
+			,	DISP_YN AS dispYn
+			,	MAP_URL  AS mapUrl
+			,	PUBLIC_TRAFFIC AS publicTraffic
+			,	MGR_MEMO  AS mgrMemo
+			,	PSY_EXAM AS mentalPsy
+			<!-- TODO: 추후ㅡ에 명칭 변경해야함 -->
+			,	EXAM_COST AS etcTest1
+			,	PROGRAM_COST AS etcTest2
+			,	CENTER_CORE_VAL AS etcTest3 
+			,	AROUND_INFO AS aroundInfo
+			,	PARKING_YN AS parkingLotYn
+			,	VISIT_CAUTION AS carefulInfo
+		FROM MIND_CENTER
+		WHERE CENTER_SEQ = #{centerSeq}
+	</select>
+    
+    <update id="modifyCenterUpdate" parameterType="com.ezwel.admin.service.center.dto.CenterDto">
+    UPDATE MIND_CENTER
+			SET	HOMEPAGE = #{homepage}
+			<if test="isNotNull(centerIntro)">
+			,	CENTER_INTRO = #{centerIntro}
+			</if>
+			,	POST = #{post}
+			,	ADDR1 = #{addr1}
+			,	ADDR2 = #{addr2}
+			,	AREA1 = #{area1}
+			<if test="isNotNull(area2)">
+			,	AREA2 = #{area2}
+			</if>
+			<if test="isNull(area2)">
+			,	AREA2 = null
+			</if>
+			,	INFRA_PERSONAL_CNT = #{infraPersonalCnt}
+			,	INFRA_WAIT_ROOM_YN = #{infraWaitRoomYn}
+			,	INFRA_PLAY_ROOM_CNT = #{infraPlayRoomCnt}
+			,	INFRA_EDU_ROOM_YN = #{infraEduRoomYn}
+			,	INFRA_ETC = #{infraEtc}
+			,	OWNER_NM = #{ownerNm}
+			,	BSNS_NUM = #{bsnsNum}
+			,	BCOND = #{bcond}
+			,	BITEM = #{bitem}
+			,	TEL_NUM = #{telNum}
+			,	FAX_NUM = #{faxNum}
+			,	BANK_CD = #{bankCd}
+			,	BANK_NM = #{bankNum}
+			,	BANK_ORDER = #{bankOrder}
+			,	FILE_NM1 = #{fileNm1}
+			,	FILE_PATH1 = #{filePath1}
+			,	FILE_NM2 = #{fileNm2}
+			,	FILE_PATH2 = #{filePath2}
+			,	FILE_NM3 = #{fileNm3}
+			,	FILE_PATH3 = #{filePath3}
+			,	MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			,	MODI_ID = #{modiId}
+			<if test="isNotNull(mentalPsy)">
+			,	PSY_EXAM = #{mentalPsy}
+			</if>
+		    <if test="isNotNull(centerType)">
+			,	CENTER_TYPE = #{centerType}
+			</if>
+			<if test="isNotNull(centerNm)">
+			,	CENTER_NM	= #{centerNm}
+			</if>
+			,	CALC_TYPE	= #{calcType}
+			,	CALC_DD1	= #{calcDd1}
+			<if test="isNotNull(calcDd2)">
+			,	CALC_DD2	= #{calcDd2}
+			</if>
+			<if test="isNull(calcDd2)">
+			,	CALC_DD2	= NULL
+			</if>
+			<if test="isNotNull(etcTest1)">
+			,	EXAM_COST	= #{etcTest1}
+			</if>
+			<if test="isNotNull(etcTest2)">
+			,	PROGRAM_COST	= #{etcTest2}
+			</if>
+			<if test="isNotNull(etcTest3)">
+			,	CENTER_CORE_VAL	= #{etcTest3}
+			</if>
+			<if test="isNotNull(aroundInfo)">
+			,	AROUND_INFO	= #{aroundInfo}
+			</if>
+			<if test="isNotNull(parkingLotYn)">
+			, PARKING_YN = #{parkingLotYn}
+			</if>
+			<if test="isNotNull(carefulInfo)">
+			, VISIT_CAUTION = #{carefulInfo}
+			</if>
+			,	DISP_YN		= #{dispYn}
+			,   MAP_URL		= #{mapUrl}
+			,	PUBLIC_TRAFFIC		= #{publicTraffic}
+			,   MGR_MEMO		= #{mgrMemo}
+		WHERE CENTER_SEQ = #{centerSeq}
+    </update>
+    
+    <select id="getCenterList" resultType="com.ezwel.admin.domain.entity.center.CenterInfo">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+				SELECT CENTER_SEQ AS centerSeq
+					,A.CENTER_NM AS centerNm
+					,if(
+					replace(substring(substring_index(A.CENTER_TYPE, ',', 1), length(substring_index(A.CENTER_TYPE, ',', 1 - 1)) + 1), ',', '') 
+					= 100471, 'Y', 'N') as typeCounsel
+					,if(
+					replace(substring(substring_index(A.CENTER_TYPE, ',', 2), length(substring_index(A.CENTER_TYPE, ',', 2 - 1)) + 1), ',', '') 
+					= 100472, 'Y', 'N') as typeDispatch
+					,if(
+					replace(substring(substring_index(A.CENTER_TYPE, ',', 3), length(substring_index(A.CENTER_TYPE, ',', 3 - 1)) + 1), ',', '') 
+					= 100473, 'Y', 'N') as typeGroup
+					,if(
+					replace(substring(substring_index(A.CENTER_TYPE, ',', 4), length(substring_index(A.CENTER_TYPE, ',', 4 - 1)) + 1), ',', '') 
+					= 100474, 'Y', 'N') as typeLecture
+					,A.AREA1 AS area1
+					,A.AREA2 AS area2
+					,A.DISP_YN AS dispYn
+					,A.CALC_TYPE AS calcType
+					,A.REG_DT AS regDt					
+					,(SELECT COUNT(*) FROM MIND_MGR WHERE CENTER_SEQ = A.CENTER_SEQ) AS employ
+					,A.PUBLIC_TRAFFIC AS publicTraffic
+					,A.MGR_MEMO AS mgrMemo
+				FROM MIND_CENTER A
+				WHERE 1=1
+				<if test="isNotNull(centerNm)">
+					AND A.CENTER_NM LIKE CONCAT('%', #{centerNm},'%')
+				</if>
+				<if test="isNotNull(searchCenterSeq)">
+					AND A.CENTER_Seq LIKE CONCAT('%', #{searchCenterSeq},'%')
+				</if>
+				<if test="isNotNull(area1)">
+					AND A.AREA1 = #{area1}
+				</if>
+				<if test="isNotNull(area2)">
+					AND A.AREA2 = #{area2}
+				</if>
+				<if test="isNotNull(typeChoice)">
+<!-- 			   AND A.CENTER_TYPE REGEXP	#{typeChoice} -->
+				</if>
+				<if test="isNotNull(searchCentertype1)">
+					AND A.CENTER_TYPE LIKE CONCAT('%', #{searchCentertype1},'%')
+				</if>
+				<if test="isNotNull(searchCentertype2)">
+					AND A.CENTER_TYPE LIKE CONCAT('%', #{searchCentertype2},'%')
+				</if>
+				<if test="isNotNull(searchCentertype3)">
+					AND A.CENTER_TYPE LIKE CONCAT('%', #{searchCentertype3},'%')
+				</if>
+				<if test="isNotNull(searchCentertype4)">
+					AND A.CENTER_TYPE LIKE CONCAT('%', #{searchCentertype4},'%')
+				</if>
+				
+				<if test="isNotNull(publicTraffic)">
+					AND A.PUBLIC_TRAFFIC LIKE CONCAT('%', #{publicTraffic},'%')
+				</if>
+				<if test="isNotNull(mgrMemo)">
+					AND A.MGR_MEMO LIKE CONCAT('%', #{mgrMemo},'%')
+				</if>
+				<if test="isNotNull(dispYn)">
+					AND A.DISP_YN = #{dispYn}
+				</if>
+				<if test="isNotNull(calcType)">
+					AND A.CALC_TYPE = #{calcType}
+				</if>
+				<if test="isNotNull(startDt)">		 	
+					AND A.REG_DT >= #{startDt}
+				</if>
+				<if test="isNotNull(endDt)">
+					AND A.REG_DT <![CDATA[<=]]> #{endDt}		
+				</if>
+				<if test="isNotNull(languageType)">
+					AND A.COUNSEL_LANGUAGE REGEXP REPLACE(#{languageType},',','|')
+				</if>
+				<if test="isNotNull(specialType)">
+					AND A.COUNSEL_SPECIAL REGEXP REPLACE(#{specialType},',','|')
+				</if>
+				<if test="isNotNull(jobType)">
+					AND A.COUNSEL_JOB	REGEXP REPLACE(#{jobType},',','|')
+				</if>
+				<if test="isNotNull(personalType)">
+					AND A.COUNSEL_PERSONAL	REGEXP REPLACE(#{personalType},',','|')
+				</if>
+				<if test="isNotNull(familyType)">
+					AND A.COUNSEL_FAMILY	REGEXP REPLACE(#{familyType},',','|')
+				</if>
+				<if test="isNotNull(traumaType)">
+					AND A.COUNSEL_TRAUMA	REGEXP REPLACE(#{traumaType},',','|')
+				</if>
+				<if test="isNotNull(targetType)">
+					AND A.COUNSEL_TARGET REGEXP REPLACE(#{targetType},',','|')
+				</if>
+				<if test="isNotNull(lawCounselType)">
+					AND A.COUNSEL_LAW	REGEXP REPLACE(#{lawCounselType},',','|')
+				</if>
+				<if test="isNotNull(financeCounselType)">
+					AND A.COUNSEL_FINANCE	REGEXP REPLACE(#{financeCounselType},',','|')
+				</if>
+				<if test="isNotNull(preferredType)">
+					AND A.COUNSEL_FAVOR REGEXP REPLACE(#{preferredType},',','|')
+				</if>
+				<if test="isNotNull(tendencyType)">
+					AND A.COUNSEL_PATTERN REGEXP REPLACE(#{tendencyType},',','|')
+				</if>
+				ORDER BY A.DISP_YN DESC , binary(A.CENTER_NM), A.REG_DT ASC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+    
+  	<select id="getCenterListExcel" resultType="com.ezwel.admin.domain.entity.center.CenterInfo">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+		
+		SELECT CENTER_SEQ AS centerSeq
+					,A.CENTER_NM AS centerNm
+					,if(
+					replace(substring(substring_index(A.CENTER_TYPE, ',', 1), length(substring_index(A.CENTER_TYPE, ',', 1 - 1)) + 1), ',', '') 
+					= 100471, 'Y', 'N') as typeCounsel
+					,if(
+					replace(substring(substring_index(A.CENTER_TYPE, ',', 2), length(substring_index(A.CENTER_TYPE, ',', 2 - 1)) + 1), ',', '') 
+					= 100472, 'Y', 'N') as typeDispatch
+					,if(
+					replace(substring(substring_index(A.CENTER_TYPE, ',', 3), length(substring_index(A.CENTER_TYPE, ',', 3 - 1)) + 1), ',', '') 
+					= 100473, 'Y', 'N') as typeGroup
+					,if(
+					replace(substring(substring_index(A.CENTER_TYPE, ',', 4), length(substring_index(A.CENTER_TYPE, ',', 4 - 1)) + 1), ',', '') 
+					= 100474, 'Y', 'N') as typeLecture
+					,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.AREA1) AS area1
+					,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.AREA2) AS area2
+					, A.DISP_YN AS dispYn
+					, A.CALC_TYPE AS calcType
+					,(SELECT COUNT(*) FROM MIND_MGR WHERE CENTER_SEQ = A.CENTER_SEQ) AS employ
+					, A.PUBLIC_TRAFFIC AS publicTraffic
+					, A.MGR_MEMO AS mgrMemo
+					, DATE_FORMAT(A.REG_DT,'%Y-%m-%d %T') as REG_DT
+				FROM MIND_CENTER A
+				WHERE 1=1
+				<if test="isNotNull(centerNm)">
+					AND A.CENTER_NM LIKE CONCAT('%', #{centerNm},'%')
+				</if>
+				<if test="isNotNull(searchCenterSeq)">
+					AND A.CENTER_Seq LIKE CONCAT('%', #{searchCenterSeq},'%')
+				</if>
+				<if test="isNotNull(area1)">
+					AND A.AREA1 = #{area1}
+				</if>
+				<if test="isNotNull(area2)">
+					AND A.AREA2 = #{area2}
+				</if>
+<!-- 				<if test="isNotNull(typeChoice)">
+			   AND A.CENTER_TYPE REGEXP	#{typeChoice}
+			   
+				</if> -->
+				<if test="isNotNull(searchCentertype1)">
+					AND A.CENTER_TYPE LIKE CONCAT('%', #{searchCentertype1},'%')
+				</if>
+				<if test="isNotNull(searchCentertype2)">
+					AND A.CENTER_TYPE LIKE CONCAT('%', #{searchCentertype2},'%')
+				</if>
+				<if test="isNotNull(searchCentertype3)">
+					AND A.CENTER_TYPE LIKE CONCAT('%', #{searchCentertype3},'%')
+				</if>
+				<if test="isNotNull(searchCentertype4)">
+					AND A.CENTER_TYPE LIKE CONCAT('%', #{searchCentertype4},'%')
+				</if>
+				<if test="isNotNull(dispYn)">
+					AND A.DISP_YN = #{dispYn}
+				</if>
+				<if test="isNotNull(calcType)">
+					AND A.CALC_TYPE = #{calcType}
+				</if>
+				<if test="isNotNull(startDt)">		 	
+					AND A.REG_DT >= #{startDt}
+				</if>
+				<if test="isNotNull(endDt)">
+					AND A.REG_DT <![CDATA[<=]]> #{endDt}		
+				</if>				
+				
+				ORDER BY binary(A.CENTER_NM), A.REG_DT ASC
+			<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>  
+	
+	
+	<insert id="addCenterInsert" parameterType="com.ezwel.admin.service.center.dto.CenterDto">
+		INSERT INTO MIND_CENTER (
+			 CENTER_NM 
+			,CENTER_TYPE
+			,CENTER_INTRO
+			,HOMEPAGE
+			,AREA1
+			<if test="isNotNull(area2)">
+			,AREA2
+			</if>
+			,POST
+			,ADDR1
+			,ADDR2
+			,INFRA_PERSONAL_CNT
+			,INFRA_WAIT_ROOM_YN
+			,INFRA_PLAY_ROOM_CNT
+			,INFRA_EDU_ROOM_YN
+			,INFRA_ETC
+			,OWNER_NM
+			,BSNS_NUM
+			,BCOND
+			,BITEM
+			,TEL_NUM
+			,FAX_NUM
+			,BANK_CD
+			,BANK_NM
+			,BANK_ORDER
+			,FILE_NM1
+			,FILE_PATH1
+			,FILE_NM2
+			,FILE_PATH2
+			,FILE_NM3
+			,FILE_PATH3
+			,REG_DT
+			,REG_ID
+			<if test="isNotNull(mentalPsy)">
+			,PSY_EXAM
+			</if>
+			,CALC_TYPE
+			,CALC_DD1
+			<if test="isNotNull(calcDd2)">
+			,CALC_DD2
+			</if>
+			<if test="isNotNull(etcTest1)">
+			,EXAM_COST
+			</if>
+			<if test="isNotNull(etcTest2)">
+			,PROGRAM_COST
+			</if>
+			<if test="isNotNull(etcTest3)">
+			,CENTER_CORE_VAL
+			</if>
+			<if test="isNotNull(carefulInfo)">
+			,VISIT_CAUTION
+			</if>
+			,DISP_YN
+			,MAP_URL
+			,PUBLIC_TRAFFIC
+			,MGR_MEMO
+			<if test="isNotNull(aroundInfo)">
+			,AROUND_INFO
+			</if>
+			<if test="isNotNull(parkingLotYn)">
+			,PARKING_YN
+			</if>
+		) VALUES (
+			 #{centerNm}
+			,#{centerType}
+			,#{centerIntro}
+			,#{homepage}
+			,#{area1}
+			<if test="isNotNull(area2)">
+			,#{area2}
+			</if>
+			,#{post}
+			,#{addr1}
+			,#{addr2}
+			,#{infraPersonalCnt}
+			,#{infraWaitRoomYn}
+			,#{infraPlayRoomCnt}
+			,#{infraEduRoomYn}
+			,#{infraEtc}
+			,#{ownerNm}
+			,#{bsnsNum}
+			,#{bcond}
+			,#{bitem}
+			,#{telNum}
+			,#{faxNum}
+			,#{bankCd}
+			,#{bankNum}
+			,#{bankOrder}
+			,#{fileNm1}
+			,#{filePath1}
+			,#{fileNm2}
+			,#{filePath2}
+			,#{fileNm3}
+			,#{filePath3}
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			,#{regId}
+			<if test="isNotNull(mentalPsy)">
+			,#{mentalPsy}
+			</if>
+			,#{calcType}
+			,#{calcDd1}			
+			<if test="isNotNull(calcDd2)">
+			,#{calcDd2}
+			</if>
+			<if test="isNotNull(etcTest1)">
+			,#{etcTest1}
+			</if>
+			<if test="isNotNull(etcTest2)">
+			,#{etcTest2}
+			</if>
+			<if test="isNotNull(etcTest3)">
+			,#{etcTest3}
+			</if>
+			<if test="isNotNull(carefulInfo)">
+			,#{carefulInfo}
+			</if>
+			,#{dispYn}
+			,#{mapUrl}
+			,#{publicTraffic}
+			,#{mgrMemo}
+			<if test="isNotNull(aroundInfo)">
+			,#{aroundInfo}
+			</if>
+			<if test="isNotNull(parkingLotYn)">
+			,#{parkingLotYn}
+			</if>
+			
+		)
+	</insert>
+	
+	<select id="getCenterNameList" resultType="com.ezwel.admin.domain.entity.center.CenterInfo">
+		SELECT CENTER_SEQ AS centerSeq
+			,A.CENTER_NM AS centerNm
+		FROM MIND_CENTER A
+		WHERE 1=1			
+		ORDER BY binary(A.CENTER_NM)
+	</select>
+	
+	<select id="getCenterNameList2" resultType="com.ezwel.admin.domain.entity.center.CenterInfo">
+			SELECT 	A.CENTER_SEQ AS centerSeq
+			,A.CENTER_NM AS centerNm
+		FROM MIND_CENTER A right join hue_center B on A.CENTER_SEQ=B.CENTER_SEQ
+		WHERE 1=1			
+		ORDER BY binary(A.CENTER_NM)
+	</select>
+	
+	
+	<select id="getCenterLocationList" resultType="com.ezwel.admin.domain.entity.center.CenterInfo">
+		SELECT CONCAT(CENTER_NM, '  [ ', AREA1_NM, '  ', AREA2_NM, ' ]' )  AS centerNm
+			  , A.CENTER_SEQ												AS centerSeq
+		 FROM 
+  			  (
+				SELECT A.CENTER_NM
+					,  A.CENTER_SEQ
+					, (SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.AREA1) AREA1_NM
+					, IFNULL((SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.AREA2), '') AREA2_NM
+				 FROM MIND_CENTER A
+			   ) A
+		ORDER BY CENTER_NM, AREA1_NM, AREA2_NM
+	</select>
+	
+	<select id="getCenterSchedule" resultType="com.ezwel.admin.domain.entity.center.CenterInfo">
+		 SELECT a.area1 AS area1,
+				d.ymd AS ymd,
+				DATE_FORMAT(d.YMD, '%Y-%m-%d') AS counselYmd,
+				count(distinct a.center_seq) AS centerCnt
+		FROM MIND_CENTER A 
+		 	INNER JOIN MIND_MGR B
+		 		ON A.CENTER_SEQ = B.CENTER_SEQ
+		 	INNER JOIN MIND_SCHEDULE D
+				ON A.CENTER_SEQ = D.CENTER_SEQ
+				AND B.USER_ID = D.USER_ID
+			INNER JOIN MIND_COMM_CD E 
+				ON A.AREA1 = E.COMM_CD
+		WHERE 1=1
+		AND D.counsel_cd = 0
+		AND A.disp_yn = 'Y'
+		<choose>
+		<when test="areaList != null">
+		AND A.AREA1 IN
+		<foreach collection="areaList" item="item" index="index" open="(" close=")" separator=",">
+		   		#{item}
+		</foreach>
+		</when>
+		<otherwise>
+		AND A.AREA1 = '100015'
+		</otherwise>
+		</choose>		
+		
+		<if test="isNotNull(startDt)">		 	
+		AND D.YMD >= #{startDt}
+		</if>
+		<if test="isNull(startDt)">
+		AND D.ymd >= DATE_FORMAT(now(), '%Y%m%d')
+		</if>
+		
+		<if test="isNotNull(endDt)">
+		AND D.YMD <![CDATA[<=]]> #{endDt}		
+		</if>
+		<if test="isNull(endDt)">
+		AND D.ymd <![CDATA[<=]]> DATE_FORMAT( DATE_ADD(now(), INTERVAL 30 DAY) , '%Y%m%d')
+		</if>		
+		
+		GROUP BY a.area1, d.ymd
+		
+		UNION ALL
+		
+		SELECT	
+				'total' as area1,
+				d.ymd,
+				DATE_FORMAT(d.YMD, '%Y-%m-%d') AS counselYmd,
+				count(distinct a.center_seq) AS centerCnt
+		FROM MIND_CENTER A 
+		 	INNER JOIN MIND_MGR B
+		 		ON A.CENTER_SEQ = B.CENTER_SEQ
+		 	INNER JOIN MIND_SCHEDULE D
+				ON A.CENTER_SEQ = D.CENTER_SEQ
+				AND B.USER_ID = D.USER_ID
+		WHERE 1=1
+		AND D.counsel_cd = 0
+		AND a.DISP_YN = 'Y'
+		<choose>
+		<when test="areaList != null">
+		AND A.AREA1 IN
+		<foreach collection="areaList" item="item" index="index" open="(" close=")" separator=",">
+		   		#{item}
+		</foreach>
+		</when>
+		<otherwise>
+		AND A.AREA1 = '100015'
+		</otherwise>
+		</choose>
+		
+		<if test="isNotNull(startDt)">
+		AND D.YMD >= #{startDt}
+		</if>
+		<if test="isNull(startDt)">
+		AND D.ymd >= DATE_FORMAT(now(), '%Y%m%d')
+		</if>
+		
+		<if test="isNotNull(endDt)">
+		AND D.YMD <![CDATA[<=]]> #{endDt}
+		</if>
+		<if test="isNull(endDt)">
+		AND D.ymd <![CDATA[<=]]> DATE_FORMAT( DATE_ADD(now(), INTERVAL 30 DAY) , '%Y%m%d')
+		</if>		
+		GROUP BY d.ymd
+		
+	</select>
+	
+	<select id="getArea1NmList" resultType="com.ezwel.admin.domain.entity.center.CenterInfo">
+		SELECT '총합계' as area1Nm, 'total' as area1 FROM DUAL
+		UNION ALL
+		SELECT C.*
+		FROM (
+			SELECT FN_GET_COMM_NM(A.area1) AS area1Nm, A.area1
+			FROM MIND_CENTER A INNER JOIN MIND_COMM_CD B ON A.AREA1 = B.COMM_CD
+			<where>
+			<choose>
+			<when test="areaList != null">
+			AND A.AREA1 IN
+			<foreach collection="areaList" item="item" index="index" open="(" close=")" separator=",">
+			   		#{item}
+			</foreach>
+			</when>
+			<otherwise>
+			AND A.AREA1 = '100015'
+			</otherwise>
+			</choose>
+			</where>
+			group by A.area1
+			order by b.order_no
+		) C
+	</select>
+	
+	<select id="showCenterPop" resultType="com.ezwel.admin.domain.entity.center.CenterInfo">
+		select a.center_nm AS centerNm, a.area1 AS area1, a.area2 AS area2,
+				FN_GET_COMM_NM(a.area1) AS area1Nm, FN_GET_COMM_NM(a.area2) AS area2Nm,
+				DATE_FORMAT(d.ymd, '%Y-%m-%d') AS counselYmd
+		from MIND_CENTER A INNER JOIN MIND_SCHEDULE D ON A.CENTER_SEQ = D.CENTER_SEQ 
+		where 1=1 
+		and a.area1 = #{area1}
+		and d.ymd = #{ymd}
+		and a.disp_yn = 'Y'
+		group by a.center_seq, d.ymd
+		order by a.area1, a.area2
+	</select>
+	
+	<select id="getCenterNameListNP" resultType="com.ezwel.admin.domain.entity.center.CenterInfo">
+		SELECT CENTER_SEQ AS centerSeq
+			 , A.CENTER_NM AS centerNm
+		FROM MIND_CENTER A
+		WHERE 1=1			
+		ORDER BY binary(A.CENTER_NM)
+	</select>
+	
+	<select id="getCounselorListInCenter" resultType="hashMap">
+           SELECT	A.USER_NM			AS	counselorNm
+					, A.USER_ID			AS	counselorId
+			 FROM MIND_MGR A 
+			 LEFT JOIN ACL_USER_AUTH B
+			   ON  B.USER_AUTH_KEY = CONCAT(A.USER_ID,'3001')
+			WHERE 1=1
+				AND A.CENTER_SEQ = #{centerSeq}
+				AND A.USER_TYPE = '3001'
+				AND B.USER_AUTH_KEY = CONCAT(A.USER_ID,'3001')
+			ORDER BY A.USER_NM
+	</select>
+	
+	
+	
+	
+	
+	
+</mapper>

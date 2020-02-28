@@ -1,0 +1,811 @@
+package com.ezwel.admin.service.sms;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.ezwel.admin.domain.entity.sms.SmsResult;
+import com.ezwel.admin.domain.entity.user.User;
+import com.ezwel.admin.service.counsel.CounselService;
+import com.ezwel.admin.service.message.queue.SmsService;
+import com.ezwel.admin.service.pCounselorMgr.CounselReservationService;
+import com.ezwel.core.support.util.StringUtils;
+
+@Service
+public class OrderSmsService {
+	
+	@Resource
+	private SmsService smsService;
+	
+	@Resource
+	private CounselService counselService;
+	
+	@Resource
+	private CounselReservationService counselReservationService;
+	
+	
+	/**
+	 * 상담 전날 오전 9시에 확인문자
+	 * @param data
+	 */
+	public void doSmsSendBeforeOneday(List<SmsResult> data) {
+		
+		if (data != null && data.size() > 0) {
+			for (int i = 0; i < data.size(); i++) {
+				String clientCd = data.get(i).getClientCd();
+				String sendNumber = "1644-4474";
+				if(isOptumDomain(clientCd)) {
+					sendNumber = "02-6909-4414";
+				}else if(clientCd.equals("scourt")) {
+					sendNumber = "02-6909-4407";
+				}
+				//ap_global은 해외주재원들 대상이라 SMS를 보내지 않음 
+				if(!clientCd.equals("ap_global")) {
+					smsService.send(data.get(i).getSndMobile(), sendNumber, getClientTxtMsg(data.get(i)));
+				}
+				if(!"test".equals(data.get(i).getClientCd())){
+					smsService.send(data.get(i).getCounselorMobile(), "1644-4474", getCounselorTxtMsg(data.get(i)));
+					//부산아동심리센터는 모든 상담일정문자가 010-6361-8107로 추가발송될 수 있도록 한다.
+					if(data.get(i).getCenterSeq().equals("10000134")) {
+						smsService.send("010-6361-8107", "1644-4474", getCounselorTxtMsg(data.get(i)));
+					// IBS법률사무소는 모든 상담일정문자가 010-4003-7889로 추가발송될 수 있도록 한다.
+					}else if(data.get(i).getCenterSeq().equals("10000400")) {
+						smsService.send("010-4003-7889", "1644-4474", getCounselorTxtMsg(data.get(i)));
+					}
+				}
+			}
+		}
+		
+	}
+	
+	
+	/**
+	 * 상담 전날 오전 9시에 확인문자
+	 * (수신자:내담자)
+	 * @param smsResult
+	 * @return
+	 */
+	private String getClientTxtMsg(SmsResult smsResult) {
+		
+		StringBuffer message = new StringBuffer();
+		boolean englishNmYn = Pattern.matches("^[a-zA-Z]*$", smsResult.getSndNm().replaceAll(" ", ""));
+		
+		// 해외고객사 중, 이름이 영문이면 영어 문자 발송
+		if (englishNmYn && (StringUtils.containsIgnoreCase(smsResult.getClientCd(), "optum") || StringUtils.containsIgnoreCase(smsResult.getClientCd(), "op_")) ) {
+			
+			String enScheduleDt = smsResult.getScheduleDt();
+			enScheduleDt = enScheduleDt.replaceAll("년", "/");
+			enScheduleDt = enScheduleDt.replaceAll("월", "/");
+			enScheduleDt = enScheduleDt.replaceAll("일", " ");
+			enScheduleDt = enScheduleDt.replaceAll("시", ":");
+			enScheduleDt = enScheduleDt + "00";
+			
+			if ("100433".equals(smsResult.getCounselType())) { // 대면상담일때
+				
+				message.append("Counseling code:" + smsResult.getCounselCd() + "\n");
+				message.append("This is Ezwellness, who provides counseling service. \n");
+				message.append("The counseling appointment has been scheduled to " + enScheduleDt + ", tomorrow");
+				message.append("(Counselor " + smsResult.getCounselorNm() + ")\n\n");
+				
+				message.append("★ Counseling center information\n");
+				message.append("·ServicDate:" + enScheduleDt + "(tomorrow)\n");
+				message.append("·Location:" + smsResult.getCenterNm() + "\n");
+				message.append("·Address:" + smsResult.getCenterAddr1() + " " + smsResult.getCenterAddr2() + "\n");
+				message.append("·Phone:" + smsResult.getCenterTelNum() + "\n");
+				message.append("·Please tell the Counseling code to the counselor in counseling center. \n\n");
+				
+				message.append("★  Cancellation/Change Of Date Policy \n");
+				message.append("·Cancellation before 24 hours (No Sessions used) \n");
+				message.append("·Cancellation within 24 hours (1 session used)​ \n\n");
+				
+				message.append("★ If you want further information, please contact Ezwellness customer service center \n");
+				message.append("1. email - ezwelnetwork@naver.com  \n");
+				message.append("2. talk.naver.com/WCD2T9 \n\n");
+				
+				message.append("Please do not reply to this phone-number as it was sent from a no-reply phone-number  \n");
+				
+			} else if ("100434".equals(smsResult.getCounselType())) { // 전화상담
+				
+				message.append("Counseling code:" + smsResult.getCounselCd() + "\n");
+				message.append("This is Ezwellness, who provides counseling service. \n");
+				message.append("There will be a phone counseling on " + enScheduleDt);
+				
+				message.append("★ Counseling information \n");
+				message.append("·There will be a phone call to " + smsResult.getSndMobile() + " on " + enScheduleDt + ", tomorrow\n\n");
+				
+				message.append("★  Cancellation/Change Of Date Policy \n");
+				message.append("·Cancellation before 24 hours (No Sessions used) \n");
+				message.append("·Cancellation within 24 hours (1 session used)​ \n\n");
+				
+				message.append("★ If you want further information, please contact Ezwellness customer service center \n");
+				message.append("1. email - ezwelnetwork@naver.com  \n");
+				message.append("2. talk.naver.com/WCD2T9 \n\n");
+				
+				message.append("Please do not reply to this phone-number as it was sent from a no-reply phone-number  \n");
+			}
+		
+		// 한글문자 발송
+		} else {
+		
+			if ("100433".equals(smsResult.getCounselType())) { // 대면상담일때
+				
+				message.append("신청코드:" + smsResult.getCounselCd() + "\n");
+			
+				if(StringUtils.containsIgnoreCase(smsResult.getClientCd(), "optum") || StringUtils.containsIgnoreCase(smsResult.getClientCd(), "op_") ) {
+					message.append(smsResult.getSndNm() + "님 안녕하세요? 임직원을 위한 상담서비스를 제공하는 이지웰니스입니다. \n");
+				}else {
+					//message.append(smsResult.getSndNm() + "님 안녕하세요? 상담포유입니다. \n");	
+					message.append(smsResult.getSndNm() + "님 안녕하세요? "+smsResult.getSiteNm()+"입니다. \n");
+				}
+				
+				
+				message.append("내일(" + smsResult.getScheduleDtMonth() + ") " + smsResult.getCenterNm() + "(" + smsResult.getCounselorNm() + " 상담사)" );
+				message.append("에서 상담이 있습니다. \n\n");
+				
+				message.append("★ 상담센터 안내\n");
+				message.append("·일시:" + smsResult.getScheduleDt() + "\n");
+				message.append("※ 시스템상 시 단위등록만 가능합니다. (30분 단위 표기불가)\n");
+				message.append("정확한 상담시간은 상담선생님과 확정하신 시간입니다.\n");
+				message.append("·장소:" + smsResult.getCenterNm() + "\n");
+				message.append("·주소:" + smsResult.getCenterAddr1() + " " + smsResult.getCenterAddr2() + "\n");
+				message.append("·센터 연락처:" + smsResult.getCenterTelNum() + "\n");
+				
+				if("mindplus".equals(smsResult.getClientCd())){
+					message.append("\n");
+					message.append("★상담센터 방문시 신청코드를 상담사에게 말씀해주시기 바랍니다.\n");
+					message.append("최초 방문 시 MyD카드 제시 필수\n\n");
+					message.append("★ 상담환불 규정안내\n");
+					message.append("·상담시간 24시간 전 취소 시 100% 환불\n");
+					message.append("·상담시간 24시간 이내 취소 불가\n\n");
+				}else if("cjoy".equals(smsResult.getClientCd())){
+					message.append("\n");
+					message.append("★ 상담환불 규정안내\n");
+					message.append("·상담시간 24시간 전 취소 시 100% 환불\n");
+					message.append("·상담시간 24시간 이내 취소 불가\n\n");
+				}else if(StringUtils.containsIgnoreCase(smsResult.getClientCd(), "optum") || StringUtils.containsIgnoreCase(smsResult.getClientCd(), "op_") ) {
+					message.append("\n");
+					message.append("★ 상담환불 규정안내\n");
+					message.append("·상담일 하루 전까지 취소 시(1회 사용되지 않음)\n");
+					message.append("·상담시간 하루 이내 취소 시(1회 사용됨)\n\n");				
+				}else if("sbc".equals(smsResult.getClientCd())){
+					message.append("\n");
+					message.append("★ 상담환불 규정안내\n");
+					message.append("·상담시간 12시간 전까지 취소 시 (100%환불)\n");
+					message.append("·상담시간 12시간 미만 남은 경우 (전액 환불 불가)\n\n");
+				}else if("kcg".equals(smsResult.getClientCd()) || "scourt".equals(smsResult.getClientCd())){
+					message.append("·상담센터 방문시 신청코드를 상담사에게 말씀해주시기 바랍니다.\n\n");
+					message.append("\n");
+					message.append("★ 상담환불 규정안내\n");
+					message.append("·상담일 하루 전까지 취소 시(1회 사용되지 않음)\n");
+					message.append("·상담시간 하루 이내 취소 시(1회 사용됨)\n\n");	
+				}else{
+					message.append("·상담센터 방문시 신청코드를 상담사에게 말씀해주시기 바랍니다.\n\n");
+					message.append("★ 상담환불 규정안내\n");
+					message.append("·상담일 하루 전까지 취소 시 (100%환불)\n");
+					message.append("·상담시간 24시간전~1시간 전 취소 시(50%환불)\n");
+					message.append("·상담시간 1시간 전 취소(전액 환불 불가)\n\n");
+				}
+				
+				
+				if(StringUtils.containsIgnoreCase(smsResult.getClientCd(), "optum") || StringUtils.containsIgnoreCase(smsResult.getClientCd(), "op_") ) {
+					message.append("★문의사항은 이지웰니스 고객센터(02-6909-4414)로 문의 주시기 바랍니다.");
+				}else if ("kcg".equals(smsResult.getClientCd())){
+					message.append("★문의사항은 "+smsResult.getSiteNm()+"고객센터(1644-4474)로 문의 주시기 바랍니다.");
+				}else if ("scourt".equals(smsResult.getClientCd())){
+					message.append("★문의사항은 "+smsResult.getSiteNm()+"고객센터(02-6909-4407)로 문의 주시기 바랍니다.");
+				}  else {
+					message.append("★문의사항은 상담포유 홈페이지 (" + smsResult.getClientCd() + ".sangdam4u.com)");
+					message.append("게시판 및 고객센터(1644-4474)로 문의 주시기 바랍니다.");
+				}
+				
+				
+			} else if ("100437".equals(smsResult.getCounselType())) { // 오프라인 진단
+				
+				message.append("신청코드:" + smsResult.getCounselCd() + "\n");
+				//message.append(smsResult.getSndNm() + "님 안녕하세요? 상담포유입니다. \n");
+				message.append(smsResult.getSndNm() + "님 안녕하세요? "+smsResult.getSiteNm()+"입니다. \n");
+				message.append("내일(" + smsResult.getScheduleDtMonth() + ") " + smsResult.getCenterNm() + "(" + smsResult.getCounselorNm() + " 상담사)" );
+				message.append("에서 검사가 있습니다. \n\n");
+				
+				message.append("★ 검사센터 안내\n");
+				message.append("·일시:" + smsResult.getScheduleDt() + "\n");
+				message.append("※ 시스템상 시 단위등록만 가능합니다. (30분 단위 표기불가)\n");
+				message.append("정확한 상담시간은 상담선생님과 확정하신 시간입니다.\n");
+				message.append("·장소:" + smsResult.getCenterNm() + "\n");
+				message.append("·주소:" + smsResult.getCenterAddr1() + " " + smsResult.getCenterAddr2() + "\n");
+				message.append("·센터 연락처:" + smsResult.getCenterTelNum() + "\n\n");
+				
+				message.append("★ 검사환불 규정안내\n");
+				message.append("·상담일 하루 전까지 취소 시 (100%환불)\n");
+				message.append("·검사시간 24시간전~1시간 전 취소 시(50%환불)\n");
+				message.append("·검사시간 1시간 미만 남은 경우(전액 환불 불가)\n\n");
+				
+				message.append("★문의사항은 상담포유 홈페이지 (" + smsResult.getClientCd() + ".sangdam4u.com)");
+				message.append("게시판 및 고객센터(1644-4474)로 문의 주시기 바랍니다.");
+				
+			} else if ("100434".equals(smsResult.getCounselType())) { // 전화상담
+				
+				if(StringUtils.containsIgnoreCase(smsResult.getClientCd(), "optum") || StringUtils.containsIgnoreCase(smsResult.getClientCd(), "op_") ) {
+					
+					message.append("신청코드:" + smsResult.getCounselCd() + "\n");
+					message.append(smsResult.getSndNm() + "님 안녕하세요? 임직원을 위한 상담서비스를 제공하는 이지웰니스입니다. \n");
+					message.append("내일(" + smsResult.getScheduleDtMonth() + ") 에 전화상담이 있습니다.\n\n");
+					
+					message.append("★ 상담안내\n");
+					message.append("·" + smsResult.getScheduleDt() + " " + smsResult.getSndMobile() + " 번호로 상담사가 직접 연락드릴 예정입니다.\n\n");
+					
+					message.append("※ 시스템상 시 단위등록만 가능합니다. (30분 단위 표기불가)\n");
+					message.append("정확한 상담시간은 상담선생님과 확정하신 시간입니다.\n\n");
+					
+					message.append("★ 상담환불 규정안내\n");
+					message.append("·상담일 하루 전까지 취소 시(1회 사용되지 않음)\n");
+					message.append("·상담시간 하루 이내 취소 시(1회 사용됨)\n\n");
+					message.append("★문의사항은 이지웰니스 고객센터(02-6909-4414)로 문의 주시기 바랍니다.");
+					
+				}else {
+					message.append("신청코드:" + smsResult.getCounselCd() + "\n");
+					//message.append(smsResult.getSndNm() + "님 안녕하세요? 상담포유입니다. \n");
+					message.append(smsResult.getSndNm() + "님 안녕하세요? "+smsResult.getSiteNm()+"입니다. \n");
+					message.append("내일(" + smsResult.getScheduleDtMonth() + ") 에 전화상담이 있습니다.\n\n");
+					
+					message.append("★ 상담안내\n");
+					message.append("·" + smsResult.getScheduleDt() + " " + smsResult.getSndMobile() + " 번호로 상담사가 직접 연락드릴 예정입니다.\n\n");
+					
+					message.append("※ 시스템상 시 단위등록만 가능합니다. (30분 단위 표기불가)\n");
+					message.append("정확한 상담시간은 상담선생님과 확정하신 시간입니다.\n\n");
+					
+					if("sbc".equals(smsResult.getClientCd())){
+						message.append("★ 상담환불 규정안내\n");
+						message.append("·상담시간 12시간 전까지 취소 시 (100%환불)\n");
+						message.append("·상담시간 12시간 미만 남은 경우 (전액 환불 불가)\n\n");
+					}else{
+						message.append("★ 상담환불 규정안내\n");
+						message.append("·상담일 하루 전까지 취소 시 (100%환불)\n");
+						message.append("·상담시간 24시간전~1시간 전 취소 시(50%환불)\n");
+						message.append("·상담시간 1시간 미만 남은 경우(전액 환불 불가)\n\n");
+					}
+					
+					message.append("★문의사항은 상담포유 홈페이지 (" + smsResult.getClientCd() + ".sangdam4u.com)");
+					message.append("게시판 및 고객센터(1644-4474)로 문의 주시기 바랍니다.");
+				}
+			} 
+		}
+		
+		return message.toString();
+	}
+	
+	
+	/**
+	 * 상담 전날 오전 9시에 확인문자
+	 * (수신자:상담사)
+	 * @param smsResult
+	 * @return
+	 */
+	private String getCounselorTxtMsg(SmsResult smsResult) {
+		StringBuffer message = new StringBuffer();
+		
+		if ("100433".equals(smsResult.getCounselType())) { // 대면상담일때
+			message.append("[이지웰니스 상담알림]\n");
+			message.append(smsResult.getCenterNm() + " " + smsResult.getCounselorNm() + " 상담사님");
+			message.append("내일(" + smsResult.getScheduleDtMonth() + ") " + smsResult.getSndNm() + "님의 상담이 있습니다.");
+		} else if ("100437".equals(smsResult.getCounselType())) { // 오프라인 진단
+			message.append("[이지웰니스(주) 상담알림]\n");
+			message.append(smsResult.getCenterNm() + " " + smsResult.getCounselorNm() + " 상담사님");
+			message.append("내일(" + smsResult.getScheduleDtMonth() + ") " + smsResult.getSndNm() + "님의 검사가 있습니다.");
+		} else if ("100434".equals(smsResult.getCounselType())) { // 전화상담
+			message.append("[이지웰니스(주) 상담알림]\n");
+			message.append(smsResult.getCenterNm() + " " + smsResult.getCounselorNm() + " 상담사님");
+			message.append("내일(" + smsResult.getScheduleDtMonth() + ") " + smsResult.getSndNm() + "님("+ smsResult.getSndMobile() + ")의 전화상담이 있습니다.");
+		}
+		if(smsResult.getClientCd().equals("nps")) {
+			message.append("\n");
+			message.append("※ 국민연금공단 내담자의 경우, 고객사 요청에 의하여 상담종결 후 임직원에게 설문용 URL이 담긴 문자가 발송될 예정입니다.\n");
+			message.append("상담 \"종결\"후 내담자에게 문자로 발송될 설문 URL에 응답할 수 있도록 안내부탁드립니다.");
+		}
+		return message.toString();
+	}
+	
+	
+	/**
+	 * 상담종료후 보내는 sms
+	 * @param data
+	 */
+	public void doSmsSendAfterCounsel() {
+		
+		List<SmsResult> data = counselService.getCounselAfterSmsList();
+		int updateResultcnt = counselService.modifySmsResultYn();
+		
+		if (data != null) {
+			if (data.size() == updateResultcnt) {
+				for (int i = 0; i < data.size(); i++) {
+					String clientCd = data.get(i).getClientCd();
+					String sendNumber = "1644-4474";
+					if(isOptumDomain(clientCd)) {
+						sendNumber = "02-6909-4414";
+					}else if(clientCd.equals("scourt")) {
+						sendNumber = "02-6909-4407";
+					}
+					//ap_global은 해외주재원들 대상이라 SMS를 보내지 않음 
+					//법원행정처 그루터기 임시로 제외
+					if(!clientCd.equals("ap_global")) {
+						smsService.send(data.get(i).getSndMobile(),sendNumber, getCounselAfterMsg(data.get(i)));
+					}
+				}
+			}
+		}
+		
+	}
+	
+	
+	/**
+	 * 상담종료후 보내는 sms
+	 * (수신자:내담자)
+	 * @param smsResult
+	 * @return
+	 */
+	private String getCounselAfterMsg(SmsResult smsResult) {
+		
+		StringBuffer message = new StringBuffer();
+		
+		if ("100433".equals(smsResult.getCounselType())) { // 대면상담일때
+
+			if(StringUtils.containsIgnoreCase(smsResult.getClientCd(), "optum") || StringUtils.containsIgnoreCase(smsResult.getClientCd(), "op_") ) {
+				message.append(smsResult.getSndNm() + "님 안녕하세요? 임직원을 위한 상담서비스를 제공하는 이지웰니스 입니다. \n");
+				message.append(smsResult.getScheduleDt() + "에 " + smsResult.getCenterNm() + "(" + smsResult.getCounselorNm() + ") 에서 진행한 상담은 편안하셨는지요? \n\n");
+				
+				message.append("★ 추후 상담일정은 다음 중 하나의 방법으로 신청이 가능합니다. \n");
+				message.append("1) 해당 상담센터를 통한 신청 \n");
+				message.append("2) 이지웰니스 고객센터(02-6909-4414) 문의 \n");
+				
+			}else if(smsResult.getClientCd().equals("kcg")) {
+				message.append(smsResult.getSndNm() + "님 안녕하세요? "+smsResult.getSiteNm()+"입니다. \n");
+				message.append(smsResult.getScheduleDt() + "에 " + smsResult.getCenterNm() + "(" + smsResult.getCounselorNm() + ") 에서 진행한 상담은 편안하셨는지요? \n\n");
+				message.append("★ 추후 상담일정은 다음 중 하나의 방법으로 신청이 가능합니다. \n");
+				message.append("1) 해당 상담센터를 통한 신청 \n");
+				message.append("2) 고객센터(1644-4474) 문의 \n");
+				
+			}else if(smsResult.getClientCd().equals("scourt")) {
+				message.append(smsResult.getSndNm() + "님 안녕하세요? "+smsResult.getSiteNm()+"입니다. \n");
+				message.append(smsResult.getScheduleDt() + "에 " + smsResult.getCenterNm() + "(" + smsResult.getCounselorNm() + ") 에서 진행한 상담은 편안하셨는지요? \n\n");
+				message.append("★ 추후 상담일정은 다음 중 하나의 방법으로 신청이 가능합니다. \n");
+				message.append("1) 해당 상담센터를 통한 신청 \n");
+				message.append("2) 고객센터(02-6909-4407) 문의 \n");
+				
+			}else {
+				//message.append(smsResult.getSndNm() + "님 안녕하세요? 상담포유입니다. \n");
+				message.append(smsResult.getSndNm() + "님 안녕하세요? "+smsResult.getSiteNm()+"입니다. \n");
+				message.append(smsResult.getScheduleDt() + "에 " + smsResult.getCenterNm() + "(" + smsResult.getCounselorNm() + ") 에서 진행한 상담은 편안하셨는지요? \n\n");
+				
+				message.append("★ 상담내역은 상담포유(" + smsResult.getClientCd() + ".sangdam4u.com) > 나의상담포유 > 상담/검사조회를 통해 언제든 확인할 수 있습니다. \n\n");
+				
+				message.append("★ 추후 상담일정은 다음 중 하나의 방법으로 신청이 가능합니다. \n");
+				message.append("1) 해당 상담센터를 통한 신청 \n");
+				message.append("2) 상담포유 홈페이지 > 상담/검사조회 > 연장하기 \n");
+				message.append("3) 고객센터(1644-4474) 문의 \n");
+			}
+
+			
+		} else if ("100434".equals(smsResult.getCounselType())) { // 전화상담
+//			대면상담과 문자 내용이 같지만, 달라 질 수 있으므로 분리해놓는다. 
+
+			if(StringUtils.containsIgnoreCase(smsResult.getClientCd(), "optum") || StringUtils.containsIgnoreCase(smsResult.getClientCd(), "op_") ) {
+				message.append(smsResult.getSndNm() + "님 안녕하세요? 임직원을 위한 상담서비스를 제공하는 이지웰니스 입니다. \n");
+				message.append(smsResult.getScheduleDt() + "에 " + smsResult.getCenterNm() + "(" + smsResult.getCounselorNm() + ") 에서 진행한 상담은 편안하셨는지요? \n\n");
+				
+				message.append("★ 추후 상담일정은 다음 중 하나의 방법으로 신청이 가능합니다. \n");
+				message.append("1) 해당 상담센터를 통한 신청 \n");
+				message.append("2) 이지웰니스 고객센터(02-6909-4414) 문의 \n");
+				
+			}else {
+//				message.append(smsResult.getSndNm() + "님 안녕하세요? 상담포유입니다. \n");
+				message.append(smsResult.getSndNm() + "님 안녕하세요? "+smsResult.getSiteNm()+"입니다. \n");
+				message.append(smsResult.getScheduleDt() + "에 " + smsResult.getCenterNm() + "(" + smsResult.getCounselorNm() + ") 에서 진행한 상담은 편안하셨는지요? \n\n");
+				
+				message.append("★ 상담내역은 상담포유(" + smsResult.getClientCd() + ".sangdam4u.com) > 나의상담포유 > 상담/검사조회를 통해 언제든 확인할 수 있습니다. \n\n");
+				
+				message.append("★ 추후 상담일정은 다음 중 하나의 방법으로 신청이 가능합니다. \n");
+				message.append("1) 해당 상담센터를 통한 신청 \n");
+				message.append("2) 상담포유 홈페이지 > 상담/검사조회 > 연장하기 \n");
+				message.append("3) 고객센터(1644-4474) 문의 \n");
+			}
+			
+		}
+		
+		return message.toString();
+	}
+
+	/**
+	 * 연장예약후 2일전까지 결제을 하지않으면
+	 * 안내 SMS 발송
+	 * @param smsResult
+	 * @return
+	 */
+	private String GetBeforeTwodayMsg(SmsResult smsResult) {
+		StringBuffer sb = new StringBuffer();
+		//sb.append("[상담포유] 다음상담 결제 요청\n\n");
+		sb.append("["+smsResult.getSndNm()+"] 다음상담 결제 요청\n\n");
+		//sb.append(smsResult.getSndNm() + "님, 안녕하세요? 상담포유입니다.");
+		sb.append(smsResult.getSndNm() + "님 안녕하세요? "+smsResult.getSiteNm()+"입니다. \n");
+		sb.append(smsResult.getCenterNm() + " 센터(" + smsResult.getCounselorNm() + "상담사)에서 다음 상담이 " + smsResult.getScheduleDt() + "에 진행될 예정입니다. 상담을 진행하실 경우, 반드시 상담포유 사이트에서 \"연장하기\"기능을 클릭한 후 결제해주십시오. 24시간 이내에 결제하지 않을 경우, 해당 상담이 자동취소될 수 있습니다.\n\n");
+		sb.append("문의사항은 상담포유 게시판 및 고객센터(1644-4474)로 문의주시기 바랍니다.");
+		return sb.toString();
+	}
+	
+	public void doSmsSendBeforeTwoday (){
+		List<SmsResult> list = counselReservationService.getNotPayCounselBeforeTwoday();
+		
+		if (list != null) {
+			if (list.size() > 0) {
+				SmsResult smsResult = null;
+				for (int i = 0; i < list.size(); i++) {
+					smsResult =  list.get(i);
+					// optum 계열 고객사는 상담포유 사이트가 없기 때문에 미결제 sms문자를 발송 안함
+					// ap_global은 해외주재원들 대상이라 SMS를 보내지 않음 
+					if(StringUtils.containsIgnoreCase(smsResult.getClientCd(), "optum") 
+							|| StringUtils.containsIgnoreCase(smsResult.getClientCd(), "op_")  
+							|| smsResult.getClientCd().equals("ap_global")
+							|| smsResult.getClientCd().equals("kcg")
+							|| smsResult.getClientCd().equals("scourt")) {
+						continue;
+					}
+					smsService.send(list.get(i).getSndMobile(), "1644-4474", GetBeforeTwodayMsg(smsResult));
+				}
+			}
+		}
+	}
+	
+	
+	
+	/**
+	 * 상담일정 변경후 보내는  sms메시지
+	 * @param counselCd
+	 */
+	public void sendSmsCousnelDtChange(String counselCd) {
+		SmsResult smsResult = counselService.didSmsCounselDtChange(counselCd);
+		String clientCd = smsResult.getClientCd();
+		String sendNumber = "1644-4474";
+		if(isOptumDomain(clientCd)) {
+			sendNumber = "02-6909-4414";
+		}else if(smsResult.getClientCd().equals("scourt")) {
+			sendNumber = "02-6909-4407";
+		}
+		// ap_global은 해외주재원들 대상이라 SMS를 보내지 않음 
+		if(!clientCd.equals("ap_global")) {
+			smsService.send(smsResult.getSndMobile(), sendNumber, getClientCounselDtChangeTxtMsg(smsResult));
+		}
+		if(!"test".equals(clientCd)){
+			smsService.send(smsResult.getCounselorMobile(), "1644-4474", getCounselCounselDtChangeTxtMsg(smsResult));
+			//부산아동심리센터는 모든 상담일정문자가 010-6361-8107로 추가발송될 수 있도록 한다.
+			if(smsResult.getCenterSeq().equals("10000134")) {
+				smsService.send("010-6361-8107", "1644-4474", getCounselCounselDtChangeTxtMsg(smsResult));
+			// IBS법률사무소는 모든 상담일정문자가 010-4003-7889로 추가발송될 수 있도록 한다.
+			}else if(smsResult.getCenterSeq().equals("10000400")) {
+				smsService.send("010-4003-7889​", "1644-4474", getCounselCounselDtChangeTxtMsg(smsResult));
+			}
+		}
+	}
+	
+	/**
+	 * 상담일정변경시 안내메시지
+	 * (수신자:내담자)
+	 * @param smsResult
+	 * @return
+	 */
+	private String getClientCounselDtChangeTxtMsg(SmsResult smsResult) {
+		StringBuffer message = new StringBuffer();
+		boolean englishNmYn = Pattern.matches("^[a-zA-Z]*$", smsResult.getSndNm().replaceAll(" ", ""));
+		
+		// 해외고객사 중, 이름이 영문이면 영어 문자 발송
+		if (englishNmYn && (StringUtils.containsIgnoreCase(smsResult.getClientCd(), "optum") || StringUtils.containsIgnoreCase(smsResult.getClientCd(), "op_")) ) {
+			
+			String enScheduleDt = smsResult.getScheduleDt();
+			enScheduleDt = enScheduleDt.replaceAll("년", "/");
+			enScheduleDt = enScheduleDt.replaceAll("월", "/");
+			enScheduleDt = enScheduleDt.replaceAll("일", " ");
+			enScheduleDt = enScheduleDt.replaceAll("시", ":");
+			enScheduleDt = enScheduleDt + "00";
+			
+			if ("100433".equals(smsResult.getCounselType())) { // 대면상담일때
+				
+				message.append("Counseling code : " + smsResult.getCounselCd() + "\n");
+				message.append("This is Ezwellness, who provides counseling service. \n\n");
+				
+				message.append("Counseling appointment has been re-scheduled to " + enScheduleDt + "\n\n");
+				
+				message.append("★ Counseling center information\n");
+				message.append("·ServicDate : " + enScheduleDt + "\n");
+				message.append("·Location : " + smsResult.getCenterNm() + "\n");
+				message.append("·Address : " + smsResult.getCenterAddr1() + " " + smsResult.getCenterAddr2() + "\n");
+				message.append("·Phone : " + smsResult.getCenterTelNum() + "\n");
+				message.append("·Please tell the Counseling code to the counselor in counseling center. \n\n");
+				
+				message.append("★ Cancellation/Change Of Date Policy \n");
+				message.append("·Cancellation before 24 hours (No Sessions used) \n");
+				message.append("·Cancellation within 24 hours (1 session used) \n\n");
+				
+				message.append("★ If you want further information, please contact Ezwellness customer service center \n");
+				message.append("1. email - ezwelnetwork@naver.com  \n");
+				message.append("2. talk.naver.com/WCD2T9 \n\n");
+				
+				message.append("Please do not reply to this phone-number as it was sent from a no-reply phone-number \n");
+				
+			} else if ("100434".equals(smsResult.getCounselType())) { // 전화상담
+				
+				message.append("Counseling code : " + smsResult.getCounselCd() + "\n");
+				message.append("This is Ezwellness, who provides counseling service. \n\n");
+				
+				message.append("Telephone counseling appointment has been re-scheduled to " + enScheduleDt + "\n\n");
+				
+				message.append("★ Cancellation/Change Of Date Policy \n");
+				message.append("·Cancellation before 24 hours (No Sessions used) \n");
+				message.append("·Cancellation within 24 hours (1 session used) \n\n");
+				
+				message.append("★ If you want further information, please contact Ezwellness customer service center \n");
+				message.append("1. email - ezwelnetwork@naver.com  \n");
+				message.append("2. talk.naver.com/WCD2T9 \n\n");
+				
+				message.append("Please do not reply to this phone-number as it was sent from a no-reply phone-number \n");
+			}
+		
+		// 한글문자 발송
+		} else {
+			if ("100433".equals(smsResult.getCounselType())) { // 대면상담일때
+				message.append("신청코드:" + smsResult.getCounselCd() + "\n");
+				
+				if(StringUtils.containsIgnoreCase(smsResult.getClientCd(), "optum") || StringUtils.containsIgnoreCase(smsResult.getClientCd(), "op_") ) {
+					message.append(smsResult.getSndNm() + "님 안녕하세요? 임직원을 위한 상담서비스를 제공하는 이지웰니스입니다. \n");
+				}else {
+					//message.append(smsResult.getSndNm() + "님 안녕하세요? 상담포유입니다. \n");	
+					message.append(smsResult.getSndNm() + "님 안녕하세요? "+smsResult.getSiteNm()+"입니다. \n");
+				}
+				
+				
+				message.append("예약하신 상담 일정이 " + smsResult.getScheduleDt() + "로 변경되었습니다. \n\n");
+				
+				message.append("★ 상담센터 안내\n");
+				message.append("·일시:" + smsResult.getScheduleDt() + "\n");
+				message.append("※ 시스템상 시 단위등록만 가능합니다. (30분 단위 표기불가)\n");
+				message.append("정확한 상담시간은 상담선생님과 확정하신 시간입니다.\n");
+				message.append("·장소:" + smsResult.getCenterNm() + "\n");
+				message.append("·주소:" + smsResult.getCenterAddr1() + " " + smsResult.getCenterAddr2() + "\n");
+				message.append("·연락처:" + smsResult.getCenterTelNum() + "\n");
+	
+				if("mindplus".equals(smsResult.getClientCd())){
+					message.append("\n");
+					message.append("★상담센터 방문시 신청코드를 상담사에게 말씀해주시기 바랍니다.\n");
+					message.append("최초 방문 시 MyD카드 제시 필수\n\n");
+					message.append("★ 상담환불 규정안내\n");
+					message.append("·상담시간 24시간 전 취소 시 100% 환불\n");
+					message.append("·상담시간 24시간 이내 취소 불가\n\n");
+				}else if("cjoy".equals(smsResult.getClientCd())){
+					message.append("\n");
+					message.append("★ 상담환불 규정안내\n");
+					message.append("·상담시간 24시간 전 취소 시 100% 환불\n");
+					message.append("·상담시간 24시간 이내 취소 불가\n\n");
+				}else if(StringUtils.containsIgnoreCase(smsResult.getClientCd(), "optum") || StringUtils.containsIgnoreCase(smsResult.getClientCd(), "op_") ) {
+					message.append("\n");
+					message.append("★ 상담환불 규정안내\n");
+					message.append("·상담일 하루 전까지 취소 시(1회 사용되지 않음)\n");
+					message.append("·상담시간 하루 이내 취소 시(1회 사용됨)\n\n");
+				}else if("sbc".equals(smsResult.getClientCd())){
+					message.append("\n");
+					message.append("★ 상담환불 규정안내\n");
+					message.append("·상담시간 12시간 전까지 취소 시 (100%환불)\n");
+					message.append("·상담시간 12시간 미만 남은 경우 (전액 환불 불가)\n\n");
+				}else if("kcg".equals(smsResult.getClientCd()) || "scourt".equals(smsResult.getClientCd())){
+					message.append("·상담센터 방문시 신청코드를 상담사에게 말씀해주시기 바랍니다.\n\n");
+					message.append("\n");
+					message.append("★ 상담환불 규정안내\n");
+					message.append("·상담시간 12시간 전까지 취소 시 (100%환불)\n");
+					message.append("·상담시간 12시간 미만 남은 경우 (전액 환불 불가)\n\n");
+				}else if("khnp".equals(smsResult.getClientCd())){
+					message.append("★ 상담환불 규정안내\n");
+					message.append("·상담일 하루 전까지 취소 시 (1회 사용되지 않음)\n");
+					message.append("·상담시간 하루 이내 최소 (1회 사용됨)\n");
+				}else{
+					message.append("·상담센터 방문시 신청코드를 상담사에게 말씀해주시기 바랍니다.\n\n");
+					message.append("★ 상담환불 규정안내\n");
+					message.append("·상담일 하루 전까지 취소 시 (100%환불)\n");
+					message.append("·상담시간 24시간전~1시간 전 취소 시(50%환불)\n");
+					message.append("·상담시간 1시간 전 취소(전액 환불 불가)\n\n");
+				}
+				
+				if(StringUtils.containsIgnoreCase(smsResult.getClientCd(), "optum") || StringUtils.containsIgnoreCase(smsResult.getClientCd(), "op_") ) {
+					message.append("★문의사항은 이지웰니스 고객센터(02-6909-4414)로 문의 주시기 바랍니다.");
+				}else if("kcg".equals(smsResult.getClientCd())){
+					message.append("★문의사항은 "+smsResult.getSiteNm()+" 고객센터(1644-4474)로 문의 주시기 바랍니다.");
+				}else if("scourt".equals(smsResult.getClientCd())){
+					message.append("★문의사항은 "+smsResult.getSiteNm()+" 고객센터(02-6909-4407)로 문의 주시기 바랍니다.");
+				}else {
+					message.append("★문의사항은 상담포유 홈페이지 (" + smsResult.getClientCd() + ".sangdam4u.com)");
+					message.append("게시판 및 고객센터(1644-4474)로 문의 주시기 바랍니다.");
+				}
+				
+			} else if ("100434".equals(smsResult.getCounselType())) { // 전화상담
+				
+				if(StringUtils.containsIgnoreCase(smsResult.getClientCd(), "optum") || StringUtils.containsIgnoreCase(smsResult.getClientCd(), "op_") ) {
+					message.append("신청코드:" + smsResult.getCounselCd() + "\n");
+					message.append(smsResult.getSndNm() + "님 안녕하세요? 임직원을 위한 상담서비스를 제공하는 이지웰니스입니다. \n");
+					message.append("예약하신 전화상담 일정이 " + smsResult.getScheduleDt() + "로 변경되었습니다. \n\n");
+					
+					message.append("※ 시스템상 시 단위등록만 가능합니다. (30분 단위 표기불가)\n");
+					message.append("정확한 상담시간은 상담선생님과 확정하신 시간입니다.\n\n");
+					
+					message.append("★ 상담환불 규정안내\n");
+					message.append("·상담일 하루 전까지 취소 시(1회 사용되지 않음)\n");
+					message.append("·상담시간 하루 이내 취소 시(1회 사용됨)\n\n");
+					message.append("★문의사항은 이지웰니스 고객센터(02-6909-4414)로 문의 주시기 바랍니다.");
+	
+				}else {
+					message.append("신청코드:" + smsResult.getCounselCd() + "\n");
+					message.append(smsResult.getSndNm() + "님 안녕하세요? 상담포유입니다. \n");
+					message.append("예약하신 전화상담 일정이 " + smsResult.getScheduleDt() + "로 변경되었습니다. \n\n");
+					
+					message.append("※ 시스템상 시 단위등록만 가능합니다. (30분 단위 표기불가)\n");
+					message.append("정확한 상담시간은 상담선생님과 확정하신 시간입니다.\n\n");
+					
+					message.append("★ 상담환불 규정안내\n");
+					if("sbc".equals(smsResult.getClientCd())){
+						message.append("·상담시간 12시간 전까지 취소 시 (100%환불)\n");
+						message.append("·상담시간 12시간 미만 남은 경우 (전액 환불 불가)\n\n");
+					}else if("khnp".equals(smsResult.getClientCd())){
+						message.append("·상담일 하루 전까지 취소 시 (1회 사용되지 않음)\n");
+						message.append("·상담시간 하루 이내 최소 (1회 사용됨)\n");
+					}else {
+						message.append("·상담일 하루 전까지 취소 시 (100%환불)\n");
+						message.append("·상담시간 24시간전~1시간 전 취소 시(50%환불)\n");
+						message.append("·상담시간 1시간 미만 남은 경우(전액 환불 불가)\n\n");
+					}
+					message.append("★문의사항은 상담포유 홈페이지 (" + smsResult.getClientCd() + ".sangdam4u.com)");
+					message.append("게시판 및 고객센터(1644-4474)로 문의 주시기 바랍니다.");
+				}
+			
+			}
+		}
+		return message.toString();
+	}
+	
+	/**
+	 * 상담일정변경시 안내메시지
+	 * (수신자:상담사)
+	 * @param smsResult
+	 * @return
+	 */
+	private String getCounselCounselDtChangeTxtMsg(SmsResult smsResult) {
+		StringBuffer message = new StringBuffer();
+		
+		if ("100433".equals(smsResult.getCounselType())) { // 대면상담일때
+			message.append("[이지웰니스(주) 일정변경]\n");
+			message.append("신청코드:" + smsResult.getCounselCd() + "\n");
+			message.append(smsResult.getSndNm() + "님(" + smsResult.getSndMobile() + ") 상담이 " + smsResult.getScheduleDt() + "로 변경되었습니다.");
+			message.append("자세한 내담자정보 및 상담접수내역은 파트너어드민에서 확인해 주시기 바랍니다.\n");
+			message.append("·개인상담관리 > 예약확정현황");
+		} else if ("100434".equals(smsResult.getCounselType())) { // 전화상담
+			message.append("[이지웰니스(주) 일정변경]\n");
+			message.append("신청코드:" + smsResult.getCounselCd() + "\n");
+			message.append(smsResult.getSndNm() + "님(" + smsResult.getSndMobile() + ")의 전화상담이 " + smsResult.getScheduleDt() + "로 변경되었습니다.");
+			message.append("자세한 내담자정보 및 상담접수내역은 파트너어드민에서 확인해 주시기 바랍니다.\n");
+			message.append("·개인상담관리 > 예약확정현황");
+		}
+		return message.toString();
+	}
+	
+	/**
+	 * 상담완료후 안내메시지 (만족도 종결 문자)
+	 * @param user
+	 * @return
+	 */
+	public String getClientCounselEndTxtMsg(User user) {
+		StringBuffer message = new StringBuffer();
+		boolean englishNmYn = Pattern.matches("^[a-zA-Z]*$", user.getUserNm().replaceAll(" ", ""));
+		
+		// 해외고객사 중, 이름이 영문이면 영어 문자 발송
+		if (englishNmYn && (StringUtils.containsIgnoreCase(user.getClientCd(), "optum") || StringUtils.containsIgnoreCase(user.getClientCd(), "op_")) ) {
+			
+			message.append("This is Ezwellness customer service center who provides counseling services. \n\n");
+			
+			message.append("★ To provide an improved service for next counseling, we proceed surveys on customer's satisfaction. \n");
+			message.append("Please press the link sent to complete the satisfaction survey. \n\n");
+			
+			message.append("Satisfaction Survey URL:  \n");
+			message.append("https://goo.gl/forms/ZP9G3Ob4ypL0Lfd63 \n\n");
+			
+			message.append("★If you want further information, please contact Ezwellness customer service center. \n");
+			message.append("1. email - ezwelnetwork@naver.com \n");
+			message.append("2. talk.naver.com/WCD2T9 \n\n");
+			
+			message.append("Please do not reply to this phone-number as it was sent from a no-reply phone-number \n");
+		
+		// 한글문자 발송
+		}else{
+			message.append("신청코드:" + user.getCounselCd() + "\n");
+			message.append(user.getUserNm() + "님 안녕하세요?\n상담포유 고객센터입니다. \n\n");
+			message.append(user.getScheduleDt() +",\n"+ user.getCenterNm() +"("+ user.getCounselorNm() +")에서 진행한 상담은 편안하셨는지요? \n");
+			message.append("다음 상담 이용 시 향상된 서비스를 제공하기 위해 만족도조사를 진행합니다. \n\n");
+			
+			message.append("상담포유 홈페이지("+ user.getClientCd() + ".sangdam4u.com) > 나의상담포유 >");
+			message.append("상담/검사 조회 > 만족도조사를 통해 진행해주시기 바랍니다.\n\n");
+			
+			message.append("★문의사항은 상담포유 홈페이지 (" + user.getClientCd() + ".sangdam4u.com)");
+			message.append("게시판 및 고객센터(1644-4474)로 문의 주시기 바랍니다.");
+		}
+		
+		return message.toString();
+	}
+	
+	/**
+	 * 상담완료후 안내메시지(국민연금공단)
+	 * @param user
+	 * @return
+	 */
+	public String getClientCounselEndTxtMsg4NPS(User user) {
+		StringBuffer message = new StringBuffer();
+		message.append("신청코드:" + user.getCounselCd() + "\n");
+		message.append(user.getUserNm() + "님 안녕하세요?\n상담포유 고객센터입니다. \n\n");
+		message.append(user.getScheduleDt() +",\n"+ user.getCenterNm() +"("+ user.getCounselorNm() +")에서 진행한 상담은 편안하셨는지요? \n\n");
+		message.append("본 설문은 국민연금공단 임직원 개인상담 3회기 후 진행하는 설문지입니다.\n");
+		message.append("사업계획 수립 및 서비스 개선을 위한 참고자료로 활용 예정이오니, 바쁘시더라도 꼭 참여해주시기 바랍니다. \n\n");
+		
+		message.append("전송된 링크를 통해 접속하셔서 작성해주세요.");
+		message.append("설문지:\n\t https://goo.gl/forms/z51YFzk2EKE9lKJi2");
+		
+		message.append("\n\n");
+		message.append("상담포유는 더 행복한 내일을 위해 항상 최선을 다하겠습니다.");
+		message.append("★문의사항은 고객센터(1644-4474)로 문의 주시기 바랍니다.");
+		return message.toString();
+	}
+	
+	/**
+	 * 상담피드백 메시지
+	 * @param user
+	 * @return
+	 */
+	public String getCounselFeedBackMsg(User user) {
+		StringBuffer message = new StringBuffer();
+	
+		if(isOptumDomain(user.getClientCd())) {
+			message.append(user.getUserNm() + "님 안녕하세요?\n임직원을 위한 상담서비스를 제공하는 이지웰니스(주) 고객센터입니다. \n\n");
+			message.append(user.getScheduleDt() +",\n"+ user.getCenterNm() +"("+ user.getCounselorNm() +")에서 진행하신 상담은 만족스러우셨는지요? \n");
+		} else {
+			//message.append(user.getUserNm() + "님 안녕하세요?\n상담포유 고객센터입니다. \n\n");
+			message.append(user.getUserNm() + "님 안녕하세요?\n"+user.getSiteNm()+" 고객센터입니다. \n\n");
+			message.append(user.getScheduleDt() +",\n"+ user.getCenterNm() +"("+ user.getCounselorNm() +")에서 진행하신 법률상담은 만족스러우셨는지요? \n");
+		}
+		
+		message.append("도움받으셨던 상담에 대해 한번 더 요약하여 전달드립니다.\n\n");
+		message.append("<상담사가 전하는 메시지>\n" + user.getCounselFeedBack() + "\n\n");		
+		
+		if(isOptumDomain(user.getClientCd())) {
+			message.append("★문의사항은 고객센터(02-6909-4414)로 문의 주시기 바랍니다.");
+		} else if(user.getClientCd().equals("scourt")) {
+			message.append("★문의사항은 고객센터(02-6909-4407)로 문의 주시기 바랍니다.");
+		}  else if(user.getClientCd().equals("kcg")) {
+			message.append("★문의사항은 고객센터(1644-4474)로 문의 주시기 바랍니다.");
+		} else { 
+			message.append("상담포유 홈페이지("+ user.getClientCd() + ".sangdam4u.com) > 나의상담포유 >");
+			message.append("상담/검사 조회 > 신청상세내역에서도 확인 가능합니다.\n\n");
+			message.append("상담포유는 더 행복한 내일을 위해 항상 최선을 다하겠습니다.\n\n");
+			message.append("★문의사항은 상담포유 홈페이지 (" + user.getClientCd() + ".sangdam4u.com)");
+			message.append("게시판 및 고객센터(1644-4474)로 문의 주시기 바랍니다.");
+		}
+		
+		return message.toString();
+	}
+	
+	/**
+	 * optum 계열 고객사 판단유무
+	 * @param clientCd
+	 * @return
+	 */
+	protected static boolean isOptumDomain(String clientCd) {
+		if(StringUtils.containsIgnoreCase(clientCd, "optum") || StringUtils.containsIgnoreCase(clientCd, "op_") ) {
+			return true;
+		}
+		return false;
+	}
+}

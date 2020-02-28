@@ -1,0 +1,1418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.bbs.BBSMapper">
+
+
+	<insert id="insertBbs" keyProperty="dataSeq" useGeneratedKeys="true" parameterType="com.ezwel.admin.service.bbs.dto.BBSAddDto">
+		INSERT INTO MIND_BBS_DATA (
+			 BBS_CD
+			,SERVICE_TYPE
+			<if test="isNotNull(clientCd)">
+				,CLIENT_CD
+			</if>
+			,SUBJECT
+			,CONTENT
+			,REQ_CD1
+			<if test="isNotNull(reqCd2)">
+				,REQ_CD2
+			</if>
+			<if test="isNotNull(dispYn)">
+				,DISP_YN
+			</if>
+			<if test="isNotNull(pageKey)">
+				,PAGE_KEY
+			</if>
+			<if test="isNotNull(allClientYn)">
+				,ALL_CLIENT_YN
+			</if>
+			,REG_ID
+			,REG_NM
+			,REG_DT
+			<if test="isNotNull(regMobile)">
+				,REG_MOBILE
+			</if>
+			<if test="isNotNull(regEmail)">
+				,REG_EMAIL
+			</if>
+			,COLUMNIST_NM
+			,COLUMNIST_DD
+			,COLUMNIST_CAREER
+			,COLUMNIST_MEMO
+			,COLUMNIST_GRADE
+			<if test="isNotNull(newsDd)">
+				,NEWS_DD
+			</if>
+			<if test="isNotNull(mainDispYn)">
+				,MAIN_DISP_YN
+			</if>
+			<if test="isNotNull(mainStartDt)">
+				,MAIN_START_DT
+			</if>
+			<if test="isNotNull(mainEndDt)">
+				,MAIN_END_DT
+			</if>
+			<if test="isNotNull(sAuthCd)">
+				,AUTH_CD
+			</if>
+			<if test="isNotNull(channelType)">
+				,CHANNEL_TYPE
+			</if>
+			<if test="isNotNull(area1)">
+				,AREA1
+			</if>
+			<if test="isNotNull(area2)">
+				,AREA2
+			</if>
+			
+		) VALUES (
+			 #{bbsCd}
+			 <if test="isNotNull(serviceType)">
+				,#{serviceType}
+			</if>
+			<if test="isNull(serviceType)">
+				,'HOME'
+			</if>
+			<if test="isNotNull(clientCd)">
+				,#{clientCd}
+			</if>
+			,#{subject}
+			,#{content}
+			,#{reqCd1}
+			<if test="isNotNull(reqCd2)">
+				,#{reqCd2}
+			</if>
+			<if test="isNotNull(dispYn)">
+				,#{dispYn}
+			</if>
+			<if test="isNotNull(pageKey)">
+				,#{pageKey}
+			</if>
+			<if test="isNotNull(allClientYn)">
+				,#{allClientYn}
+			</if>
+			,#{regId}
+			,#{regNm}
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			<if test="isNotNull(regMobile)">
+				,#{regMobile}
+			</if>
+			<if test="isNotNull(regEmail)">
+				,#{regEmail}
+			</if>
+			,#{columnistNm}
+			,#{columnistDd}
+			,#{columnistCareer}
+			,#{columnistMemo}
+			,#{columnistGrade}
+			<if test="isNotNull(newsDd)">
+				,#{newsDd}
+			</if>
+			<if test="isNotNull(mainDispYn)">
+				,#{mainDispYn}
+			</if>
+			<if test="isNotNull(mainStartDt)">
+				,#{mainStartDt}
+			</if>
+			<if test="isNotNull(mainEndDt)">
+				,#{mainEndDt}
+			</if>
+			<if test="isNotNull(sAuthCd)">
+				,#{sAuthCd}
+			</if>
+			<if test="isNotNull(channelType)">
+				,#{channelType}
+			</if>
+			<if test="isNotNull(area1)">
+				,#{area1}
+			</if>
+			<if test="isNotNull(area2)">
+				,#{area2}
+			</if>
+			
+		)
+	</insert>
+<insert id="insertBbs2" keyProperty="dataSeq" useGeneratedKeys="true" parameterType="com.ezwel.admin.service.bbs.dto.BBSAddDto">
+		INSERT INTO HUE_BBS_DATA (
+			 BBS_CD
+			,CENTER_SEQ
+			,SUBJECT
+			,CONTENT
+			,REQ_CD1
+			<if test="isNotNull(reqCd2)">
+				,REQ_CD2
+			</if>
+			<if test="isNotNull(dispYn)">
+				,DISP_YN
+			</if>
+			<if test="isNotNull(pageKey)">
+				,PAGE_KEY
+			</if>
+			<if test="isNotNull(allClientYn)">
+				,ALL_CLIENT_YN
+			</if>
+			,REG_ID
+			,REG_NM
+			,REG_DT
+			<if test="isNotNull(regMobile)">
+				,REG_MOBILE
+			</if>
+			<if test="isNotNull(regEmail)">
+				,REG_EMAIL
+			</if>
+			,COLUMNIST_NM
+			,COLUMNIST_DD
+			,COLUMNIST_CAREER
+			,COLUMNIST_MEMO
+			,COLUMNIST_GRADE
+			<if test="isNotNull(newsDd)">
+				,NEWS_DD
+			</if>
+		) VALUES (
+			 #{bbsCd}
+			,'1'
+			,#{subject}
+			,#{content}
+			,#{reqCd1}
+			<if test="isNotNull(reqCd2)">
+				,#{reqCd2}
+			</if>
+			<if test="isNotNull(dispYn)">
+				,#{dispYn}
+			</if>
+			<if test="isNotNull(pageKey)">
+				,#{pageKey}
+			</if>
+			<if test="isNotNull(allClientYn)">
+				,#{allClientYn}
+			</if>
+			,#{regId}
+			,#{regNm}
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			<if test="isNotNull(regMobile)">
+				,#{regMobile}
+			</if>
+			<if test="isNotNull(regEmail)">
+				,#{regEmail}
+			</if>
+			,#{columnistNm}
+			,#{columnistDd}
+			,#{columnistCareer}
+			,#{columnistMemo}
+			,#{columnistGrade}
+			<if test="isNotNull(newsDd)">
+				,#{newsDd}
+			</if>
+		)
+	</insert>
+	<update id="updateBbs" parameterType="com.ezwel.admin.service.bbs.dto.BBSAddDto">
+		UPDATE MIND_BBS_DATA
+		SET  SUBJECT = #{subject}
+		    ,CONTENT = #{content}
+			,COLUMNIST_NM = #{columnistNm}
+			,COLUMNIST_DD = #{columnistDd}
+			,COLUMNIST_CAREER = #{columnistCareer}
+			,COLUMNIST_MEMO = #{columnistMemo}
+			,COLUMNIST_GRADE = #{columnistGrade}
+		    <if test="isNotNull(dispYn)">
+				,DISP_YN = #{dispYn}
+			</if>
+			<if test="isNotNull(reqCd1)">
+				,REQ_CD1 = #{reqCd1}
+			</if>
+			<if test="isNotNull(reqCd2)">
+				,REQ_CD2 = #{reqCd2}
+			</if>
+			<if test="isNotNull(allClientYn)">
+				,ALL_CLIENT_YN = #{allClientYn}
+			</if>
+			<if test="isNull(allClientYn)">
+				,ALL_CLIENT_YN = 'N'
+			</if>
+			<if test="isNotNull(modiNm)">
+				,MODI_NM = #{modiNm}
+				,MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			</if>
+			<if test="isNotNull(modiId)">
+				,MODI_ID = #{modiId}
+			</if>
+			<if test="isNotNull(newsDd)">
+				,NEWS_DD = #{newsDd}
+			</if>
+			<if test="isNotNull(mainDispYn)">
+				,MAIN_DISP_YN = #{mainDispYn}
+			</if>
+			<if test="isNotNull(mainStartDt)">
+				,MAIN_START_DT = #{mainStartDt}
+			</if>
+			<if test="isNotNull(mainEndDt)">
+				,MAIN_END_DT = #{mainEndDt}
+			</if>
+			<if test="isNotNull(sAuthCd)">
+				,AUTH_CD = #{sAuthCd}
+			</if>
+			<if test="isNotNull(channelType)">
+				,CHANNEL_TYPE = #{channelType}
+			</if>
+			<if test="isNotNull(area1)">
+				,AREA1 = #{area1}
+			</if>
+			<if test="isNotNull(area2)">
+				,AREA2 = #{area2}
+			</if>
+			
+			
+		WHERE DATA_SEQ = #{dataSeq}
+	</update>
+	<update id="updateBbs2" parameterType="com.ezwel.admin.service.bbs.dto.BBSAddDto">
+		UPDATE HUE_BBS_DATA
+		SET  SUBJECT = #{subject}
+		    ,CONTENT = #{content}
+			,COLUMNIST_NM = #{columnistNm}
+			,COLUMNIST_DD = #{columnistDd}
+			,COLUMNIST_CAREER = #{columnistCareer}
+			,COLUMNIST_MEMO = #{columnistMemo}
+			,COLUMNIST_GRADE = #{columnistGrade}
+		    <if test="isNotNull(dispYn)">
+				,DISP_YN = #{dispYn}
+			</if>
+			<if test="isNotNull(reqCd1)">
+				,REQ_CD1 = #{reqCd1}
+			</if>
+			<if test="isNotNull(reqCd2)">
+				,REQ_CD2 = #{reqCd2}
+			</if>
+			<if test="isNotNull(allClientYn)">
+				,ALL_CLIENT_YN = #{allClientYn}
+			</if>
+			<if test="isNull(allClientYn)">
+				,ALL_CLIENT_YN = 'N'
+			</if>
+			<if test="isNotNull(modiNm)">
+				,MODI_NM = #{modiNm}
+				,MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			</if>
+			<if test="isNotNull(modiId)">
+				,MODI_ID = #{modiId}
+			</if>
+			<if test="isNotNull(newsDd)">
+				,NEWS_DD = #{newsDd}
+			</if>
+		WHERE DATA_SEQ = #{dataSeq}
+	</update>	
+
+	<delete id="deleteBbs" parameterType="com.ezwel.admin.service.bbs.dto.BBSAddDto">
+		DELETE FROM MIND_BBS_DATA
+		WHERE DATA_SEQ = #{dataSeq}
+	</delete>
+
+	<delete id="deleteBbs3" parameterType="com.ezwel.admin.service.bbs.dto.BBSAddDto">
+		DELETE FROM HUE_BBS_DATA
+		WHERE DATA_SEQ = #{dataSeq}
+	</delete>
+
+	<select id="getBbsList" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+				SELECT DATA_SEQ AS dataSeq
+					,A.BBS_CD AS bbsCd
+					,A.SUBJECT AS subject
+					,A.CONTENT AS content
+					,A.REQ_CD1 AS reqCd1
+					,A.REQ_CD2 AS reqCd2
+					,A.DISP_YN AS dispYn
+					,A.SERVICE_TYPE AS serviceType
+					,A.CLIENT_CD AS clientCd
+					,(SELECT CLIENT_NM FROM MIND_CLIENT WHERE CLIENT_CD = A.CLIENT_CD) AS clientNm
+					,A.REG_ID AS regId
+					,A.REG_NM AS regNm
+					,A.MODI_ID AS modiId
+					,A.MODI_NM AS modiNm
+					,DATE_FORMAT(STR_TO_DATE(A.MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS modiDt
+					,IFNULL(A.VISITED, 0) AS visited
+					,DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt
+					,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_CD1) AS reqCd1Nm
+					,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_CD2) AS reqCd2Nm
+					,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.STATUS) AS statusNm
+				FROM MIND_BBS_DATA A
+				WHERE 1=1
+				<if test="isNotNull(serviceType)">
+					AND A.SERVICE_TYPE = #{serviceType}
+				</if>
+				<if test="isNotNull(bbsCd)">
+					AND A.BBS_CD = #{bbsCd}
+					<if test="bbsCd == 'publicCounsel' || bbsCd == 'faqPersonal'">
+						AND A.HIGH_DATA_SEQ = -1
+					</if>
+				</if>
+				
+				<if test="isNotNull(searchNm)">
+					<choose>
+						<when test="searchCo == '내용'">
+							AND A.CONTENT LIKE CONCAT('%', #{searchNm},'%')
+						</when>
+						<when test="searchCo == '전체'">
+							AND (A.SUBJECT LIKE CONCAT('%', #{searchNm},'%')
+							OR A.CONTENT LIKE CONCAT('%', #{searchNm},'%'))
+						</when>
+						<otherwise>
+							AND A.SUBJECT LIKE CONCAT('%', #{searchNm},'%')
+						</otherwise>
+					</choose>
+				</if>
+				<if test="isNotNull(reqCd1)">
+					AND A.REQ_CD1 = #{reqCd1}
+				</if>
+				<if test="isNotNull(reqCd1_1)">
+					OR A.REQ_CD1 = #{reqCd1_1}
+				</if>
+				<if test="isNotNull(reqCd2)">
+					AND A.REQ_CD2 = #{reqCd2}
+				</if>
+				<if test="isNotNull(clientCd)">
+					AND A.CLIENT_CD LIKE CONCAT ('%', #{clientCd},'%')
+				</if>
+				<if test="isNotNull(regNm)">
+					<choose>
+						<when test="searchRegNmType == '등록'">
+							AND A.REG_NM LIKE CONCAT ('%', #{regNm},'%')
+						</when>
+						<when test="searchRegNmType == '수정'">
+							AND A.MODI_NM LIKE CONCAT ('%', #{regNm},'%')
+						</when>
+					</choose>
+				</if>
+				<if test="isNotNull(dispYn)">
+					AND A.DISP_YN = #{dispYn}
+				</if>
+				<if test="isNotNull(status)">
+					AND A.STATUS = #{status}
+				</if>
+				ORDER BY A.REG_DT DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<select id="getBbsPartnerList" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+				SELECT DATA_SEQ AS dataSeq
+					,A.BBS_CD AS bbsCd
+					,A.SUBJECT AS subject
+					,A.CONTENT AS content
+					,A.REQ_CD1 AS reqCd1
+					,A.REQ_CD2 AS reqCd2
+					,A.DISP_YN AS dispYn
+					,A.SERVICE_TYPE AS serviceType
+					,A.CLIENT_CD AS clientCd
+					,(SELECT CLIENT_NM FROM MIND_CLIENT WHERE CLIENT_CD = A.CLIENT_CD) AS clientNm
+					,A.REG_ID AS regId
+					,A.REG_NM AS regNm
+					,A.MODI_ID AS modiId
+					,A.MODI_NM AS modiNm
+					,DATE_FORMAT(STR_TO_DATE(A.MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS modiDt
+					,IFNULL(A.VISITED, 0) AS visited
+					,DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt
+					,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_CD1) AS reqCd1Nm
+					,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_CD2) AS reqCd2Nm
+					,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.STATUS) AS statusNm
+				FROM MIND_BBS_DATA A
+				WHERE 1=1
+				AND A.DISP_YN = 'Y'
+				<if test="isNotNull(serviceType)">
+					AND A.SERVICE_TYPE = #{serviceType}
+				</if>
+				<if test="isNotNull(bbsCd)">
+					AND A.BBS_CD = #{bbsCd}
+					<if test="bbsCd == 'publicCounsel' || bbsCd == 'faqPersonal'">
+						AND A.HIGH_DATA_SEQ = -1
+					</if>
+				</if>
+				
+				<!-- 접속권한 -->
+				<if test="isNotNull(userId)">
+				AND A.AUTH_CD LIKE CONCAT('%', (SELECT AUTH_CD FROM ACL_USER_AUTH WHERE USER_AUTH_KEY = CONCAT(#{userId},'3001')),'%')
+				</if>
+				<!-- 상담유형 -->
+ 				<if test="isNotNull(userId)">
+				AND A.CHANNEL_TYPE REGEXP (SELECT CONCAT("(",REPLACE(CHANNEL_TYPE, ",", "|"),")") FROM MIND_MGR_SUB WHERE USER_ID = #{userId})
+				</if> 
+				<!-- 지역구분 -->
+ 				<if test="isNotNull(centerSeq)">
+				AND A.AREA1 LIKE CONCAT('%',(SELECT AREA1 FROM MIND_CENTER WHERE CENTER_SEQ = ${centerSeq}),'%')
+				</if> 
+				
+				<if test="isNotNull(searchNm)">
+					<choose>
+						<when test="searchCo == '내용'">
+							AND A.CONTENT LIKE CONCAT('%', #{searchNm},'%')
+						</when>
+						<when test="searchCo == '전체'">
+							AND (A.SUBJECT LIKE CONCAT('%', #{searchNm},'%')
+							OR A.CONTENT LIKE CONCAT('%', #{searchNm},'%'))
+						</when>
+						<otherwise>
+							AND A.SUBJECT LIKE CONCAT('%', #{searchNm},'%')
+						</otherwise>
+					</choose>
+				</if>
+				<if test="isNotNull(reqCd1)">
+					AND A.REQ_CD1 = #{reqCd1}
+				</if>
+				<if test="isNotNull(reqCd2)">
+					AND A.REQ_CD2 = #{reqCd2}
+				</if>
+				<if test="isNotNull(clientCd)">
+					AND A.CLIENT_CD LIKE CONCAT ('%', #{clientCd},'%')
+				</if>
+				<if test="isNotNull(regNm)">
+					<choose>
+						<when test="searchRegNmType == '등록'">
+							AND A.REG_NM LIKE CONCAT ('%', #{regNm},'%')
+						</when>
+						<when test="searchRegNmType == '수정'">
+							AND A.MODI_NM LIKE CONCAT ('%', #{regNm},'%')
+						</when>
+					</choose>
+				</if>
+				<if test="isNotNull(dispYn)">
+					AND A.DISP_YN = #{dispYn}
+				</if>
+				<if test="isNotNull(status)">
+					AND A.STATUS = #{status}
+				</if>
+				ORDER BY A.REG_DT DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	
+	
+	
+	<select id="getBbsList2" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+				SELECT DATA_SEQ AS dataSeq
+					,A.BBS_CD AS bbsCd
+					,A.SUBJECT AS subject
+					,A.CONTENT AS content
+					,A.REQ_CD1 AS reqCd1
+					,A.REQ_CD2 AS reqCd2
+					,A.DISP_YN AS dispYn
+					, 'hue' AS serviceType
+					,null AS clientCd
+					,(SELECT CLIENT_NM FROM MIND_CLIENT WHERE CLIENT_CD is null ) AS clientNm
+					,A.REG_ID AS regId
+					,A.REG_NM AS regNm
+					,A.MODI_ID AS modiId
+					,A.MODI_NM AS modiNm
+					,DATE_FORMAT(STR_TO_DATE(A.MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS modiDt
+					,IFNULL(A.VISITED, 0) AS visited
+					,DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt
+					,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_CD1) AS reqCd1Nm
+					,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_CD2) AS reqCd2Nm
+					,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.STATUS) AS statusNm
+				FROM HUE_BBS_DATA A
+				WHERE 1=1
+				<if test="isNotNull(bbsCd)">
+					AND A.BBS_CD = #{bbsCd}
+					<if test="bbsCd == 'publicCounsel' || bbsCd == 'faqPersonal'">
+						AND A.HIGH_DATA_SEQ = -1
+					</if>
+				</if>
+				<if test="isNotNull(searchNm)">
+					<choose>
+						<when test="searchCo == '내용'">
+							AND A.CONTENT LIKE CONCAT('%', #{searchNm},'%')
+						</when>
+						<when test="searchCo == '전체'">
+							AND (A.SUBJECT LIKE CONCAT('%', #{searchNm},'%')
+							OR A.CONTENT LIKE CONCAT('%', #{searchNm},'%'))
+						</when>
+						<otherwise>
+							AND A.SUBJECT LIKE CONCAT('%', #{searchNm},'%')
+						</otherwise>
+					</choose>
+				</if>
+				<if test="isNotNull(reqCd1)">
+					AND A.REQ_CD1 = #{reqCd1}
+				</if>
+				<if test="isNotNull(reqCd2)">
+					AND A.REQ_CD2 = #{reqCd2}
+				</if>
+				<if test="isNotNull(clientCd)">
+					AND A.CLIENT_CD LIKE CONCAT ('%', #{clientCd},'%')
+				</if>
+				<if test="isNotNull(regNm)">
+					<choose>
+						<when test="searchRegNmType == '등록'">
+							AND A.REG_NM LIKE CONCAT ('%', #{regNm},'%')
+						</when>
+						<when test="searchRegNmType == '수정'">
+							AND A.MODI_NM LIKE CONCAT ('%', #{regNm},'%')
+						</when>
+					</choose>
+				</if>
+				<if test="isNotNull(dispYn)">
+					AND A.DISP_YN = #{dispYn}
+				</if>
+				<if test="isNotNull(status)">
+					AND A.STATUS = #{status}
+				</if>
+				ORDER BY A.REG_DT DESC, DATA_SEQ DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	
+	<select id="getBbsSelectOne" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		SELECT A.DATA_SEQ AS dataSeq
+			,A.BBS_CD AS bbsCd
+			,A.SERVICE_TYPE AS serviceType
+			,A.SUBJECT AS subject
+			,A.CONTENT AS content
+			,A.REQ_CD1 AS reqCd1
+			,A.REQ_CD2 AS reqCd2
+			,A.PAGE_KEY AS pageKey
+			,A.HTML_URL AS htmlUrl
+			,A.VISITED AS visited
+			,A.DISP_YN AS dispYn
+			,A.CLIENT_CD AS clientCd
+			,A.ALL_CLIENT_YN AS allClientYn
+			,A.NEWS_DD AS newsDd
+			,A.COLUMNIST_NM AS columnistNm
+			,A.COLUMNIST_DD AS columnistDd
+			,A.COLUMNIST_CAREER AS columnistCareer
+			,A.COLUMNIST_MEMO AS columnistMemo
+			,A.COLUMNIST_GRADE AS columnistGrade
+			,A.INTEREST_DIV AS interestDiv
+			,A.INTEREST_DIV_ETC AS interestDiv
+			,A.REQ_TYPE AS regType
+			,A.REQ_ETC AS reqEtc
+			,A.REG_ID AS regId
+			,A.REG_COMPANY AS regCompany
+			,A.REG_DEPT AS regDept
+			,A.REG_GRADE AS regGrade
+			,A.REG_NM AS regNm
+			,A.REG_MOBILE AS regMobile
+			,A.REG_EMAIL AS regEmail
+			,DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')	AS regDt
+			,A.MODI_ID AS modiId
+			,A.MODI_NM AS modiNm
+			,A.MODI_DT AS modiDt
+			,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_CD1) AS reqCd1Nm
+			,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_CD2) AS reqCd2Nm
+			,B.DATA_SEQ AS replyDataSeq
+			,B.CONTENT AS replyContent
+			,DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i%s'),'%Y년 %m월 %d일 %H:%i')	AS inquiryRegDt
+			,(SELECT CLIENT_NM FROM MIND_CLIENT WHERE CLIENT_CD = A.CLIENT_CD) AS clientNm
+			,(SELECT IF(CLIENT_CD = 'HOME', 'Y', 'N') FROM MIND_BBS_CLIENT WHERE A.DATA_SEQ = DATA_SEQ AND CLIENT_CD = 'HOME') AS homeYn
+			,(SELECT IF(CLIENT_CD = 'SANGDAM4U', 'Y', 'N') FROM MIND_BBS_CLIENT WHERE A.DATA_SEQ = DATA_SEQ AND CLIENT_CD = 'SANGDAM4U') AS sangdamYn
+			,(SELECT IF(CLIENT_CD = 'onmaum', 'Y', 'N') FROM MIND_BBS_CLIENT WHERE A.DATA_SEQ = DATA_SEQ AND CLIENT_CD = 'onmaum') AS onmaumYn
+			,A.MAIN_START_DT
+			,A.MAIN_END_DT
+			,A.MAIN_DISP_YN
+			,A.AUTH_CD AS authCd
+			,A.CHANNEL_TYPE AS channelType
+			,A.AREA1 AS area1
+			,A.AREA2 AS area2
+		FROM MIND_BBS_DATA A LEFT OUTER JOIN MIND_BBS_DATA B ON A.DATA_SEQ = B.HIGH_DATA_SEQ
+		WHERE A.DATA_SEQ = #{dataSeq}
+	</select>
+	<select id="getBbsSelectOne2" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		SELECT A.DATA_SEQ AS dataSeq
+			,A.BBS_CD AS bbsCd
+			,'hue' AS serviceType
+			,A.SUBJECT AS subject
+			,A.CONTENT AS content
+			,A.REQ_CD1 AS reqCd1
+			,A.REQ_CD2 AS reqCd2
+			,A.PAGE_KEY AS pageKey
+			,A.HTML_URL AS htmlUrl
+			,A.VISITED AS visited
+			,A.DISP_YN AS dispYn
+			,A.ALL_CLIENT_YN AS allClientYn
+			,A.NEWS_DD AS newsDd
+			,A.COLUMNIST_NM AS columnistNm
+			,A.COLUMNIST_DD AS columnistDd
+			,A.COLUMNIST_CAREER AS columnistCareer
+			,A.COLUMNIST_MEMO AS columnistMemo
+			,A.COLUMNIST_GRADE AS columnistGrade
+			,A.INTEREST_DIV AS interestDiv
+			,A.INTEREST_DIV_ETC AS interestDiv
+			,A.REQ_TYPE AS regType
+			,A.REQ_ETC AS reqEtc
+			,A.REG_ID AS regId
+			,A.REG_COMPANY AS regCompany
+			,A.REG_DEPT AS regDept
+			,A.REG_GRADE AS regGrade
+			,A.REG_NM AS regNm
+			,A.REG_MOBILE AS regMobile
+			,A.REG_EMAIL AS regEmail
+			,DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')	AS regDt
+			,A.MODI_ID AS modiId
+			,A.MODI_NM AS modiNm
+			,A.MODI_DT AS modiDt
+			,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_CD1) AS reqCd1Nm
+			,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_CD2) AS reqCd2Nm
+			,B.DATA_SEQ AS replyDataSeq
+			,B.CONTENT AS replyContent
+			,DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i%s'),'%Y년 %m월 %d일 %H:%i')	AS inquiryRegDt
+
+		FROM HUE_BBS_DATA A LEFT OUTER JOIN MIND_BBS_DATA B ON A.DATA_SEQ = B.HIGH_DATA_SEQ
+		WHERE A.DATA_SEQ = #{dataSeq}
+	</select>
+	<select id="getBbsSelectFiles" resultType="com.ezwel.core.support.util.BBSFileData">
+		SELECT  FILE_SEQ AS fileSeq
+		       ,DATA_SEQ AS dataSeq
+		       ,DATA_TYPE AS dataType
+		       ,FILE_NM AS fileNm
+		       ,FILE_PATH AS filePath
+		       ,MEDIA_NM AS mediaNm
+		       ,MEDIA_DD AS mediaDd
+		       ,MEDIA_SUBJECT AS mediaSubject
+		       ,MEDIA_LINK AS mediaLink
+		FROM MIND_BBS_FILE
+		WHERE 1=1
+		<if test="isNotNull(dataSeq)">
+			AND DATA_SEQ = #{dataSeq}
+		</if>
+		ORDER BY FILE_SEQ DESC
+	</select>
+
+	<select id="getBbsSelectFiles2" resultType="com.ezwel.core.support.util.BBSFileData">
+		SELECT  FILE_SEQ AS fileSeq
+		       ,DATA_SEQ AS dataSeq
+		       ,DATA_TYPE AS dataType
+		       ,FILE_NM AS fileNm
+		       ,FILE_PATH AS filePath
+		       ,MEDIA_NM AS mediaNm
+		       ,MEDIA_DD AS mediaDd
+		       ,MEDIA_SUBJECT AS mediaSubject
+		       ,MEDIA_LINK AS mediaLink
+		FROM HUE_BBS_FILE
+		WHERE 1=1
+		<if test="isNotNull(dataSeq)">
+			AND DATA_SEQ = #{dataSeq}
+		</if>
+		ORDER BY FILE_SEQ DESC
+	</select>
+	
+	<delete id="fileDelete"	>
+		DELETE FROM MIND_BBS_FILE
+		<if test="isNotNull(fileSeq)">
+		WHERE file_seq = #{fileSeq}
+		</if>
+		<if test="isNotNull(dataSeq)">
+		WHERE data_seq = #{dataSeq}
+		</if>
+	</delete>
+
+	<delete id="fileDelete3"	>
+		DELETE FROM HUE_BBS_FILE
+		<if test="isNotNull(fileSeq)">
+		WHERE file_seq = #{fileSeq}
+		</if>
+		<if test="isNotNull(dataSeq)">
+		WHERE data_seq = #{dataSeq}
+		</if>
+	</delete>
+
+	<insert id="insertFileInfo" parameterType="com.ezwel.core.support.util.BBSFileDto">
+		INSERT INTO MIND_BBS_FILE (
+			 DATA_SEQ
+			,DATA_TYPE
+			,FILE_NM
+			,FILE_PATH
+		) VALUES (
+			 #{dataSeq}
+			,#{dataType}
+			,#{fileNm}
+			,#{filePath}
+		)
+	</insert>
+	<insert id="insertFileInfo2" parameterType="com.ezwel.core.support.util.BBSFileDto">
+		INSERT INTO HUE_BBS_FILE (
+			 DATA_SEQ
+			,DATA_TYPE
+			,FILE_NM
+			,FILE_PATH
+		) VALUES (
+			 #{dataSeq}
+			,#{dataType}
+			,#{fileNm}
+			,#{filePath}
+		)
+	</insert>	
+
+	<select id="getPageList" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+				SELECT DATA_SEQ  as dataSeq,
+					   HTML_URL  as htmlUrl,
+					   SUBJECT   as subject,
+					   MODI_NM   as modiNm,
+					   MODI_ID   as modiId,
+					   DATE_FORMAT(STR_TO_DATE(MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS modiDt,
+					   PAGE_KEY  as pageKey
+				  FROM MIND_BBS_DATA
+				 WHERE BBS_CD = 'page'
+				<if test="isNotNull(searchNm)">
+					AND SUBJECT LIKE CONCAT('%', #{searchNm},'%')
+				</if>
+				 ORDER BY DATA_SEQ DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+
+
+
+	<select id="getPageDetail" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		SELECT DATA_SEQ  as dataSeq,
+			   HTML_URL  as htmlUrl,
+			   SUBJECT   as subject,
+			   CONTENT   as content,
+			   MODI_ID   as modiId,
+			   MODI_DT   as modiDt,
+			   PAGE_KEY  as pageKey
+		  FROM MIND_BBS_DATA
+		 WHERE BBS_CD = 'page'
+		   AND DATA_SEQ = #{dataSeq}
+	</select>
+
+
+	<update id="modifyPageDetail">
+		UPDATE MIND_BBS_DATA
+		   SET CONTENT = #{content},
+		       SUBJECT = #{subject},
+		       HTML_URL = #{htmlUrl},
+		       PAGE_KEY = #{pageKey},
+		       MODI_NM  = #{modiNm},
+		       MODI_ID  = #{modiId},
+		       MODI_DT  = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		 WHERE DATA_SEQ = #{dataSeq}
+	</update>
+
+
+	<insert id="addPageDetail">
+		INSERT INTO MIND_BBS_DATA (
+				BBS_CD,
+				SERVICE_TYPE,
+				SUBJECT,
+				CONTENT,
+				REQ_CD1,
+				PAGE_KEY,
+				HTML_URL,
+ 				REG_ID,
+ 				REG_NM,
+				REG_DT
+		) VALUES (
+				#{bbsCd},
+				'HOME',
+				#{subject},
+				#{content},
+				#{reqCd1},
+				#{pageKey},
+				#{htmlUrl},
+ 				#{regId},
+ 				#{regNm},
+				DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertMediaLinks" >
+		INSERT INTO MIND_BBS_FILE (
+			DATA_SEQ,
+			DATA_TYPE,
+			MEDIA_NM,
+			MEDIA_DD,
+			MEDIA_SUBJECT,
+			MEDIA_LINK
+		) VALUES (
+			#{dataSeq},
+			100313,
+			#{mediaNm},
+			#{mediaDd},
+			#{mediaSubject},
+			#{mediaLink}
+		)
+	</insert>
+
+	<delete id="deleteMediaLinks">
+		DELETE FROM MIND_BBS_FILE
+		WHERE  data_seq = #{dataSeq}
+		AND	   data_type = 100313
+	</delete>
+
+	<select id="getBbsPressList" resultType="com.ezwel.core.support.util.BBSFileData">
+		SELECT FILE_SEQ AS fileSeq
+			, DATA_SEQ AS dataSeq
+			, DATA_TYPE AS dataType
+			, MEDIA_NM AS mediaNm
+			, MEDIA_DD AS mediaDd
+			, MEDIA_SUBJECT AS mediaSubject
+			, MEDIA_LINK AS mediaLink
+		FROM MIND_BBS_FILE
+		WHERE 1=1
+		AND DATA_SEQ = #{dataSeq}
+		AND DATA_TYPE = 100313
+	</select>
+
+	<select id="getInquiryList" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+				SELECT DATA_SEQ AS dataSeq
+					,BBS_CD AS bbsCd
+					,CONTENT AS content
+					,INTEREST_DIV AS interestDiv
+					,INTEREST_DIV_ETC AS interestDivEtc
+					,REQ_ETC AS reqEtc
+					,REG_COMPANY AS regCompany
+					,REG_DEPT AS regDept
+					,REG_GRADE AS regGrade
+					,REG_NM AS regNm
+					,REG_MOBILE AS regMobile
+					,REG_EMAIL AS regEmail
+					,DATE_FORMAT(STR_TO_DATE(REG_DT, '%Y%m%d%H%i'),'%Y-%m-%d %H:%i') AS regDt
+					,DATE_FORMAT(STR_TO_DATE(CONTACT_DT, '%Y%m%d%H%i'),'%Y-%m-%d %H:%i') AS contactDt
+				FROM MIND_BBS_DATA
+				WHERE 1=1
+				<if test="isNotNull(bbsCd)">
+					AND BBS_CD = #{bbsCd}
+				</if>
+				<if test="isNotNull(searchNm)">
+					AND REG_COMPANY LIKE CONCAT('%', #{searchNm},'%')
+				</if>
+				ORDER BY REG_DT DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="getInquirySelectOne" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		SELECT A.DATA_SEQ AS dataSeq
+			,A.BBS_CD AS bbsCd
+			,A.CONTENT AS content
+			,A.INTEREST_DIV AS interestDiv
+			,A.INTEREST_DIV_ETC AS interestDivEtc
+			,A.REQ_ETC AS reqEtc
+			,A.REG_COMPANY AS regCompany
+			,A.REG_DEPT AS regDept
+			,A.REG_GRADE AS regGrade
+			,A.REG_NM AS regNm
+			,A.REG_MOBILE AS regMobile
+			,A.REG_EMAIL AS regEmail
+			,A.REQ_ETC AS reqEtc
+			,DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i'),'%Y-%m-%d %H:%i') AS regDt
+			,DATE_FORMAT(STR_TO_DATE(A.CONTACT_DT, '%Y%m%d%H%i'),'%Y-%m-%d %H:%i') AS contactDt
+			,(SELECT COMM_NM FROM MIND_COMM_CD WHERE HIGH_COMM_CD = 100282 AND COMM_CD = A.REQ_TYPE) AS reqType
+			,(SELECT FILE_PATH FROM MIND_BBS_FILE WHERE DATA_SEQ = #{dataSeq} ) AS filePath
+			,(SELECT FILE_NM   FROM MIND_BBS_FILE WHERE DATA_SEQ = #{dataSeq} ) AS fileNm
+		FROM MIND_BBS_DATA A
+		WHERE 1=1
+		AND A.DATA_SEQ = #{dataSeq}
+	</select>
+
+
+	<select id="getBbsInfoList" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+				SELECT A.SERVICE_TYPE AS serviceType
+					,A.BBS_CD AS bbsCd
+					,A.BBS_TYPE AS bbsType
+					,A.BBS_NM AS bbsNm
+					,A.COMMENT AS comment
+					,A.REPLY_YN AS replyYn
+					,A.COMMENT_YN AS commentYn
+					,(SELECT OPTION_CD FROM MIND_COMM_CD WHERE COMM_NM = A.SERVICE_TYPE) AS serviceNm
+				FROM MIND_BBS_INFO A
+				WHERE 1=1
+				AND A.BBS_TYPE != '100315'
+				<if test="isNotNull(searchNm)">
+					AND A.BBS_NM LIKE CONCAT('%', #{searchNm},'%')
+				</if>
+				<if test="isNotNull(serviceType)">
+					AND A.SERVICE_TYPE = #{serviceType}
+				</if>
+				ORDER BY BBS_CD DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="getBbsInfoDetail" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		SELECT A.SERVICE_TYPE AS serviceType
+			,A.BBS_CD AS bbsCd
+			,A.BBS_TYPE AS bbsType
+			,A.BBS_NM AS bbsNm
+			,A.COMMENT AS comment
+			,A.REPLY_YN AS replyYn
+			,A.COMMENT_YN AS commentYn
+			,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.BBS_TYPE) AS bbsTypeNm
+			,(SELECT OPTION_CD FROM MIND_COMM_CD WHERE COMM_NM = A.SERVICE_TYPE) AS serviceNm
+		FROM MIND_BBS_INFO A
+		WHERE 1=1
+		AND A.BBS_CD = #{bbsCd}
+		<if test="isNotNull(serviceType)">
+			AND SERVICE_TYPE = #{serviceType}
+		</if>
+	</select>
+
+	<update id="updateBbsInfo">
+		UPDATE MIND_BBS_INFO
+		   SET BBS_NM = #{bbsNm}
+		   	  ,COMMENT = #{comment}
+		 WHERE BBS_CD = #{bbsCd}
+		 AND   SERVICE_TYPE = #{serviceType}
+	</update>
+
+	<insert id="insertBbsInfo">
+		INSERT INTO MIND_BBS_INFO (
+			SERVICE_TYPE,
+			BBS_CD,
+			BBS_TYPE,
+			BBS_NM,
+			COMMENT
+		) VALUES (
+			#{serviceType},
+			#{bbsCd},
+			#{bbsType},
+			#{bbsNm},
+			#{comment}
+		)
+	</insert>
+
+
+	<select id="getSeminarList" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+				SELECT
+					A.REG_COMPANY AS regCompany ,
+					A.REG_NM AS regNm ,
+					A.REG_DEPT AS regDept ,
+					A.REG_GRADE AS regGrade ,
+					A.REG_TEL_NUM AS regTelNum ,
+					A.REG_MOBILE AS regMobile ,
+					A.REG_EMAIL AS regEmail ,
+					(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_TYPE) AS bbsTypeNm	,
+					DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i'),'%Y-%m-%d %H:%i') AS regDt
+				FROM MIND_BBS_DATA A
+				WHERE A.BBS_CD = #{bbsCd}
+				AND A.SERVICE_TYPE = #{serviceType}
+				<if test="isNotNull(reqType)">
+					AND A.REQ_TYPE = #{reqType}
+				</if>
+				ORDER BY A.REG_DT DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="getSeminarExcelDownload" resultType="hashmap" timeout="600">
+		SELECT
+			REPLACE(@ROWNUM := @ROWNUM + 1, '.', '') AS ROWNUM,
+			(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_TYPE) AS bbsTypeNm	,
+			A.REG_COMPANY AS regCompany ,
+			A.REG_NM AS regNm ,
+			A.REG_DEPT AS regDept ,
+			A.REG_GRADE AS regGrade ,
+			A.REG_TEL_NUM AS regTelNum ,
+			A.REG_MOBILE AS regMobile ,
+			A.REG_EMAIL AS regEmail ,
+			DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i'),'%Y-%m-%d %H:%i') AS regDt
+		FROM MIND_BBS_DATA A, (SELECT @ROWNUM := 0) R
+		WHERE A.BBS_CD = 'enterSeminar'
+		AND A.SERVICE_TYPE = 'HOME'
+		<if test="isNotNull(reqType)">
+			AND A.REQ_TYPE = #{reqType}
+		</if>
+		ORDER BY A.REG_DT DESC
+	</select>
+	
+	<select id="getSeminarExcelDownload_BACK" resultType="hashmap" timeout="600">
+		SELECT
+			REPLACE(@ROWNUM := @ROWNUM + 1, '.', '') AS ROWNUM,
+			(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_TYPE) AS bbsTypeNm	,
+			A.REG_COMPANY AS regCompany ,
+			A.REG_NM AS regNm ,
+			A.REG_DEPT AS regDept ,
+			A.REG_GRADE AS regGrade ,
+			A.REG_TEL_NUM AS regTelNum ,
+			A.REG_MOBILE AS regMobile ,
+			A.REG_EMAIL AS regEmail ,
+			DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i'),'%Y-%m-%d %H:%i') AS regDt
+		FROM MIND_BBS_DATA A, (SELECT @ROWNUM := 0) R
+		WHERE A.BBS_CD = 'enterSeminar'
+		AND A.SERVICE_TYPE = 'HOME'
+		<if test="isNotNull(reqType)">
+			AND A.REQ_TYPE = #{reqType}
+		</if>
+		ORDER BY A.REG_DT DESC
+	</select>
+
+	<select id="getClientList" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		SELECT   A.DATA_SEQ AS dataSeq
+				,  B.CLIENT_CD AS clientCd
+				,  B.CLIENT_NM AS clientNm
+		FROM MIND_BBS_CLIENT A RIGHT JOIN (SELECT CLIENT_CD, CLIENT_NM FROM MIND_CLIENT WHERE USE_YN = 'Y') B
+			ON A.CLIENT_CD = B.CLIENT_CD
+			<if test="isNotNull(dataSeq)">
+				AND A.DATA_SEQ = #{dataSeq}
+			</if>
+		    <if test="isNull(dataSeq)">
+				AND A.DATA_SEQ IS NULL
+		    </if>
+	</select>
+	<select id="getClientList2" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		SELECT   A.DATA_SEQ AS dataSeq
+				,  B.CENTER_SEQ AS clientCd
+				,  B.CENTER_NM AS clientNm
+		FROM HUE_BBS_CLIENT A RIGHT JOIN HUE_CENTER B
+			ON A.CENTER_SEQ = B.CENTER_SEQ
+			<if test="isNotNull(dataSeq)">
+				AND A.DATA_SEQ = #{dataSeq}
+			</if>
+	</select>
+	
+	<select id="getMentalDispYn" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		SELECT   DATA_SEQ AS dataSeq
+				,  if(COUNT(CLIENT_CD), 0, #{clientCd}) AS clientCd
+		FROM MIND_BBS_CLIENT  
+		WHERE 1=1 
+			<if test="isNotNull(dataSeq)">
+				AND DATA_SEQ = #{dataSeq}
+			</if>
+		    <if test="isNull(dataSeq)">
+				AND DATA_SEQ IS NULL
+		    </if>
+		    <if test="isNotNull(clientCd)">
+				AND CLIENT_CD = #{clientCd}
+		    </if>
+	</select>
+	
+	<select id="getDataSeq" resultType="String">
+		SELECT DATA_SEQ AS dataSeq
+		FROM MIND_BBS_DATA
+		WHERE 1=1
+		<if test="isNotNull(bbsCd)">
+	  		AND BBS_CD = #{bbsCd}
+	    </if>
+	    <if test="isNotNull(serviceType)">
+			AND SERVICE_TYPE = #{serviceType}
+		</if>
+		<if test="isNotNull(reqCd1)">
+			AND REQ_CD1 = #{reqCd1 }
+		</if>
+		<if test="isNotNull(pageKey)">
+			AND PAGE_KEY = #{pageKey}
+		</if>
+	</select>
+
+	<insert id="insertBbsClient">
+		INSERT INTO MIND_BBS_CLIENT (
+			DATA_SEQ,
+			CLIENT_CD
+		) VALUES (
+			#{dataSeq},
+			#{clientCd}
+		)
+	</insert>
+	<insert id="insertBbsClient2">
+		INSERT INTO HUE_BBS_CLIENT (
+			DATA_SEQ,
+			CENTER_SEQ
+		) VALUES (
+			#{dataSeq},
+			#{clientCd}
+		)
+	</insert>
+	<delete id="deleteBbsClient">
+		DELETE FROM MIND_BBS_CLIENT
+		WHERE DATA_SEQ = #{dataSeq }
+	</delete>
+		<delete id="deleteBbsClient2">
+		DELETE FROM HUE_BBS_CLIENT
+		WHERE DATA_SEQ = #{dataSeq }
+	</delete>
+
+	<update id="updateBbsPublicEpilogue" parameterType="com.ezwel.admin.service.bbs.dto.BBSAddDto">
+		UPDATE MIND_BBS_DATA
+		SET MODI_ID = #{modiId}
+		    <if test="isNull(highYn)">
+		       ,CONTENT = #{content}
+		    </if>
+		    <if test="isNotNull(dispYn)">
+				,DISP_YN = #{dispYn}
+			</if>
+			<if test="isNotNull(reqCd1)">
+				,REQ_CD1 = #{reqCd1}
+			</if>
+		    <if test="isNotNull(replyYn)">
+				,REPLY_YN = #{replyYn}
+			</if>
+		    <if test="isNotNull(status)">
+				,STATUS = #{status}
+			</if>
+			<if test="isNotNull(modiNm)">
+				,MODI_NM = #{modiNm}
+				,MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			</if>
+		WHERE DATA_SEQ = #{dataSeq}
+	</update>
+
+	<insert id="addBbsPublicReply">
+		INSERT INTO MIND_BBS_DATA (
+			 BBS_CD
+			,HIGH_DATA_SEQ
+			,CLIENT_CD
+<!-- 			,REPLY_YN -->
+			,SERVICE_TYPE
+			,CONTENT
+			,STATUS
+			,REG_ID
+			,REG_NM
+			,REG_DT
+		) VALUES (
+			 #{bbsCd}
+			,#{highDataSeq}
+			,#{clientCd}
+<!-- 			,#{replyYn} -->
+			,'SANGDAM4U'
+			,#{content}
+			,#{status}
+			,#{regId}
+			,#{regNm}
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+	</insert>
+	
+	<select id="getPartnerMainNotice" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		SELECT 
+			A.DATA_SEQ AS dataSeq
+			,A.BBS_CD AS bbsCd
+			,A.SERVICE_TYPE AS serviceType
+			,A.SUBJECT AS subject
+			,A.CONTENT AS content
+			,A.REQ_CD1 AS reqCd1
+			,A.REQ_CD2 AS reqCd2
+			,A.PAGE_KEY AS pageKey
+			,A.HTML_URL AS htmlUrl
+			,A.VISITED AS visited
+			,A.DISP_YN AS dispYn
+			,A.CLIENT_CD AS clientCd
+			,A.ALL_CLIENT_YN AS allClientYn
+			,A.NEWS_DD AS newsDd
+			,A.COLUMNIST_NM AS columnistNm
+			,A.COLUMNIST_DD AS columnistDd
+			,A.COLUMNIST_CAREER AS columnistCareer
+			,A.COLUMNIST_MEMO AS columnistMemo
+			,A.COLUMNIST_GRADE AS columnistGrade
+			,A.INTEREST_DIV AS interestDiv
+			,A.INTEREST_DIV_ETC AS interestDiv
+			,A.REQ_TYPE AS regType
+			,A.REQ_ETC AS reqEtc
+			,A.REG_ID AS regId
+			,A.REG_COMPANY AS regCompany
+			,A.REG_DEPT AS regDept
+			,A.REG_GRADE AS regGrade
+			,A.REG_NM AS regNm
+			,A.REG_MOBILE AS regMobile
+			,A.REG_EMAIL AS regEmail
+			,DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')	AS regDt
+			,A.MODI_ID AS modiId
+			,A.MODI_NM AS modiNm
+			,A.MODI_DT AS modiDt
+			,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_CD1) AS reqCd1Nm
+			,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_CD2) AS reqCd2Nm
+		FROM MIND_BBS_DATA A
+		WHERE SERVICE_TYPE = 'PARTNER' AND BBS_CD = 'notice'
+		AND MAIN_DISP_YN = 'Y'
+		AND A.REQ_CD1 ='101231'
+		AND DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') BETWEEN MAIN_START_DT AND MAIN_END_DT
+		ORDER BY A.DATA_SEQ DESC
+		LIMIT 0, 1
+	</select>
+	
+	<select id="getPartnerMainRecruit" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		SELECT 
+			A.DATA_SEQ AS dataSeq
+			,A.BBS_CD AS bbsCd
+			,A.SERVICE_TYPE AS serviceType
+			,A.SUBJECT AS subject
+			,A.CONTENT AS content
+			,A.REQ_CD1 AS reqCd1
+			,A.REQ_CD2 AS reqCd2
+			,A.PAGE_KEY AS pageKey
+			,A.HTML_URL AS htmlUrl
+			,A.VISITED AS visited
+			,A.DISP_YN AS dispYn
+			,A.CLIENT_CD AS clientCd
+			,A.ALL_CLIENT_YN AS allClientYn
+			,A.NEWS_DD AS newsDd
+			,A.COLUMNIST_NM AS columnistNm
+			,A.COLUMNIST_DD AS columnistDd
+			,A.COLUMNIST_CAREER AS columnistCareer
+			,A.COLUMNIST_MEMO AS columnistMemo
+			,A.COLUMNIST_GRADE AS columnistGrade
+			,A.INTEREST_DIV AS interestDiv
+			,A.INTEREST_DIV_ETC AS interestDiv
+			,A.REQ_TYPE AS regType
+			,A.REQ_ETC AS reqEtc
+			,A.REG_ID AS regId
+			,A.REG_COMPANY AS regCompany
+			,A.REG_DEPT AS regDept
+			,A.REG_GRADE AS regGrade
+			,A.REG_NM AS regNm
+			,A.REG_MOBILE AS regMobile
+			,A.REG_EMAIL AS regEmail
+			,DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')	AS regDt
+			,A.MODI_ID AS modiId
+			,A.MODI_NM AS modiNm
+			,A.MODI_DT AS modiDt
+			,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_CD1) AS reqCd1Nm
+			,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_CD2) AS reqCd2Nm
+		FROM MIND_BBS_DATA A
+		WHERE SERVICE_TYPE = 'PARTNER' AND BBS_CD = 'notice'
+		AND MAIN_DISP_YN = 'Y'
+		AND A.REQ_CD1 ='101232'
+		AND DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') BETWEEN MAIN_START_DT AND MAIN_END_DT
+		ORDER BY A.DATA_SEQ DESC
+		LIMIT 0, 1
+	</select>
+	
+		
+	<select id="getSangdamCount" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		SELECT 
+		(SELECT count(*) as cnt FROM MIND_COUNSEL WHERE	 COUNSEL_CD != '91756' AND CENTER_SEQ = #{centerSeq}	AND	STATUS in ('100520', '100521', '100884')) as processCsCnt,
+		(SELECT count(*) as cnt FROM MIND_COUNSEL WHERE	 COUNSEL_CD != '91756' AND CENTER_SEQ = #{centerSeq}	AND	STATUS in ('100520', '100521', '100884') and DATE_FORMAT(Schedule_dt, '%Y-%m-%d') = curdate()) as todayCsCnt,
+		(SELECT count(*) AS	cnt FROM MIND_MGR_SUB A , MIND_MGR B ,ACL_USER_AUTH C	
+			WHERE 1=1
+				AND A.USER_ID = B.USER_ID
+					AND B.CENTER_SEQ = 10000072
+					AND B.USER_TYPE = '3001'
+					AND C.USER_AUTH_KEY = CONCAT(B.USER_ID,'3001')) as counselorCnt,
+		(SELECT count(*) as cnt FROM MIND_MGR A WHERE 1=1 AND A.CENTER_SEQ = #{centerSeq} AND A.USER_TYPE = '3001' AND A.MGR_STATUS = 'S') AS unWritenCsCnt,
+		(SELECT SUM(IFNULL(A.EXTENSION_NUM, '1')) as cnt
+				FROM MIND_COUNSEL A, MIND_CLIENT B, MIND_COUNSEL_INTAKE D, MIND_MGR E
+				WHERE A.CLIENT_CD = B.CLIENT_CD
+					AND A.CLIENT_CD = D.CLIENT_CD
+					AND A.COUNSELOR_ID = E.USER_ID
+					AND A.INTAKE_CD = D.INTAKE_CD
+					AND A.CANCEL_DT IS NULL
+					AND A.COUNSEL_CD != '91756'
+					AND E.CENTER_SEQ = #{centerSeq}
+					AND (A.COUNSEL_TYPE = 100435 OR A.RECORD_CHECK_YN = 'Y')) AS extenCsCnt
+		FROM MIND_BBS_DATA MIND_BBS_DATA Limit 1
+	</select>
+	
+	<select id="getPartnerMain" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		SELECT 
+			A.DATA_SEQ AS dataSeq
+			,A.BBS_CD AS bbsCd
+			,A.SERVICE_TYPE AS serviceType
+			,A.SUBJECT AS subject
+			,A.CONTENT AS content
+			,A.REQ_CD1 AS reqCd1
+			,A.REQ_CD2 AS reqCd2
+			,A.PAGE_KEY AS pageKey
+			,A.HTML_URL AS htmlUrl
+			,A.VISITED AS visited
+			,A.DISP_YN AS dispYn
+			,A.CLIENT_CD AS clientCd
+			,A.ALL_CLIENT_YN AS allClientYn
+			,A.NEWS_DD AS newsDd
+			,A.COLUMNIST_NM AS columnistNm
+			,A.COLUMNIST_DD AS columnistDd
+			,A.COLUMNIST_CAREER AS columnistCareer
+			,A.COLUMNIST_MEMO AS columnistMemo
+			,A.COLUMNIST_GRADE AS columnistGrade
+			,A.INTEREST_DIV AS interestDiv
+			,A.INTEREST_DIV_ETC AS interestDiv
+			,A.REQ_TYPE AS regType
+			,A.REQ_ETC AS reqEtc
+			,A.REG_ID AS regId
+			,A.REG_COMPANY AS regCompany
+			,A.REG_DEPT AS regDept
+			,A.REG_GRADE AS regGrade
+			,A.REG_NM AS regNm
+			,A.REG_MOBILE AS regMobile
+			,A.REG_EMAIL AS regEmail
+			,DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')	AS regDt
+			,A.MODI_ID AS modiId
+			,A.MODI_NM AS modiNm
+			,A.MODI_DT AS modiDt
+			,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_CD1) AS reqCd1Nm
+			,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = A.REQ_CD2) AS reqCd2Nm
+		FROM MIND_BBS_DATA A
+		WHERE SERVICE_TYPE = 'PARTNER' AND BBS_CD = 'notice'
+		AND MAIN_DISP_YN = 'Y'
+		AND DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') BETWEEN MAIN_START_DT AND MAIN_END_DT
+		ORDER BY A.DATA_SEQ DESC
+		LIMIT 0, 1
+	</select>
+</mapper>

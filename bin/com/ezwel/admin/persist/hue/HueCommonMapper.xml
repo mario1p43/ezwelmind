@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.hue.HueCommonMapper">
+
+	<select id="getUserNameList" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		SELECT 
+			USER_ID AS  value , USER_NM as title
+ 		FROM MIND_MGR 
+ 		WHERE USE_YN = 'Y' AND MGR_FLAG ='C' and USER_TYPE='3001' and MGR_STATUS='Y'
+ 		<if test="isNotNull(checkUserId)">
+			AND USER_ID=  #{checkUserId} 
+		</if>
+	</select>
+
+	<select id="getUserNameList2" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		select 
+			USER_ID as userId from hue_counsel_mgr 
+		where INTAKE_CD=#{intakeCd} 
+		and USER_ID=#{userNm}
+		<if test="isNotNull(counselNo)">
+			AND COUNSEL_NO != #{counselNo}
+		</if>
+		 limit 1
+	</select>
+
+	<select id="getFamilyList" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		SELECT 
+			FAMILY_CD as familyCd
+			,NAME	as fname		
+			,RELATION as frelation
+			,AGE as fage
+			,JOB as fjob
+			,GRADE as fgrade
+ 		FROM hue_counsel_family 
+ 		WHERE INTAKE_CD = #{dataSeq}
+	</select>
+	
+</mapper>

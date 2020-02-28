@@ -1,0 +1,133 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ include file="/WEB-INF/jsp/layout/inc/tags.jspf"%>
+<html>
+<head>
+<title>마음왕진 | 참여자 목록</title>
+<link href="${url:resource('/resources/js/plugin/jquery-ui-1.8.9.custom-datepicker.css')}" rel="stylesheet" type="text/css" />
+<link href="${url:resource('/resources/js/plugin/jquery.timepicker.min.css')}" rel="stylesheet" type="text/css" />
+<script src="${url:resource('/resources/js/plugin/jquery.timepicker.min.js')}"></script>
+<script src="${url:resource('/resources/js/jquery-ui-1.10.3.min.js')}"></script>
+<script language="JavaScript" type="text/javascript" src="/resources/js/bcrypt.js"></script>
+
+<script type="text/javascript">
+j$(document).ready(function(){
+	
+});
+
+var DISPATCH = {
+	detail : function(seq) {
+		location.href="/madm/dispatch/userForm?counselUserSeq="+seq;
+	},
+	putCounsel : function(userKey, clientCd) {
+		location.href="/madm/counsel/counselOrder?searchClientCd="+clientCd+"&searchUserKey="+userKey;
+	}
+};
+</script>
+</head>
+<body>
+
+<form:form id="searchForm" modelAttribute="dto" action="/madm/dispatch/list" method="GET">
+<table cellpadding="0" cellspacing="0" border="0" width="95%">
+<tr>
+	<td height="20px"></td>
+</tr>
+
+<tr>
+	<td>
+		<!-- 버튼 영역 시작 -->
+		<table cellpadding="5" cellspacing="0" border="0" width="100%" align="center" style="border-bottom: 1px solid silver;">
+			<tr>
+				<td align="left" class="subtitle">마음왕진 참여자 목록</td>
+			</tr>
+		</table>
+		<!-- 버튼 영역 종료 -->
+
+		<table cellpadding="0" cellspacing="0" border="0" width="100%" align="center">
+			<tr>
+				<td>
+					<table cellpadding="5" cellspacing="0" border="0" width="100%" style="border-collapse:collapse; margin: 15px auto 5px auto;">
+						<tr>
+							<td align="left" width="30%">
+								<strong>
+									총 ${paging.totalCount}건
+								</strong>
+							</td>
+							<%-- <td align="right">
+								<input type="text" id="subject" name="subject" placeholder="검색어를 입력 하세요." value="${param.pollNm}" style="width:200px; height:20px;"/>
+							</td>
+							<td id="btn02" width="40px">
+								<a href="#">
+									<span id="searchBtn">검색</span>
+								</a>
+							</td> --%>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table class="" cellpadding="5" align="" id="chRow" cellspacing="0" border="1" width="100%" style="text-align:center; border-collapse:collapse;">
+						<thead>
+							<tr>
+								<th width="10%">순번</th>
+								<th width="20%">성명</th>
+								<th width="10%">아이디</th>
+								<th width="10%">사번</th>
+								<th width="10%">전화번호</th>
+								<th width="10%">이메일</th>
+								<th width="10%">등록일시</th>
+								<th width="10%">인테이크 수</th>
+								<th width="10%">유저키</th>
+							</tr>
+						</thead>
+
+						<tbody>
+						<c:forEach var="list" items="${paging.list}" varStatus="status">
+							<tr align="" height="50px" id="${list.counselUserSeq}">
+								<td>
+									${(paging.totalCount - ((paging.currentPage-1) * paging.pageSize)) - status.index}
+								</td>
+								<td><a href="#none" class="userList" onclick="DISPATCH.detail('${list.counselUserSeq}')"><strong>${list.userNm }</strong></td>
+								<td>${list.userId}</td>
+								<td>${list.empNum}</td>
+								<td>${list.email}</td>
+								<td>${list.mobile}</td>
+								<td>${list.regDt}</td>
+								<td>${list.intakeCount}</td>
+								<td>
+									<c:choose>
+										<c:when test="${!empty list.userKey }">
+											<a href="#none" class="userList" onclick="DISPATCH.putCounsel('${list.userKey}', '${list.clientCd }')"><strong>${list.userKey }</strong>
+										</c:when>
+										<c:otherwise>
+											<b style="color:red">미연결</b>
+										</c:otherwise>
+									</c:choose>
+								</td>
+							</tr>
+						</c:forEach>
+						</tbody>
+					</table>
+					</div>
+					<br>
+					<table cellpadding="2" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
+						<tr>
+							<td align="center">
+  								<ui:paging value="${paging}"
+  									btnFirst="${url:img('/images/btn_first.jpg')}"
+  									btnPrev="${url:img('/images/btn_prev.jpg')}"
+  									btnNext="${url:img('/images/btn_next.jpg')}"
+  									btnLast="${url:img('/images/btn_last.jpg')}" />
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+</table>
+</form:form>
+</body>
+</html>
+

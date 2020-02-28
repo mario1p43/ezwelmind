@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.employ.EmployMapper">
+
+	<select id="getEmpList" resultType="com.ezwel.admin.domain.entity.employ.EmployData">
+		SELECT CLIENT_NM AS clientNm
+				,CLIENT_CD AS clientCd
+		FROM MIND_CLIENT
+		WHERE CLIENT_CD NOT IN ('api', 'test-mind')
+		ORDER BY client_nm
+	</select>
+	
+	<select id="selectCounselorId" resultType="String">
+		select user_id as userId 
+		from mind_mgr_sub
+		where user_id = #{counselorId}
+	</select>
+	
+	<select id="getList" resultType="com.ezwel.admin.domain.entity.employ.EmployData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+			SELECT MC.CLIENT_CD AS clientCd 
+				,MC.CLIENT_NM AS clientNm
+				,MU.USER_KEY AS userKey
+				,MU.USER_NM AS userNm
+				,MU.RRN AS rrn
+				,MU.GENDER AS gender
+				,MU.USER_ID AS userId
+				,MU.EMP_NUM AS empNum
+				,MU.USE_YN AS useYn
+				,MU.USER_STATUS AS userStatus
+		 		,MCC.COMM_NM AS userStatusNm
+			FROM MIND_USER MU 
+					JOIN MIND_CLIENT MC
+						ON MC.CLIENT_CD = MU.CLIENT_CD
+					JOIN MIND_CLIENT_COMM_CD MCC
+						ON MU.CLIENT_CD = MCC.CLIENT_CD
+					AND MU.USER_STATUS = MCC.COMM_CD
+			WHERE 1=1
+				<if test="isNotNull(searchClientCd)">
+				 	AND MC.CLIENT_CD = #{searchClientCd}
+				</if>
+				<if test="isNotNull(searchStatustmp)">
+				    AND MU.USER_STATUS in
+					    <foreach collection="searchStatus" item="status" open="(" close=")" separator=",">
+							#{status}
+						</foreach>
+				</if>
+				<if test="isNotNull(searchUseYntmp)">
+					AND MU.USE_YN in 
+						<foreach collection="searchUseYn" item="use" open="(" close=")" separator=",">
+							#{use}
+						</foreach>
+				</if>
+				<if test="isNotNull(searchRrn)">	
+					AND MU.RRN = #{searchRrn}
+				</if>
+				<if test="isNotNull(searchUserNm)">
+					AND MU.USER_NM LIKE CONCAT('%', #{searchUserNm},'%')
+				</if>
+				<if test="isNotNull(searchEmp) and selectEmp=='id'">
+					AND MU.USER_ID LIKE CONCAT('%', #{searchEmp},'%')
+				</if>
+				<if test="isNotNull(searchEmp) and selectEmp=='empnum'">
+					AND MU.EMP_NUM LIKE CONCAT('%', #{searchEmp},'%')
+				</if>
+				<if test="isNotNull(searchUserKey)">
+					AND MU.USER_KEY LIKE CONCAT('%', #{searchUserKey},'%')
+				</if>
+		<choose>
+				<when test="pageCommonFlag == true">
+					) A
+				</when>
+				<otherwise>
+					LIMIT #{firstIndex} , #{pageSize}
+				</otherwise>
+
+		</choose>
+	</select>
+	
+	<select id="getListExcel" resultType="com.ezwel.admin.domain.entity.employ.EmployData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+			SELECT MC.CLIENT_CD AS clientCd 
+				,MC.CLIENT_NM AS clientNm
+				,MU.USER_KEY AS userKey
+				,MU.USER_NM AS userNm
+				,MU.RRN AS rrn
+				,MU.GENDER AS gender
+				,MU.USER_ID AS userId
+				,MU.EMP_NUM AS empNum
+				,MU.USE_YN AS useYn
+				,MU.USER_STATUS AS userStatus
+		 		,MCC.COMM_NM AS userStatusNm
+		 		,AES_DECRYPT(UNHEX(MU.MOBILE),'1234') AS mobile 
+		 		,DATE_FORMAT(MU.IPIN_AUTH_DT,'%Y-%m-%d %H:%i:%s') AS ipinAuthDt
+			FROM MIND_USER MU 
+					JOIN MIND_CLIENT MC
+						ON MC.CLIENT_CD = MU.CLIENT_CD
+					JOIN MIND_CLIENT_COMM_CD MCC
+						ON MU.CLIENT_CD = MCC.CLIENT_CD
+					AND MU.USER_STATUS = MCC.COMM_CD
+			WHERE 1=1
+				<if test="isNotNull(searchClientCd)">
+				 	AND MC.CLIENT_CD = #{searchClientCd}
+				</if>
+				<if test="isNotNull(searchStatustmp)">
+				    AND MU.USER_STATUS in (${searchStatustmp}) 	
+				</if>
+				<if test="isNotNull(searchUseYntmp)">
+					AND MU.USE_YN in (${searchUseYntmp})
+				</if>
+				<if test="isNotNull(searchRrn)">	
+					AND MU.RRN = #{searchRrn}
+				</if>
+				<if test="isNotNull(searchUserNm)">
+					AND MU.USER_NM LIKE CONCAT('%', #{searchUserNm},'%')
+				</if>
+				<if test="isNotNull(searchEmp) and selectEmp=='id'">
+					AND MU.USER_ID LIKE CONCAT('%', #{searchEmp},'%')
+				</if>
+				<if test="isNotNull(searchEmp) and selectEmp=='empnum'">
+					AND MU.EMP_NUM LIKE CONCAT('%', #{searchEmp},'%')
+				</if>
+				<if test="isNotNull(searchUserKey)">
+					AND MU.USER_KEY LIKE CONCAT('%', #{searchUserKey},'%')
+				</if>
+		<if test="pageCommonFlag == true">
+					) A
+		</if>
+	</select>
+	
+	<update id="modify"  parameterType="com.ezwel.admin.service.employee.dto.EmployeeDto">
+		UPDATE MIND_USER
+		SET USER_NM = #{userNm}
+			,RRN = #{rrn}
+			,EMP_NUM = #{empNum}
+		WHERE USER_KEY = #{userKey}
+	</update>
+	
+	<update id="initpwd"  parameterType="com.ezwel.admin.service.employee.dto.EmployeeDto">
+		UPDATE MIND_USER
+		SET USER_PWD = #{userPwd}
+			,PWD_IMSI_YN = 'Y'
+		WHERE USER_KEY = #{userKey}
+	</update>
+	
+	<select id="getDetail" resultType="com.ezwel.admin.domain.entity.employ.EmployData">
+		SELECT 
+			MC.CLIENT_CD AS clientCd
+			,MC.CLIENT_NM AS clientNm
+			,MU.USER_KEY AS userKey
+			,MU.RRN AS rrn
+			,MU.USER_NM AS userNm
+			,MU.GENDER AS gender
+			,(CASE MU.GENDER WHEN 'M' THEN '남성' WHEN 'F' THEN '여성' WHEN NULL THEN '-' END) AS genderNm
+			,MU.USER_ID AS userId
+			,MU.EMP_NUM AS empNum
+			,LEFT(MU.RRN,6) AS rrn
+			,DATE_FORMAT(BIRTH_DD,'%Y년 %m월 %d일') AS birthDd
+			,MC.ADDR1 AS addr1
+			,MC.ADDR2 AS addr2
+			,MC.TEL_NUM AS telNum
+			,AES_DECRYPT(UNHEX(MU.HOME_TEL),'1234')  AS homeTel
+			,AES_DECRYPT(UNHEX(MU.MOBILE),'1234')  AS mobile
+			,MU.EMAIL AS email
+			,MU.BRANCH_CD AS branchCd
+			,(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE COMM_CD = BRANCH_CD AND CLIENT_CD = #{clientCd} ) AS branchNm
+			,MU.DEPT_CD AS deptCd
+			,(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE COMM_CD = DEPT_CD AND CLIENT_CD = #{clientCd} ) AS deptNm
+			,MU.TEAM_CD AS teamCd
+			,(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE COMM_CD = TEAM_CD AND CLIENT_CD = #{clientCd} ) AS teamNm
+			,MU.PART_CD AS partCd
+			,(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE COMM_CD = PART_CD AND CLIENT_CD = #{clientCd} ) AS partNm
+			,MU.USER_STATUS AS userStatus
+			,(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE COMM_CD = USER_STATUS AND CLIENT_CD = #{clientCd} ) AS userStatusNm
+			,MU.GRADE_CD AS gradeCd
+			,(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE COMM_CD = GRADE_CD AND CLIENT_CD = #{clientCd} ) AS gradeNm
+			,MU.IPIN_DI AS ipinDi
+			,MU.CLIENT_MGR_YN
+		FROM MIND_USER MU JOIN MIND_CLIENT MC
+				ON MU.CLIENT_CD = MC.CLIENT_CD
+		WHERE MU.USER_KEY = #{userKey}
+	</select>
+	
+	<select id="getAgree" resultType="com.ezwel.admin.domain.entity.employ.EmployData">
+		SELECT AGREE_CD AS agreeCd
+				,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = AGREE_CD) agreeNm
+				,AGREE_YN AS agreeYn
+				,(CASE AGREE_YN WHEN 'Y' THEN '동의' WHEN 'N' THEN '미동의' END) agree
+				,DATE_FORMAT(agree_dt,'%Y-%m-%d %H:%i:%s') AS agreeDt
+		FROM MIND_USER_AGREE
+		WHERE USER_KEY = #{userKey}
+		AND AGREE_CD = '100389'
+	</select>
+	
+	<select id="getInterest" resultType="com.ezwel.admin.domain.entity.employ.EmployData">
+		SELECT INTEREST_CD AS interestCd
+				,HIGH_COMM_CD AS highCd
+				,COMM_NM AS interestNm
+		FROM MIND_USER_INTEREST MUI JOIN MIND_COMM_CD MCC
+				ON MUI.INTEREST_CD = MCC.COMM_CD
+		WHERE USER_KEY = #{userKey}
+			AND MCC.HIGH_COMM_CD = #{highCode}
+	</select>
+	
+	<select id="getStatus" resultType="com.ezwel.admin.domain.entity.employ.EmployData">
+		SELECT CLIENT_CD AS clientCd
+				,HIGH_COMM_CD AS highCd
+				,COMM_NM AS commNm
+				,COMM_CD AS commCd
+		FROM MIND_CLIENT_COMM_CD
+		WHERE HIGH_COMM_CD = '100001'
+			AND CLIENT_CD = #{clientCd}
+	</select>	
+	
+	<select id="checkClientCd" resultType="integer">
+		SELECT COUNT(*)
+		FROM MIND_CLIENT
+		WHERE CLIENT_CD = #{searchClientCd}
+	</select>
+	
+	<insert id="insertCounselIntake" parameterType="hashmap" keyProperty="intakeCd" useGeneratedKeys="true" >
+		insert into mind_counsel_intake (
+			CLIENT_CD,
+			USER_KEY,
+			HIGH_INTAKE_CD,
+			RELATION,
+			COUNSEL_NM,
+			GENDER,
+			RRN,
+			CHANNEL_TYPE,			
+			COUNSEL_DIV,
+			COUNSEL_TYPE,
+			CENTER_SEQ,
+			EDUCATION,
+			SESSION,
+			MOBILE,
+			EMAIL,
+			CAUSE,
+			MEMO,
+			JOB,
+			STATUS,		
+			INTAKE_NUM,
+			<!-- RECORD_CHECK_YN, -->			
+			REG_DT,
+			REG_ID
+			) values (
+			 #{clientCd}
+			,#{userKey}
+			,'-1'
+			,#{relation}
+			,#{counselNm}
+			,#{gender}
+			,#{rrn}
+			,#{channelType}			
+			,#{counselDiv}
+			,#{counselType}
+			,#{counselCenter}
+			,#{education}
+			,#{session}
+			,HEX(AES_ENCRYPT(#{mobile},'1234'))
+			,#{email}
+			,#{cause}
+			,#{memo}
+			,#{job}
+			,#{intakeStatus}
+			,1
+			<!-- ,#{recordCheckYn} -->
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			,#{mgrId}
+			)
+	</insert>
+	
+	<select id="selectIntakeCd" parameterType="hashmap" resultType="String">
+		select d.intake_cd
+		from  mind_counsel c
+			 ,mind_counsel_intake d
+		where c.intake_cd = d.intake_cd
+		and d.client_cd = #{clientCd}
+		and d.user_key = #{userKey}
+		and d.counsel_nm = #{counselNm}
+		and c.counselor_id = #{counselorId}
+		order by c.intake_cd desc
+		limit 1
+	</select>
+	
+	<update id="updateCounselIntake" parameterType="hashmap" >
+		update   mind_counsel_intake a
+       			,mind_counsel_intake b
+		set a.intake_num = b.intake_num + 1
+		where a.intake_cd = b.intake_cd
+		and a.intake_cd = #{intakeCd}
+	</update>
+	<select id="selectCntSchedule">
+			select count(*) as Count from 
+				mind_schedule
+	</select>
+	
+	
+	<insert id="insertSchedule" parameterType="hashmap" keyProperty="scheduleSeq" useGeneratedKeys="true" >
+		insert into mind_schedule (
+			 center_seq
+			,user_id
+			,holiday_yn
+			,ymd
+			,schedule_type
+			,reg_dt
+			,reg_id			
+		) values (
+			 #{counselCenter}
+			,#{counselorId}
+			,'N'
+			,left(#{scheduleDt}, 8)
+			,100562
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			,#{mgrId}
+		)
+	</insert>
+	
+	<insert id="insertCounsel" parameterType="hashmap" keyProperty="counselCd" useGeneratedKeys="true" >
+		insert into mind_counsel (
+			 intake_cd
+			,client_cd
+			,user_key
+			,category_cd
+			,center_seq
+			,schedule_seq
+			,counsel_dt
+			,counsel_type
+			,counselor_id
+			,counsel_price
+			,status
+			,record_status
+			,memo
+			,schedule_dt
+			,extension_status
+			,extension_num
+			,reg_dt
+			,reg_id
+			,sms_result_yn
+		) values (
+		     #{intakeCd}
+			,#{clientCd}
+			,#{userKey}
+			,#{counselDiv}
+			,#{counselCenter}
+			,#{scheduleSeq}
+			,#{scheduleDt}
+			,#{counselType}
+			,#{counselorId}
+			,#{orderAmt}
+			,#{status}
+			,#{recordStatus}
+			,#{memo}
+			,#{scheduleDt}
+			,#{extensionStatus}
+			,#{extensionNum}
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			,#{mgrId}
+			,'Y'
+		)
+	</insert>
+	
+	<insert id="insertCounselRecord" parameterType="hashmap" keyProperty="recordCd" useGeneratedKeys="true" >
+		insert into mind_counsel_record (
+			 counsel_cd
+			,subject
+			,main_issue
+			,goal
+			,intervention
+			,memo
+			,risks
+			,risk_reason
+			,reg_dt
+			,reg_id
+		) values (
+			 #{counselCd}
+			,#{cause}
+			,#{mainIssue}
+			,#{goal}
+			,#{intervention}
+			,#{memo}
+			,#{risks}
+			,#{riskReason}
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			,#{mgrId}
+		)
+	</insert>
+	
+	<insert id="insertCounselRecordTxt" parameterType="hashmap">
+		insert into mind_counsel_record_txt (
+			 record_cd
+			,record_type
+			,content
+		) values 
+		 (#{recordCd}, 100644, #{counselContents})
+		,(#{recordCd}, 100642, #{counselorOpinion})
+		,(#{recordCd}, 100643, #{afterPlan})
+	</insert>
+	
+	<insert id="insertCounselPlan" parameterType="hashmap">
+		insert into mind_counsel_plan (
+			 intake_cd
+			,client_cd
+			,center_seq
+			,counselor_id
+			,final_goal
+			,course_goal
+			,counsel_plan			
+			,reg_dt
+			,reg_id
+		) values (
+			 #{intakeCd}
+			,#{clientCd}
+			,#{counselCenter}
+			,#{counselorId}
+			,#{finalGoal}
+			,#{goal}
+			,#{counselPlan}
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			,#{mgrId}
+		)
+	</insert>
+	
+	<insert id="insertOrder" parameterType="hashmap" keyProperty="orderNum" useGeneratedKeys="true" >
+		insert into mind_order (
+			 counsel_cd
+			,client_cd
+			,user_key
+			,order_type
+			,order_dt
+			,order_nm
+			,order_amt
+			,order_status
+			,pay_type
+			,category_seq
+			,snd_nm
+			,snd_mobile
+			,snd_email
+			,reg_id
+			,apply_yn
+			,site_type
+		) values (
+			 #{counselCd}
+			,#{clientCd} 
+			,#{userKey}
+			,100777
+			,#{orderDt}
+			,#{userNm}
+			,#{orderAmt}
+			,100782
+			,100392
+			,#{counselDiv}
+			,#{userNm}
+			,HEX(AES_ENCRYPT(#{mobile},'1234'))
+			,#{email}
+			,#{mgrId}
+			,'N'
+			,#{siteType}
+		)		
+	</insert>
+	
+	<insert id="insertOrderGoods" parameterType="hashmap">
+		insert into mind_order_goods (
+			 order_num
+			,goods_nm
+			,goods_type
+			,order_qty
+			,buy_price
+			,sale_price
+			,goods_status
+			,order_dt
+			,receipt_yn
+			,option_yn
+			,tax_yn
+		) values (
+			 #{orderNum}
+			,(SELECT category_nm
+			  FROM mind_counsel_category
+			  WHERE category_cd = #{channelType})
+			,100777
+			,1
+			,(select case #{counselType}
+			  	when 100433 then price01
+				when 100434 then price02
+				else price03 end
+			  from mind_counsel_price
+			  where center_seq = #{counselCenter}
+			  and category_cd = #{channelType} )
+			,#{orderAmt}
+			,100782
+			,#{orderDt}
+			,'Y'
+			,'N'
+			,'Y'
+		)	
+	</insert>
+	
+	<insert id="insertOrderPay" parameterType="hashmap">
+		insert into mind_order_pay (
+			 order_num
+			,pay_cd
+			,pay_price
+			,pay_status
+			,reg_dt
+		) values (
+			 #{orderNum}
+			,#{payCd}
+			,#{orderAmt}
+			,100782
+			,#{orderDt}
+		)
+	</insert>
+	
+	<insert id="insertUserPoint">
+		insert into mind_user_point (
+			 client_cd
+			,period_seq
+			,point_type
+			,user_key
+			,point_cd
+			,point
+			,payment_seq
+			,category_cd
+			,reg_dt
+			,reg_id
+		) values (
+		     #{clientCd}
+		    ,(select period_seq from mind_ceiling where client_cd = #{clientCd})
+		    ,'U' 
+			,#{userKey}
+		    ,900001
+		    ,-#{orderAmt}
+		    ,#{orderNum}
+		    ,#{channelType}
+			,#{orderDt}
+			,#{mgrId}
+		)		
+	</insert>
+	
+	<select id="getClientCd" resultType="String">
+		SELECT CLIENT_CD 
+		FROM MIND_USER
+		WHERE USER_KEY = #{userKey}
+	</select>
+	
+</mapper>

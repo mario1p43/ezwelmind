@@ -1,0 +1,207 @@
+package com.ezwel.admin.controller.madm.operations;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.collections.MapUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.ezwel.admin.controller.madm.main.MainController;
+import com.ezwel.admin.service.common.ApiService;
+import com.ezwel.admin.service.employee.EmployeeService;
+import com.ezwel.admin.service.employee.dto.EmployeeDto;
+import com.ezwel.admin.service.operations.OperationsService;
+import com.ezwel.admin.service.operations.dto.OperationsDto;
+import com.ezwel.admin.service.security.UserDetailsHelper;
+import com.ezwel.core.support.util.StringUtils;
+
+@Controller
+@RequestMapping("/madm/operations")
+public class operationsController {
+	private static Logger log = LoggerFactory.getLogger(MainController.class);
+
+	@Resource
+	private EmployeeService employeeService;
+	
+	@Resource
+	private OperationsService operationsService;
+
+	@Resource
+	private ApiService apiService;
+	
+	
+	private void setMenu(Model model) {
+		String menuStr = "고객사";
+		model.addAttribute("menu", menuStr);
+	}
+	
+	@RequestMapping(value = "/amount")
+	public String getAmount(@ModelAttribute OperationsDto operationsDto, Model model) {
+		setMenu(model);
+		model.addAttribute("emplist", operationsService.getEmplist(operationsDto));
+		model.addAttribute("amountlist" ,operationsService.getAmountList(operationsDto));
+		model.addAttribute("amountcount" ,operationsService.countCategory(operationsDto));
+		return "madm/operations/amount";
+	}
+	
+	@RequestMapping(value = "/getbudget")
+	public void getbudget(@ModelAttribute OperationsDto operationsDto, Model model) {
+		setMenu(model);
+		model.addAttribute("budget" ,operationsService.getBudget(operationsDto));
+	}
+	
+	@RequestMapping(value = "/setbudget")
+	public String setbudget(@ModelAttribute OperationsDto operationsDto, Model model,  HttpServletRequest request) {
+		setMenu(model);
+		
+		//INSERT OR UPDATE BY MIND_CLIENT_BUDGET		
+		operationsDto.setBudgetSeq(operationsService.getBudgetSeq(operationsDto));
+		if(operationsDto.getBudgetSeq() ==null){
+			log.debug("insert to budget");
+			operationsDto.setUserId(UserDetailsHelper.getAuthenticatedUser().getUserId());
+			operationsDto.setStatus("100517");
+			operationsService.insertBudget(operationsDto);
+		}else{
+			log.debug("update to budget by seq : " + operationsDto.getBudgetSeq());
+			operationsService.updateBudget(operationsDto);
+		}
+			
+		
+
+		//INSERT FOR UPDATE BY MIND_COUNSEL_PRICE
+		operationsDto.setPriceType("C");
+		int count = operationsService.countCategory(operationsDto);
+		for(int i=0; i<count; i++){
+			int cCd = 100005+i;
+			//log.debug("\nccd = " + cCd + "\nip = " + ip + "\ntp = " + tp + "\nbp = " +bp );
+			
+			operationsDto.setCategotyCd(String.valueOf(cCd));
+			operationsDto.setPrice01(request.getParameter("iprice"+cCd));
+			operationsDto.setPrice02(request.getParameter("tprice"+cCd));
+			operationsDto.setPrice03(request.getParameter("bprice"+cCd));
+			model.addAttribute(operationsService.insertPrices(operationsDto));			
+		}
+		String scd =request.getParameter("searchClientCd");
+		String sNm =request.getParameter("searchClientNm");
+
+		return "redirect:/madm/operations/amount?searchClientCd="+scd+"&searchClientNm="+sNm;
+	}
+	
+	@RequestMapping(value = "/standard")
+	public String getStandard(@ModelAttribute OperationsDto operationsDto, Model model) {
+		setMenu(model);
+		model.addAttribute("emplist", 	operationsService.getEmplist(operationsDto));
+		model.addAttribute("state", 	operationsService.getState(operationsDto));
+		
+		if(StringUtils.isNotEmpty(operationsDto.getSearchClientCd())){
+			model.addAttribute("showJedoYn", "Y");
+			model.addAttribute("jedoList", 		operationsService.getClientJedoList(operationsDto));
+			model.addAttribute("jedoDateInfo", 	operationsService.getClientJedoDateInfo(operationsDto));
+		}
+		if(StringUtils.isNotEmpty(operationsDto.getPeriodNo())){
+			model.addAttribute("showPointYn", "Y");
+			model.addAttribute("setPointList", 	operationsService.getSetPointList(operationsDto));
+			model.addAttribute("pointStatus",	operationsService.getPointStatus(operationsDto));
+		}
+		
+		return "madm/operations/standard";
+	}
+	
+	@RequestMapping(value = "/getceiling")
+	public void getceiling(@ModelAttribute OperationsDto operationsDto, Model model) {
+		setMenu(model);
+		model.addAttribute("ceiling" ,operationsService.getceiling(operationsDto));
+	}
+	
+	@RequestMapping(value = "/insertJedo")
+	public String insertJedo(@ModelAttribute OperationsDto operationsDto, Model model, HttpServletRequest request) {
+		setMenu(model);
+		
+		//MIND_CEILING insert
+		operationsDto.setUserId(UserDetailsHelper.getAuthenticatedUser().getUserId());
+		if(operationsDto.getUpdateYn().equals("Y")) {
+			operationsService.updateJedo(operationsDto);
+		}else {
+			operationsService.insertJedo(operationsDto);
+		}
+		String scd =request.getParameter("searchClientCd");
+		String sNm =request.getParameter("searchClientNm");
+		return "redirect:/madm/operations/standard?searchClientCd="+scd+"&searchClientNm="+sNm;
+	}
+	
+	@RequestMapping(value = "/checkClientCd")
+	public void checkClientCd(@ModelAttribute EmployeeDto employeeDto, Model model) {
+		model.addAttribute("countCd", operationsService.checkClientCd(employeeDto));
+	}
+
+	@RequestMapping(value = "/insertPoint")
+	public void insertPoint(@ModelAttribute OperationsDto operationsDto, Model model, HttpServletRequest request) {
+		setMenu(model);
+//		Ajax Insert Point
+		operationsDto.setUserId(UserDetailsHelper.getAuthenticatedUser().getUserId());
+//		MIND_COMM_CD, 고객산 예산상태 - 적용
+		operationsDto.setStatus("100517");
+		model.addAttribute("resultCnt", operationsService.insertPoint(operationsDto));
+	}
+	
+	@RequestMapping(value = "/popupGivePointToUser")
+	public void popupGivePointToUser(@RequestParam String clientCd, @RequestParam String userKey, Model model, HttpServletRequest request) {
+		Map<String,Object> param = new HashMap<String, Object>();
+		param.put("clientCd", clientCd);
+		param.put("userKey", userKey);
+		model.addAttribute("info", 	operationsService.getUserNowJedoInfo(param));
+		Map<String, Object> resultMap = apiService.doApi(param, "/api/admin/getPoint", false);
+		model.addAttribute("privateRemainPoint", MapUtils.isNotEmpty(resultMap) ? apiService.toPointFormat((String) resultMap.get("privateRemainPoint")) : "");
+		model.addAttribute("clientRemainPoint", MapUtils.isNotEmpty(resultMap) ? apiService.toPointFormat((String) resultMap.get("clientRemainPoint")) : "");
+		model.addAttribute("userKey", userKey);
+		
+	}
+	
+	@RequestMapping(value = "/popupTakePointToUser")
+	public void popupTakePointToUser(@RequestParam String clientCd, @RequestParam String userKey, Model model, HttpServletRequest request) {
+		Map<String,Object> param = new HashMap<String, Object>();
+		param.put("clientCd", clientCd);
+		param.put("userKey", userKey);
+		model.addAttribute("info", 	operationsService.getUserNowJedoInfo(param));
+		Map<String, Object> resultMap = apiService.doApi(param, "/api/admin/getPoint", false);
+		model.addAttribute("privateRemainPoint", MapUtils.isNotEmpty(resultMap) ? apiService.toPointFormat((String) resultMap.get("privateRemainPoint")) : "");
+		model.addAttribute("clientRemainPoint", MapUtils.isNotEmpty(resultMap) ? apiService.toPointFormat((String) resultMap.get("clientRemainPoint")) : "");
+		model.addAttribute("userKey", userKey);
+		
+	}
+	
+	@RequestMapping(value = "/getPrice")
+	public void getPrice(@RequestParam String clientCd, @RequestParam String counselDiv, @RequestParam String counselType,Model model, HttpServletRequest request) {
+		Map<String,Object> param = new HashMap<String, Object>();
+		param.put("clientCd", clientCd);
+		param.put("counselDiv", counselDiv);
+		param.put("counselType", counselType);
+		Map<String, Object> resultMap = apiService.doApi(param, "/api/admin/getCounselPrice", false);
+		model.addAttribute("price", MapUtils.isNotEmpty(resultMap) ? apiService.toPointFormat((String) resultMap.get("price")) : "");
+	}
+
+	@RequestMapping(value = "/givePointToUser")
+	public void givePointToUser(@RequestParam String clientCd, @RequestParam String userKey, @RequestParam String point, 
+			@RequestParam String periodSeq, @RequestParam String pointMemo, @RequestParam String pointType, Model model, HttpServletRequest request) {
+		Map<String,Object> param = new HashMap<String, Object>();
+		param.put("clientCd", clientCd);
+		param.put("userKey", userKey);
+		param.put("point", point);
+		param.put("regId", UserDetailsHelper.getAuthenticatedUser().getUserId());
+		param.put("periodSeq", periodSeq);
+		param.put("pointMemo", pointMemo);
+		param.put("pointType", pointType);
+		Map<String, Object> resultMap = apiService.doApi(param, "/api/admin/givePointToUser", false);
+		model.addAttribute("resultMap", resultMap);
+	}
+	
+}

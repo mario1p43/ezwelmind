@@ -1,0 +1,232 @@
+package com.ezwel.admin.service.counsel;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.ezwel.admin.domain.entity.counsel.Counsel;
+import com.ezwel.admin.domain.entity.counsel.Schedule;
+import com.ezwel.admin.domain.entity.operations.OperationsData;
+import com.ezwel.admin.domain.entity.sms.SmsResult;
+import com.ezwel.admin.persist.counsel.CounselMapper;
+import com.ezwel.admin.service.counsel.dto.CounselDto;
+import com.ezwel.admin.service.operations.OperationsService;
+import com.ezwel.admin.service.operations.dto.OperationsDto;
+import com.ezwel.core.framework.web.vo.Paging;
+import com.ezwel.core.support.util.StringUtils;
+
+
+@Service
+public class CounselService {
+	
+	
+	@Resource
+	private CounselMapper counselMapper;
+	
+	@Resource
+	private OperationsService operationsService;
+		
+	protected static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+		
+	public List<Counsel> getCounseList(String counselCd) {
+		CounselDto counselDto = new CounselDto();
+		counselDto.setCounselCd(counselCd);
+		return counselMapper.getCounseList(counselDto);
+	}
+	
+	
+	/**
+	 * 상담완료 문자를 보내지 않은 상담건.
+	 * @return
+	 */
+	public List<SmsResult> getCounselAfterSmsList() {
+		return counselMapper.getCounselAfterSmsList();
+	}
+	
+	
+	/**
+	 * 상담완료 문자 플래그값을 Y로 업데이트.
+	 * @return
+	 */
+	public int modifySmsResultYn() {
+		return counselMapper.modifySmsResultYn();
+	}
+	
+	/**
+	 * 상담완료 문자를 보내지 않은 상담건.
+	 * @return
+	 */
+	public List<SmsResult> getCounselAfterSmsPoliceList() {
+		return counselMapper.getCounselAfterSmsPoliceList();
+	}
+	
+	
+	/**
+	 * 상담완료 문자 플래그값을 Y로 업데이트.
+	 * @return
+	 */
+	public int modifySmsResultYnPolice() {
+		return counselMapper.modifySmsResultYnPolice();
+	}
+	
+	/**
+	 * 
+	 * @param counselDto
+	 *        userId, ymd, stTime
+	 * @return
+	 * 1001 = 상담사의 스케줄이 없습니다.
+	 * 1002 = 상담사가 스케줄을 등록.
+	 * 1003 = 상담사가 이미 스케줄이 있어서 등록불가
+	 * 1004 = 상담일자가 고객사의 계약기간을 벗어남  등록불가
+	 */
+	public String getScheduleStatus(CounselDto counselDto) {
+		Schedule schedule = counselMapper.getSchedule(counselDto);
+		String result = "";
+		
+		if (schedule == null) {
+			result = "1001";
+		} else if ("0".equals(schedule.getCounselCd())) {
+			counselDto.setScheduleSeq(schedule.getScheduleSeq());
+			result = "1002";
+		} else {
+			result = "1003";
+		}
+		
+		// 파트너인 경우에만 제도기간 체크(고객사코드는 파트너어드민에서만 입력)
+		if(StringUtils.isNotBlank(counselDto.getClientCd())) {
+			OperationsDto operationsDto = new OperationsDto();
+			operationsDto.setSearchClientCd(counselDto.getClientCd());
+			OperationsData jedo = operationsService.getClientJedoDateInfo(operationsDto);
+			
+			LocalDate scheduleDt = LocalDate.parse(counselDto.getYmd(), formatter);
+			LocalDate jedoEndDt = LocalDate.parse(jedo.getMaxEndDd(), formatter);
+			
+			if(!jedoEndDt.isAfter(scheduleDt)) {
+				result = "1004";
+			}
+		}
+		
+		return result;
+	}
+	
+	public String doScheduleChange(CounselDto counselDto) throws Exception {
+
+		//=====================================
+		// 원래 예약되어있던 스케줄을 예약가능으로 변경
+		//=====================================
+		counselMapper.modifyScheduleCancel(counselDto);
+		
+		//=====================================
+		// 변경하는 스케줄에 예약등록
+		//=====================================
+		Schedule schedule = counselMapper.getSchedule(counselDto);
+		
+		
+		// 상담사가 스케줄을 등록한게 있을때는 업데이트
+		if (schedule != null) 
+		{
+			if (!schedule.getCounselCd().equals("0")) {
+				// 스케줄이 등록되어 있는지 한번더 체크하고 있으면 롤백
+				throw new Exception();
+			}
+			
+			counselDto.setScheduleSeq(schedule.getScheduleSeq());
+			if (counselMapper.modifyScheduleRegister(counselDto) != 1) {
+				throw new Exception();
+			}
+		} 
+		else // 상담사가 스케줄을 등록한게 없으면 인서트 
+		{
+//			counselDto.setHolidayYn("N");
+//			// endTime 설정 (stTime + 1 더해서 1시간 추가)
+//			String edTime = Integer.toString(Integer.parseInt(counselDto.getStTime().substring(0, 2)) + 1);
+//			if (edTime.length() == 1) edTime = "0" + edTime;
+//			counselDto.setEdTime(edTime + "00");
+//			counselDto.setScheduleType("100562"); // 상담 -- 나중에 검사도 체크해야됨 우선은 상담만
+			
+			int result = addSchedule(counselDto);
+			
+			if (result != 1) {
+				throw new Exception();
+			}
+		}
+		
+		
+		//=====================================
+		// 변경하는 스케줄에 예약등록
+		//=====================================
+		counselDto.setCounselorId(counselDto.getUserId());
+		counselDto.setScheduleDt(counselDto.getYmd() + counselDto.getStTime() + "00");
+		if (counselMapper.modifyCounselChange(counselDto) != 1) {
+			throw new Exception();
+		}
+		
+		return "success";
+	}
+	
+	/**
+	 * 상담사 스케줄 등록
+	 * @param counselDto
+	 *     centerSeq, counselCd, userId, ymd, stTime, regId
+	 * @return
+	 */
+	public int addSchedule(CounselDto counselDto) {
+		counselDto.setHolidayYn("N");
+		
+		// endTime 설정 (stTime + 1 더해서 1시간 추가)
+		String edTime = Integer.toString(Integer.parseInt(counselDto.getStTime().substring(0, 2)) + 1);
+		if (edTime.length() == 1) edTime = "0" + edTime;
+		
+		// 30분 단위로 변경되면서 00분이면 30분으로, 30분이면 00분으로 변경하여 30분 단위를 맞춘다.
+		String stMin = Integer.toString(Integer.parseInt(counselDto.getStTime().substring(2, 4)));
+		if (stMin.equals("00")){
+			edTime = edTime + "30";
+		}else {
+			edTime = edTime + "00";
+		}
+		counselDto.setEdTime(edTime);
+		//counselDto.setEdTime(edTime + "00");
+		
+		counselDto.setScheduleType("100562"); // 상담 -- 나중에 검사도 체크해야됨 우선은 상담만
+		
+		return counselMapper.addSchedule(counselDto);
+	}
+	
+	
+	public Paging<Counsel> getCounselExtensionList(CounselDto counselDto) {
+		Paging<Counsel> paging = new Paging<Counsel>();
+		paging.setPaging(counselDto);
+		paging.setList(counselMapper.getCounselExtensionList(counselDto));
+		counselDto.setPageCommonFlag(true);
+		paging.setTotalCount(counselMapper.getCounselExtensionList(counselDto).get(0).getPageCommonCount());
+		
+		return paging;
+	}
+	
+	
+	/**
+	 * 상담코드로 내담자, 상담자, 센터등 sms 보내기 위한 정보 
+	 * @param counselCd
+	 * @return
+	 */
+	public SmsResult didSmsCounselDtChange(String counselCd) {
+		return counselMapper.didSmsCounselDtChange(counselCd);
+	}
+	
+	/**
+	 * 상담코드로 내담자, 상담자, 센터등 sms 보내기 위한 정보 
+	 * @param counselCd
+	 * @return
+	 */
+	public SmsResult didSmsCounselDtChangePolice(String counselCd) {
+		return counselMapper.didSmsCounselDtChangePolice(counselCd);
+	}
+
+	public Counsel getCounselMemo(String intakeCd){
+		return counselMapper.getCounselMemo(intakeCd);	
+	}
+}

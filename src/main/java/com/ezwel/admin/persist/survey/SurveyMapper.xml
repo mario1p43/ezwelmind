@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.survey.SurveyMapper">
+
+	<select id="surveyList" resultType="com.ezwel.admin.domain.entity.survey.SurveyData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+			SELECT A.SVC_SEQ AS svcSeq
+					,A.SVC_NM AS svcNm
+					,A.SVC_DESC AS svcDesc
+					,B.SUR_SEQ AS surSeq
+					,B.SUR_CATE AS surCate
+					,DATE_FORMAT(STR_TO_DATE(B.SUR_ST_DT, '%Y%m%d'),'%Y-%m-%d') AS	surStDt
+					,DATE_FORMAT(STR_TO_DATE(B.SUR_ED_DT, '%Y%m%d'),'%Y-%m-%d') AS	surEdDt
+					,B.SUR_USE_YN AS surUseYn
+					,C.CLIENT_CD AS clientCd
+					,(SELECT E.CLIENT_NM FROM MIND_CLIENT E WHERE E.CLIENT_CD = C.CLIENT_CD) AS clientNm
+					,C.USE_YN AS useYn
+					,(SELECT COUNT(*) FROM MIND_DEMAND_USER D WHERE D.SUR_SEQ = C.SUR_SEQ AND D.CLIENT_CD = C.CLIENT_CD) AS chooseCnt
+				FROM MIND_DEMAND_SURVEY B LEFT OUTER JOIN MIND_DEMAND_SERVICE A ON B.SVC_SEQ = A.SVC_SEQ
+						LEFT OUTER JOIN MIND_DEMAND_CLIENT C ON B.SUR_SEQ = C.SUR_SEQ
+			  WHERE 1=1
+				<if test="isNotNull(useYn)">
+				AND B.SUR_USE_YN = #{useYn}
+				AND C.USE_YN = #{useYn}
+				</if>
+				<if test="isNotNull(clientCd)">
+				AND C.CLIENT_CD = #{clientCd}
+				</if>
+				<if test="isNotNull(searchSurCate)">
+				AND	B.SUR_CATE = #{searchSurCate}
+				</if>
+				<if test="isNotNull(svcNm)">
+				AND A.SVC_NM LIKE CONCAT('%', #{svcNm},'%')
+				</if>
+			ORDER BY B.SUR_SEQ DESC, C.CLIENT_CD
+		<choose>
+				<when test="pageCommonFlag == true">
+					) A
+				</when>
+				<otherwise>
+					LIMIT #{firstIndex} , #{pageSize}
+				</otherwise>
+		</choose>
+	</select>
+
+	<select id="serviceList" resultType="com.ezwel.admin.domain.entity.survey.SurveyData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+			SELECT A.SVC_SEQ AS svcSeq
+					,A.SVC_NM AS svcNm
+					,A.SVC_DESC AS svcDesc
+					,A.REG_ID AS regId
+					,DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS	regDt
+					,B.USER_NM AS regNm
+				FROM MIND_DEMAND_SERVICE A LEFT OUTER JOIN MIND_MGR B ON A.REG_ID = B.USER_ID AND B.USE_YN = 'Y'
+			  WHERE 1=1
+				<if test="isNotNull(searchSvcNm)">
+				AND A.SVC_NM LIKE CONCAT('%', #{searchSvcNm},'%')
+				</if>
+			ORDER BY A.SVC_SEQ DESC
+		<choose>
+				<when test="pageCommonFlag == true">
+					) A
+				</when>
+				<otherwise>
+					LIMIT #{firstIndex} , #{pageSize}
+				</otherwise>
+		</choose>
+	</select>
+
+	<select id="surveyListExcel" resultType="com.ezwel.admin.domain.entity.survey.SurveyData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+			SELECT A.SVC_SEQ AS svcSeq
+					,A.SVC_NM AS svcNm
+					,A.SVC_DESC AS svcDesc
+					,B.SUR_SEQ AS surSeq
+					,B.SUR_CATE AS surCate
+					,DATE_FORMAT(STR_TO_DATE(B.SUR_ST_DT, '%Y%m%d'),'%Y-%m-%d') AS	surStDt
+					,DATE_FORMAT(STR_TO_DATE(B.SUR_ED_DT, '%Y%m%d'),'%Y-%m-%d') AS	surEdDt
+					,B.SUR_USE_YN AS surUseYn
+					,C.CLIENT_CD AS clientCd
+					,C.USE_YN AS useYn
+					,(SELECT COUNT(*) FROM MIND_DEMAND_USER D WHERE D.SUR_SEQ = C.SUR_SEQ AND D.CLIENT_CD = C.CLIENT_CD) AS chooseCnt
+				FROM MIND_DEMAND_SURVEY B LEFT OUTER JOIN MIND_DEMAND_SERVICE A ON B.SVC_SEQ = A.SVC_SEQ
+						LEFT OUTER JOIN MIND_DEMAND_CLIENT C ON B.SUR_SEQ = C.SUR_SEQ
+			  WHERE 1=1
+				<if test="isNotNull(useYn)">
+				AND B.SUR_USE_YN = #{useYn}
+				AND C.USE_YN = #{useYn}
+				</if>
+				<if test="isNotNull(clientCd)">
+				AND C.CLIENT_CD = #{clientCd}
+				</if>
+				<if test="isNotNull(surCate)">
+				AND	B.SUR_CATE = #{surCate}
+				</if>
+				<if test="isNotNull(svcNm)">
+				AND A.SVC_NM LIKE CONCAT('%', #{svcNm},'%')
+				</if>
+			ORDER BY B.SUR_SEQ, C.CLIENT_CD
+		<choose>
+				<when test="pageCommonFlag == true">
+					) A
+				</when>
+				<otherwise>
+					LIMIT #{firstIndex} , #{pageSize}
+				</otherwise>
+		</choose>
+	</select>
+
+	<select id="surveyDetail" resultType="com.ezwel.admin.domain.entity.survey.SurveyData">
+		SELECT B.SUR_SEQ AS surSeq
+				,B.SUR_CATE AS surCate
+				,B.SUR_ST_DT AS surStDt
+				,B.SUR_ED_DT AS surEdDt
+				,B.SUR_USE_YN AS surUseYn
+				,B.SVC_SEQ AS svcSeq
+				,DATE_FORMAT(STR_TO_DATE(B.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS	regDt
+				,DATE_FORMAT(STR_TO_DATE(B.MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS	modiDt
+				,(SELECT A.USER_NM FROM MIND_MGR A WHERE A.USER_ID = B.REG_ID AND A.USE_YN = 'Y') AS regNm
+				,(SELECT A.USER_NM FROM MIND_MGR A WHERE A.USER_ID = B.MODI_ID AND A.USE_YN = 'Y') AS modiNm
+				,C.CLIENT_CD AS clientCd
+				,C.USE_YN AS useYn
+				,(SELECT D.SVC_NM FROM MIND_DEMAND_SERVICE D WHERE D.SVC_SEQ = B.SVC_SEQ) AS svcNm
+			FROM MIND_DEMAND_SURVEY B LEFT OUTER JOIN MIND_DEMAND_CLIENT C ON C.SUR_SEQ = B.SUR_SEQ AND C.CLIENT_CD = #{clientCd}
+		<if test="isNotNull(surSeq)">
+		  WHERE B.SUR_SEQ = #{surSeq}
+		</if>
+	</select>
+
+	<insert id="insertService" keyProperty="svcSeq" useGeneratedKeys="true" parameterType="com.ezwel.admin.service.survey.dto.SurveyDto" >
+		INSERT INTO MIND_DEMAND_SERVICE (
+			 SVC_NM
+			 ,SVC_DESC
+			 ,REG_ID
+			 ,REG_DT
+
+		)VALUE (
+				#{svcNm}
+				,#{svcDesc}
+				,#{regId}
+		 		,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		 	)
+	</insert>
+
+	<insert id="insertSurvey" keyProperty="surSeq" useGeneratedKeys="true" parameterType="com.ezwel.admin.service.survey.dto.SurveyDto" >
+		INSERT INTO MIND_DEMAND_SURVEY (
+			 SUR_CATE
+			 ,SUR_ST_DT
+			 ,SUR_ED_DT
+			 ,SUR_USE_YN
+			 ,SVC_SEQ
+			 ,REG_ID
+			 ,REG_DT
+		)VALUE (
+				#{surCate}
+				,#{surStDt}
+				,#{surEdDt}
+				,#{useYn}
+				,#{svcSeq}
+				,#{regId}
+		 		,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		 )
+	</insert>
+
+	<insert id="insertClient" parameterType="com.ezwel.admin.service.survey.dto.SurveyDto" >
+		INSERT INTO MIND_DEMAND_CLIENT (
+			 SUR_SEQ
+			 ,CLIENT_CD
+			 ,USE_YN
+			 ,REG_ID
+			 ,REG_DT
+		)VALUE (
+				#{surSeq}
+				,#{clientCd}
+				,#{useYn}
+				,#{regId}
+		 		,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<update id="modifySurvey"  parameterType="com.ezwel.admin.service.survey.dto.SurveyDto">
+		UPDATE MIND_DEMAND_SURVEY
+		SET SUR_CATE = #{surCate}
+			 ,SUR_ST_DT = #{surStDt}
+			 ,SUR_ED_DT = #{surEdDt}
+			 ,SUR_USE_YN = #{useYn}
+			 ,SVC_SEQ = #{svcSeq}
+			 ,MODI_ID = #{modiId}
+			 ,MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE SUR_SEQ = #{surSeq}
+	</update>
+
+	<update id="modifyClient"  parameterType="com.ezwel.admin.service.survey.dto.SurveyDto">
+		UPDATE MIND_DEMAND_CLIENT
+		SET USE_YN = #{useYn}
+			,MODI_ID = #{modiId}
+			,MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE SUR_SEQ = #{surSeq}
+		  AND CLIENT_CD = #{clientCd}
+	</update>
+
+	<select id="serviceChoiceList" resultType="com.ezwel.admin.domain.entity.survey.SurveyData">
+		SELECT A.SUR_SEQ AS surSeq
+			, A.CLIENT_CD AS clientCd
+			, A.USER_KEY AS userKey
+			, DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS	regDt
+			, B.USER_NM AS userNm
+			, B.USER_ID AS userId
+			, B.EMP_NUM AS empNm
+		FROM MIND_DEMAND_USER A LEFT JOIN MIND_USER B ON A.USER_KEY = B.USER_KEY
+		<if test="isNotNull(surSeq)">
+		  WHERE A.SUR_SEQ = #{surSeq}
+		</if>
+	</select>
+</mapper>

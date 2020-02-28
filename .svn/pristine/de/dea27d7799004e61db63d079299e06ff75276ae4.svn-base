@@ -1,0 +1,128 @@
+package com.ezwel.admin.scheduler;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+import com.ezwel.admin.domain.entity.pCounselorMgr.MindCounselCounselDetail;
+import com.ezwel.admin.service.mgr.CounselorInfoMgrService;
+import com.ezwel.admin.service.order.OrderService;
+import com.ezwel.admin.service.pCounselorMgr.CounselReservationService;
+import com.ezwel.admin.service.pCounselorMgr.PCounselorMgrService;
+import com.ezwel.admin.service.sms.OrderSmsPoliceService;
+import com.ezwel.admin.service.sms.OrderSmsService;
+
+@Component
+public class PCounselScheduler {
+	private static Logger log = LoggerFactory.getLogger(PCounselScheduler.class);
+
+	@Resource 
+	private PCounselorMgrService pCounselorMgrService;
+	
+	@Resource
+	private CounselReservationService counselReservationService;
+	
+	@Resource
+	private OrderService orderService;
+	
+	@Resource
+	private OrderSmsService orderSmsService;
+
+	@Resource
+	private OrderSmsPoliceService orderSmsPoliceService;
+	
+	@Resource
+	private CounselorInfoMgrService counselorInfoMgrService;
+	
+	/**
+	 * 상담일지 상태 처리하는 스케줄러
+	 * @cron 매일 새벽0시에 실행
+	 */
+	@Scheduled(cron="0 0 0 * * *")
+	public void updatePCounselSchedule() {
+		log.debug("updatePCounselSchedule");
+		if ("ezwelmind-admin11".equals(System.getProperty("jvmRoute"))) {
+			
+			List<MindCounselCounselDetail> list = pCounselorMgrService.getTodayNoShowCounselData();
+			
+			list.stream().map(x-> {
+				x.setRisks("2"); // 리스크는 2단계
+				return x;
+			}).forEach(pCounselorMgrService::insertRecordDate);;
+			
+			pCounselorMgrService.updatePCounselSchedule();
+		}
+	}
+	
+	
+	/**
+	 *  오전 9시에 다음날 상담이 있는 고객에게 상담알림
+	 *  문자를 보낸다.
+	 *  @cron 매일 오전 9시에 실행
+	 */
+	@Scheduled(cron="0 0 9 * * *")
+	public void smsCounselSend() {
+		log.debug("updatePCounselSchedule");
+		if ("ezwelmind-admin11".equals(System.getProperty("jvmRoute"))) {
+			orderSmsService.doSmsSendBeforeOneday(orderService.getOrderComletionSmsMsg());
+			orderSmsPoliceService.doSmsSendBeforeOneday(orderService.getOrderComletionPoliceSmsMsg());
+		}
+	}
+	
+	
+	/**
+	 * 상담후
+	 *  @cron 매일 9시부터 22시사이에 (40분0초에) 한번 실행
+	 */
+	@Scheduled(cron="0 40 9-22 * * *")
+	public void smsEndCounselSend() {
+		log.debug("11111");
+		if ("ezwelmind-admin11".equals(System.getProperty("jvmRoute"))) {
+			orderSmsService.doSmsSendAfterCounsel();
+//			현업 요청으로 경찰청 제외(DR 179)
+//			orderSmsPoliceService.doSmsSendAfterCounsel();
+		}
+	}
+	
+	/**
+	 * 연장예약후 2일전까지 결제을 하지않으면
+	 * 안내 SMS 발송
+	 * @cron 매일 8시부터 22시사이에 (0분0초에) 한번 실행
+	 */
+	
+	@Scheduled(cron="0 0/180 8-22 * * *")
+	public void smExtensionCounselSend() {
+		log.debug("smExtensionCounselSend()");
+		if ("ezwelmind-admin11".equals(System.getProperty("jvmRoute"))) {
+			orderSmsService.doSmsSendBeforeTwoday();
+			orderSmsPoliceService.doSmsSendBeforeTwoday();
+			counselReservationService.autoCancelExtension();
+		}
+	}
+	
+	/**
+	 * 상담사(승인된) 일정 등록 (다음달 일정)
+	 * @cron 매월 1일 2시에 한번 실행
+	 */
+	
+	@Scheduled(cron="0 0 2 1 * *")
+	public void insertCounselorScheduleCron() {
+		log.debug("smExtensionCounselSend()");
+		if ("ezwelmind-admin11".equals(System.getProperty("jvmRoute"))) {
+			counselorInfoMgrService.insertCounselorSchedule();
+		}
+	}
+	
+	/**
+	 * 모든시간 10~57분 사이에 5초마다 실행
+	 */
+//	@Scheduled(cron="*/5 10-57 * * * *")
+//	public void test() {
+//		log.debug("2222");
+//	}
+}

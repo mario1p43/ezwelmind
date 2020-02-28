@@ -1,0 +1,134 @@
+package com.ezwel.admin.service.operations;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.ezwel.admin.domain.entity.client.ClientJedoPeriod;
+import com.ezwel.admin.domain.entity.operations.OperationsData;
+import com.ezwel.admin.persist.operations.OperationsMapper;
+import com.ezwel.admin.service.employee.dto.EmployeeDto;
+import com.ezwel.admin.service.operations.dto.OperationsDto;
+
+@Service
+public class OperationsService {
+	
+	@Resource
+	private OperationsMapper operationsMapper;
+
+	public List<OperationsData> getEmplist(OperationsDto operationsDto) {
+		return operationsMapper.getEmpList(operationsDto);
+	}
+	
+	public List<OperationsData> getAmountList(OperationsDto operationsDto) {
+		return operationsMapper.getAmountList(operationsDto);
+	}
+	
+	public OperationsData getBudget(OperationsDto operationsDto) {
+		return operationsMapper.getBudget(operationsDto);
+	}
+
+	public int countCategory(OperationsDto operationsDto) {
+		return operationsMapper.countCategory(operationsDto);
+	}
+
+	public int insertPrices(OperationsDto operationsDto) {
+		return operationsMapper.insertPrices(operationsDto);
+	}
+	
+	public String getBudgetSeq(OperationsDto operationsDto) {
+		return operationsMapper.getBudgetSeq(operationsDto);
+	}
+	
+	public int insertBudget(OperationsDto operationsDto) {
+		return operationsMapper.insertBudget(operationsDto);
+	}
+	
+	public int updateBudget(OperationsDto operationsDto) {
+		return operationsMapper.updateBudget(operationsDto);
+	}
+	
+	public OperationsData getceiling(OperationsDto operationsDto) {
+		return operationsMapper.getceiling(operationsDto);
+	}
+
+	public List<OperationsData> getState(OperationsDto operationsDto) {
+		return operationsMapper.getState(operationsDto);
+	}
+
+	public int insertPoint(OperationsDto operationsDto) {
+		return operationsMapper.insertPoint(operationsDto);
+	}
+	
+	public int deletePoint(OperationsDto operationsDto) {
+		return operationsMapper.deletePoint(operationsDto);
+	}
+	
+	public int updateStatus(OperationsDto operationsDto) {
+		return operationsMapper.updateStatus(operationsDto);
+	}
+
+	public int countComm(OperationsDto operationsDto) {
+		return operationsMapper.countComm(operationsDto);
+	}
+	
+	public int checkClientCd(EmployeeDto employeeDto) {
+		return operationsMapper.checkClientCd(employeeDto);
+	}	
+
+	public List<ClientJedoPeriod> getClientJedoList(OperationsDto operationsDto){
+		return operationsMapper.getClientJedoList(operationsDto);
+	}
+	
+	public List<ClientJedoPeriod> getSetPointList(OperationsDto operationsDto){
+		return operationsMapper.getSetPointList(operationsDto);
+	}
+	
+	public void insertJedo(OperationsDto operationsDto) {
+//		날짜 "/" 포멧팅
+		operationsDto.setStartDd( operationsDto.getStartDd().replaceAll("/", "") );
+		operationsDto.setEndDd( operationsDto.getEndDd().replaceAll("/", "") );
+		
+//		제도 등록 등록
+		operationsMapper.insertJedo(operationsDto);
+		
+//		멘탈헬스존 실링 등록
+		operationsMapper.insertCeiling(operationsDto);
+		
+	}
+	
+	public void updateJedo(OperationsDto operationsDto) {
+//		날짜 "/" 포멧팅
+		operationsDto.setStartDd( operationsDto.getStartDd().replaceAll("/", "") );
+		operationsDto.setEndDd( operationsDto.getEndDd().replaceAll("/", "") );
+		if(operationsDto.getSearchClientCd()==null) operationsDto.setSearchClientCd(operationsDto.getClientCd());
+//		제도 등록 수정
+		operationsMapper.updateJedo(operationsDto);
+		//해당 제도와 연관되는 MIND_CEILING이 있는지 확인하고 있으면 update 없으면 insert해준다.
+		int count = operationsMapper.checkCeiling(operationsDto);
+		if(count>0) {
+			//멘탈헬스존 실링 수정
+			operationsMapper.updateCeiling(operationsDto);
+		}else {
+			//	멘탈헬스존 실링 등록
+			operationsDto.setUserId("admin");
+			operationsMapper.insertCeiling(operationsDto);
+		}
+		
+	}
+	
+	public OperationsData getPointStatus(OperationsDto operationsDto){
+		return operationsMapper.getPointStatus(operationsDto);
+	}
+	
+	public OperationsData getClientJedoDateInfo(OperationsDto operationsDto){
+		return operationsMapper.getClientJedoDateInfo(operationsDto);
+	}
+	
+	public Map<String,Object> getUserNowJedoInfo(Map<String,Object> param){
+		return operationsMapper.getUserNowJedoInfo(param);
+	}
+}

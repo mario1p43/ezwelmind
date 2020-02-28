@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.edu.EducationInfoMapper">
+
+<insert id="addPayCheck">
+		INSERT INTO MIND_EDU_COMPLETE (
+			    EDU_TYPE,
+			    EDU_DIV,
+			    EDU_NM,
+			    EDU_HOUR,
+			    EDU_START_DT,
+			    EDU_END_DT,
+			    EDU_PLACE,
+			    EDU_ETC,
+			    USER_ID,
+			    CENTER_SEQ	
+		) VALUES ( 
+			#{eduType}
+			, #{eduDiv}
+			, #{eduNm}
+			, #{eduHour}
+			, #{eduDtFm}
+			, #{eduDtTo}
+			, #{eduPlace}
+			, #{eduEtc}
+			, #{userId}
+			, #{centerSeq2}
+		) ON DUPLICATE KEY UPDATE 
+			EDU_TYPE = #{eduType}
+			, EDU_DIV = #{eduDiv}
+			, EDU_NM = #{eduNm}
+			, EDU_HOUR = #{eduHour}
+			, EDU_START_DT = #{eduDtFm}
+			, EDU_END_DT = #{eduDtTo}
+			, EDU_PLACE = #{eduPlace}
+			, EDU_ETC = #{eduEtc}
+			, USER_ID = #{userId}
+			, CENTER_SEQ = #{centerSeq2}
+		
+	</insert>
+
+
+	<select id="getEducationInfoList" resultType="com.ezwel.admin.domain.entity.edu.EducationInfoDto">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+			select 
+				mei.CENTER_SEQ as centerSeq
+				,mei.EDU_SEQ as eduId
+				, mei.edu_type as eduType
+				, mei.EDU_DIV as eduDiv
+				, mei.EDU_START_DT as eduDtFm
+				, mei.EDU_END_DT as eduDtTo
+				, mei.edu_etc as eduEtc
+				, mei.edu_hour as eduHour
+				, mei.EDU_PLACE as eduPlace
+				, mei.EDU_NM as eduNm
+				, mm.USER_NM as userNm
+				, mm.USER_ID as userId
+				, (select GENDER from mind_mgr_sub mms where mm.USER_ID = mms.USER_ID) as gender
+				, (select CENTER_NM from mind_center mc where mm.CENTER_SEQ = mc.CENTER_SEQ )as centerNm
+			from MIND_EDU_COMPLETE mei INNER JOIN mind_mgr mm ON mei.USER_ID = mm.USER_ID
+			where 1=1
+			order by mei.EDU_SEQ desc
+		<choose>
+				<when test="pageCommonFlag == true">
+					) A
+				</when>
+				<otherwise>
+					LIMIT #{firstIndex} , #{pageSize}
+				</otherwise>
+
+		</choose>
+	</select>
+	
+	<select id="getEducationInfoPartnerList" resultType="com.ezwel.admin.domain.entity.edu.EducationInfoDto">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+			select mei.EDU_SEQ as eduId
+				, mei.edu_type as eduType
+				, mei.EDU_DIV as eduDiv
+				, mei.EDU_START_DT as eduDtFm
+				, mei.EDU_END_DT as eduDtTo
+				, mei.edu_etc as eduEtc
+				, mei.edu_hour as eduHour
+				, mei.EDU_PLACE as eduPlace
+				, mei.EDU_NM as eduNm
+				, mm.USER_NM as userNm
+				, (select GENDER from mind_mgr_sub mms where mm.USER_ID = mms.USER_ID) as gender
+				, (select CENTER_NM from mind_center mc where mm.CENTER_SEQ = mc.CENTER_SEQ )as centerNm
+			from MIND_EDU_COMPLETE mei INNER JOIN mind_mgr mm ON mei.USER_ID = mm.USER_ID
+			where 1=1
+			<if test="isNotNull(centerSeq)">
+				AND mei.center_seq = #{centerSeq}
+			</if>
+			
+			
+			order by mei.EDU_SEQ desc
+		<choose>
+				<when test="pageCommonFlag == true">
+					) A
+				</when>
+				<otherwise>
+					LIMIT #{firstIndex} , #{pageSize}
+				</otherwise>
+
+		</choose>
+	</select>
+	
+	
+	<select id="getEducationInfo" resultType="com.ezwel.admin.domain.entity.edu.EducationInfoDto">
+			select mei.EDU_SEQ as eduId
+				, mei.edu_type as eduType
+				, mei.EDU_DIV as eduDiv
+				, mei.EDU_START_DT as eduDtFm
+				, mei.EDU_END_DT as eduDtTo
+				, mei.edu_etc as eduEtc
+				, mei.edu_hour as eduHour
+				, mei.EDU_PLACE as eduPlace
+				, mei.EDU_NM as eduNm
+				, mm.USER_NM as userNm
+				, (select GENDER from mind_mgr_sub mms where mm.USER_ID = mms.USER_ID) as gender
+				, (select CENTER_NM from mind_center mc where mm.CENTER_SEQ = mc.CENTER_SEQ ) as centerNm
+				, mm.CENTER_SEQ as centerSeq
+			from MIND_EDU_COMPLETE mei INNER JOIN mind_mgr mm ON mei.USER_ID = mm.USER_ID
+			where 1=1
+			and EDU_SEQ = #{eduId}
+	</select>
+	<select id="getCenterList" resultType="com.ezwel.admin.domain.entity.edu.EducationInfoDto">
+		select center_seq as centerSeq, center_nm as centerNm from mind_center
+	</select>
+	<select id="getCounserlorList" resultType="com.ezwel.admin.domain.entity.edu.EducationInfoDto">
+		select USER_ID as userId, USER_NM as userNm from mind_mgr where center_seq = #{centerSeq}
+	</select>
+	<insert id="addEduInfo" parameterType="com.ezwel.admin.domain.entity.edu.EducationInfoDto">
+		INSERT INTO MIND_EDU_COMPLETE(
+			EDU_TYPE
+			, EDU_DIV
+			, EDU_NM
+			, EDU_HOUR
+			, EDU_START_DT
+			, EDU_END_DT
+			, EDU_PLACE
+			, EDU_ETC
+			, USER_ID
+			, CENTER_SEQ
+		)VALUES(
+			#{eduType}
+			, #{eduDiv}
+			, #{eduNm}
+			, #{eduHour}
+			, #{eduDtFm}
+			, #{eduDtTo}
+			, #{eduPlace}
+			, #{eduEtc}
+			, #{userId}
+			, #{centerSeq}
+		)
+	</insert>
+	<update id="updateEduInfo" parameterType="com.ezwel.admin.domain.entity.edu.EducationInfoDto">
+		update MIND_EDU_COMPLETE
+		set 
+			EDU_TYPE = #{eduType}
+			, EDU_DIV = #{eduDiv}
+			, EDU_NM = #{eduNm}
+			, EDU_HOUR = #{eduHour}
+			, EDU_START_DT = #{eduDtFm}
+			, EDU_END_DT = #{eduDtTo}
+			, EDU_PLACE = #{eduPlace}
+			, EDU_ETC = #{eduEtc}
+			, USER_ID = #{userId}
+		where EDU_SEQ = #{eduId}
+	</update>
+	
+	<delete id="deleteEduInfo">
+	    DELETE FROM 
+	    	MIND_EDU_COMPLETE 
+		WHERE EDU_SEQ = #{eduId}
+    </delete>
+    
+</mapper>

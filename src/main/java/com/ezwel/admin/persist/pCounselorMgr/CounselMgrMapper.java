@@ -1,0 +1,74 @@
+package com.ezwel.admin.persist.pCounselorMgr;
+
+import java.util.List;
+import java.util.Map;
+
+import com.ezwel.admin.domain.entity.common.Manager;
+import com.ezwel.admin.domain.entity.pCounselorMgr.CounselOrder;
+import com.ezwel.admin.domain.entity.pCounselorMgr.CounselReservation;
+import com.ezwel.admin.domain.entity.pCounselorMgr.MindCounselPrice;
+import com.ezwel.admin.domain.entity.sms.SmsResult;
+import com.ezwel.admin.service.pCounselorMgr.dto.CounselReservationDto;
+import com.ezwel.admin.service.pCounselorMgr.dto.MindCounselPriceDto;
+
+@SuppressWarnings("PMD.UnusedModifier")
+public interface CounselMgrMapper {
+	
+	
+	public List<CounselReservation> getTotalScheduleList(CounselReservationDto counselReservationDto);
+
+	public List<CounselReservation> getReservationWaitList(CounselReservationDto counselReservationDto);
+	
+	public List<CounselReservation> getOwnerReservationWaitList(CounselReservationDto counselReservationDto);
+	
+	public List<CounselReservation> getReservationFixList(CounselReservationDto counselReservationDto);
+	
+	public List<CounselReservation> getOwnerReservationFixList(CounselReservationDto counselReservationDto);
+	
+	
+	public void ajaxModifyFix(CounselReservationDto counselReservationDto);
+	
+	public void ajaxModifyCancel(CounselReservationDto counselReservationDto);
+	
+	public List<MindCounselPrice> getCounselPrice(MindCounselPriceDto mindCounselPriceDto);
+	
+	public void counselPriceInsert(MindCounselPriceDto mindCounselPriceDto);
+	
+	public void counselPriceUpdate(MindCounselPriceDto mindCounselPriceDto);
+	
+	public List<Manager> getCounselorList(CounselReservationDto counselReservationDto);
+	
+	public int isManagerSameGroup(CounselReservationDto counselReservationDto);
+	
+	public List<CounselReservation> getScheduleTimeList(CounselReservationDto counselReservationDto);
+	
+	public CounselReservation getCanExtension(CounselReservationDto counselReservationDto);
+	
+	public CounselReservation getCounselInfo(CounselReservationDto counselReservationDto);
+	
+	public int updateCounsel(CounselReservationDto counselReservationDto);
+	
+	public int updateCounselExtension(CounselReservationDto counselReservationDto);
+	
+	public int insertCounselExtension(CounselReservationDto counselReservationDto);
+	
+	public int updateCounselSchedule(CounselReservationDto counselReservationDto);
+	
+	public int updateCounselintake(CounselReservationDto counselReservationDto);
+	
+	public int insertCounselExtensionOrder(CounselReservationDto counselReservationDto);
+	
+	public List<SmsResult> getNotPayCounselBeforeTwoday();
+	
+	public List<SmsResult> getNotPayCounselBeforeTwodayPolice();
+	
+	public List<CounselOrder> getAutoCancelExtension();
+	
+	public int cancelAutoCancelExtensionOrder(Map<String, Object> itemMap);
+	
+	public int cancelAutoCancelExtensionCounsel(Map<String, Object> itemMap);
+	
+	public int addOrderGoods(Map<String, Object> itemMap);
+	
+	public int modefyRecordStatus(CounselReservationDto counselReservationDto);
+}

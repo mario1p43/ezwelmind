@@ -1,0 +1,630 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.ezwel.admin.persist.pCounselorMgr.CounselMgrMapper">
+
+
+	<select id="getTotalScheduleList" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.CounselReservation">
+		SELECT
+				  A.CLIENT_CD	
+				, A.RECORD_STATUS 
+				, A.COUNSEL_CD	
+				, A.COUNSELOR_ID	
+				, B.YMD	
+				, C.COUNSEL_NM 
+				, D.USER_NM																				as counselorNm		
+				, (SELECT CATEGORY_NM FROM MIND_COUNSEL_CATEGORY WHERE CATEGORY_CD = C.COUNSEL_DIV)  	as counselDivNm
+				, DATE_FORMAT(B.YMD, '%Y-%m-%d')  														as ymdLine
+				, DATE_FORMAT(CONVERT(B.ST_TIME, TIME), '%i:%s')										as stTime
+				, (SELECT CLIENT_NM FROM MIND_CLIENT WHERE CLIENT_CD = A.CLIENT_CD)						as clientNm
+				, AES_DECRYPT(UNHEX(C.MOBILE),'1234') 													as mobile
+		  FROM MIND_COUNSEL A INNER JOIN MIND_SCHEDULE B
+		  					ON A.COUNSEL_CD = B.COUNSEL_CD
+		  				INNER JOIN MIND_COUNSEL_INTAKE C 
+		  					ON A.INTAKE_CD = C.INTAKE_CD
+		  				INNER JOIN MIND_MGR D
+		  					ON A.COUNSELOR_ID = D.USER_ID
+		 WHERE 1=1
+		   AND A.STATUS != '100522' /* 취소가 아닌거(예정, 완료, 종결 모두 노출) */
+		   AND A.CENTER_SEQ = #{centerSeq}
+		   AND B.YMD LIKE CONCAT ( #{ymd},'%')
+		  <if test="isNotNull(userId)">
+		   AND D.USER_ID = #{userId}
+		  </if>
+	</select>
+
+	<select id="getReservationWaitList" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.CounselReservation">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+				SELECT	(SELECT CLIENT_NM FROM MIND_CLIENT WHERE CLIENT_CD = A.CLIENT_CD)	as	clientCd
+				,C.COUNSEL_NM 	as	counselNm
+				,C.MOBILE	as	mobile
+				,C.COUNSEL_DIV	as	counselDiv
+				,C.COUNSEL_TYPE	as	counselType
+				,DATE_FORMAT(CONVERT(B.YMD, DATE), '%Y-%m-%d')	as	ymd
+				,DATE_FORMAT(CONVERT(B.ST_TIME, TIME), '%i:%s')	as	stTime
+				,D.USER_NM	as	counselorNm	
+				,A.COUNSEL_CD	as	counselCd
+				FROM	MIND_COUNSEL A, MIND_SCHEDULE B, MIND_COUNSEL_INTAKE C, MIND_MGR D
+				WHERE	1=1
+				AND		A.COUNSELOR_ID = #{counselorId}
+				AND		C.INTAKE_CD = A.INTAKE_CD
+				AND		A.COUNSEL_CD = B.COUNSEL_CD
+				AND		A.STATUS = '100520'
+				AND		A.COUNSELOR_ID = D.USER_ID
+				AND     B.SCHEDULE_TYPE IN ('100562', '100564')  -- 게시판 상담은 제외하고 노출
+				<if test="isNotNull(counselNm)">
+				AND		C.COUNSEL_NM like CONCAT ( '%',#{counselNm},'%')
+				</if>
+				<if test="isNotNull(startDt)">
+				AND 	B.YMD &gt;= #{startDt}
+				</if>
+				<if test="isNotNull(endDt)">
+				AND 	B.YMD &lt;= #{endDt}
+				</if>
+				ORDER BY B.YMD DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	
+	</select>
+
+
+	<select id="getOwnerReservationWaitList" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.CounselReservation">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+				SELECT	(SELECT CLIENT_NM FROM MIND_CLIENT WHERE CLIENT_CD = A.CLIENT_CD)	as	clientCd
+				,C.COUNSEL_NM 	as	counselNm
+				,C.MOBILE	as	mobile
+				,C.COUNSEL_DIV	as	counselDiv
+				,C.COUNSEL_TYPE	as	counselType
+				,DATE_FORMAT(CONVERT(B.YMD, DATE), '%Y-%m-%d')	as	ymd
+				,DATE_FORMAT(CONVERT(B.ST_TIME, TIME), '%i:%s')	as	stTime
+				,D.USER_NM	as	counselorNm	
+				,A.COUNSEL_CD	as	counselCd
+				FROM	MIND_COUNSEL A, MIND_SCHEDULE B, MIND_COUNSEL_INTAKE C, MIND_MGR D
+				WHERE	1=1
+				AND		A.CENTER_SEQ = #{centerSeq}
+				AND		C.INTAKE_CD = A.INTAKE_CD
+				AND		A.COUNSEL_CD = B.COUNSEL_CD
+				AND		A.STATUS = '100520'
+				AND		A.COUNSELOR_ID = D.USER_ID
+				AND     B.SCHEDULE_TYPE IN ('100562', '100564')  -- 게시판 상담은 제외하고 노출
+				<if test="isNotNull(counselNm)">
+				AND		C.COUNSEL_NM like CONCAT ( '%',#{counselNm},'%')
+				</if>
+				<if test="isNotNull(startDt)">
+				AND 	B.YMD &gt;= #{startDt}
+				</if>
+				<if test="isNotNull(endDt)">
+				AND 	B.YMD &lt;= #{endDt}
+				</if>
+				<if test="isNotNull(counselorNm)">
+				AND		D.USER_NM like CONCAT ( '%',#{counselorNm},'%')
+				</if>
+				ORDER BY B.YMD DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	
+	</select>
+
+
+	<select id="getReservationFixList" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.CounselReservation">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+				SELECT	(SELECT CLIENT_NM FROM MIND_CLIENT WHERE CLIENT_CD = A.CLIENT_CD)	as	clientNm
+					,C.COUNSEL_NM 	as	counselNm
+					,AES_DECRYPT(UNHEX(C.MOBILE),'1234')	as	mobile
+					,C.COUNSEL_DIV	as	counselDiv
+					,C.COUNSEL_TYPE	as	counselType
+					,C.CHANNEL_TYPE as channelType
+					,DATE_FORMAT(CONVERT(B.YMD, DATE), '%Y-%m-%d')	as	ymd
+					,DATE_FORMAT(CONVERT(B.ST_TIME, TIME), '%i:%s')	as	stTime
+					,D.USER_NM	as	counselorNm
+					,A.COUNSEL_CD	as	counselCd	
+					,A.COUNSELOR_ID	as	counselorId
+					,A.INTAKE_CD as intakeCd
+					,A.USER_KEY as userKey
+					,A.CENTER_SEQ as centerSeq
+					,A.CLIENT_CD as clientCd
+					, (SELECT CENTER_NM FROM MIND_CENTER WHERE CENTER_SEQ = A.CENTER_SEQ) as centerNm
+					, IF((SELECT ORDER_STATUS FROM MIND_ORDER WHERE COUNSEL_CD = A.COUNSEL_CD) = '100960', 'Y', 'N') as needPay
+					,A.RECORD_STATUS as recordStatus
+					,A.EXTENSION_STATUS   as extensionStatus
+					,E.USER_NM as counselMgrNm
+				FROM	MIND_COUNSEL A LEFT JOIN (SELECT AA.USER_NM, BB.CLIENT_CD FROM MIND_MGR AA LEFT JOIN MIND_CLIENT BB ON AA.USER_ID = BB.COUNSEL_MGR_ID ) as E ON A.CLIENT_CD = E.CLIENT_CD,
+					MIND_SCHEDULE B, MIND_COUNSEL_INTAKE C, MIND_MGR D
+				WHERE	1=1
+				AND		A.COUNSELOR_ID = #{counselorId}
+				AND		C.INTAKE_CD = A.INTAKE_CD
+				AND		A.COUNSEL_CD = B.COUNSEL_CD
+				AND		A.STATUS in ('100520', '100521')
+				AND		A.COUNSELOR_ID = D.USER_ID
+				<if test="isNotNull(counselNm)">
+				AND		C.COUNSEL_NM like CONCAT ( '%',#{counselNm},'%')
+				</if>
+				<if test="isNotNull(startDt)">
+				AND 	B.YMD &gt;= #{startDt}
+				</if>
+				<if test="isNotNull(endDt)">
+				AND 	B.YMD &lt;= #{endDt}
+				</if>
+				<if test="isNotNull(clientCd)">
+				AND		A.CLIENT_CD = #{clientCd}
+				</if>
+				<if test="counselCd != 0">
+				AND		A.COUNSEL_CD = #{counselCd}
+				</if>
+				ORDER BY A.SCHEDULE_DT DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	
+	</select>
+
+
+
+	<select id="getOwnerReservationFixList" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.CounselReservation">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+				SELECT	(SELECT CLIENT_NM FROM MIND_CLIENT WHERE CLIENT_CD = A.CLIENT_CD)	as	clientNm
+					,C.COUNSEL_NM 	as	counselNm
+					,AES_DECRYPT(UNHEX(C.MOBILE),'1234')	as	mobile
+					,C.COUNSEL_DIV	as	counselDiv
+					,C.COUNSEL_TYPE	as	counselType
+					,C.CHANNEL_TYPE as channelType
+					,DATE_FORMAT(A.SCHEDULE_DT, '%Y-%m-%d')	as	ymd
+					,DATE_FORMAT(A.SCHEDULE_DT,  '%H:%i')	as	stTime
+					,D.USER_NM	as	counselorNm	
+					,A.COUNSEL_CD	as	counselCd
+					,A.COUNSELOR_ID as counselorId
+					,A.CENTER_SEQ as centerSeq
+					,A.USER_KEY as userKey
+					,A.INTAKE_CD as intakeCd
+					,A.CLIENT_CD as clientCd
+					, (SELECT CENTER_NM FROM MIND_CENTER WHERE CENTER_SEQ = A.CENTER_SEQ) as centerNm
+					, IF((SELECT ORDER_STATUS FROM MIND_ORDER WHERE COUNSEL_CD = A.COUNSEL_CD) = '100960', 'Y', 'N') as needPay
+					,A.RECORD_STATUS  as recordStatus
+					,A.EXTENSION_STATUS   as extensionStatus
+					,E.USER_NM as counselMgrNm
+					, (SELECT USER_STATUS FROM MIND_USER WHERE USER_KEY = A.USER_KEY) as userStatus
+					, (SELECT USE_YN FROM MIND_USER WHERE USER_KEY = A.USER_KEY) as useYn
+				FROM	MIND_COUNSEL A LEFT JOIN (SELECT AA.USER_NM, BB.CLIENT_CD FROM MIND_MGR AA LEFT JOIN MIND_CLIENT BB ON AA.USER_ID = BB.COUNSEL_MGR_ID ) as E ON A.CLIENT_CD = E.CLIENT_CD, 
+					MIND_COUNSEL_INTAKE C, MIND_MGR D
+				WHERE	1=1
+				<if test="isNotNull(centerSeq) and (centerSeq > 0)">
+				AND		A.CENTER_SEQ = #{centerSeq}
+				</if>
+				AND		C.INTAKE_CD = A.INTAKE_CD
+				AND		A.STATUS in ('100520', '100521', '100884')
+				AND		A.COUNSELOR_ID = D.USER_ID
+				<if test="isNotNull(counselNm)">
+				AND		C.COUNSEL_NM like CONCAT ( '%',#{counselNm},'%')
+				</if>
+				<if test="isNotNull(startDt)">
+				AND 	DATE_FORMAT(A.SCHEDULE_DT, '%Y%m%d') &gt;= #{startDt}
+				</if>
+				<if test="isNotNull(endDt)">
+				AND 	DATE_FORMAT(A.SCHEDULE_DT, '%Y%m%d') &lt;= #{endDt}
+				</if>
+				<if test="isNotNull(counselorNm)">
+				AND		D.USER_NM like CONCAT ( '%',#{counselorNm},'%')
+				</if>
+				<if test="isNotNull(clientCd)">
+				AND		A.CLIENT_CD = #{clientCd}
+				</if>
+				<if test="counselCd != 0">
+				AND		A.COUNSEL_CD = #{counselCd}
+				</if>
+				ORDER BY A.SCHEDULE_DT DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	
+	</select>
+
+
+
+	<update id="ajaxModifyFix">
+		UPDATE MIND_COUNSEL
+			SET STATUS = #{counselStatus}
+			,	COUNSEL_DT	=	DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE COUNSEL_CD = #{counselCd}
+	</update>
+
+	<update id="ajaxModifyCancel">
+		UPDATE MIND_COUNSEL
+			SET STATUS = #{counselStatus}
+			,	CANCEL_DT	=	DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			,	CANCEL_ID	=	#{counselorId}
+		WHERE COUNSEL_CD = #{counselCd}
+	</update>
+	
+	
+	<select id="getCounselPrice" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.MindCounselPrice">
+		SELECT	PRICE_SEQ	as	priceSeq
+			,	CATEGORY_CD	as	categoryCd 
+			,	CLIENT_CD	as	clientCd
+			,	CENTER_SEQ	as	centerSeq
+			,	PRICE_TYPE	as	priceType
+			,	PRICE01		as	price01
+			,	PRICE02		as	price02
+			,	PRICE03		as	price03
+		FROM	MIND_COUNSEL_PRICE
+		WHERE	1=1
+		<if test="centerSeq != 0">
+		AND		CENTER_SEQ = #{centerSeq}
+		</if>
+	
+	</select>
+	
+	<insert id="counselPriceInsert" parameterType="com.ezwel.admin.service.pCounselorMgr.dto.MindCounselPriceDto">
+		INSERT INTO MIND_COUNSEL_PRICE (
+			  CATEGORY_CD
+			, CENTER_SEQ
+			, PRICE_TYPE
+			, PRICE01
+			, PRICE02
+			, PRICE03
+		) VALUES (
+			 #{categoryCd}
+			,#{centerSeq}
+			,#{priceType}
+			,#{price01}
+			,#{price02}
+			,#{price03}
+		)
+	</insert>
+	
+	<update id="counselPriceUpdate">
+		UPDATE MIND_COUNSEL_PRICE
+			SET PRICE01 = #{price01}
+			,	PRICE02 = #{price02}
+			,	PRICE03 = #{price03}
+		WHERE	CENTER_SEQ = #{centerSeq}
+		AND		CATEGORY_CD = #{categoryCd}
+	</update>
+	
+	<select id="getCounselorList" resultType="com.ezwel.admin.domain.entity.common.Manager">
+		SELECT USER_ID AS userId
+			, USER_NM AS userNm
+		FROM MIND_MGR
+		WHERE 1=1 
+		AND USE_YN = 'Y'
+		AND CENTER_SEQ = #{centerSeq }
+	</select>
+	
+	
+	<select id="isManagerSameGroup" resultType="int">
+		SELECT COUNT(*)
+		FROM MIND_MGR
+		WHERE 1=1 
+		AND USE_YN = 'Y'
+		AND CENTER_SEQ = #{centerSeq}
+		AND USER_ID = #{userId}
+	</select>
+	
+	<select id="getScheduleTimeList" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.CounselReservation">
+		SELECT	SCHEDULE_SEQ 
+			, ST_TIME
+		FROM MIND_SCHEDULE
+		WHERE CENTER_SEQ = #{centerSeq}
+			AND USER_ID = #{counselorId}
+			AND YMD = ${ymd}
+			AND HOLIDAY_YN = 'N'
+			AND COUNSEL_CD = '0'
+			AND ST_TIME >= #{stTime}
+			ORDER BY ST_TIME
+	</select>
+	
+	<select id="getCanExtension" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.CounselReservation">
+		SELECT COUNSEL_CD as counselCd
+			, INTAKE_CD as intakeCd
+			, EXTENSION_STATUS as extensionStatus
+		FROM MIND_COUNSEL
+		WHERE COUNSEL_CD = #{counselCd}
+	</select>
+	
+	<select id="getCounselInfo" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.CounselReservation">
+		SELECT A.INTAKE_CD							as intakeCd
+			, A.CLIENT_CD							as clientCd
+			, A.USER_KEY							as userKey
+			, A.CATEGORY_CD							as categoryCd
+			, A.CENTER_SEQ							as centerSeq
+			, A.COUNSEL_TYPE						as counselType
+			, A.COUNSELOR_ID						as counselorId
+			, A.COUNSEL_PRICE						as counselPrice
+			, A.SCHEDULE_DT							as scheduleDt
+			, A.EXTENSION_NUM						as extensionNum
+			, B.COUNSEL_NM							as counselNm
+			, C.CENTER_NM							as centerNm
+			, D.USER_NM								as counselorNm
+			, AES_DECRYPT(UNHEX(B.MOBILE), '1234')	as mobile
+		FROM MIND_COUNSEL A INNER JOIN MIND_COUNSEL_INTAKE B ON A.INTAKE_CD = B.INTAKE_CD
+			INNER JOIN MIND_CENTER C ON A.CENTER_SEQ = C.CENTER_SEQ
+			INNER JOIN MIND_MGR D ON D.USER_ID = A.COUNSELOR_ID
+		WHERE COUNSEL_CD = #{counselCd}
+	</select>
+	
+	<update id="updateCounsel" parameterType="com.ezwel.admin.service.pCounselorMgr.dto.CounselReservationDto">
+		UPDATE MIND_COUNSEL
+			SET EXTENSION_STATUS = '100932'
+		WHERE COUNSEL_CD = #{counselCd}
+	</update>
+	
+	<insert id="insertCounselExtension" parameterType="com.ezwel.admin.service.pCounselorMgr.dto.CounselReservationDto">
+		INSERT INTO MIND_COUNSEL (
+			  INTAKE_CD
+			, CLIENT_CD
+			, USER_KEY
+			, CATEGORY_CD
+			, CENTER_SEQ
+			, SCHEDULE_SEQ
+			, COUNSEL_TYPE
+			, COUNSELOR_ID
+			, COUNSEL_PRICE
+			, STATUS
+			, RECORD_STATUS
+			, REG_DT
+			, REG_ID
+			, SCHEDULE_DT
+			, EXTENSION_NUM
+		) VALUES (
+			#{intakeCd}
+			, #{clientCd}
+			, #{userKey}
+			, #{categoryCd}
+			, #{centerSeq}
+			, #{scheduleSeq}
+			, #{counselType}
+			, #{counselorId}
+			, #{counselPrice}
+			, '100520'
+			, '100693'
+			, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			, #{regId}
+			, #{scheduleDt}
+			, #{extensionNum}
+		)
+		<selectKey keyProperty="counselCd" resultType="integer" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<insert id="insertCounselExtensionOrder" parameterType="com.ezwel.admin.service.pCounselorMgr.dto.CounselReservationDto">
+		INSERT INTO MIND_ORDER (
+			COUNSEL_CD
+			, CLIENT_CD
+			, USER_KEY
+			, ORDER_TYPE
+			, ORDER_DT
+			, ORDER_NM
+			, ORDER_AMT
+			, ORDER_STATUS
+			, PAY_TYPE
+			, CATEGORY_SEQ
+			, SND_NM
+			, SND_MOBILE
+			, SND_EMAIL
+			, REG_ID
+		) VALUES (
+			#{counselCd}
+			, #{clientCd}
+			, #{userKey}
+			, '100777' -- 심리상담
+			, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			, (SELECT CATEGORY_NM FROM MIND_COUNSEL_CATEGORY WHERE CATEGORY_CD = #{categoryCd})
+			, '0'
+			, '100960' -- 주문처리중
+			, null
+			, #{categoryCd}
+			, (SELECT USER_NM FROM MIND_USER WHERE USER_KEY = #{userKey})
+			, (SELECT MOBILE FROM MIND_USER WHERE USER_KEY = #{userKey})
+			, (SELECT EMAIL FROM MIND_USER WHERE USER_KEY = #{userKey})
+			, #{regId}
+		)			
+	</insert>
+	
+	<update id="updateCounselSchedule" parameterType="com.ezwel.admin.service.pCounselorMgr.dto.CounselReservationDto">
+		UPDATE MIND_SCHEDULE
+			SET COUNSEL_CD = #{counselCd}
+		WHERE SCHEDULE_SEQ = #{scheduleSeq}
+			AND CENTER_SEQ = #{centerSeq}
+			AND YMD = #{ymd}
+			AND ST_TIME = #{stTime}
+	</update>
+	
+	<update id="updateCounselintake" parameterType="com.ezwel.admin.service.pCounselorMgr.dto.CounselReservationDto">
+		UPDATE MIND_COUNSEL_INTAKE
+			SET INTAKE_NUM = (SELECT COUNT(COUNSEL_CD) FROM MIND_COUNSEL WHERE INTAKE_CD = #{intakeCd})
+		WHERE INTAKE_CD = #{intakeCd}
+	</update>
+	
+	<select id="getNotPayCounselBeforeTwoday" resultType="com.ezwel.admin.domain.entity.sms.SmsResult">
+		/* 매일 9시에 다음날 상담이 있는 고객한테 문자 보낼 주문을 추출 */
+        SELECT A.ORDER_NUM,
+			   E.COUNSEL_NM	as sndNm,
+			   AES_DECRYPT(UNHEX(IFNULL(E.MOBILE,A.SND_MOBILE)),'1234') as sndMobile,/* 인테이크에 입력한 휴대폰번호로 메시지가 날라가도록 수정, 인테이크에 입력된 정보가 없으면 주문에 있는 휴대펀번호로 */
+			   B.COUNSELOR_ID,
+			   B.COUNSEL_CD,
+			   DATE_FORMAT(STR_TO_DATE(B.SCHEDULE_DT, '%Y%m%d%H%i%s'),'%Y년%m월%d일%H시') 	AS scheduleDt,
+			   DATE_FORMAT(STR_TO_DATE(B.SCHEDULE_DT, '%Y%m%d%H%i%s'),'%m월%d일 %H시') 		AS scheduleDtMonth,
+			   C.TEL_NUM 			as centerTelNum,
+			   C.CENTER_NM			as centerNm,
+			   C.ADDR1 				as centerAddr1,
+			   C.ADDR2 				as centerAddr2,
+			   D.USER_NM 			as counselorNm,
+			   D.MOBILE 			as counselorMobile,
+			   A.CLIENT_CD			as clientCd,
+			   B.COUNSEL_TYPE       AS counselType,
+			   B.center_seq			as centerSeq,
+			   IF(F.SITE_NM IS NULL or F.SITE_NM = '', '상담포유', F.SITE_NM) as siteNm	
+          FROM MIND_ORDER A INNER JOIN MIND_COUNSEL B
+            ON A.COUNSEL_CD = B.COUNSEL_CD
+            INNER JOIN MIND_CENTER C
+            ON B.CENTER_SEQ = C.CENTER_SEQ
+            INNER JOIN MIND_MGR D
+            ON B.COUNSELOR_ID = D.USER_ID
+            LEFT JOIN MIND_COUNSEL_INTAKE E
+            ON B.INTAKE_CD=E.INTAKE_CD
+            INNER JOIN MIND_CLIENT F
+            ON A.CLIENT_CD =F.CLIENT_CD 
+         WHERE 1=1
+		   AND DATE_FORMAT(B.schedule_dt, '%Y-%m-%d') = DATE_ADD(DATE_FORMAT(NOW(), '%Y%m%d'), INTERVAL 2 DAY)
+           AND B.CANCEL_DT IS NULL -- 취소가 아니고
+           AND A.REF_ORDER_NUM IS NULL -- 취소 재주문도 아닌거
+           AND A.ORDER_STATUS = '100960'
+           AND A.CLIENT_CD != 'police'
+	</select>
+	
+	<select id="getNotPayCounselBeforeTwodayPolice" resultType="com.ezwel.admin.domain.entity.sms.SmsResult">
+		/* 매일 9시에 다음날 상담이 있는 고객한테 문자 보낼 주문을 추출 */
+        SELECT A.ORDER_NUM,
+			   E.COUNSEL_NM	as sndNm,
+			   AES_DECRYPT(UNHEX(IFNULL(E.MOBILE,A.SND_MOBILE)),'1234') as sndMobile,/* 인테이크에 입력한 휴대폰번호로 메시지가 날라가도록 수정, 인테이크에 입력된 정보가 없으면 주문에 있는 휴대펀번호로 */
+			   B.COUNSELOR_ID,
+			   B.COUNSEL_CD,
+			   DATE_FORMAT(STR_TO_DATE(B.SCHEDULE_DT, '%Y%m%d%H%i%s'),'%Y년%m월%d일%H시') 	AS scheduleDt,
+			   DATE_FORMAT(STR_TO_DATE(B.SCHEDULE_DT, '%Y%m%d%H%i%s'),'%m월%d일 %H시') 		AS scheduleDtMonth,
+			   C.TEL_NUM 			as centerTelNum,
+			   C.CENTER_NM			as centerNm,
+			   C.ADDR1 				as centerAddr1,
+			   C.ADDR2 				as centerAddr2,
+			   D.USER_NM 			as counselorNm,
+			   D.MOBILE 			as counselorMobile,
+			   A.CLIENT_CD			as clientCd,
+			   B.COUNSEL_TYPE       AS counselType,
+			   B.center_seq			as centerSeq,
+			   IF(F.SITE_NM IS NULL or F.SITE_NM = '', '상담포유', F.SITE_NM) as siteNm	
+          FROM MIND_ORDER A INNER JOIN MIND_COUNSEL B
+            ON A.COUNSEL_CD = B.COUNSEL_CD
+            INNER JOIN MIND_CENTER C
+            ON B.CENTER_SEQ = C.CENTER_SEQ
+            INNER JOIN MIND_MGR D
+            ON B.COUNSELOR_ID = D.USER_ID
+            LEFT JOIN MIND_COUNSEL_INTAKE E
+            ON B.INTAKE_CD=E.INTAKE_CD
+            INNER JOIN MIND_CLIENT F
+            ON A.CLIENT_CD =F.CLIENT_CD
+         WHERE 1=1
+		   AND DATE_FORMAT(B.schedule_dt, '%Y-%m-%d') = DATE_ADD(DATE_FORMAT(NOW(), '%Y%m%d'), INTERVAL 2 DAY)
+           AND B.CANCEL_DT IS NULL -- 취소가 아니고
+           AND A.REF_ORDER_NUM IS NULL -- 취소 재주문도 아닌거
+           AND A.ORDER_STATUS = '100960'
+           AND A.CLIENT_CD = 'police'
+	</select>
+	
+	<select id="getAutoCancelExtension" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.CounselOrder">
+		SELECT A.ORDER_NUM as orderNum
+			, A.COUNSEL_CD as counselCd
+			, A.ORDER_NM as goodsNm
+			, A.ORDER_AMT as salePrice
+			, A.ORDER_STATUS as goodsStatus
+			, A.ORDER_TYPE as goodsType
+			, A.ORDER_AMT as buyPrice
+			, (SELECT DUTY_YN FROM 
+					MIND_COUNSEL A INNER JOIN MIND_COUNSEL_INTAKE B ON A.INTAKE_CD = B.INTAKE_CD 
+						INNER JOIN MIND_ORDER C ON C.COUNSEL_CD = A.COUNSEL_CD 
+						INNER JOIN MIND_CENTER D ON D.CENTER_SEQ = B.CENTER_SEQ 
+						WHERE C.ORDER_NUM = A.ORDER_NUM) as taxYn
+		FROM MIND_ORDER A INNER JOIN MIND_COUNSEL B
+            ON A.COUNSEL_CD = B.COUNSEL_CD
+		WHERE 1 = 1
+			AND DATE_FORMAT(B.SCHEDULE_DT, '%Y%m%d') &lt; DATE_FORMAT(NOW(), '%Y%m%d')
+			AND B.CANCEL_DT IS NULL -- 취소가 아니고
+			AND A.REF_ORDER_NUM IS NULL -- 취소 재주문도 아닌거
+			AND A.ORDER_STATUS = '100960'
+			AND A.ORDER_TYPE = '100777'
+	</select>
+	
+	<update id="cancelAutoCancelExtensionOrder">
+		UPDATE MIND_ORDER
+			SET ORDER_STATUS = '100783'
+		WHERE ORDER_NUM IN (
+			<foreach collection="itemMap" index="idx" item="item" separator=", ">
+				#{item.orderNum}
+			</foreach>
+		)
+	</update>
+	
+	<update id="cancelAutoCancelExtensionCounsel">
+		UPDATE MIND_COUNSEL
+			SET STATUS = '100522'
+		WHERE COUNSEL_CD IN (
+			<foreach collection="itemMap" index="idx" item="item" separator=", ">
+				#{item.counselCd}
+			</foreach>
+		)
+	</update>
+	
+	<insert id="addOrderGoods">
+		INSERT INTO MIND_ORDER_GOODS (ORDER_NUM
+			, GOODS_NM 
+			, SALE_PRICE
+			, GOODS_STATUS
+			, GOODS_TYPE
+			, BUY_PRICE
+			, ORDER_QTY
+			, TAX_YN
+			, DLVR_PRICE
+			, ORDER_DT)
+		VALUES
+		<foreach collection="itemMap" item="item" separator=", ">
+			(
+				#{item.orderNum},
+				#{item.goodsNm},
+				#{item.salePrice},
+				'100783',
+				#{item.goodsType},
+				#{item.buyPrice},
+				'1',
+				#{item.taxYn},
+				'0',
+				DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			)
+		</foreach>
+		
+	</insert>
+	
+	
+	<update id="modefyRecordStatus">
+		UPDATE MIND_COUNSEL
+		   SET RECORD_STATUS = #{recordStatus}
+		 WHERE COUNSEL_CD = #{counselCd}
+	</update>
+</mapper>

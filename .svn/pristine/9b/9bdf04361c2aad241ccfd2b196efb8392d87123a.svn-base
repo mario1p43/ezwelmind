@@ -1,0 +1,55 @@
+package com.ezwel.admin.persist.counsel;
+
+import java.util.List;
+
+import com.ezwel.admin.domain.entity.center.CenterInfo;
+import com.ezwel.admin.domain.entity.counsel.Counsel;
+import com.ezwel.admin.domain.entity.counsel.Schedule;
+import com.ezwel.admin.domain.entity.sms.SmsResult;
+import com.ezwel.admin.service.counsel.dto.CounselDto;
+import com.ezwel.admin.service.counsel.dto.CounselIntakeDto;
+
+
+@SuppressWarnings("PMD.UnusedModifier")
+public interface CounselMapper {
+
+	public List<Counsel> getCounseList(CounselDto counselDto);
+	
+	public List<SmsResult> getCounselAfterSmsList();
+	
+	public int modifySmsResultYn();
+	
+	public List<SmsResult> getCounselAfterSmsPoliceList();
+	
+	public int modifySmsResultYnPolice();
+	
+	public Schedule getSchedule(CounselDto counselDto);
+	
+	public int modifyScheduleCancel(CounselDto counselDto);
+	
+	public int modifyScheduleRegister(CounselDto counselDto);
+	
+	public int addSchedule(CounselDto counselDto);
+	
+	public int modifyCounselChange(CounselDto counselDto);
+	
+	public int addCounselIntake(CounselIntakeDto counselIntakeDto);
+	
+	public int updateEmpInfo(CounselIntakeDto counselIntakeDto);
+	
+	public int updateIntakeInfo(CounselIntakeDto counselIntakeDto);
+	
+	public List<Counsel> getCounselCategoryList(String highCategoryCd);
+	
+	public List<Counsel> getCounselCategoryClientList(CounselDto counselDto);
+	
+	public List<Counsel> getCounselExtensionList(CounselDto counselDto);
+	
+	public SmsResult didSmsCounselDtChange(String counselCd);
+
+	public SmsResult didSmsCounselDtChangePolice(String counselCd);
+	
+	public Counsel getCounselMemo(String intakeCd);
+	
+	public List<CenterInfo> searchCenter(String searchCenter);
+}

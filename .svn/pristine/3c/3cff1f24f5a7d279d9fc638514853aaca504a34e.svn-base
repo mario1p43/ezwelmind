@@ -1,0 +1,63 @@
+@charset "utf-8";
+
+body,table,input,select,textarea,button{color: #666; font-family:dotum, 돋움, NanumGothic, 나눔고딕, "Malgun Gothic", "맑은 고딕", Tahoma, Geneva, sans-serif;font-size:12px}
+
+.line {border-bottom:1px solid gray;border-right:1px solid gray;border-left:1px solid gray;border-top:1px solid gray;}
+.textSpan {display:inline-block; font-size:11pt;padding-left:10px;padding-right:10px;padding-top:2px;padding-bottom:10px; border:0px solid black; }
+.DynamicHeader {text-align:center; background-color:#F5F5F5;}
+
+table.type01 {
+    border-collapse:collapse;
+    border-spacing: 1px;
+    text-align: center;
+    line-height: 1.5;
+    margin: 20px 10px;
+}
+table.type01 th {
+    padding: 10px;
+    font-weight: bold;
+    vertical-align: top;
+    background: #eee;
+    border: 1px solid;
+}
+table.type01 td {
+    padding: 10px;
+    vertical-align: top;
+    border: 1px solid;
+}
+
+table.type02 {
+	border-collapse:collapse;
+    border-spacing: 1px;
+    text-align: left;
+    line-height: 1.5;
+  	margin : 5px 10px;
+}
+table.type02 th {
+	text-align: center;
+    padding: 5px;
+    font-weight: bold;
+    vertical-align: top;
+    background: #eee
+}
+table.type02 td {
+    padding: 5px;
+    vertical-align: top;
+}
+
+table.type03 {
+	text-align: left;
+    line-height: 1.5;
+  margin : 5px 10px;
+}
+table.type03 th {
+	text-align: center;
+    padding: 5px;
+    font-weight: bold;
+    vertical-align: top;
+    background: white;
+}
+table.type03 td {
+    padding: 5px;
+    vertical-align: top;
+}

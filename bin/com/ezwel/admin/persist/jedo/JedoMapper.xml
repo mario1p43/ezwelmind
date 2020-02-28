@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.jedo.JedoMapper">
+
+
+	<insert id="insertBbs" keyProperty="dataSeq" useGeneratedKeys="true" parameterType="com.ezwel.admin.service.bbs.dto.BBSAddDto">
+		INSERT INTO MIND_BBS_DATA (
+			 BBS_CD 
+			,SERVICE_TYPE
+			<if test="isNotNull(clientCd)">
+				,CLIENT_CD
+			</if>
+			,SUBJECT
+			,CONTENT
+			,REQ_CD1
+			,REQ_CD2
+			<if test="isNotNull(dispYn)">
+				,DISP_YN
+			</if>
+			<if test="isNotNull(pageKey)">
+				,PAGE_KEY
+			</if>
+			,REG_ID 
+			,REG_NM 
+			,REG_DT
+			<if test="isNotNull(regMobile)">
+				,REG_MOBILE
+			</if>
+			<if test="isNotNull(regEmail)">
+				,REG_EMAIL
+			</if>
+			,COLUMNIST_NM
+			,COLUMNIST_DD
+			,COLUMNIST_CAREER
+			,COLUMNIST_MEMO
+			,COLUMNIST_GRADE
+			<if test="isNotNull(newsDd)">
+				,NEWS_DD
+			</if>
+		) VALUES (
+			 #{bbsCd}
+			 <if test="isNotNull(serviceType)">
+				,#{serviceType}
+			</if>
+			<if test="isNull(serviceType)">
+				,'HOME'
+			</if>
+			<if test="isNotNull(clientCd)">
+				,#{clientCd}
+			</if>
+			,#{subject}
+			,#{content}
+			,#{reqCd1}
+			,#{reqCd2}
+			<if test="isNotNull(dispYn)">
+				,#{dispYn}
+			</if>
+			<if test="isNotNull(pageKey)">
+				,#{pageKey}
+			</if>
+			,#{regId}
+			,#{regNm}
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			<if test="isNotNull(regMobile)">
+				,#{regMobile}
+			</if>
+			<if test="isNotNull(regEmail)">
+				,#{regEmail}
+			</if>
+			,#{columnistNm}
+			,#{columnistDd}
+			,#{columnistCareer}
+			,#{columnistMemo}
+			,#{columnistGrade}
+			<if test="isNotNull(newsDd)">
+				,#{newsDd}
+			</if>
+		)
+	</insert>
+	
+	<update id="updateBbs" parameterType="com.ezwel.admin.service.bbs.dto.BBSAddDto">
+		UPDATE MIND_BBS_DATA 
+		SET  SUBJECT = #{subject}
+		    ,CONTENT = #{content}
+			,COLUMNIST_NM = #{columnistNm}    
+			,COLUMNIST_DD = #{columnistDd}    
+			,COLUMNIST_CAREER = #{columnistCareer}
+			,COLUMNIST_MEMO = #{columnistMemo}  
+			,COLUMNIST_GRADE = #{columnistGrade} 
+		    <if test="isNotNull(dispYn)">
+				,DISP_YN = #{dispYn}
+			</if>
+			<if test="isNotNull(reqCd1)">
+				,REQ_CD1 = #{reqCd1}
+			</if>
+			<if test="isNotNull(modiNm)">
+				,MODI_NM = #{modiNm}
+				,MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			</if>
+			<if test="isNotNull(modiId)">
+				,MODI_ID = #{modiId}
+			</if>
+			<if test="isNotNull(newsDd)">
+				,NEWS_DD = #{newsDd}
+			</if>
+		WHERE DATA_SEQ = #{dataSeq}
+	</update>
+	
+	<select id="getBbsList" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+				SELECT A.DATA_SEQ AS dataSeq
+						, A.SUBJECT AS subject
+						, A.PAGE_KEY AS pageKey
+						, A.REG_ID AS regId
+						, A.REG_NM AS regNm
+						, A.MODI_ID AS modiId
+						, A.MODI_NM AS modiNm
+						,DATE_FORMAT(STR_TO_DATE(A.MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS modiDt
+						,DATE_FORMAT(STR_TO_DATE(A.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt
+						,(SELECT CLIENT_CD FROM MIND_BBS_CLIENT WHERE A.CLIENT_CD = #{clientCd} AND A.DATA_SEQ = DATA_SEQ) AS clientCd  
+				FROM MIND_BBS_DATA A
+				WHERE 1=1 
+				AND A.BBS_CD = 'jedo'
+				AND A.SERVICE_TYPE = 'SANGDAM4U'
+				ORDER BY DATA_SEQ 
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getBbsSelectOne" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		SELECT DATA_SEQ AS dataSeq
+			,BBS_CD AS bbsCd
+			,SERVICE_TYPE AS serviceType
+			,SUBJECT AS subject
+			,CONTENT AS content
+			,REQ_CD1 AS reqCd1
+			,REQ_CD2 AS reqCd2
+			,PAGE_KEY AS pageKey
+			,HTML_URL AS htmlUrl
+			,VISITED AS visited
+			,DISP_YN AS dispYn
+			,CLIENT_CD AS clientCd
+			,NEWS_DD AS newsDd
+			,COLUMNIST_NM AS columnistNm
+			,COLUMNIST_DD AS columnistDd
+			,COLUMNIST_CAREER AS columnistCareer
+			,COLUMNIST_MEMO AS columnistMemo
+			,COLUMNIST_GRADE AS columnistGrade
+			,INTEREST_DIV AS interestDiv
+			,INTEREST_DIV_ETC AS interestDiv
+			,REQ_TYPE AS regType
+			,REQ_ETC AS reqEtc
+			,REG_ID AS regId
+			,REG_COMPANY AS regCompany
+			,REG_DEPT AS regDept
+			,REG_GRADE AS regGrade
+			,REG_NM AS regNm
+			,REG_MOBILE AS regMobile
+			,REG_EMAIL AS regEmail
+			,REG_DT AS regDt
+			,MODI_ID AS modiId
+			,MODI_NM AS modiNm
+			,MODI_DT AS modiDt
+			,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = REQ_CD1) AS reqCd1Nm
+			,(SELECT COMM_NM FROM MIND_COMM_CD WHERE COMM_CD = REQ_CD2) AS reqCd2Nm
+		FROM MIND_BBS_DATA
+		WHERE DATA_SEQ = #{dataSeq}
+	</select>
+	
+	<select id="getJedoClientList" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
+		SELECT A.DATA_SEQ AS dataSeq
+				, A.SUBJECT AS subject
+				, A.PAGE_KEY AS pageKey
+				, (SELECT CLIENT_CD FROM MIND_BBS_CLIENT WHERE A.CLIENT_CD = #{clientCd} AND A.DATA_SEQ = DATA_SEQ) AS clientCd  
+		FROM MIND_BBS_DATA A
+		WHERE 1=1 
+		AND A.BBS_CD = 'jedo'
+		AND A.SERVICE_TYPE = 'SANGDAM4U'
+		<if test="isNotNull(clientCd)">
+			AND A.CLIENT_CD = #{clientCd}
+		</if>
+		ORDER BY DATA_SEQ 
+	</select>
+	
+	<insert id="insertClientCopy">
+		INSERT INTO MIND_BBS_CLIENT (DATA_SEQ, CLIENT_CD)
+		SELECT DATA_SEQ, #{clientCdTarget }
+		FROM MIND_BBS_DATA 
+		WHERE CLIENT_CD = #{clientCd }
+		AND BBS_CD = 'jedo'
+		AND SERVICE_TYPE = 'SANGDAM4U'
+	</insert>
+</mapper>

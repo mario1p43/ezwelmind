@@ -1,0 +1,57 @@
+package com.ezwel.admin.service.client;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.ezwel.admin.service.client.dto.ClientDivisionDto;
+
+@Service
+public class ClientDivisionService {
+	
+	@Resource
+	private ClientService clientService;
+
+	
+	/**
+	 * 부서 등록시, 기존 메뉴는 모두 삭제하고, 다시 등록한다.
+	 */
+	public int addDivisionTree(ClientDivisionDto clientDivisionDto) throws Exception {
+		List<String> beforeCommCd = clientService.getClientDivision(clientDivisionDto.getClientCd());
+		int removeCnt = clientService.removeClientDivision(clientDivisionDto.getClientCd());
+		int returnInsert = 0;
+
+		for (int i = 0; i < clientDivisionDto.getDivisionData().length; i++) {
+			String[] divisionData = clientDivisionDto.getDivisionData()[i].split("##");
+			clientDivisionDto.setValue(divisionData);
+			returnInsert += clientService.addClientCommCdDivision(clientDivisionDto);
+		}
+
+		
+		/**
+		 * 부트리에서는 삭제가 불가능하기때문에
+		 * 모든거를 삭제하고, 다시 인서트하기 때문에
+		 * removeCnt 절대로  returnInsert 클수 없다.
+		 * 크면 롤백
+		 */
+		if (removeCnt > returnInsert) {
+			throw new Exception("부서 삭제는 등록보다 많을수 없습니다.");
+		} else {
+			/*
+			 * 지우기전에 원본 부서코드를 beforeCommCd 리스트에 저장해놓고,
+			 * 부서를를 다 삭제하고 다시 insert한 다음, 다시 등록된 부서를 afterCommCd 조회하고,
+			 * afterCommCd가 beforeCommCd의 부서코드를 모두 포함하고 있는지 확인한다음, 
+			 * 포함하지 않으면 롤백시킨다.
+			 */
+			List<String> afterCommCd = clientService.getClientDivision(clientDivisionDto.getClientCd());
+			if (!afterCommCd.containsAll(beforeCommCd)) {
+				throw new Exception("등록하신 부서코드가 일치하지 않습니다.");
+			}
+		}
+		
+		return returnInsert;
+	}
+
+}

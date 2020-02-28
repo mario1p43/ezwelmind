@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.dispatch.DispatchMapper">
+	
+	<insert id="regist" parameterType="com.ezwel.admin.service.dispatch.dto.DispatchDto">
+		INSERT INTO MIND_DISPATCH_COUNSEL_INFO (
+			CLIENT_CD,
+			SUBJECT,
+			LOGO_PATH,
+			INFO_CONTENTS,
+			CONTENTS,
+			EMAIL,
+			REG_ID,
+			REG_DT
+		) VALUES (
+			#{clientCd},
+			#{subject},
+			#{logoPath},
+			#{infoContents},
+			#{contents},
+			#{email},
+			#{regId},
+			DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+		<selectKey resultType="String" keyProperty="infoSeq" order="AFTER" >
+        	SELECT LAST_INSERT_ID()
+    	</selectKey>
+	</insert>
+	
+	<select id="isDuplicate" parameterType="com.ezwel.admin.service.dispatch.dto.DispatchDto"
+		resultType="int">
+		SELECT COUNT(1) 
+		  FROM MIND_DISPATCH_COUNSEL_INFO
+		 WHERE CLIENT_CD = #{clientCd}
+	</select>
+	
+	<select id="getList" parameterType="com.ezwel.admin.service.dispatch.dto.DispatchDto"
+		resultType="com.ezwel.admin.service.dispatch.dto.DispatchDto">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+			    (
+		</if>
+				SELECT
+					INFO_SEQ,
+					CLIENT_CD,
+					SUBJECT,
+					LOGO_PATH,
+					INFO_CONTENTS,
+					CONTENTS,
+					EMAIL,
+					REG_ID,
+					REG_DT	
+				FROM MIND_DISPATCH_COUNSEL_INFO
+				WHERE 1 = 1
+				ORDER BY INFO_SEQ DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getOne" parameterType="com.ezwel.admin.service.dispatch.dto.DispatchDto"
+		resultType="com.ezwel.admin.service.dispatch.dto.DispatchDto">
+		SELECT
+			INFO_SEQ,
+			CLIENT_CD,
+			SUBJECT,
+			LOGO_PATH,
+			INFO_CONTENTS,
+			CONTENTS,
+			EMAIL,
+			REG_ID,
+			REG_DT	
+		FROM MIND_DISPATCH_COUNSEL_INFO
+		WHERE 1 = 1
+		AND INFO_SEQ = #{infoSeq}
+	</select>
+	
+	<update id="update" parameterType="com.ezwel.admin.service.dispatch.dto.DispatchDto">
+		UPDATE MIND_DISPATCH_COUNSEL_INFO
+		SET	
+			CLIENT_CD = #{clientCd},
+			SUBJECT = #{subject},
+			LOGO_PATH = #{logoPath},
+			INFO_CONTENTS = #{infoContents},
+			CONTENTS = #{contents},
+			EMAIL = #{email}
+		WHERE INFO_SEQ = #{infoSeq}
+	</update>
+	
+	<select id="getUserList" parameterType="com.ezwel.admin.service.dispatch.dto.DispatchDto"
+		resultType="com.ezwel.admin.service.dispatch.dto.DispatchDto">
+		<if test="pageCommonFlag == true">
+		SELECT COUNT(*) pageCommonCount
+		  FROM
+		    (
+		</if>
+			SELECT 
+				A.COUNSEL_USER_SEQ, 
+				A.CLIENT_CD, 
+				A.INFO_SEQ, 
+				A.USER_KEY, 
+				A.USER_NM,
+				A.USER_ID, 
+				A.EMP_NUM, 
+				A.RRN, 
+				A.MOBILE, 
+				A.EMAIL, 
+				A.REG_DT, 
+				COUNT(1) AS INTAKE_COUNT
+			FROM MIND_DISPATCH_COUNSEL_USER A
+			LEFT JOIN MIND_DISPATCH_COUNSEL_INTAKE B
+			ON A.COUNSEL_USER_SEQ = B.COUNSEL_USER_SEQ
+			WHERE INFO_SEQ = #{infoSeq}
+			GROUP BY A.COUNSEL_USER_SEQ, A.CLIENT_CD, A.INFO_SEQ, A.USER_KEY, A.USER_ID, A.EMP_NUM, A.RRN, A.MOBILE, A.EMAIL
+			ORDER BY A.COUNSEL_USER_SEQ DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getUser" parameterType="com.ezwel.admin.service.dispatch.dto.DispatchDto"
+		resultType="com.ezwel.admin.service.dispatch.dto.DispatchDto">
+		SELECT 
+			COUNSEL_USER_SEQ,
+			CLIENT_CD,
+			(SELECT CLIENT_NM FROM MIND_CLIENT WHERE CLIENT_CD = A.CLIENT_CD) AS CLIENT_NM,
+			INFO_SEQ,
+			USER_KEY,
+			USER_ID,
+			EMP_NUM,
+			RRN,
+			GENDER,
+			(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE COMM_CD = A.BRANCH_CD AND CLIENT_CD = A.CLIENT_CD) AS BRANCH_CD,
+			(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE COMM_CD = A.DEPT_CD AND CLIENT_CD = A.CLIENT_CD) AS DEPT_CD,
+			(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE COMM_CD = A.TEAM_CD AND CLIENT_CD = A.CLIENT_CD) AS TEAM_CD,
+			(SELECT COMM_NM FROM MIND_CLIENT_COMM_CD WHERE COMM_CD = A.GRADE_CD AND CLIENT_CD = A.CLIENT_CD) AS GRADE_CD,
+			MOBILE,
+			EMAIL,
+			USER_NM,
+			REG_DT
+		FROM MIND_DISPATCH_COUNSEL_USER A
+		WHERE COUNSEL_USER_SEQ = #{counselUserSeq}
+	</select>
+	
+	<select id="getUserIntake" parameterType="com.ezwel.admin.service.dispatch.dto.DispatchDto"
+		resultType="com.ezwel.admin.service.dispatch.dto.DispatchDto">
+		SELECT 
+			COUNSEL_INTAKE_SEQ,
+			COUNSEL_USER_SEQ,
+			FN_GET_COMM_NM(RELATION) AS RELATION,
+			COUNSEL_NM,
+			MOBILE,
+			RRN,
+			FN_GET_COMM_NM(AREA1) AS AREA1,
+			FN_GET_COMM_NM(AREA2) AS AREA2,
+			FN_GET_COMM_NM(COUNSEL_AGE) AS COUNSEL_AGE,
+			FN_GET_COMM_NM(COUNSEL_TYPE) AS COUNSEL_TYPE,
+			COUNSEL_CAUSE,
+			SCHEDULE_CONTENTS,
+			MEMO,
+			STATUS,
+			REG_DT,
+			CENTER_SEQ,
+			(SELECT CONCAT(ADDR1, ' ', ADDR2) FROM MIND_CENTER WHERE CENTER_SEQ = A.CENTER_SEQ) AS CENTER_ADDR,
+			(SELECT CENTER_NM FROM MIND_CENTER WHERE CENTER_SEQ = A.CENTER_SEQ) AS CENTER_NM
+		FROM MIND_DISPATCH_COUNSEL_INTAKE A
+		WHERE COUNSEL_USER_SEQ = #{counselUserSeq}
+	</select>
+	
+	<update id="updateIntakeMemo" parameterType="com.ezwel.admin.service.dispatch.dto.DispatchDto">
+		UPDATE MIND_DISPATCH_COUNSEL_INTAKE
+		SET 
+			MEMO = #{memo},
+		  STATUS = #{status}
+		WHERE COUNSEL_INTAKE_SEQ = #{counselIntakeSeq}
+	</update>
+	
+</mapper>

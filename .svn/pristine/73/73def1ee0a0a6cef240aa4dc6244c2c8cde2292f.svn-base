@@ -1,0 +1,61 @@
+package com.ezwel.admin.persist.usermanager;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.ezwel.admin.domain.entity.usermanager.UserManager;
+import com.ezwel.admin.service.usermanager.dto.UserManagerDto;
+
+
+
+@SuppressWarnings("PMD.UnusedModifier")
+public interface UserManagerMapper {
+	
+	public List<UserManager> getUserManagerUseList(UserManagerDto userManagerDto);
+
+	public List<UserManager> getServiceUserListExcelDownload(UserManagerDto userManagerDto);
+	
+	public UserManager getNewServiceUserList(UserManagerDto userManagerDto);
+	
+	public List<UserManager> getOnlineServiceUserList(UserManagerDto userManagerDto);
+	
+	public List<UserManager> getOnlineServiceUserStatus(UserManagerDto userManagerDto);
+	
+	public List<UserManager> getServiceUserListV2(UserManagerDto userManagerDto);
+	
+	public List<UserManager> getServiceUserDetail(UserManagerDto userManagerDto);
+	
+	public List<UserManager> getServiceUserListExcelDownloadV2(UserManagerDto userManagerDto);
+	
+	public List<UserManager> getServiceUserListExcelDownloadV3(UserManagerDto userManagerDto);
+	
+	public List<UserManager> getOnlineServiceCnt(UserManagerDto userManagerDto);
+	
+	public UserManager getNewServiceUserDetail(UserManagerDto userManagerDto);
+
+	public UserManager getNewEmpNumber(UserManagerDto userManagerDto);
+
+	public List<UserManager> getReuseEmpNumber(UserManagerDto userManagerDto);
+
+	public UserManager getCounselNumber(UserManagerDto userManagerDto);
+
+	public List<UserManager> getKossDetail(UserManagerDto userManagerDto);
+
+	public List<UserManager> getKossStand(UserManagerDto userManagerDto);
+
+	public HashMap<String, Object> getOnlieCounselNumber(UserManagerDto userManagerDto);
+
+	public HashMap<String, Object> getOnlineNewEmpDetail(UserManagerDto userManagerDto);
+	
+	public List<HashMap<String, Object>> getOnlineReuseEmpList(UserManagerDto userManagerDto);
+	
+	public UserManager getOrderChannel(UserManagerDto userManagerDto);
+	
+	public int delDiagnosisTargetUser(@Param("clientCd")String clientCd);
+	
+	public int addDiagnosisTargetUser(Map<String, String> map);
+	
+}

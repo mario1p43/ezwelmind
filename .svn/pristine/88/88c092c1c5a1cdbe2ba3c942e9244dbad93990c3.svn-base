@@ -1,0 +1,81 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ include file="/WEB-INF/jsp/layout/inc/tags.jspf"%>
+<script>
+	$("#updatePaycheckBtn").click(function(){
+		if(confirm("수정하시겠습니까?")){
+			$('#updatePayCheck').submit();
+		}
+		return false;
+	});
+	
+	$("#deletePaycheckBtn").click(function(){
+		if(confirm("삭제하시겠습니까?")){
+			$('#deletePayCheck').submit();
+		}
+		return false;
+	});
+</script>
+
+<div style="overflow-x: hidden;">
+	<form id="deletePayCheck" modelAttribute="payCheckAddDto" action="/partner/payCheckMgr/deletePayCheck" method="GET">
+		<input type="hidden" name="counselCd" value="${payCheck.counselCd }"/>
+	</form>
+	<form id="updatePayCheck" modelAttribute="payCheckAddDto" action="/partner/payCheckMgr/updatePayCheck" method="GET">
+		<input type="hidden" name="counselCd" value="${payCheck.counselCd }"/>
+		
+		<table cellpadding="5" cellspacing="0" border="1px solid silver" style="border-collapse:collapse; width:900px; min-height: 300px;" >
+			<tr  height="50px">
+				<th class="line" width="10%" align="center" bgcolor="#F5F5F5">상담코드</th>
+		    	<td class="line" width="40%">${payCheck.counselCd }</td>
+				<th class="line" width="10%" align="center" bgcolor="#F5F5F5">상담일시</th>
+		    	<td class="line" width="40%"><input type="text" name="scheduleDt" value="${payCheck.scheduleDt }"/></td>
+			</tr>
+			<tr  height="50px">
+				<th class="line" width="10%" align="center" bgcolor="#F5F5F5">고객사코드</th>
+		    	<td class="line" width="40%"><input type="text" name="clientCd" value="${payCheck.clientCd }"/></td>
+				<th class="line" width="10%" align="center" bgcolor="#F5F5F5">고객사</th>
+		    	<td class="line" width="40%"><input type="text" name="clientNm" style="width:300px;"value="${payCheck.clientNm }"/></td>
+			</tr>
+			<tr  height="50px">
+				<th class="line" width="10%" align="center" bgcolor="#F5F5F5">임직원</th>
+		    	<td class="line" width="40%"><input type="text" name="staffNm" value="${payCheck.staffNm }"/></td>
+				<th class="line" width="10%" align="center" bgcolor="#F5F5F5">내담자</th>
+		    	<td class="line" width="40%"><input type="text" name="userNm" value="${payCheck.userNm }"/></td>
+			</tr>
+			<tr  height="50px">
+				<th class="line" width="10%" align="center" bgcolor="#F5F5F5">상담타입</th>
+		    	<td class="line" width="40%"><input type="text" name="counselType" value="${payCheck.counselType }"/></td>
+				<th class="line" width="10%" align="center" bgcolor="#F5F5F5">상담상태</th>
+		    	<td class="line" width="40%"><input type="text" name="status" value="${payCheck.status }"/></td>
+			</tr>
+			<tr  height="50px">
+				<th class="line" width="10%" align="center" bgcolor="#F5F5F5">상담기관</th>
+		    	<td class="line" width="40%"><input type="text" name="centerNm" value="${payCheck.centerNm }"/></td>
+				<th class="line" width="10%" align="center" bgcolor="#F5F5F5">상담기관코드</th>
+		    	<td class="line" width="40%"><input type="text" name="centerSeq" value="${payCheck.centerSeq }"/></td>
+			</tr>
+			<tr  height="50px">
+				<th class="line" width="10%" align="center" bgcolor="#F5F5F5">상담사</th>
+		    	<td class="line" width="40%"><input type="text" name="counselorNm" value="${payCheck.counselorNm }"/></td>
+				<th class="line" width="10%" align="center" bgcolor="#F5F5F5">상담사 ID</th>
+		    	<td class="line" width="40%"><input type="text" name="counselorId" value="${payCheck.counselorId }"/></td>
+			</tr>
+			<tr  height="50px">
+				<th class="line" width="10%" align="center" bgcolor="#F5F5F5">비용</th>
+		    	<td class="line" width="40%"><input type="text" name="price" value="${payCheck.price }"/></td>
+				<th class="line" width="10%" align="center" bgcolor="#F5F5F5">세금구분</th>
+		    	<td class="line" width="40%"><input type="text" name="taxType" value="${payCheck.taxType }"/></td>
+			</tr>
+			<tr  height="50px">
+				<th class="line" width="10%" align="center" bgcolor="#F5F5F5">은행명</th>
+		    	<td class="line" width="40%"><input type="text" name="bankNm" value="${payCheck.bankNm }"/></td>
+				<th class="line" width="10%" align="center" bgcolor="#F5F5F5">예금주</th>
+		    	<td class="line" width="40%"><input type="text" name="accountHolder" value="${payCheck.accountHolder }"/></td>
+			</tr>
+		</table>
+		<span>
+			<button id="updatePaycheckBtn" type="button" style="margin-top: 15px;margin-left: 400px;"> 수정</button>
+			<button id="deletePaycheckBtn" type="button" style="margin-top: 15px;margin-left: 20px; "> 삭제</button>
+		</span>
+	</form>
+</div>

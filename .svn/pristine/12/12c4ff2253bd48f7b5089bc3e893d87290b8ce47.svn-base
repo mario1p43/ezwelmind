@@ -1,0 +1,1241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.mgr.CounselorInfoMgrMapper">
+
+	<select id="counselorInfoMgrList" resultType="com.ezwel.admin.domain.entity.mgr.MgrSub">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+				SELECT
+					B.USER_NM			AS	userNm
+					, B.USER_ID			AS	userId
+					, (CASE WHEN SUBSTRING(B.RRN,8,1) &lt;= 2 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('19', SUBSTRING(B.RRN,1,2))+1)
+							WHEN 2 &lt; SUBSTRING(B.RRN,8,1) &lt;= 4 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('20', SUBSTRING(B.RRN,1,2))+1) END)	AS  rrn
+					, B.CENTER_SEQ		AS	centerSeq
+					, (CASE WHEN A.GENDER = 'M' THEN '남'
+							WHEN A.GENDER = 'F' THEN '여' END) AS gender
+					, (CASE WHEN B.MGR_STATUS = 'Y' THEN '승인'
+							WHEN B.MGR_STATUS = 'N' THEN '중지'
+							WHEN B.MGR_STATUS = 'S' THEN '대기'
+							WHEN B.MGR_STATUS = 'R' THEN '반려' END) AS mgrStatus
+					, (CASE WHEN A.WORK_TYPE = 'S' THEN '상주'
+							WHEN A.WORK_TYPE = 'P' THEN '파트타임' END) AS workType
+					, A.CHANNEL_TYPE	AS	channelType
+					, DATE_FORMAT(STR_TO_DATE(B.MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')			AS	modiDt
+					, DATE_FORMAT(STR_TO_DATE(B.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')			AS	regDt
+					, (CASE WHEN B.USE_YN = 'Y' THEN '사용함'
+							WHEN B.USE_YN = 'N' THEN '사용중지' END) AS useYn
+					, (CASE 
+						WHEN C.AUTH_CD = 'ROLE_PARTNER_CENTER' THEN '센터장' 
+						WHEN C.AUTH_CD = 'ROLE_PARTNER_SANGDAM' THEN '상담' 
+						WHEN C.AUTH_CD = 'ROLE_PARTNER_SEND' THEN '파견' 
+						WHEN C.AUTH_CD = 'ROLE_PARTNER_GROUP' THEN '집단' 
+						WHEN C.AUTH_CD = 'ROLE_PARTNER_TEACHER' THEN '강사'		END) AS authCd
+				FROM MIND_MGR_SUB A , MIND_MGR B ,  ACL_USER_AUTH C
+				WHERE 1=1
+				AND A.USER_ID = B.USER_ID
+					AND B.CENTER_SEQ = #{centerSeq}
+					AND B.USER_TYPE = '3001'
+					AND C.USER_AUTH_KEY = CONCAT(B.USER_ID,'3001')
+				<if test="isNotNull(userNm)">
+					AND B.USER_NM LIKE CONCAT('%', #{userNm},'%')
+				</if>
+				<if test="isNotNull(sMStatus)">
+					AND B.MGR_STATUS in (${sMStatus})
+				</if>
+				<if test="isNotNull(channelType)">
+					AND A.CHANNEL_TYPE REGEXP #{channelType}
+				</if>
+				<if test="isNotNull(sWType)">
+					AND A.WORK_TYPE in (${sWType})
+				</if>
+				<if test="isNotNull(startDt)">
+					AND DATE_FORMAT(CONVERT(B.MODI_DT, DATE), '%Y%m%d') &gt;= #{startDt}
+				</if>
+				<if test="isNotNull(endDt)">
+					AND DATE_FORMAT(CONVERT(B.MODI_DT, DATE), '%Y%m%d') &lt;= #{endDt}
+				</if>
+				<if test="isNotNull(sAuthCd)">
+					AND	C.AUTH_CD in 
+					<foreach collection="sAuthCd" item="auth" open="(" close=")" separator=",">
+						#{auth}
+					</foreach>
+				</if>
+				ORDER BY B.REG_DT DESC
+
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+
+	<update id="counselorInfoMgrStatus" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
+		UPDATE MIND_MGR
+		SET
+			MGR_STATUS = #{mgrStatus},
+			USE_YN		=	#{useYn},
+			MODI_DT		=	DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE USER_ID = ${userId}
+	</update>
+	
+	<update id="counselorInfoMgrStatus2" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
+		UPDATE MIND_MGR
+		SET
+			MGR_STATUS = #{mgrStatus},			
+			MODI_DT		=	DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE USER_ID = ${userId}
+	</update>
+	
+	<select id="getChangeCounselorInfo" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto" resultType="com.ezwel.admin.service.mgr.dto.MgrDto">
+	  SELECT
+			 A.USER_ID,
+			 A.USER_NM,
+			 A.CENTER_SEQ,
+			 A.EMAIL,
+			 (SELECT CENTER_NM FROM MIND_CENTER B WHERE B.CENTER_SEQ = A.CENTER_SEQ)  AS centerNm
+		FROM MIND_MGR A
+	   WHERE A.USER_TYPE = '3001'
+         AND A.USER_ID = ${userId}
+	</select>
+
+	<select id="getCounselorOne" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto" resultType="com.ezwel.admin.service.mgr.dto.MgrDto">
+	  SELECT
+			 USER_ID,
+			 CENTER_SEQ
+		FROM MIND_MGR
+	   WHERE USER_TYPE = '3001'
+		 AND MGR_STATUS = 'Y'
+         AND USE_YN = 'Y'
+         AND USER_ID = ${userId}
+	</select>
+	
+	<select id="getCounselorStatusY" resultType="com.ezwel.admin.service.mgr.dto.MgrDto">
+	  SELECT
+			 USER_ID,
+			 CENTER_SEQ
+		FROM MIND_MGR
+	   WHERE USER_TYPE = '3001'
+		 AND MGR_STATUS = 'Y'
+         AND USE_YN = 'Y'
+	</select>
+	
+	<select id="getExistYmdList" resultType="string" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
+		SELECT DISTINCT
+			   YMD
+		  FROM MIND_SCHEDULE
+		 WHERE USER_ID = #{userId}
+		   AND CENTER_SEQ = #{centerSeq}
+		   AND YMD BETWEEN STR_TO_DATE(#{startDt},'%Y%m%d') AND STR_TO_DATE(#{endDt},'%Y%m%d')
+	</select>	
+
+	<insert id="insertMgrSchedule" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
+ 		INSERT INTO MIND_SCHEDULE (CENTER_SEQ, USER_ID, HOLIDAY_YN, YMD, SCHEDULE_TYPE, ST_TIME, ED_TIME, REG_DT, REG_ID)            
+        SELECT                     
+            #{centerSeq} as CENTER_SEQ,
+            #{userId} as USER_ID,
+            'N' as HOLIDAY_YN,
+            #{ymd} AS YMD,
+            100562 as SCHEDULE_TYPE,                    
+            temp.ST_TIME,
+            temp.ED_TIME,
+            DATE_FORMAT(now(),'%Y%m%d%H%i%S') as REG_DT,
+            #{regId} as REG_ID                    
+        FROM (
+            SELECT  '0900' AS ST_TIME, '1000' AS ED_TIME from dual
+            UNION ALL
+            SELECT  '1000' AS ST_TIME, '1100' AS ED_TIME from dual
+            UNION ALL
+            SELECT  '1100' AS ST_TIME, '1200' AS ED_TIME from dual
+            UNION ALL
+            SELECT  '1200' AS ST_TIME, '1300' AS ED_TIME from dual
+            UNION ALL
+            SELECT  '1300' AS ST_TIME, '1400' AS ED_TIME from dual
+            UNION ALL
+            SELECT  '1400' AS ST_TIME, '1500' AS ED_TIME from dual
+            UNION ALL
+            SELECT  '1500' AS ST_TIME, '1600' AS ED_TIME from dual
+            UNION ALL
+            SELECT  '1600' AS ST_TIME, '1700' AS ED_TIME from dual
+            UNION ALL
+            SELECT  '1700' AS ST_TIME, '1800' AS ED_TIME from dual
+            UNION ALL
+            SELECT  '1800' AS ST_TIME, '1900' AS ED_TIME from dual
+            UNION ALL
+            SELECT  '1900' AS ST_TIME, '2000' AS ED_TIME from dual
+        ) temp    
+        	WHERE NOT EXISTS
+				 (SELECT * FROM MIND_SCHEDULE B
+				  	WHERE B.YMD = #{ymd}
+				  	  AND B.USER_ID = #{userId}
+				  	  AND B.ST_TIME = temp.ST_TIME
+					  AND B.ED_TIME = temp.ED_TIME
+					) 	
+	</insert>
+
+	<insert id="insertMgrInfo" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
+		INSERT INTO MIND_MGR(
+			  USER_NM
+			, USER_TYPE
+			, USE_YN
+			, USER_ID
+			, USER_PWD
+			, EMAIL
+			, MOBILE
+			, CENTER_OWNER_YN
+			, CENTER_SEQ
+			, MGR_STATUS
+			, RRN
+			, REG_DT
+			, REG_ID
+		) VALUES (
+			 #{userNm}
+			,'3001'
+			,'Y'
+			,#{userId}
+			,#{userPwd}
+			,#{email}
+			,#{mobile}
+			,'N'
+			,#{centerSeq}
+			,'S'
+			,#{rrn}
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			,#{regId}
+		)
+	</insert>
+
+	<insert id="insertCounselorInfoMgr"  parameterType="com.ezwel.admin.service.mgr.dto.MgrSubDto">
+		INSERT INTO MIND_MGR_SUB(
+			  USER_ID
+			, GENDER
+			, EDUCATION
+			, UNIVERSITY
+			, DEPARTMENT
+			, CAREER
+			, MEMO
+			, FILE_NM
+			, FILE_PATH
+			, WORK_TYPE
+			, CHANNEL_TYPE
+			, MENTAL_AGES
+			, MENTAL_DIV
+			, MENTAL_DIV_ETC
+			, MENTAL_TYPE
+			, LAW_DIV
+			, LAW_TYPE
+			, FINANCE_DIV
+			, FINANCE_TYPE
+			, DIAGNOSIS_AGES
+			, DIAGNOSIS_DIV
+			, DIAGNOSIS_DIV_ETC
+			, DIAGNOSIS_TYPE
+		) VALUES (
+			 #{userId}
+			,#{gender}
+			,#{education}
+			,#{university}
+			,#{department}
+			,#{career}
+			,#{memo}
+			,#{fileNm}
+			,#{filePath}
+			,#{workType}
+			,#{channelType}
+			,#{mentalAges}
+			,#{mentalDiv}
+			,#{mentalDivEtc}
+			,#{mentalType}
+			,#{lawDiv}
+			,#{lawType}
+			,#{financeDiv}
+			,#{financeType}
+			,#{diagnosisAges}
+			,#{diagnosisDiv}
+			,#{diagnosisDivEtc}
+			,#{diagnosisType}
+		)
+	</insert>
+	
+<!--
+	<insert id="insertFileInfo" parameterType="com.ezwel.core.support.util.BBSFileDto">
+		INSERT INTO MIND_BBS_FILE (
+			 DATA_SEQ
+			,DATA_TYPE
+			,FILE_NM
+			,FILE_PATH
+		) VALUES (
+			 #{dataSeq}
+			,#{dataType}
+			,#{fileNm}
+			,#{filePath}
+		)
+	</insert>
+		 -->
+	<update id="updateMgrInfo" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
+		UPDATE MIND_MGR
+		SET
+				<if test="isNotNull(userNm)">
+				USER_NM = #{userNm},
+				</if>
+				<if test="isNotNull(rrn)">
+				RRN = #{rrn},
+				</if>
+				EMAIL = #{email},
+				MOBILE = #{mobile},
+				<if test="isNotNull(centerOwnerYn)">
+				CENTER_OWNER_YN = #{centerOwnerYn},
+				</if>
+				MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'),
+				MODI_ID = #{modiId}
+		WHERE USER_ID = #{userId}
+	</update>
+	<update id="updateCounselorInfoMgr" parameterType="com.ezwel.admin.service.mgr.dto.MgrSubDto">
+		UPDATE MIND_MGR_SUB
+		SET
+				UNIVERSITY = #{university},
+				DEPARTMENT = #{department},
+				MEMO = #{memo},
+				EDUCATION = #{education},
+				CAREER = #{career},
+				WORK_TYPE = #{workType},
+				<if test="isNotNull(fileNm)">
+				FILE_NM		= #{fileNm},
+				</if>
+				<if test="isNotNull(filePath)">
+				FILE_PATH	= #{filePath},
+				</if>
+				GENDER = #{gender},
+				CHANNEL_TYPE = #{channelType},
+				MENTAL_AGES = #{mentalAges},
+				MENTAL_DIV = #{mentalDiv},
+				MENTAL_DIV_ETC = #{mentalDivEtc},
+				MENTAL_TYPE = #{mentalType},
+				LAW_DIV = #{lawDiv},
+				LAW_TYPE = #{lawType},
+				FINANCE_DIV = #{financeDiv},
+				FINANCE_TYPE = #{financeType},
+				DIAGNOSIS_AGES = #{diagnosisAges},
+				DIAGNOSIS_DIV = #{diagnosisDiv},
+				DIAGNOSIS_DIV_ETC = #{diagnosisDivEtc},
+				DIAGNOSIS_TYPE = #{diagnosisType}
+		WHERE USER_ID = #{userId}
+	</update>
+	
+	<update id="updateMyInfoMgr" parameterType="com.ezwel.admin.service.mgr.dto.MgrSubDto">
+		UPDATE MIND_MGR_SUB
+		SET
+				UNIVERSITY = #{university},
+				DEPARTMENT = #{department},
+				MEMO = #{memo},
+				EDUCATION = #{education},
+				CAREER = #{career},
+				<if test="isNotNull(fileNm)">
+				FILE_NM		= #{fileNm},
+				</if>
+				<if test="isNotNull(filePath)">
+				FILE_PATH	= #{filePath},
+				</if>
+				WORK_TYPE = #{workType}
+				
+		WHERE USER_ID = #{userId}
+	</update>
+	
+	
+	<update id="updateCenterOwner" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
+		UPDATE MIND_MGR
+		SET
+				CENTER_OWNER_YN = 'N',
+				MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE USER_ID = #{loginId}
+	</update>
+
+	<select id="getCounselorInfoMgrDetail" resultType="com.ezwel.admin.domain.entity.mgr.MgrSub">
+		SELECT
+			B.USER_NM 				AS	userNm
+			, B.USER_ID				AS	userId
+			, B.RRN					AS  rrn
+			, A.GENDER				AS	gender
+			, B.MOBILE				AS	mobile
+			,	SUBSTRING(SUBSTRING_INDEX(B.MOBILE, '-', 1), LENGTH(SUBSTRING_INDEX(B.MOBILE, '-', 1 - 1)) + 1)	AS mobile1
+			,	SUBSTRING(SUBSTRING_INDEX(B.MOBILE, '-', 2), LENGTH(SUBSTRING_INDEX(B.MOBILE, '-', 2 - 1)) + 2)	AS mobile2
+			,	SUBSTRING(SUBSTRING_INDEX(B.MOBILE, '-', 3), LENGTH(SUBSTRING_INDEX(B.MOBILE, '-', 3 - 1)) + 2)	AS mobile3
+			, B.EMAIL				AS	email
+			, A.EDUCATION			AS	education
+			, A.UNIVERSITY			AS	university
+			, A.DEPARTMENT			AS	department
+			, A.MEMO				AS	memo
+			, A.CAREER				AS	career
+			, A.WORK_TYPE			AS	workType
+			, A.File_NM				AS	fileNm
+			, A.File_PATH			AS	filePath
+			, B.CENTER_OWNER_YN		AS	centerOwnerYn
+			, A.CHANNEL_TYPE		AS	channelType
+			, A.MENTAL_AGES			AS	mentalAges
+			, A.MENTAL_DIV			AS	mentalDiv
+			, A.MENTAL_DIV_ETC		AS	mentalDivEtc
+			, A.MENTAL_TYPE			AS	mentalType
+			, A.LAW_DIV				AS	lawDiv
+			, A.LAW_TYPE			AS	lawType
+			, A.FINANCE_DIV			AS	financeDiv
+			, A.FINANCE_TYPE		AS	financeType
+			, A.DIAGNOSIS_AGES		AS	diagnosisAges
+			, A.DIAGNOSIS_DIV		AS	diagnosisDiv
+			, A.DIAGNOSIS_DIV_ETC	AS	diagnosisDivEtc
+			, A.DIAGNOSIS_TYPE		AS	diagnosisType
+			, DATE_FORMAT(STR_TO_DATE(B.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')			AS	regDt
+			, DATE_FORMAT(STR_TO_DATE(B.MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')			AS	modiDt
+			, B.MODI_ID				AS	modiId
+			, C.CENTER_NM			AS	centerNm
+			, B.CENTER_SEQ			AS	centerSeq
+			, B.MGR_STATUS			AS	mgrStatus
+			, (select AUTH_CD from acl_user_auth where USER_AUTH_KEY = CONCAT(#{userId},'3001')) as authCd
+		FROM MIND_MGR_SUB A, MIND_MGR B, MIND_CENTER C
+		WHERE 1=1
+			AND B.CENTER_SEQ = C.CENTER_SEQ
+		<if test="isNotNull(userId)">
+			AND B.USER_ID = #{userId}
+		</if>
+			AND A.USER_ID = B.USER_ID
+	</select>
+
+	<select id="getCounselorInfoMgrDetail2" resultType="com.ezwel.admin.domain.entity.mgr.MgrSub">
+		SELECT
+			B.USER_NM 				AS	userNm
+			, B.USER_ID				AS	userId
+			, B.RRN					AS  rrn
+			, A.GENDER				AS	gender
+			, B.MOBILE				AS	mobile
+			,	SUBSTRING(SUBSTRING_INDEX(B.MOBILE, '-', 1), LENGTH(SUBSTRING_INDEX(B.MOBILE, '-', 1 - 1)) + 1)	AS mobile1
+			,	SUBSTRING(SUBSTRING_INDEX(B.MOBILE, '-', 2), LENGTH(SUBSTRING_INDEX(B.MOBILE, '-', 2 - 1)) + 2)	AS mobile2
+			,	SUBSTRING(SUBSTRING_INDEX(B.MOBILE, '-', 3), LENGTH(SUBSTRING_INDEX(B.MOBILE, '-', 3 - 1)) + 2)	AS mobile3
+			, B.EMAIL				AS	email
+			, A.EDUCATION			AS	education
+			, A.UNIVERSITY			AS	university
+			, A.DEPARTMENT			AS	department
+			, A.MEMO				AS	memo
+			, A.CAREER				AS	career
+			, A.WORK_TYPE			AS	workType
+			, A.File_NM				AS	fileNm
+			, A.File_PATH			AS	filePath
+			, B.CENTER_OWNER_YN		AS	centerOwnerYn
+			, A.CHANNEL_TYPE		AS	channelType
+			, A.MENTAL_AGES			AS	mentalAges
+			, A.MENTAL_DIV			AS	mentalDiv
+			, A.MENTAL_DIV_ETC		AS	mentalDivEtc
+			, A.MENTAL_TYPE			AS	mentalType
+			, A.LAW_DIV				AS	lawDiv
+			, A.LAW_TYPE			AS	lawType
+			, A.FINANCE_DIV			AS	financeDiv
+			, A.FINANCE_TYPE		AS	financeType
+			, A.DIAGNOSIS_AGES		AS	diagnosisAges
+			, A.DIAGNOSIS_DIV		AS	diagnosisDiv
+			, A.DIAGNOSIS_DIV_ETC	AS	diagnosisDivEtc
+			, A.DIAGNOSIS_TYPE		AS	diagnosisType
+			, DATE_FORMAT(STR_TO_DATE(B.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')			AS	regDt
+			, DATE_FORMAT(STR_TO_DATE(B.MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')			AS	modiDt
+			, B.MODI_ID				AS	modiId
+			, C.CENTER_NM			AS	centerNm
+			, B.CENTER_SEQ			AS	centerSeq
+			, B.MEMO1					AS memo1
+			, B.PRICE					AS price
+			, B.MGR_STATUS			AS mgrStatus					
+			
+			, (select AUTH_CD from acl_user_auth where USER_AUTH_KEY = CONCAT(#{userId},'3001')) as authCd
+		FROM MIND_MGR_SUB A, MIND_MGR B, MIND_CENTER C
+		WHERE 1=1
+			AND B.CENTER_SEQ = C.CENTER_SEQ
+			AND B.MGR_FLAG='C'
+		<if test="isNotNull(userId)">
+			AND B.USER_ID = #{userId}
+		</if>
+			AND A.USER_ID = B.USER_ID
+	</select>
+	<select id="checkId" resultType="com.ezwel.admin.domain.entity.mgr.MgrData">
+				SELECT
+					USER_ID				AS	userId
+				FROM MIND_MGR
+				WHERE 1=1
+					AND USER_ID = #{userId}
+
+	</select>
+
+
+
+	<!-- madm -->
+	<select id="counselorMgrList" resultType="com.ezwel.admin.domain.entity.mgr.MgrSub">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+				SELECT
+					B.USER_NM			AS	userNm
+					, B.USER_ID			AS	userId
+					, (CASE WHEN SUBSTRING(B.RRN,8,1) &lt;= 2 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('19', SUBSTRING(B.RRN,1,2))+1)
+							WHEN 2 &lt; SUBSTRING(B.RRN,8,1) &lt;= 4 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('20', SUBSTRING(B.RRN,1,2))+1) END)	AS  rrn
+					, (CASE WHEN A.GENDER = 'M' THEN '남'
+							WHEN A.GENDER = 'F' THEN '여' END) AS gender
+					, (CASE WHEN B.MGR_STATUS = 'Y' THEN '승인'
+							WHEN B.MGR_STATUS = 'N' THEN '중지'
+							WHEN B.MGR_STATUS = 'S' THEN '대기'
+							WHEN B.MGR_STATUS = 'R' THEN '반려' END) AS mgrStatus
+					, (CASE WHEN A.WORK_TYPE = 'S' THEN '상주'
+							WHEN A.WORK_TYPE = 'P' THEN '파트타임' END) AS workType
+					, A.CHANNEL_TYPE	AS	channelType
+					, DATE_FORMAT(STR_TO_DATE(B.MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')			AS	modiDt
+					, DATE_FORMAT(STR_TO_DATE(B.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')			AS	regDt
+					, (CASE WHEN B.USE_YN = 'Y' THEN '사용함'
+							WHEN B.USE_YN = 'N' THEN '사용중지' END) AS useYn
+					, C.CENTER_NM	AS	centerNm
+					, (CASE 
+						WHEN D.AUTH_CD = 'ROLE_PARTNER_CENTER' THEN '센터장' 
+						WHEN D.AUTH_CD = 'ROLE_PARTNER_SANGDAM' THEN '상담' 
+						WHEN D.AUTH_CD = 'ROLE_PARTNER_SEND' THEN '파견' 
+						WHEN D.AUTH_CD = 'ROLE_PARTNER_GROUP' THEN '집단' 
+						WHEN D.AUTH_CD = 'ROLE_PARTNER_TEACHER' THEN '강사'		END) AS authCd
+					,B.MOBILE as mobile
+					, A.MENTAL_AGES			AS	mentalAges
+					, A.MENTAL_DIV			AS	mentalDiv
+					, A.MENTAL_DIV_ETC		AS	mentalDivEtc
+					, A.MENTAL_TYPE			AS	mentalType
+					, A.LAW_DIV				AS	lawDiv
+					, A.LAW_TYPE			AS	lawType
+					, A.FINANCE_DIV			AS	financeDiv
+					, A.FINANCE_TYPE		AS	financeType
+					, A.DIAGNOSIS_AGES		AS	diagnosisAges
+					, A.DIAGNOSIS_DIV		AS	diagnosisDiv
+					, A.DIAGNOSIS_DIV_ETC	AS	diagnosisDivEtc
+					, A.DIAGNOSIS_TYPE		AS	diagnosisType
+					, C.AREA1				AS	area1
+					, C.AREA2				AS	area2
+					, C.ADDR1				AS  addr1
+					, C.ADDR2				AS  addr2
+				FROM MIND_MGR_SUB A , MIND_MGR B, MIND_CENTER C , ACL_USER_AUTH D
+				WHERE 1=1
+					AND B.USER_TYPE = '3001'
+					<!-- AND B.USE_YN = 'Y' -->
+					AND B.MGR_FLAG IS NULL
+					AND A.USER_ID = B.USER_ID
+					AND C.CENTER_SEQ = B.CENTER_SEQ
+				<if test="isNotNull(dispYn)">
+					AND C.DISP_YN = #{dispYn}
+				</if>
+					AND D.USER_AUTH_KEY = CONCAT(B.USER_ID,'3001')
+				<if test="isNotNull(userNm)">
+					AND B.USER_NM LIKE CONCAT('%', #{userNm},'%')
+				</if>
+				<if test="isNotNull(centerNm)">
+					AND C.CENTER_NM = #{centerNm}
+				</if>
+				<if test="isNotNull(centerSeq) and centerSeq!=0">
+					AND C.CENTER_SEQ = #{centerSeq}
+				</if>
+				<if test="isNotNull(sMStatus)">
+					AND B.MGR_STATUS in (${sMStatus})
+				</if>
+				<if test="isNotNull(channelType)">
+					AND A.CHANNEL_TYPE REGEXP #{channelType}
+				</if>
+				<if test="isNotNull(sWType)">
+					AND A.WORK_TYPE in (${sWType})
+				</if>
+				<if test="isNotNull(startDt)">
+					AND 	DATE_FORMAT(CONVERT(B.MODI_DT, DATE), '%Y%m%d') &gt;= #{startDt}
+				</if>
+				<if test="isNotNull(endDt)">
+					AND 	DATE_FORMAT(CONVERT(B.MODI_DT, DATE), '%Y%m%d') &lt;= #{endDt}
+				</if>
+				<if test="isNotNull(sAuthCd)">
+					AND	D.AUTH_CD in 
+					<foreach collection="sAuthCd" item="auth" open="(" close=")" separator=",">
+						#{auth}
+					</foreach>
+				</if>
+				<if test="isNotNull(mobile)">
+					AND B.MOBILE REGEXP #{mobile}
+				</if>
+				<if test="isNotNull(diagnosisType)">
+					AND A.DIAGNOSIS_TYPE REGEXP #{diagnosisType}
+				</if>
+				<if test="isNotNull(diagnosisDiv)">
+					AND A.DIAGNOSIS_DIV REGEXP #{diagnosisDiv}
+				</if>
+				<if test="isNotNull(financeDiv)">
+					AND A.FINANCE_DIV REGEXP #{financeDiv}
+				</if>
+				<if test="isNotNull(lawDiv)">
+					AND A.LAW_DIV REGEXP #{lawDiv}
+				</if>
+				<if test="isNotNull(mentalDiv)">
+					AND A.MENTAL_DIV REGEXP #{mentalDiv}
+				</if>
+				<if test="isNotNull(mentalAges)">
+					AND A.MENTAL_AGES REGEXP #{mentalAges}
+				</if>
+				<if test="isNotNull(diagnosisAges)">
+					AND A.DIAGNOSIS_AGES REGEXP #{diagnosisAges}
+				</if>
+				<if test="isNotNull(mentalType)">
+					AND A.MENTAL_TYPE REGEXP #{mentalType}
+				</if>
+				<if test="isNotNull(lawType)">
+					AND A.LAW_TYPE REGEXP #{lawType}
+				</if>
+				<if test="isNotNull(financeType)">
+					AND A.FINANCE_TYPE REGEXP #{financeType}
+				</if>
+				<if test="isNotNull(area1)">
+					AND C.AREA1  = #{area1}
+				</if>
+				<if test="isNotNull(area2)">
+					AND C.AREA2  = #{area2}
+				</if>
+				<if test="isNotNull(gender)">
+					AND A.GENDER = #{gender}
+				</if>
+				<if test="isNotNull(ages)">
+					AND (CASE WHEN SUBSTRING(B.RRN,8,1) &lt;= 2 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('19', SUBSTRING(B.RRN,1,2))+1)
+							WHEN 2 &lt; SUBSTRING(B.RRN,8,1) &lt;= 4 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('20', SUBSTRING(B.RRN,1,2))+1) END) LIKE CONCAT(#{ages}, '%')
+				</if>
+				ORDER BY B.REG_DT DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getCounselMgrExcelDownload" resultType="com.ezwel.admin.domain.entity.mgr.MgrSub" >
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+		SELECT
+					B.USER_NM			AS	userNm
+					, B.USER_ID			AS	userId
+					, (CASE WHEN SUBSTRING(B.RRN,8,1) &lt;= 2 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('19', SUBSTRING(B.RRN,1,2))+1)
+							WHEN 2 &lt; SUBSTRING(B.RRN,8,1) &lt;= 4 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('20', SUBSTRING(B.RRN,1,2))+1) END)	AS  rrn
+					, (CASE WHEN A.GENDER = 'M' THEN '남'
+							WHEN A.GENDER = 'F' THEN '여' END) AS gender
+					, (CASE WHEN B.MGR_STATUS = 'Y' THEN '승인'
+							WHEN B.MGR_STATUS = 'N' THEN '중지'
+							WHEN B.MGR_STATUS = 'S' THEN '대기'
+							WHEN B.MGR_STATUS = 'R' THEN '반려' END) AS mgrStatus
+					, (CASE WHEN A.WORK_TYPE = 'S' THEN '상주'
+							WHEN A.WORK_TYPE = 'P' THEN '파트타임' END) AS workType
+					, FN_GET_CATEGORY_NM(A.CHANNEL_TYPE)	AS	channelType
+					, DATE_FORMAT(STR_TO_DATE(B.MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')			AS	modiDt
+					, DATE_FORMAT(STR_TO_DATE(B.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')			AS	regDt
+					, (CASE WHEN B.USE_YN = 'Y' THEN '사용함'
+							WHEN B.USE_YN = 'N' THEN '사용중지' END) AS useYn
+					, C.CENTER_SEQ	AS	centerSeq
+					, C.CENTER_NM	AS	centerNm
+					, (CASE 
+						WHEN D.AUTH_CD = 'ROLE_PARTNER_CENTER' THEN '센터장' 
+						WHEN D.AUTH_CD = 'ROLE_PARTNER_SANGDAM' THEN '상담' 
+						WHEN D.AUTH_CD = 'ROLE_PARTNER_SEND' THEN '파견' 
+						WHEN D.AUTH_CD = 'ROLE_PARTNER_GROUP' THEN '집단' 
+						WHEN D.AUTH_CD = 'ROLE_PARTNER_TEACHER' THEN '강사'		END) AS authCd
+					, FN_GET_CATEGORY_NM(A.MENTAL_DIV) AS mentalDiv
+					, A.MENTAL_DIV_ETC AS mentalDivEtc
+					, FN_GET_COMM_NM(A.MENTAL_AGES) AS mentalAges
+					, FN_GET_COMM_NM(A.MENTAL_TYPE) AS mentalType
+					,B.MOBILE as mobile
+					,B.EMAIL
+			    	, FN_GET_COMM_NM(A.LAW_DIV)				AS	lawDiv
+					, FN_GET_COMM_NM(A.LAW_TYPE)			AS	lawType
+					, FN_GET_COMM_NM(A.FINANCE_DIV)			AS	financeDiv
+					, FN_GET_COMM_NM(A.FINANCE_TYPE)		AS	financeType
+					, FN_GET_COMM_NM(A.DIAGNOSIS_AGES)		AS	diagnosisAges
+					, FN_GET_CATEGORY_NM(A.DIAGNOSIS_DIV)		AS	diagnosisDiv
+					, FN_GET_COMM_NM(A.DIAGNOSIS_DIV_ETC)	AS	diagnosisDivEtc
+					, FN_GET_COMM_NM(A.DIAGNOSIS_TYPE)		AS	diagnosisType
+					, FN_GET_COMM_NM(C.AREA1)				AS	area1
+					, FN_GET_COMM_NM(C.AREA2)				AS	area2
+					, C.ADDR1				AS  addr1
+					, C.ADDR2				AS  addr2
+				FROM MIND_MGR_SUB A , MIND_MGR B, MIND_CENTER C, ACL_USER_AUTH D
+				WHERE 1=1
+					AND B.USER_TYPE = '3001'
+					<!-- AND B.USE_YN = 'Y' -->
+					AND B.MGR_FLAG IS NULL
+					AND A.USER_ID = B.USER_ID
+					AND C.CENTER_SEQ = B.CENTER_SEQ
+					AND D.USER_AUTH_KEY = CONCAT(B.USER_ID,'3001')
+				<if test="isNotNull(userNm)">
+					AND B.USER_NM LIKE CONCAT('%', #{userNm},'%')
+				</if>
+				<if test="isNotNull(centerNm)">
+					AND C.CENTER_NM = #{centerNm}
+				</if>
+				<if test="isNotNull(centerSeq) and centerSeq!=0">
+					AND C.CENTER_SEQ = #{centerSeq}
+				</if>
+				<if test="isNotNull(sMStatus)">
+					AND B.MGR_STATUS in (${sMStatus})
+				</if>
+				<if test="isNotNull(channelType)">
+					AND A.CHANNEL_TYPE REGEXP #{channelType}
+				</if>
+				<if test="isNotNull(sWType)">
+					AND A.WORK_TYPE in (${sWType})
+				</if>
+				<if test="isNotNull(startDt)">
+					AND 	DATE_FORMAT(CONVERT(B.MODI_DT, DATE), '%Y%m%d') &gt;= #{startDt}
+				</if>
+				<if test="isNotNull(endDt)">
+					AND 	DATE_FORMAT(CONVERT(B.MODI_DT, DATE), '%Y%m%d') &lt;= #{endDt}
+				</if>
+				<if test="isNotNull(sAuthCd)">
+					AND	D.AUTH_CD in 
+					<foreach collection="sAuthCd" item="auth" open="(" close=")" separator=",">
+						#{auth}
+					</foreach>
+				</if>
+				<if test="isNotNull(mobile)">
+					AND B.MOBILE REGEXP #{mobile}
+				</if>
+				<if test="isNotNull(diagnosisType)">
+					AND A.DIAGNOSIS_TYPE REGEXP #{diagnosisType}
+				</if>
+				<if test="isNotNull(diagnosisDiv)">
+					AND A.DIAGNOSIS_DIV REGEXP #{diagnosisDiv}
+				</if>
+				<if test="isNotNull(financeDiv)">
+					AND A.FINANCE_DIV REGEXP #{financeDiv}
+				</if>
+				<if test="isNotNull(lawDiv)">
+					AND A.LAW_DIV REGEXP #{lawDiv}
+				</if>
+				<if test="isNotNull(mentalDiv)">
+					AND A.MENTAL_DIV REGEXP #{mentalDiv}
+				</if>
+				<if test="isNotNull(mentalAges)">
+					AND A.MENTAL_AGES REGEXP #{mentalAges}
+				</if>
+				<if test="isNotNull(diagnosisAges)">
+					AND A.DIAGNOSIS_AGES REGEXP #{diagnosisAges}
+				</if>
+				<if test="isNotNull(mentalType)">
+					AND A.MENTAL_TYPE REGEXP #{mentalType}
+				</if>
+				<if test="isNotNull(lawType)">
+					AND A.LAW_TYPE REGEXP #{lawType}
+				</if>
+				<if test="isNotNull(financeType)">
+					AND A.FINANCE_TYPE REGEXP #{financeType}
+				</if>
+				<if test="isNotNull(area1)">
+					AND C.AREA1  = #{area1}
+				</if>
+				<if test="isNotNull(area2)">
+					AND C.AREA2  = #{area2}
+				</if>
+				ORDER BY B.REG_DT DESC
+				<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>	
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<insert id="insertAclUserAuth" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
+		INSERT INTO acl_user_auth
+		(
+			USER_AUTH_KEY
+			, AUTH_CD
+			, REG_DT
+		)
+		VALUES (
+			CONCAT(#{userId},'3001')
+			, #{authCd}
+			, date_format(now(), '%Y%m%d%h%i%s')
+		)
+	</insert>
+	
+	<select id="counselorMgrStarList" resultType="com.ezwel.admin.domain.entity.mgr.MgrSub">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+				SELECT
+					B.USER_NM			AS	userNm
+					, B.USER_ID			AS	userId
+					, (CASE WHEN SUBSTRING(B.RRN,8,1) &lt;= 2 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('19', SUBSTRING(B.RRN,1,2))+1)
+							WHEN 2 &lt; SUBSTRING(B.RRN,8,1) &lt;= 4 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('20', SUBSTRING(B.RRN,1,2))+1) END)	AS  rrn
+					, (CASE WHEN A.GENDER = 'M' THEN '남'
+							WHEN A.GENDER = 'F' THEN '여' END) AS gender
+					, (CASE WHEN B.MGR_STATUS = 'Y' THEN '승인'
+							WHEN B.MGR_STATUS = 'N' THEN '중지'
+							WHEN B.MGR_STATUS = 'S' THEN '대기'
+							WHEN B.MGR_STATUS = 'R' THEN '반려' END) AS mgrStatus
+					, (CASE WHEN A.WORK_TYPE = 'S' THEN '상주'
+							WHEN A.WORK_TYPE = 'P' THEN '파트타임' END) AS workType
+					, A.CHANNEL_TYPE	AS	channelType
+					, DATE_FORMAT(STR_TO_DATE(B.MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')			AS	modiDt
+					, DATE_FORMAT(STR_TO_DATE(B.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')			AS	regDt
+					, (CASE WHEN B.USE_YN = 'Y' THEN '사용함'
+							WHEN B.USE_YN = 'N' THEN '사용중지' END) AS useYn
+					, C.CENTER_NM	AS	centerNm
+					, A.Mgr_EVAL_GRADE AS mgrEvalGrade
+				FROM MIND_MGR_SUB A , MIND_MGR B, MIND_CENTER C
+				WHERE 1=1
+					AND B.USER_TYPE = '3001'
+					AND B.USE_YN = 'Y'
+					AND A.USER_ID = B.USER_ID
+					AND C.CENTER_SEQ = B.CENTER_SEQ
+				<if test="isNotNull(userNm)">
+					AND B.USER_NM LIKE CONCAT('%', #{userNm},'%')
+				</if>
+				<if test="isNotNull(centerNm)">
+					AND C.CENTER_SEQ = #{centerSeq}
+				</if>
+				
+				ORDER BY B.USER_NM DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<update id="mgrEvalGrade" parameterType="com.ezwel.admin.domain.entity.mgr.MgrSub">
+	UPDATE	MIND_MGR_SUB
+		SET	Mgr_EVAL_GRADE = #{mgrEvalGrade}
+	WHERE	USER_ID = #{userId}
+	</update>
+	
+	<update id="updateAclUserAuth" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
+	UPDATE	ACL_USER_AUTH
+	   SET	AUTH_CD = #{authCd}
+	 WHERE	USER_AUTH_KEY = CONCAT(#{userId},'3001')
+	</update>
+	
+	
+	
+	
+	
+		<!-- hue -->
+	<select id="counselorMgrList2" resultType="com.ezwel.admin.domain.entity.mgr.MgrSub">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+				SELECT
+					B.USER_NM			AS	userNm
+					, B.USER_ID			AS	userId
+					, B.RRN	AS  rrn
+					, B.MOBILE	AS  mobile
+					, (CASE WHEN A.GENDER = 'M' THEN '남'
+							WHEN A.GENDER = 'F' THEN '여' END) AS gender
+					, (CASE WHEN B.MGR_STATUS = 'Y' THEN '승인'
+							WHEN B.MGR_STATUS = 'N' THEN '중지'
+							WHEN B.MGR_STATUS = 'S' THEN '대기'
+							WHEN B.MGR_STATUS = 'R' THEN '반려' END) AS mgrStatus
+					, (SELECT USER_NM from MIND_MGR where USER_ID=B.MODI_ID ) AS workType
+					, A.CHANNEL_TYPE	AS	channelType
+					, DATE_FORMAT(STR_TO_DATE(B.MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')			AS	modiDt
+					, DATE_FORMAT(STR_TO_DATE(B.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')			AS	regDt
+					, (CASE WHEN B.USE_YN = 'Y' THEN '사용함'
+							WHEN B.USE_YN = 'N' THEN '사용중지' END) AS useYn
+					, C.CENTER_NM	AS	centerNm
+					, (CASE 
+						WHEN D.AUTH_CD = 'ROLE_P_CENTER_HUE' THEN '센터장' 
+						WHEN D.AUTH_CD = 'ROLE_P_SANGDAM_HUE' THEN '상담사' 
+					END) AS authCd
+					
+				FROM MIND_MGR_SUB A , MIND_MGR B, MIND_CENTER C , ACL_USER_AUTH D
+				WHERE 1=1
+					AND B.USER_TYPE = '3001'
+					AND B.USE_YN = 'Y'
+					AND B.MGR_FLAG ='C'
+					AND A.USER_ID = B.USER_ID
+					AND C.CENTER_SEQ IN (select CENTER_SEQ from hue_center)					
+					AND C.CENTER_SEQ = B.CENTER_SEQ
+					AND D.USER_AUTH_KEY = CONCAT(B.USER_ID,'3001')
+				<if test="isNotNull(userNm)">
+					AND B.USER_NM LIKE CONCAT('%', #{userNm},'%')
+				</if>
+				<if test="isNotNull(centerNm)">
+					AND C.CENTER_NM = #{centerNm}
+				</if>
+				<if test="isNotNull(sMStatus)">
+					AND B.MGR_STATUS in (${sMStatus})
+				</if>
+				<if test="isNotNull(channelType)">
+					AND A.CHANNEL_TYPE REGEXP #{channelType}
+				</if>
+				
+				<if test="isNotNull(userRrn)">
+					AND B.RRN LIKE CONCAT('%', #{userRrn},'%')
+				</if>
+				<if test="isNotNull(userMobile)">
+					AND B.MOBILE LIKE CONCAT('%', #{userMobile},'%')
+				</if>
+				<if test="isNotNull(userMnm)">
+					AND (
+					 	  B.MODI_ID  IN(SELECT USER_ID FROM MIND_MGR WHERE USER_NM  LIKE CONCAT('%', #{userMnm},'%') )					
+					)
+				</if>
+				<if test="isNotNull(userGender)">
+					AND A.GENDER = #{userGender}   
+															
+				</if>
+																				
+				<if test="isNotNull(sWType)">
+					AND A.WORK_TYPE in (${sWType})
+				</if>
+				<if test="isNotNull(startDt)">
+					AND 	DATE_FORMAT(CONVERT(B.MODI_DT, DATE), '%Y%m%d') &gt;= #{startDt}
+				</if>
+				<if test="isNotNull(endDt)">
+					AND 	DATE_FORMAT(CONVERT(B.MODI_DT, DATE), '%Y%m%d') &lt;= #{endDt}
+				</if>
+				<if test="isNotNull(authCd)">
+					AND	D.AUTH_CD = #{authCd} 					
+				</if>
+				ORDER BY B.REG_DT DESC
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getCounselMgrExcelDownload2" resultType="com.ezwel.admin.domain.entity.mgr.MgrSub" >
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+		SELECT
+					B.USER_NM			AS	userNm
+					, B.USER_ID			AS	userId
+					, B.RRN	AS  rrn
+					, B.MOBILE	AS  mobile
+					, (CASE WHEN A.GENDER = 'M' THEN '남'
+							WHEN A.GENDER = 'F' THEN '여' END) AS gender
+					, (CASE WHEN B.MGR_STATUS = 'Y' THEN '승인'
+							WHEN B.MGR_STATUS = 'N' THEN '중지'
+							WHEN B.MGR_STATUS = 'S' THEN '대기'
+							WHEN B.MGR_STATUS = 'R' THEN '반려' END) AS mgrStatus
+					, (SELECT USER_NM from MIND_MGR where USER_ID=B.MODI_ID ) AS workType
+					, A.CHANNEL_TYPE	AS	channelType
+					, DATE_FORMAT(STR_TO_DATE(B.MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')			AS	modiDt
+					, DATE_FORMAT(STR_TO_DATE(B.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')			AS	regDt
+					, (CASE WHEN B.USE_YN = 'Y' THEN '사용함'
+							WHEN B.USE_YN = 'N' THEN '사용중지' END) AS useYn
+					, C.CENTER_NM	AS	centerNm
+					, (CASE 
+						WHEN D.AUTH_CD = 'ROLE_P_CENTER_HUE' THEN '센터장' 
+						WHEN D.AUTH_CD = 'ROLE_P_SANGDAM_HUE' THEN '상담사' 
+					END) AS authCd
+					
+				FROM MIND_MGR_SUB A , MIND_MGR B, MIND_CENTER C , ACL_USER_AUTH D
+				WHERE 1=1
+					AND B.USER_TYPE = '3001'
+					AND B.USE_YN = 'Y'
+					AND B.MGR_FLAG ='C'
+					AND A.USER_ID = B.USER_ID
+					AND C.CENTER_SEQ IN (select CENTER_SEQ from hue_center)					
+					AND C.CENTER_SEQ = B.CENTER_SEQ
+					AND D.USER_AUTH_KEY = CONCAT(B.USER_ID,'3001')
+				<if test="isNotNull(userNm)">
+					AND B.USER_NM LIKE CONCAT('%', #{userNm},'%')
+				</if>
+				<if test="isNotNull(centerNm)">
+					AND C.CENTER_NM = #{centerNm}
+				</if>
+				<if test="isNotNull(sMStatus)">
+					AND B.MGR_STATUS in (${sMStatus})
+				</if>
+				<if test="isNotNull(channelType)">
+					AND A.CHANNEL_TYPE REGEXP #{channelType}
+				</if>
+				
+				<if test="isNotNull(userRrn)">
+					AND B.RRN LIKE CONCAT('%', #{userRrn},'%')
+				</if>
+				<if test="isNotNull(userMobile)">
+					AND B.MOBILE LIKE CONCAT('%', #{userMobile},'%')
+				</if>
+				<if test="isNotNull(userMnm)">
+					AND (
+					  B.MODI_ID  IN(SELECT USER_ID FROM MIND_MGR WHERE USER_NM  LIKE CONCAT('%', #{userMnm},'%') )					
+					)
+				</if>
+				<if test="isNotNull(userGender)">
+					AND A.GENDER = #{userGender}   
+															
+				</if>
+																				
+				<if test="isNotNull(sWType)">
+					AND A.WORK_TYPE in (${sWType})
+				</if>
+				<if test="isNotNull(startDt)">
+					AND 	DATE_FORMAT(CONVERT(B.MODI_DT, DATE), '%Y%m%d') &gt;= #{startDt}
+				</if>
+				<if test="isNotNull(endDt)">
+					AND 	DATE_FORMAT(CONVERT(B.MODI_DT, DATE), '%Y%m%d') &lt;= #{endDt}
+				</if>
+				<if test="isNotNull(authCd)">
+					AND	D.AUTH_CD = #{authCd} 					
+				</if>
+				ORDER BY B.REG_DT DESC
+				<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>	
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insertCounselorInfoMgr2"  parameterType="com.ezwel.admin.service.mgr.dto.MgrSubDto">
+		INSERT INTO MIND_MGR_SUB(
+			  USER_ID
+			, GENDER
+			, EDUCATION
+			, UNIVERSITY
+			, DEPARTMENT
+			, CAREER
+			, MEMO
+			, FILE_NM
+			, FILE_PATH
+			, WORK_TYPE
+			, CHANNEL_TYPE
+			, MENTAL_AGES
+			, MENTAL_DIV
+			, MENTAL_DIV_ETC
+			, MENTAL_TYPE
+			, LAW_DIV
+			, LAW_TYPE
+			, FINANCE_DIV
+			, FINANCE_TYPE
+			, DIAGNOSIS_AGES
+			, DIAGNOSIS_DIV
+			, DIAGNOSIS_DIV_ETC
+			, DIAGNOSIS_TYPE
+		) VALUES (
+			 #{userId}
+			,#{gender}
+			,#{education}
+			,#{university}
+			,#{department}
+			,#{career}
+			,#{memo}
+			,#{fileNm}
+			,#{filePath}
+			,#{workType}
+			,#{channelType}
+			,#{mentalAges}
+			,#{mentalDiv}
+			,#{mentalDivEtc}
+			,#{mentalType}
+			,#{lawDiv}
+			,#{lawType}
+			,#{financeDiv}
+			,#{financeType}
+			,#{diagnosisAges}
+			,#{diagnosisDiv}
+			,#{diagnosisDivEtc}
+			,#{diagnosisType}
+		)
+	</insert>
+	
+	<insert id="insertMgrInfo2" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
+		INSERT INTO MIND_MGR(
+			  USER_NM
+			, USER_TYPE
+			, USE_YN
+			, USER_ID
+			, USER_PWD
+			, EMAIL
+			, MOBILE
+			, CENTER_OWNER_YN
+			, CENTER_SEQ
+			
+			, RRN
+			, REG_DT
+			, REG_ID
+			, MODI_DT
+			, MODI_ID
+			
+			, MGR_FLAG
+			, MEMO1
+			, PRICE
+			, MGR_STATUS
+		) VALUES (
+			 #{userNm}
+			,'3001'
+			,'Y'
+			,#{userId}
+			,#{userPwd}
+			,#{email}
+			,#{mobile}
+			,'N'
+			,#{centerSeq}
+			
+			,#{rrn}
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			,#{regId}
+			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			,#{regId}
+			,'C'
+			,#{memo1}
+			,#{price}
+			,#{mgrStatus}
+		)
+	</insert>
+	
+		<insert id="insertAclUserAuth2" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
+		INSERT INTO acl_user_auth
+		(
+			USER_AUTH_KEY
+			, AUTH_CD
+			, REG_DT
+		)
+		VALUES (
+			CONCAT(#{userId},'3001')
+			, #{authCd}
+			, date_format(now(), '%Y%m%d%h%i%s')
+		)
+	</insert>
+	
+	
+		<update id="updateMgrInfo2" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
+		UPDATE MIND_MGR
+		SET
+				<if test="isNotNull(userNm)">
+				USER_NM = #{userNm},
+				</if>
+				<if test="isNotNull(rrn)">
+				RRN = #{rrn},
+				</if>
+				EMAIL = #{email},
+				MOBILE = #{mobile},
+				
+				MEMO1 = #{memo1},
+				PRICE = #{price},
+				MGR_STATUS=#{mgrStatus},
+
+				
+				<if test="isNotNull(centerOwnerYn)">
+				CENTER_OWNER_YN = #{centerOwnerYn},
+				</if>
+				MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'),
+				MODI_ID = #{modiId}
+		WHERE USER_ID = #{userId}
+	</update>
+	
+	<select id="counselorList" resultType="com.ezwel.admin.domain.entity.mgr.MgrSub">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+
+		SELECT a.user_id AS userId, 
+				a.user_nm AS userNm,
+				a.rrn AS rrn,
+				(select center_nm from mind_center where center_seq = a.center_seq) AS centerNm,
+				case(b.EDUCATION)
+					when 'D' then '박사' 
+					when 'M' then '석사'
+				else b.CAREER 
+				end AS education,
+				b.UNIVERSITY AS university,
+				b.DEPARTMENT AS department,
+				b.CAREER AS career,
+				(SELECT group_concat(distinct FN_GET_COMM_NM(cert_cd)) from mind_mgr_cert where user_id = a.user_id) AS cert,
+				(SELECT group_concat(etc) from mind_mgr_cert where user_id = a.user_id) AS etcCert,
+				a.use_yn AS useYn,
+				(CASE 
+						WHEN D.AUTH_CD = 'ROLE_PARTNER_CENTER' THEN '센터장' 
+						WHEN D.AUTH_CD = 'ROLE_PARTNER_SANGDAM' THEN '상담' 
+						WHEN D.AUTH_CD = 'ROLE_PARTNER_SEND' THEN '파견' 
+						WHEN D.AUTH_CD = 'ROLE_PARTNER_GROUP' THEN '집단' 
+						WHEN D.AUTH_CD = 'ROLE_PARTNER_TEACHER' THEN '강사'		END) AS authCd
+		FROM (select * from mind_mgr where user_type = '3001' ) as a left join mind_mgr_sub b 
+			on a.USER_ID = b.USER_ID
+			, ACL_USER_AUTH AS D
+		WHERE 1=1
+		AND a.user_id not in ('32827980', 'b3817', 'bookmount', 'hkinternational', 'test10234')
+		AND a.center_seq is not null
+		AND D.USER_AUTH_KEY = CONCAT(A.USER_ID,'3001')
+		<if test="isNotNull(userNm)">
+			AND a.USER_NM LIKE CONCAT('%', #{userNm},'%')
+		</if>
+		<if test="isNotNull(searchCenterSeq)">
+			AND a.CENTER_SEQ = #{searchCenterSeq}
+		</if>
+		ORDER BY a.center_seq, a.USER_ID
+
+		<choose>
+			<when test="pageCommonFlag == true">
+				) A
+			</when>
+			<otherwise>
+				LIMIT #{firstIndex} , #{pageSize}
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="counselorListExcel" resultType="com.ezwel.admin.domain.entity.mgr.MgrSub" timeout="2000">
+		SELECT a.user_id AS userId, 
+				a.user_nm AS userNm,
+				a.rrn AS rrn,
+				(select center_nm from mind_center where center_seq = a.center_seq) AS centerNm,
+				case(b.EDUCATION)
+					when 'D' then '박사' 
+					when 'M' then '석사'
+				else b.CAREER 
+				end AS education,
+				b.UNIVERSITY AS university,
+				b.DEPARTMENT AS department,
+				b.CAREER AS career,
+				(SELECT group_concat(distinct FN_GET_COMM_NM(cert_cd)) from mind_mgr_cert where user_id = a.user_id) AS cert,
+				(SELECT group_concat(etc) from mind_mgr_cert where user_id = a.user_id) AS etcCert,
+				a.use_yn AS useYn,
+				(CASE 
+						WHEN D.AUTH_CD = 'ROLE_PARTNER_CENTER' THEN '센터장' 
+						WHEN D.AUTH_CD = 'ROLE_PARTNER_SANGDAM' THEN '상담' 
+						WHEN D.AUTH_CD = 'ROLE_PARTNER_SEND' THEN '파견' 
+						WHEN D.AUTH_CD = 'ROLE_PARTNER_GROUP' THEN '집단' 
+						WHEN D.AUTH_CD = 'ROLE_PARTNER_TEACHER' THEN '강사'		END) AS authCd
+		FROM (select * from mind_mgr where user_type = '3001' ) as a left join mind_mgr_sub b 
+			on a.USER_ID = b.USER_ID
+			, ACL_USER_AUTH AS D
+		WHERE 1=1
+		AND a.user_id not in ('32827980', 'b3817', 'bookmount', 'hkinternational', 'test10234')
+		AND a.center_seq is not null
+		AND D.USER_AUTH_KEY = CONCAT(A.USER_ID,'3001')
+		ORDER BY a.center_seq, a.USER_ID	
+	</select>
+
+</mapper>

@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.common.CommonMapper">
+
+
+	<select id="getTypeList" resultType="com.ezwel.admin.domain.entity.common.CommCd">
+		SELECT COMM_CD AS commCd
+			,HIGH_COMM_CD AS highCommCd
+			,COMM_NM AS commNm
+			,OPTION_CD AS optionCd
+			,USE_YN AS useYn
+			,COMM_DESC AS commDesc
+			,REG_DT AS regDt
+		FROM MIND_COMM_CD
+		WHERE 1=1
+		AND USE_YN = 'Y'
+		<if test="isNotNull(highCommCd)">
+			AND HIGH_COMM_CD = #{highCommCd}
+		</if>
+	</select>
+	
+	<select id="getCounselCategory" resultType="com.ezwel.admin.domain.entity.counselCategory.CounselCategory">
+		select  category_cd as categoryCd
+		       ,category_nm as categoryNm
+		       ,high_category_cd as highCategoryCd
+		       ,ages_yn as agesYn
+		       ,use_yn as useYn
+		from mind_counsel_category
+		where use_yn = 'Y'
+		<if test="isNotNull(highCategoryCd)">
+			and high_category_cd = #{highCategoryCd}
+		</if>
+	</select>
+
+	<select id="getCommNmCnt" parameterType="com.ezwel.admin.service.common.dto.CommonDto" resultType="int">
+		SELECT COUNT(*) as cnt
+		FROM MIND_COMM_CD
+		WHERE 1=1
+		AND USE_YN = 'Y'
+		<if test="isNotNull(highCommCd)">
+			AND HIGH_COMM_CD = #{highCommCd}
+		</if>
+		<if test="isNotNull(commNm)">
+			AND COMM_NM = #{commNm}
+		</if>
+	</select>
+
+	<update id="ajaxModifyBbsDisp">
+		UPDATE MIND_BBS_DATA
+			SET DISP_YN = #{dispYn}
+		WHERE DATA_SEQ = #{dataSeq}
+	</update>
+
+
+	<select id="getClientList" resultType="com.ezwel.admin.domain.entity.client.Client">
+		SELECT CLIENT_CD AS clientCd
+			, DOMAIN_CD AS domainCd
+			, CLIENT_NM AS clientNm
+			, CLIENT_TYPE AS clientType
+		FROM MIND_CLIENT
+		WHERE USE_YN = 'Y'
+		AND CLIENT_CD NOT IN ('api', 'test-mind')
+		ORDER BY client_nm
+	</select>
+
+<select id="getClientList2" resultType="com.ezwel.admin.domain.entity.client.Client">
+		SELECT CENTER_SEQ AS clientCd
+			, CENTER_SEQ AS domainCd
+			, CENTER_NM AS clientNm
+			, 'E' AS clientType
+		FROM HUE_CENTER
+		WHERE USE_YN = 'Y'
+	</select>
+
+	<select id="getCounselCategoryCodeNm" resultType="String">
+		SELECT GROUP_CONCAT(CATEGORY_NM)
+		  FROM MIND_COUNSEL_CATEGORY
+		 WHERE USE_YN = 'Y'
+		   AND CATEGORY_CD IN
+		   <foreach collection="arrayCode" item="item" index="index" open="(" close=")" separator=",">
+		   		#{item}
+		   </foreach>
+	</select>
+
+	<select id="getCommCdNm" resultType="String">
+		SELECT GROUP_CONCAT(COMM_NM)
+		  FROM MIND_COMM_CD
+		 WHERE USE_YN = 'Y'
+		   AND COMM_CD IN
+		   <foreach collection="arrayCode" item="item" index="index" open="(" close=")" separator=",">
+		   		#{item}
+		   </foreach>
+	</select>
+
+	<select id="getClientCommCdNm" resultType="String">
+		SELECT GROUP_CONCAT(COMM_NM)
+		  FROM MIND_CLIENT_COMM_CD
+		 WHERE USE_YN = 'Y'
+		   AND COMM_CD IN
+		   <foreach collection="arrayCode" item="item" index="index" open="(" close=")" separator=",">
+		   		#{item}
+		   </foreach>
+			<if test="isNotNull(clientCd)">
+				AND CLIENT_CD = #{clientCd}
+			</if>
+	</select>
+	
+	<insert id="addCommCd" parameterType="com.ezwel.admin.service.common.dto.CommonDto">
+		INSERT INTO MIND_COMM_CD
+			(
+				HIGH_COMM_CD
+				, COMM_NM
+				, OPTION_CD
+				, USE_YN
+				, COMM_DESC
+			<if test="isNotNull(orderNo)">
+				, ORDER_NO
+			</if>
+				, REG_DT
+			)
+			VALUES (
+				#{highCommCd}
+				, #{commNm}
+				, #{optionCd}
+				, 'Y'
+				, #{commDesc}
+			<if test="isNotNull(orderNo)">
+				, #{orderNo}
+			</if>
+				, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			)
+	</insert>
+
+
+	<select id="getOptionCd" resultType="com.ezwel.admin.domain.entity.common.CommCd">
+		SELECT COMM_CD AS commCd
+			,HIGH_COMM_CD AS highCommCd
+			,COMM_NM AS commNm
+			,OPTION_CD AS optionCd
+			,USE_YN AS useYn
+			,COMM_DESC AS commDesc
+			,REG_DT AS regDt
+		FROM MIND_COMM_CD
+		WHERE 1=1
+			AND COMM_CD = #{commCd}
+	</select>
+	
+	<select id="getClientCommCd" resultType="String">
+		SELECT comm_cd 
+		FROM mind_client_comm_cd
+		WHERE client_cd = #{clientCd}
+		AND comm_nm = #{commNm}
+	</select>
+	
+	<select id="getCommCdConvertNm" resultType="String">
+		SELECT comm_cd 
+		FROM mind_comm_cd
+		WHERE comm_nm = #{commNm}
+		<if test="isNotNull(optionCd)">
+			AND option_cd = #{optionCd}
+		</if>
+	</select>
+	
+	<select id="getCategoryCdConvertNm" resultType="String">
+		SELECT category_cd 
+		FROM mind_counsel_category
+		WHERE category_nm = #{categoryNm}
+	</select>
+	
+	<select id="getCenterSeqConvertNm" resultType="String">
+		SELECT center_seq 
+		FROM mind_center
+		WHERE center_nm = #{categoryNm}
+	</select>
+	
+	<select id="getCommClientList" resultType="com.ezwel.admin.domain.entity.common.CommonClientCd">
+		SELECT COMM_CD 		as commCd,
+			   CLIENT_CD    as clientCd,
+			   HIGH_COMM_CD as highCommCd,
+			   COMM_NM 		as commNm,
+			   OPTION_CD 	as optionCd,
+			   USE_YN		as useYn,
+			   LOGIN_YN     as loginYn,
+			   POINT_USE_YN as pointUseYn,
+			   COMM_DESC	as commDesc,
+			   REG_DT		as regDt
+		 FROM MIND_CLIENT_COMM_CD
+		 <where>
+			 <if test="isNotNull(code)">
+			 	AND	HIGH_COMM_CD = #{code}
+			 </if>
+			 <if test="isNotNull(commCd)">
+			 	AND HIGH_COMM_CD = (SELECT HIGH_COMM_CD FROM MIND_CLIENT_COMM_CD WHERE CLIENT_CD = #{clientCd} AND COMM_CD = #{commCd})
+			 </if>
+			 <if test="isNotNull(clientCd)">
+			    AND CLIENT_CD = #{clientCd}
+			 </if>
+		 </where>
+	</select>
+	
+	<update id="ajaxModifyIntakeDisp">
+		UPDATE MIND_COUNSEL_INTAKE
+			SET ${type} = #{dispYn}
+		WHERE INTAKE_CD = #{intakeCd}
+	</update>
+	
+	<select id="getCenterList" resultType="com.ezwel.admin.domain.entity.center.CenterInfo">
+		SELECT 	CENTER_SEQ AS centerSeq
+			,	CENTER_NM AS centerNm
+			,	CENTER_TYPE AS centerType
+			,	CENTER_INTRO AS centerIntro
+			,	HOMEPAGE AS homepage
+			,	AREA1 AS area1
+			,	AREA2 AS area2
+			,	POST AS post
+			,	ADDR1 AS addr1
+			,	ADDR2 AS addr2
+			,	INFRA_PERSONAL_CNT AS infraPersonalCnt
+			,	INFRA_WAIT_ROOM_YN AS infraWaitRoomYn
+			,	INFRA_PLAY_ROOM_CNT AS infraPlayRoomCnt
+			,	INFRA_EDU_ROOM_YN AS infraEduRoomYn
+			,	INFRA_ETC AS infraEtc
+			,	OWNER_NM AS ownerNm
+			,	BSNS_NUM AS bsnsNum
+			,	BCOND AS bcond
+			,	BITEM AS bitem
+			,	TEL_NUM	AS telNum
+			,	FAX_NUM AS faxNum
+			,	BANK_CD AS bankCd
+			,	BANK_NM AS bankNum
+			,	BANK_ORDER AS bankOrder
+			,	FILE_NM1 AS fileNm1
+			,	FILE_PATH1 AS filePath1
+			,	FILE_NM2 AS fileNm2
+			,	FILE_PATH2 AS filePath2
+			,	FILE_NM3 AS fileNm3
+			,	FILE_PATH3 AS filePath3
+			,	DATE_FORMAT(STR_TO_DATE(REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt
+			,	REG_ID AS regId
+			,	DATE_FORMAT(STR_TO_DATE(MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS modiDt
+			,	MODI_ID AS modiId
+			,	CALC_TYPE AS calcType
+			,	CALC_DD1 AS calcDd1
+			,	CALC_DD2 AS calcDd2
+			,	DISP_YN AS dispYn
+			,	MAP_URL  AS mapUrl
+		FROM MIND_CENTER
+		ORDER BY CENTER_NM 
+	</select>
+	
+	<select id="getClientCeiling" resultType="String">
+		SELECT FORMAT(CEILING_POINT, 0)
+		FROM mind_ceiling
+		WHERE use_yn = 'Y'
+		AND CLIENT_CD = #{clientCd}
+		ORDER BY client_cd, period_seq desc
+		LIMIT 1
+	</select>
+	
+	<update id="ajaxModifyUseYn">
+		UPDATE MIND_USER
+			SET USE_YN = #{useYn}
+		WHERE USER_KEY = #{userKey}
+	</update>
+	
+	<select id="getClientJedoPeriodList" resultType="com.ezwel.admin.domain.entity.client.ClientJedoPeriod">
+		SELECT START_DD AS startDd
+				, END_DD AS endDd
+				, PERIOD_NO AS periodNo
+				, PERIOD_SEQ AS periodSeq
+		FROM mind_client_jedo_period
+		WHERE STATUS = 'Y'
+		 <if test="isNotNull(param1)">
+			AND client_cd = #{param1}
+		</if>
+		 <if test="isNotNull(param2)">
+			AND period_seq = #{param2} 
+		</if>
+		ORDER BY period_seq desc
+	</select>
+	
+	<select id="getClientJedoPeriodEndDd" resultType="com.ezwel.admin.domain.entity.client.ClientJedoPeriod">
+		SELECT 
+			DATE_FORMAT(START_DD, '%Y/%m/%d') AS startDd,
+			DATE_FORMAT(END_DD, '%Y/%m/%d') AS endDd
+		FROM MIND_CLIENT_JEDO_PERIOD
+		WHERE 1=1
+			AND START_DD <![CDATA[<=]]> DATE_FORMAT(NOW(), '%Y%m%d')
+           	AND END_DD >= DATE_FORMAT(NOW(), '%Y%m%d')
+           	AND STATUS = 'Y'
+	        AND CLIENT_CD = #{clientCd}
+	</select>
+	
+</mapper>

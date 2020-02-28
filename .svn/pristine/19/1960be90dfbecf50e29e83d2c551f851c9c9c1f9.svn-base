@@ -1,0 +1,218 @@
+package com.ezwel.admin.controller.madm.dispatch;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.ezwel.admin.service.dispatch.DispatchService;
+import com.ezwel.admin.service.dispatch.dto.DispatchDto;
+import com.ezwel.core.framework.web.vo.Paging;
+
+import lombok.extern.slf4j.Slf4j;
+import sun.security.provider.certpath.OCSPResponse.ResponseStatus;
+
+/**
+ * 
+ * 마음왕진 컨트롤러
+ * 
+ * @author starkaby12
+ *
+ */
+@Controller
+@RequestMapping("/madm/dispatch")
+@Slf4j
+public class DispatchController {
+
+	@Resource
+	private DispatchService dispatchService;
+	
+	/*
+	 * 메뉴 셋팅
+	 */
+	private void setMenu(Model model) {
+		String menuStr ="이용자관리";
+		model.addAttribute("menu", menuStr);
+	}
+	
+	/**
+	 * 마음왕진 목록
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("list")
+	public String list(HttpServletRequest request, HttpServletResponse response, 
+			DispatchDto dto, Model model) {
+		
+		log.debug("DispatchController :: list");
+		setMenu(model);
+		
+		Paging<DispatchDto> paging = dispatchService.getList(dto);
+		
+		model.addAttribute("paging", paging);
+		model.addAttribute("dto", dto);
+		
+		return "madm/dispatch/dispatchListVM";
+	}
+	
+	/**
+	 * 마음왕진 정보 등록
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("registForm")
+	public String registForm(HttpServletRequest request, HttpServletResponse response,
+			Model model) {
+		
+		log.debug("DispatchController :: registForm");
+		setMenu(model);
+		
+		return "madm/dispatch/dispatchMM";
+	}
+	
+	/**
+	 * 등록
+	 * 
+	 * @param request
+	 * @param response
+	 * @param dto
+	 * @return
+	 */
+	@RequestMapping(value="regist", method=RequestMethod.POST)
+	public String regist(HttpServletRequest request, HttpServletResponse response,
+			DispatchDto dto, RedirectAttributes redirectAttributes) {
+		
+		int regist = dispatchService.regist(dto);
+		
+		if(regist == -1) {
+			redirectAttributes.addFlashAttribute("bean", dto); // default data settings
+			redirectAttributes.addFlashAttribute("msg", "중복된 고객사코드가 존재합니다.");
+			
+			return "redirect:/madm/dispatch/registForm";
+		}
+		
+		return "redirect:/madm/dispatch/updateForm?infoSeq="+dto.getInfoSeq();
+	}
+	
+	
+	/**
+	 * 마음왕진 정보 수정
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("updateForm")
+	public String updateForm(HttpServletRequest request, HttpServletResponse response,
+			DispatchDto dto, Model model) {
+		
+		log.debug("DispatchController :: updateForm");
+		setMenu(model);
+		
+		DispatchDto bean = dispatchService.getOne(dto);
+		
+		model.addAttribute("bean", bean);
+		
+		return "madm/dispatch/dispatchMM";
+	}
+	
+	/**
+	 * 수정
+	 * 
+	 * @param request
+	 * @param response
+	 * @param dto
+	 * @return
+	 */
+	@RequestMapping(value="update", method=RequestMethod.POST)
+	public String update(HttpServletRequest request, HttpServletResponse response,
+			DispatchDto dto, RedirectAttributes redirectAttributes) {
+		
+		int update = dispatchService.update(dto);
+		
+		if(update == -1) {
+			redirectAttributes.addFlashAttribute("bean", dto); // default data settings
+			redirectAttributes.addFlashAttribute("msg", "중복된 고객사코드가 존재합니다.");
+		}
+		
+		return "redirect:/madm/dispatch/updateForm?infoSeq="+dto.getInfoSeq();
+	}
+	
+	/**
+	 * 마음왕진 참여자 목록
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("userList")
+	public String userList(HttpServletRequest request, HttpServletResponse response,
+			DispatchDto dto, Model model) {
+		
+		log.debug("DispatchController :: userList");
+		setMenu(model);
+		
+		Paging<DispatchDto> paging = dispatchService.getUserList(dto);
+		
+		model.addAttribute("paging", paging);
+		model.addAttribute("dto", dto);
+		
+		return "madm/dispatch/dispatchUserListMM";
+	}
+	
+	/**
+	 * 유저 폼
+	 * 
+	 * @param request
+	 * @param response
+	 * @param dto
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("userForm")
+	public String userForm(HttpServletRequest request, HttpServletResponse response,
+			DispatchDto dto, Model model) {
+		
+		log.debug("DispatchController :: userForm");
+		setMenu(model);
+		
+		DispatchDto bean = dispatchService.getUser(dto);
+		List<DispatchDto> intakes = dispatchService.getUserIntake(dto);
+		
+		model.addAttribute("bean", bean);
+		model.addAttribute("intakes", intakes);
+		
+		return "madm/dispatch/dispatchUserMM";
+	}
+	
+	/**
+	 * 인테이크 메모 수정 
+	 * 
+	 * @param request
+	 * @param response
+	 * @param dto
+	 * @param model
+	 */
+	@RequestMapping(value="updateIntakeMemo", method=RequestMethod.POST)
+	public ResponseEntity<String> updateIntakeMemo(HttpServletRequest request, HttpServletResponse response,
+			DispatchDto dto, Model model) {
+		
+		int result = dispatchService.updateIntakeMemo(dto);
+		
+		return new ResponseEntity<>(String.valueOf(result), HttpStatus.CREATED);
+	}
+	
+}

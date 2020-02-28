@@ -1,0 +1,1056 @@
+package com.ezwel.admin.controller.madm.diagnosis;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.ezwel.admin.domain.entity.diagnosis.PollExcel;
+import com.ezwel.admin.domain.entity.diagnosis.PollInfo;
+import com.ezwel.admin.service.diagnosis.DiagnosisService;
+import com.ezwel.admin.service.diagnosis.dto.DiagnosisDto;
+import com.ezwel.core.support.util.Base64Utils;
+import com.ezwel.core.support.util.StringUtils;
+
+@Controller
+@RequestMapping("/madm/diagnosis")
+public class DiagnosisController {
+	/*
+	 * 멘탈헬스 자가진단
+	 */
+
+	@Resource
+	private DiagnosisService diagnosisService;
+
+	/*
+	 * 메뉴 셋팅
+	 */
+	private void setMenu(Model model) {
+		String menuStr ="사이트운영";
+		model.addAttribute("menu", menuStr);
+	}
+
+	@RequestMapping(value="/infoList")
+	public String getDiagnosisInfoList(@ModelAttribute DiagnosisDto diagnosisInfoDto, Model model) {
+		setMenu(model);
+		model.addAttribute(diagnosisService.getDiagnosisInfoList(diagnosisInfoDto));
+		return "madm/diagnosis/infoList";
+	}
+
+	@RequestMapping(value="/userList")
+	public String getDiagnosisUserList(@ModelAttribute DiagnosisDto diagnosisUserDto, Model model) {
+		setMenu(model);
+		
+		//base64 디코딩
+		String param = Base64Utils.decode( StringUtils.defaultString(diagnosisUserDto.getPollSeq()) );
+		String[] paramArr = param.split("@");
+		diagnosisUserDto.setPollSeq(paramArr[0]);
+		
+		model.addAttribute("pollSeq", paramArr[0]);
+		model.addAttribute("questionSetSeq", paramArr[1]);
+		model.addAttribute(diagnosisService.getDiagnosisUserList(diagnosisUserDto));
+		return "madm/diagnosis/userList";
+	}
+
+	@RequestMapping(value = "/diagnosisDetail")
+	public String diagnosisDetail(@ModelAttribute DiagnosisDto diagnosisAnswerDto, Model model) {
+		setMenu(model);
+
+		//base64 디코딩
+		diagnosisAnswerDto.setPollSeq( Base64Utils.decode( StringUtils.defaultString(diagnosisAnswerDto.getPollSeq()) ) );
+		diagnosisAnswerDto.setPollUserSeq( Base64Utils.decode( StringUtils.defaultString(diagnosisAnswerDto.getPollUserSeq()) ) );
+		diagnosisAnswerDto.setQuestionSetSeq(Base64Utils.decode( StringUtils.defaultString(diagnosisAnswerDto.getQuestionSetSeq()) ));
+
+		model.addAttribute("userDetail", diagnosisService.getDiagnosisUserDetail(diagnosisAnswerDto));
+		model.addAttribute("questionList", diagnosisService.getDiagnosisQuestionList(diagnosisAnswerDto));
+		model.addAttribute("answerMap", diagnosisService.getDiagnosisAnswerMap(diagnosisAnswerDto));
+		return "madm/diagnosis/diagnosisDetail";
+	}
+	
+	
+	@RequestMapping(value = "/excelDownload")
+	public String excelDownload(@ModelAttribute DiagnosisDto dto, Map<String, Object> ModelMap) {
+		ArrayList<HashMap<String,String>> mapList = new ArrayList<HashMap<String,String>>();
+		HashMap<String,String> map = new HashMap<String,String>();
+		HashMap<String,String> addListMap = null;
+		int listcnt = 0;
+		int questionListCnt = 0;
+		String pollUserSeq = "";
+		String questionNum = "";
+		String questionSetSeq = dto.getQuestionSetSeq();
+		String[] strArray = new String[] {"4-1","4-2","4-3","4-4","4-5","4-6","4-7","4-8","4-9","4-10",
+				"4-11","4-12","4-13","4-14","4-15","4-16","4-17","4-18","4-19","4-20",
+				"4-21","4-22","4-23","4-24","4-25","4-26","4-27","4-28","4-29","4-30",
+				"4-31","4-32","4-33","4-34","4-35","4-36","4-37","4-38","4-39","4-40"};
+		
+		//base64 디코딩
+		dto.setPollSeq( Base64Utils.decode( StringUtils.defaultString(dto.getPollSeq()) ) );
+		
+		StringBuffer headerSb = new StringBuffer();
+		headerSb.append("poll_user_seq,순번//emp_num,사번//name,성명//gender,성별//age,나이//business_div,직종//business_div_etc,기타//grade,직급//branch,사업장//dept,부서//work_year,근속년수//marry_yn,결혼여부//regDt,날짜//");
+		
+		ArrayList<PollExcel> list = diagnosisService.getDiagnosisExcelDownload(dto);
+		
+		questionListCnt = diagnosisService.getQuestionListCount(dto);	// 특정 문항지의 문항 갯수를 가져옴
+		// 1번 기본 문항지에 4단계를 추가한 멍청이 때문에 문항갯수가 바뀌어서 4단계를 사용하는 국민연금공단만 제외하고 4단계 문항 숫자 빼줘야함
+		if(questionSetSeq.equals("1") && !dto.getPollSeq().equals("54") && !dto.getPollSeq().equals("75") && !dto.getPollSeq().equals("74")) {		
+			questionListCnt = questionListCnt - 7;
+		}
+		pollUserSeq = list.get(0).getPollUserSeq();
+		questionNum = list.get(0).getQuestionNum();
+		// 문항의 갯수만큼 for
+		for(int i=0; i < list.size(); i++) {
+			
+			// 5번 문항지 일때
+			if("5".equals(questionSetSeq)){	
+				if(i == 0){
+					headerSb.append("1-1,1-1//1-2,1-2//1-3,1-3//1-4,1-4//1-5,1-5//1-6,1-6//1-7,1-7//1-8,1-8//1-9,1-9//1-10,1-10//"
+							+ "2-1,2-1//2-2,2-2//2-3,2-3//2-4,2-4//2-5,2-5//2-6,2-6//2-7,2-7//2-8,2-8//2-9,2-9//2-10,2-10//2-11,2-11//2-12,2-12//2-13,2-13//2-14,2-14//2-15,2-15//2-16,2-16//2-17,2-17//2-18,2-18//2-19,2-19//2-20,2-20//"
+							+ "3-1,3-1//3-2,3-2//3-3,3-3//3-4,3-4//3-5,3-5//3-6,3-6//3-7,3-7//3-8,3-8//3-9,3-9//3-10,3-10//3-11,3-11//3-12,3-12//3-13,3-13//3-14,3-14//3-15,3-15//3-16,3-16//3-17,3-17//3-18,3-18//3-19,3-19//3-20,3-20//3-21,3-21//3-22,3-22//3-23,3-23//3-24,3-24//3-25,3-25//3-26,3-26//3-27,3-27//3-28,3-28//3-29,3-29//3-30,3-30//3-31,3-31//3-32,3-32//3-33,3-33//3-34,3-34//3-35,3-35//3-36,3-36//3-37,3-37//3-38,3-38//3-39,3-39//3-40,3-40//3-41,3-41//3-42,3-42//3-43,3-43//"
+							+ "4-1,4-1//4-2,4-2//4-3,4-3//4-4,4-4//4-5,4-5//4-6,4-6//4-7,4-7//4-8,4-8//4-9,4-9//4-10,4-10//4-11,4-11//4-12,4-12//4-13,4-13//4-14,4-14//4-15,4-15//4-16,4-16//4-17,4-17//4-18,4-18//4-19,4-19//4-20,4-20//4-21,4-21//4-22,4-22//4-23,4-23//4-24,4-24//4-25,4-25//4-26,4-26//4-27,4-27//4-28,4-28//4-29,4-29//4-30,4-30//4-31,4-31//4-32,4-32//4-33,4-33//4-34,4-34//4-35,4-35//4-36,4-36//4-37,4-37//4-38,4-38//4-39,4-39//4-40,4-40//");
+				}
+				if ( "1-1".equals(list.get(i).getQuestionNum()) && "3-43".equals(questionNum)){
+					for(int idx = 0;  idx < 40; idx++){
+						map.put("poll_user_seq", list.get(i-1).getPollUserSeq());
+						map.put("emp_num", list.get(i-1).getEmpNum());
+						map.put("name", list.get(i-1).getName());
+						map.put("gender", list.get(i-1).getGender());
+						map.put("age", list.get(i-1).getAge());
+						map.put("business_div", list.get(i-1).getBusinessDiv());
+						map.put("business_div_etc", list.get(i-1).getBusinessDivEtc());
+						map.put("grade", list.get(i-1).getGrade());
+						map.put("branch", list.get(i-1).getBranch());
+						map.put("dept", list.get(i-1).getDept());
+						map.put("work_year", list.get(i-1).getWorkYear());
+						map.put("marry_yn", list.get(i-1).getMarryYn());
+						map.put("regDt", list.get(i-1).getRegDt());
+						map.put(strArray[idx], "-");
+					}
+				}
+				
+				if(!pollUserSeq.equals(list.get(i).getPollUserSeq())){
+					addListMap = new HashMap<String,String>();
+					addListMap.putAll(map);
+					mapList.add(addListMap);
+					pollUserSeq = list.get(i).getPollUserSeq();
+				}
+				questionNum = list.get(i).getQuestionNum();
+			}
+			
+			// 1번 문항지 일때
+			if(("1".equals(questionSetSeq) || "13".equals(questionSetSeq) || "21".equals(questionSetSeq) || "39".equals(questionSetSeq) || "40".equals(questionSetSeq)) && i == 0){
+				headerSb.append("ppsPt,PSS 총점//ppsLv,PPS 위험도//cesdPt,CES-D 총점//cesdLv,CES-D 위험도//y1Pt,KOSS 물리환경 점수//y1Pc,KOSS 물리환경 환산점수//y1Lv,KOSS 물리환경 위험도//y2Pt,KOSS 직무요구 점수//y2Pc,KOSS 직무요구 환산점수//y2Lv,KOSS 직무요구 위험도//y3Pt,KOSS 직무자율 점수//y3Pc,KOSS 직무자율 환산점수//y3Lv,KOSS 직무자율 위험도//y4Pt,KOSS 관계갈등 점수//y4Pc,KOSS 관계갈등 환산점수//y4Lv,KOSS 관계갈등 위험도//y5Pt,KOSS 직무불안정 점수//y5Pc,KOSS 직무불안정 환산점수//y5Lv,KOSS 직무불안정 위험도//y6Pt,KOSS 조직체계 점수//y6Pc,KOSS 조직체계 환산점수//y6Lv,KOSS 조직체계 위험도//y7Pt,KOSS 보상부적절 점수//y7Pc,KOSS 보상부적절 환산점수//y7Lv,KOSS 보상부적절 위험도//y8Pt,KOSS 직장문화 점수//y8Pc,KOSS 직장문화 환산점수//y8Lv,KOSS 직장문화 위험도//totalPt,KOSS 총점//totalPc,KOSS 총점 환산점수//totalLv,KOSS 총점 위험도//");
+			}
+			
+			// 20번 문항지 일때
+			if(("20".equals(questionSetSeq)) && i == 0){
+				headerSb.append("y1Pt,KOSS 물리환경 점수//y1Pc,KOSS 물리환경 환산점수//y1Lv,KOSS 물리환경 위험도//y2Pt,KOSS 직무요구 점수//y2Pc,KOSS 직무요구 환산점수//y2Lv,KOSS 직무요구 위험도//y3Pt,KOSS 직무자율 점수//y3Pc,KOSS 직무자율 환산점수//y3Lv,KOSS 직무자율 위험도//y4Pt,KOSS 관계갈등 점수//y4Pc,KOSS 관계갈등 환산점수//y4Lv,KOSS 관계갈등 위험도//y5Pt,KOSS 직무불안정 점수//y5Pc,KOSS 직무불안정 환산점수//y5Lv,KOSS 직무불안정 위험도//y6Pt,KOSS 조직체계 점수//y6Pc,KOSS 조직체계 환산점수//y6Lv,KOSS 조직체계 위험도//y7Pt,KOSS 보상부적절 점수//y7Pc,KOSS 보상부적절 환산점수//y7Lv,KOSS 보상부적절 위험도//y8Pt,KOSS 직장문화 점수//y8Pc,KOSS 직장문화 환산점수//y8Lv,KOSS 직장문화 위험도//totalPt,KOSS 총점//totalPc,KOSS 총점 환산점수//totalLv,KOSS 총점 위험도//");
+			}
+			
+			listcnt++;
+			map.put("poll_user_seq", list.get(i).getPollUserSeq());
+			map.put("emp_num", list.get(i).getEmpNum());
+			map.put("name", list.get(i).getName());
+			map.put("gender", list.get(i).getGender());
+			map.put("age", list.get(i).getAge());
+			map.put("business_div", list.get(i).getBusinessDiv());
+			map.put("business_div_etc", list.get(i).getBusinessDivEtc());
+			map.put("grade", list.get(i).getGrade());
+			map.put("branch", list.get(i).getBranch());
+			map.put("dept", list.get(i).getDept());
+			map.put("work_year", list.get(i).getWorkYear());
+			map.put("marry_yn", list.get(i).getMarryYn());
+			map.put("regDt", list.get(i).getRegDt());
+			// 답변 숫자가 99이면 주관식이니 답안을 그대로 입력
+			if("99".equals( list.get(i).getAnswerNum() )) {
+				map.put(list.get(i).getQuestionNum(), list.get(i).getAnswer());
+			}else{
+				map.put(list.get(i).getQuestionNum(), list.get(i).getAnswerNum());
+			}
+			// 5번을 제외한 나머지 문항지
+			if(!"5".equals(questionSetSeq)){
+				if(i < questionListCnt){
+					headerSb.append(list.get(i).getQuestionNum() +","+list.get(i).getQuestionNum()+"//");
+				}
+				int answerCnt = list.size() - 1;	// 답변의 갯수
+				// 답변의 갯수보다 작을 때, 다음 문항이 1-1 이면, 엑셀에 값을 입력
+				if ( i < answerCnt ) {
+					if( list.get(i+1).getQuestionNum().equals("1-1") ) {
+						if("1".equals(questionSetSeq) || "13".equals(questionSetSeq) || "21".equals(questionSetSeq) || "39".equals(questionSetSeq) || "40".equals(questionSetSeq)){
+							setResult(map);
+						}
+						if("20".equals(questionSetSeq)){
+							setResultSeoulJ(map);
+						}
+						addListMap = new HashMap<String,String>();
+						addListMap.putAll(map);
+						mapList.add(addListMap);
+						map = new HashMap<String,String>();
+					}
+				// 마지막 답변을 때, 엑셀에 마지막 값을 입력
+				} else if ( i == answerCnt ) {
+					if("1".equals(questionSetSeq) || "13".equals(questionSetSeq) || "21".equals(questionSetSeq) || "39".equals(questionSetSeq) || "40".equals(questionSetSeq)){
+						setResult(map);
+					}
+					if("20".equals(questionSetSeq)){
+						setResultSeoulJ(map);
+					}
+					addListMap = new HashMap<String,String>();
+					addListMap.putAll(map);
+					mapList.add(addListMap);
+				}
+			}
+			// 5번 문항지의 마지막 데이터
+			if("5".equals(questionSetSeq) && i == (list.size()-1) ){
+				if ( "3-43".equals(list.get(i).getQuestionNum()) ){
+					for(int idx = 0;  idx < 40; idx++){
+						map.put("poll_user_seq", list.get(i-1).getPollUserSeq());
+						map.put("emp_num", list.get(i-1).getEmpNum());
+						map.put("name", list.get(i-1).getName());
+						map.put("gender", list.get(i-1).getGender());
+						map.put("age", list.get(i-1).getAge());
+						map.put("business_div", list.get(i-1).getBusinessDiv());
+						map.put("business_div_etc", list.get(i-1).getBusinessDivEtc());
+						map.put("grade", list.get(i-1).getGrade());
+						map.put("branch", list.get(i-1).getBranch());
+						map.put("dept", list.get(i-1).getDept());
+						map.put("work_year", list.get(i-1).getWorkYear());
+						map.put("marry_yn", list.get(i-1).getMarryYn());
+						map.put("regDt", list.get(i-1).getRegDt());
+						map.put(strArray[idx], "-");
+					}
+				}
+				
+				addListMap = new HashMap<String,String>();
+				addListMap.putAll(map);
+				mapList.add(addListMap);
+			}
+			
+		}
+		ModelMap.put("ezwel_excel_data", headerSb.toString());
+		ModelMap.put("ezwel_excel_value", mapList);
+		return "excelBigGrid";
+	}
+	
+	private void setResult(HashMap<String, String> map) {
+		/*// 스트레스 자각척도(PSS) 1번항목 배점 (답변번호는 0~4)
+		int[][] grp_1_points = { 
+								 {0,1,2,3,4} // 1
+								,{0,1,2,3,4} // 2
+								,{0,1,2,3,4} // 3
+								,{4,3,2,1,0} // 4
+								,{4,3,2,1,0} // 5
+								,{0,1,2,3,4} // 6
+								,{4,3,2,1,0} // 7
+								,{4,3,2,1,0} // 8
+								,{0,1,2,3,4} // 9
+								,{0,1,2,3,4} // 10
+							   };	//question_set 1의 question_group 1 (10개항목) 배점
+		// 우울검사(CES-D) (답변번호는 0~3)
+		int[][] grp_2_points = { 
+								 {0,1,2,3}	// 1
+								,{0,1,2,3}	// 2
+								,{0,1,2,3}	// 3
+								,{3,2,1,0}	// 4
+								,{0,1,2,3}	// 5
+								,{0,1,2,3}	// 6
+								,{0,1,2,3}	// 7
+								,{3,2,1,0}	// 8
+								,{0,1,2,3}	// 9
+								,{0,1,2,3}	// 10
+								,{0,1,2,3}	// 11
+								,{3,2,1,0}	// 12
+								,{0,1,2,3}	// 13
+								,{0,1,2,3}	// 14
+								,{0,1,2,3}	// 15
+								,{3,2,1,0}	// 16
+								,{0,1,2,3}	// 17
+								,{0,1,2,3}	// 18
+								,{0,1,2,3}	// 19
+								,{0,1,2,3}	// 20
+							 };	//question_set 1의 question_group 2 (20개항목) 배점
+		// 직무스트레스(KOSS) (답변번호는 1~4)
+		int[][] grp_3_points = {
+				 				 {4,3,2,1}	// 1
+				 				,{1,2,3,4}	// 2
+				 				,{1,2,3,4}	// 3
+				 				,{1,2,3,4}	// 4
+				 				,{1,2,3,4}	// 5
+				 				,{1,2,3,4}	// 6
+				 				,{1,2,3,4}	// 7
+				 				,{1,2,3,4}	// 8
+				 				,{4,3,2,1}	// 9
+				 				,{1,2,3,4}	// 10
+				 				,{1,2,3,4}	// 11
+				 				,{4,3,2,1}	// 12
+				 				,{1,2,3,4}	// 13
+				 				,{4,3,2,1}	// 14
+				 				,{4,3,2,1}	// 15
+				 				,{4,3,2,1}	// 16
+				 				,{4,3,2,1}	// 17
+				 				,{4,3,2,1}	// 18
+				 				,{4,3,2,1}	// 19
+				 				,{4,3,2,1}	// 20
+				 				,{4,3,2,1}	// 21
+				 				,{4,3,2,1}	// 22
+				 				,{1,2,3,4}	// 23
+				 				,{4,3,2,1}	// 24
+				 				,{1,2,3,4}	// 25
+				 				,{1,2,3,4}	// 26
+				 				,{4,3,2,1}	// 27
+				 				,{4,3,2,1}	// 28
+				 				,{4,3,2,1}	// 29
+				 				,{4,3,2,1}	// 30
+				 				,{4,3,2,1}	// 31
+				 				,{4,3,2,1}	// 32
+				 				,{4,3,2,1}	// 33
+				 				,{1,2,3,4}	// 34
+				 				,{4,3,2,1}	// 35
+				 				,{4,3,2,1}	// 36
+				 				,{4,3,2,1}	// 37
+				 				,{4,3,2,1}	// 38
+				 				,{4,3,2,1}	// 39
+				 				,{1,2,3,4}	// 40
+				 				,{1,2,3,4}	// 41
+				 				,{1,2,3,4}	// 42
+				 				,{1,2,3,4}	// 43
+							 };	//question_set 1의 question_group 3 (43개항목) 배점
+		 */		
+		// PPS 계산
+		int ppsPt = 0;
+		for(int i = 1 ; i <= 10 ; i++){
+			try{
+				int answerNo = Integer.parseInt(map.get("1-"+String.valueOf(i)));
+				ppsPt = ppsPt + answerNo;
+			}catch(Exception e){
+				e.printStackTrace();
+				ppsPt = -1;
+				break;
+			}
+		}
+		String ppsLv = "";
+		if(ppsPt > -1){
+			if("M".equalsIgnoreCase((String)map.get("gender"))){
+				if(ppsPt > 20){
+					ppsLv = "고위험군";
+				}else{
+					ppsLv = "저위험군";
+				}
+			}else if("F".equalsIgnoreCase((String)map.get("gender"))){
+				if(ppsPt > 23){
+					ppsLv = "고위험군";
+				}else{
+					ppsLv = "저위험군";
+				}
+			}			
+		}
+		map.put("ppsPt", String.valueOf(ppsPt)); //PSS 총점
+		map.put("ppsLv", ppsLv); //PPS 위험도
+		
+		
+		
+		// CCS-D 계산
+		int cesdPt = 0;
+		for(int i = 1 ; i <= 20 ; i++){
+			try{
+				int answerNo = Integer.parseInt(map.get("2-"+String.valueOf(i)));
+				cesdPt = cesdPt + answerNo;
+			}catch(Exception e){
+				e.printStackTrace();
+				cesdPt = -1;
+				break;
+			}
+		}
+		String cesdLv = "";
+		if(cesdPt > -1){
+			if(cesdPt > 24){
+				cesdLv = "심각";
+			}else if(cesdPt > 20){
+				cesdLv = "위험";
+			}else if(cesdPt > 15){
+				cesdLv = "주위";
+			}else{
+				cesdLv = "안전";
+			}
+		}
+		map.put("cesdPt", String.valueOf(cesdPt)); //CES-D 총점
+		map.put("cesdLv", cesdLv); //CES-D 위험도
+		
+		DecimalFormat form = new DecimalFormat("#.##");
+		
+		// Y1. KOSS 물리환경
+		int y1Pt = Integer.parseInt(map.get("3-1"))
+				+ Integer.parseInt(map.get("3-2"))
+				+ Integer.parseInt(map.get("3-3"));
+		String y1Pc = form.format( (y1Pt-3) / (double)(12-3) * 100);
+		String y1Lv = "";
+		if(y1Pt > -1){
+			if("M".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y1Pc) <= 33.4){
+					y1Lv = "1사분위";
+				}else if(Double.parseDouble(y1Pc) <= 44.4){
+					y1Lv = "2사분위";
+				}else if(Double.parseDouble(y1Pc) <= 66.6){
+					y1Lv = "3사분위";
+				}else{
+					y1Lv = "4사분위";
+				}
+			}else if("F".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y1Pc) <= 33.4){
+					y1Lv = "1사분위";
+				}else if(Double.parseDouble(y1Pc) <= 44.4){
+					y1Lv = "2사분위";
+				}else if(Double.parseDouble(y1Pc) <= 55.5){
+					y1Lv = "3사분위";
+				}else{
+					y1Lv = "4사분위";
+				}
+			}			
+		}
+		map.put("y1Pt", String.valueOf(y1Pt)); //KOSS 물리환경 점수
+		map.put("y1Pc", y1Pc); //KOSS 물리환경 점수
+		map.put("y1Lv", y1Lv); //KOSS 물리환경 위험도
+		
+		
+		// Y2. KOSS 직무요구
+		int y2Pt = Integer.parseInt(map.get("3-4"))
+				+ Integer.parseInt(map.get("3-5"))
+				+ Integer.parseInt(map.get("3-6"))
+				+ Integer.parseInt(map.get("3-7"))
+				+ Integer.parseInt(map.get("3-8"))
+				+ Integer.parseInt(map.get("3-9"))
+				+ Integer.parseInt(map.get("3-10"))
+				+ Integer.parseInt(map.get("3-11"));
+		String y2Pc = form.format( (y2Pt-8) / (double)(32-8) * 100);
+		String y2Lv = "";
+		if(y2Pt > -1){
+			if("M".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y2Pc) <= 41.6){
+					y2Lv = "1사분위";
+				}else if(Double.parseDouble(y2Pc) <= 50.0){
+					y2Lv = "2사분위";
+				}else if(Double.parseDouble(y2Pc) <= 58.3){
+					y2Lv = "3사분위";
+				}else{
+					y2Lv = "4사분위";
+				}
+			}else if("F".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y2Pc) <= 41.6){
+					y2Lv = "1사분위";
+				}else if(Double.parseDouble(y2Pc) <= 54.1){
+					y2Lv = "2사분위";
+				}else if(Double.parseDouble(y2Pc) <= 62.5){
+					y2Lv = "3사분위";
+				}else{
+					y2Lv = "4사분위";
+				}
+			}			
+		}
+		map.put("y2Pt", String.valueOf(y2Pt)); //KOSS 직무요구 점수
+		map.put("y2Pc", y2Pc); //KOSS 직무요구 점수
+		map.put("y2Lv", y2Lv); //KOSS 직무요구 위험도
+
+		// Y3. KOSS 직무자율
+		int y3Pt = Integer.parseInt(map.get("3-12"))
+				+ Integer.parseInt(map.get("3-13"))
+				+ Integer.parseInt(map.get("3-14"))
+				+ Integer.parseInt(map.get("3-15"))
+				+ Integer.parseInt(map.get("3-16"));
+		String y3Pc = form.format( (y3Pt-5) / (double)(20-5) * 100);
+		String y3Lv = "";
+		if(y3Pt > -1){
+			if("M".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y3Pc) <= 46.6){
+					y3Lv = "1사분위";
+				}else if(Double.parseDouble(y3Pc) <= 53.3){
+					y3Lv = "2사분위";
+				}else if(Double.parseDouble(y3Pc) <= 60.0){
+					y3Lv = "3사분위";
+				}else{
+					y3Lv = "4사분위";
+				}
+			}else if("F".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y3Pc) <= 53.3){
+					y3Lv = "1사분위";
+				}else if(Double.parseDouble(y3Pc) <= 60.0){
+					y3Lv = "2사분위";
+				}else if(Double.parseDouble(y3Pc) <= 66.6){
+					y3Lv = "3사분위";
+				}else{
+					y3Lv = "4사분위";
+				}
+			}			
+		}
+		map.put("y3Pt", String.valueOf(y3Pt)); //KOSS 직무자율 점수
+		map.put("y3Pc", y3Pc); //KOSS 직무자율 점수
+		map.put("y3Lv", y3Lv); //KOSS 직무자율 위험도
+
+		// Y4. KOSS 관계갈등
+		int y4Pt = Integer.parseInt(map.get("3-17"))
+				+ Integer.parseInt(map.get("3-18"))
+				+ Integer.parseInt(map.get("3-19"))
+				+ Integer.parseInt(map.get("3-20"));
+		String y4Pc = form.format( (y4Pt-4) / (double)(16-4) * 100);
+		String y4Lv = "";
+		if(y4Pt > -1){
+			if("M".equalsIgnoreCase((String)map.get("gender"))){
+				//1사분위는 없음
+				if(Double.parseDouble(y4Pc) <= 33.3){
+					y4Lv = "2사분위";
+				}else if(Double.parseDouble(y4Pc) <= 50.0){
+					y4Lv = "3사분위";
+				}else{
+					y4Lv = "4사분위";
+				}
+			}else if("F".equalsIgnoreCase((String)map.get("gender"))){
+				//1사분위는 없음
+				if(Double.parseDouble(y4Pc) <= 33.3){
+					y4Lv = "2사분위";
+				}else if(Double.parseDouble(y4Pc) <= 41.6){
+					y4Lv = "3사분위";
+				}else{
+					y4Lv = "4사분위";
+				}
+			}			
+		}
+		map.put("y4Pt", String.valueOf(y4Pt)); //KOSS 관계갈등 점수
+		map.put("y4Pc", y4Pc); //KOSS 관계갈등 점수
+		map.put("y4Lv", y4Lv); //KOSS 관계갈등 위험도
+		
+		// Y5. KOSS 직무불안정
+		int y5Pt = Integer.parseInt(map.get("3-21"))
+				+ Integer.parseInt(map.get("3-22"))
+				+ Integer.parseInt(map.get("3-23"))
+				+ Integer.parseInt(map.get("3-24"))
+				+ Integer.parseInt(map.get("3-25"))
+				+ Integer.parseInt(map.get("3-26"));
+		String y5Pc = form.format( (y5Pt-6) / (double)(24-6) * 100);
+		String y5Lv = "";
+		if(y5Pt > -1){
+			if("M".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y5Pc) <= 44.4){
+					y5Lv = "1사분위";
+				}else if(Double.parseDouble(y5Pc) <= 50.0){
+					y5Lv = "2사분위";
+				}else if(Double.parseDouble(y5Pc) <= 61.1){
+					y5Lv = "3사분위";
+				}else{
+					y5Lv = "4사분위";
+				}
+			}else if("F".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y5Pc) <= 38.8){
+					y5Lv = "1사분위";
+				}else if(Double.parseDouble(y5Pc) <= 50.0){
+					y5Lv = "2사분위";
+				}else if(Double.parseDouble(y5Pc) <= 55.5){
+					y5Lv = "3사분위";
+				}else{
+					y5Lv = "4사분위";
+				}
+			}			
+		}
+		map.put("y5Pt", String.valueOf(y5Pt)); //KOSS 직무불안정 점수
+		map.put("y5Pc", y5Pc); //KOSS 직무불안정 점수
+		map.put("y5Lv", y5Lv); //KOSS 직무불안정 위험도
+		
+		// Y6. KOSS 조직체계
+		int y6Pt = Integer.parseInt(map.get("3-27"))
+				+ Integer.parseInt(map.get("3-28"))
+				+ Integer.parseInt(map.get("3-29"))
+				+ Integer.parseInt(map.get("3-30"))
+				+ Integer.parseInt(map.get("3-31"))
+				+ Integer.parseInt(map.get("3-32"))
+				+ Integer.parseInt(map.get("3-33"));
+		String y6Pc = form.format( (y6Pt-7) / (double)(28-7) * 100);
+		String y6Lv = "";
+		if(y6Pt > -1){
+			if("M".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y6Pc) <= 42.8){
+					y6Lv = "1사분위";
+				}else if(Double.parseDouble(y6Pc) <= 52.3){
+					y6Lv = "2사분위";
+				}else if(Double.parseDouble(y6Pc) <= 61.9){
+					y6Lv = "3사분위";
+				}else{
+					y6Lv = "4사분위";
+				}
+			}else if("F".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y6Pc) <= 42.8){
+					y6Lv = "1사분위";
+				}else if(Double.parseDouble(y6Pc) <= 52.3){
+					y6Lv = "2사분위";
+				}else if(Double.parseDouble(y6Pc) <= 61.9){
+					y6Lv = "3사분위";
+				}else{
+					y6Lv = "4사분위";
+				}
+			}			
+		}
+		map.put("y6Pt", String.valueOf(y6Pt)); //KOSS 조직체계 점수
+		map.put("y6Pc", y6Pc); //KOSS 조직체계 점수
+		map.put("y6Lv", y6Lv); //KOSS 조직체계 위험도
+
+		// y7. KOSS 보상부적절
+		int y7Pt = Integer.parseInt(map.get("3-34"))
+				+ Integer.parseInt(map.get("3-35"))
+				+ Integer.parseInt(map.get("3-36"))
+				+ Integer.parseInt(map.get("3-37"))
+				+ Integer.parseInt(map.get("3-38"))
+				+ Integer.parseInt(map.get("3-39"));
+		String y7Pc = form.format( (y7Pt-6) / (double)(24-6) * 100);
+		String y7Lv = "";
+		if(y7Pt > -1){
+			if("M".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y7Pc) <= 55.5){
+					y7Lv = "1사분위";
+				}else if(Double.parseDouble(y7Pc) <= 66.6){
+					y7Lv = "2사분위";
+				}else if(Double.parseDouble(y7Pc) <= 77.7){
+					y7Lv = "3사분위";
+				}else{
+					y7Lv = "4사분위";
+				}
+			}else if("F".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y7Pc) <= 55.5){
+					y7Lv = "1사분위";
+				}else if(Double.parseDouble(y7Pc) <= 66.6){
+					y7Lv = "2사분위";
+				}else if(Double.parseDouble(y7Pc) <= 77.7){
+					y7Lv = "3사분위";
+				}else{
+					y7Lv = "4사분위";
+				}
+			}			
+		}
+		map.put("y7Pt", String.valueOf(y7Pt)); //KOSS 보상부적절 점수
+		map.put("y7Pc", y7Pc); //KOSS 보상부적절 점수
+		map.put("y7Lv", y7Lv); //KOSS 보상부적절 위험도
+		
+		// y8. KOSS 직장문화
+		int y8Pt = Integer.parseInt(map.get("3-40"))
+				+ Integer.parseInt(map.get("3-41"))
+				+ Integer.parseInt(map.get("3-42"))
+				+ Integer.parseInt(map.get("3-43"));
+		String y8Pc = form.format( (y8Pt-4) / (double)(16-4) * 100);
+		String y8Lv = "";
+		if(y8Pt > -1){
+			if("M".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y8Pc) <= 33.3){
+					y8Lv = "1사분위";
+				}else if(Double.parseDouble(y8Pc) <= 41.6){
+					y8Lv = "2사분위";
+				}else if(Double.parseDouble(y8Pc) <= 50.0){
+					y8Lv = "3사분위";
+				}else{
+					y8Lv = "4사분위";
+				}
+			}else if("F".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y8Pc) <= 33.3){
+					y8Lv = "1사분위";
+				}else if(Double.parseDouble(y8Pc) <= 41.6){
+					y8Lv = "2사분위";
+				}else if(Double.parseDouble(y8Pc) <= 50.0){
+					y8Lv = "3사분위";
+				}else{
+					y8Lv = "4사분위";
+				}
+			}			
+		}
+		map.put("y8Pt", String.valueOf(y8Pt)); //KOSS 직장문화 점수
+		map.put("y8Pc", y8Pc); //KOSS 직장문화 점수
+		map.put("y8Lv", y8Lv); //KOSS 직장문화 위험도
+		
+		// KOSS 총점
+		int totalPt = y1Pt + y2Pt + y3Pt + y4Pt + y5Pt + y6Pt + y7Pt + y8Pt;
+		String totalPc = form.format(totalPt/(double)172 * 100);
+		String totalLv = "";
+		if(totalPt > -1){
+			if("M".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(totalPc) <= 45.0){
+					totalLv = "1사분위";
+				}else if(Double.parseDouble(totalPc) <= 50.7){
+					totalLv = "2사분위";
+				}else if(Double.parseDouble(totalPc) <= 56.5){
+					totalLv = "3사분위";
+				}else{
+					totalLv = "4사분위";
+				}
+			}else if("F".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(totalPc) <= 49.5){
+					totalLv = "1사분위";
+				}else if(Double.parseDouble(totalPc) <= 51.1){
+					totalLv = "2사분위";
+				}else if(Double.parseDouble(totalPc) <= 56.6){
+					totalLv = "3사분위";
+				}else{
+					totalLv = "4사분위";
+				}
+			}			
+		}
+		map.put("totalPt", String.valueOf(totalPt)); //KOSS 총점
+		map.put("totalPc", totalPc); //KOSS 총점 환산점수
+		map.put("totalLv", totalLv); //KOSS 총점 위험도
+		
+		
+	}
+	
+	private void setResultSeoulJ(HashMap<String, String> map) {
+		
+		DecimalFormat form = new DecimalFormat("#.##");
+		
+		// Y1. KOSS 물리환경
+		int y1Pt = Integer.parseInt(map.get("1-1"))
+				+ Integer.parseInt(map.get("1-2"))
+				+ Integer.parseInt(map.get("1-3"));
+		String y1Pc = form.format( (y1Pt-3) / (double)(12-3) * 100);
+		String y1Lv = "";
+		if(y1Pt > -1){
+			if("M".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y1Pc) <= 33.4){
+					y1Lv = "1사분위";
+				}else if(Double.parseDouble(y1Pc) <= 44.4){
+					y1Lv = "2사분위";
+				}else if(Double.parseDouble(y1Pc) <= 66.6){
+					y1Lv = "3사분위";
+				}else{
+					y1Lv = "4사분위";
+				}
+			}else if("F".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y1Pc) <= 33.4){
+					y1Lv = "1사분위";
+				}else if(Double.parseDouble(y1Pc) <= 44.4){
+					y1Lv = "2사분위";
+				}else if(Double.parseDouble(y1Pc) <= 55.5){
+					y1Lv = "3사분위";
+				}else{
+					y1Lv = "4사분위";
+				}
+			}			
+		}
+		map.put("y1Pt", String.valueOf(y1Pt)); //KOSS 물리환경 점수
+		map.put("y1Pc", y1Pc); //KOSS 물리환경 점수
+		map.put("y1Lv", y1Lv); //KOSS 물리환경 위험도
+		
+		
+		// Y2. KOSS 직무요구
+		int y2Pt = Integer.parseInt(map.get("1-4"))
+				+ Integer.parseInt(map.get("1-5"))
+				+ Integer.parseInt(map.get("1-6"))
+				+ Integer.parseInt(map.get("1-7"))
+				+ Integer.parseInt(map.get("1-8"))
+				+ Integer.parseInt(map.get("1-9"))
+				+ Integer.parseInt(map.get("1-10"))
+				+ Integer.parseInt(map.get("1-11"));
+		String y2Pc = form.format( (y2Pt-8) / (double)(32-8) * 100);
+		String y2Lv = "";
+		if(y2Pt > -1){
+			if("M".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y2Pc) <= 41.6){
+					y2Lv = "1사분위";
+				}else if(Double.parseDouble(y2Pc) <= 50.0){
+					y2Lv = "2사분위";
+				}else if(Double.parseDouble(y2Pc) <= 58.3){
+					y2Lv = "3사분위";
+				}else{
+					y2Lv = "4사분위";
+				}
+			}else if("F".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y2Pc) <= 41.6){
+					y2Lv = "1사분위";
+				}else if(Double.parseDouble(y2Pc) <= 54.1){
+					y2Lv = "2사분위";
+				}else if(Double.parseDouble(y2Pc) <= 62.5){
+					y2Lv = "3사분위";
+				}else{
+					y2Lv = "4사분위";
+				}
+			}			
+		}
+		map.put("y2Pt", String.valueOf(y2Pt)); //KOSS 직무요구 점수
+		map.put("y2Pc", y2Pc); //KOSS 직무요구 점수
+		map.put("y2Lv", y2Lv); //KOSS 직무요구 위험도
+
+		// Y3. KOSS 직무자율
+		int y3Pt = Integer.parseInt(map.get("1-12"))
+				+ Integer.parseInt(map.get("1-13"))
+				+ Integer.parseInt(map.get("1-14"))
+				+ Integer.parseInt(map.get("1-15"))
+				+ Integer.parseInt(map.get("1-16"));
+		String y3Pc = form.format( (y3Pt-5) / (double)(20-5) * 100);
+		String y3Lv = "";
+		if(y3Pt > -1){
+			if("M".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y3Pc) <= 46.6){
+					y3Lv = "1사분위";
+				}else if(Double.parseDouble(y3Pc) <= 53.3){
+					y3Lv = "2사분위";
+				}else if(Double.parseDouble(y3Pc) <= 60.0){
+					y3Lv = "3사분위";
+				}else{
+					y3Lv = "4사분위";
+				}
+			}else if("F".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y3Pc) <= 53.3){
+					y3Lv = "1사분위";
+				}else if(Double.parseDouble(y3Pc) <= 60.0){
+					y3Lv = "2사분위";
+				}else if(Double.parseDouble(y3Pc) <= 66.6){
+					y3Lv = "3사분위";
+				}else{
+					y3Lv = "4사분위";
+				}
+			}			
+		}
+		map.put("y3Pt", String.valueOf(y3Pt)); //KOSS 직무자율 점수
+		map.put("y3Pc", y3Pc); //KOSS 직무자율 점수
+		map.put("y3Lv", y3Lv); //KOSS 직무자율 위험도
+
+		// Y4. KOSS 관계갈등
+		int y4Pt = Integer.parseInt(map.get("1-17"))
+				+ Integer.parseInt(map.get("1-18"))
+				+ Integer.parseInt(map.get("1-19"))
+				+ Integer.parseInt(map.get("1-20"));
+		String y4Pc = form.format( (y4Pt-4) / (double)(16-4) * 100);
+		String y4Lv = "";
+		if(y4Pt > -1){
+			if("M".equalsIgnoreCase((String)map.get("gender"))){
+				//1사분위는 없음
+				if(Double.parseDouble(y4Pc) <= 33.3){
+					y4Lv = "2사분위";
+				}else if(Double.parseDouble(y4Pc) <= 50.0){
+					y4Lv = "3사분위";
+				}else{
+					y4Lv = "4사분위";
+				}
+			}else if("F".equalsIgnoreCase((String)map.get("gender"))){
+				//1사분위는 없음
+				if(Double.parseDouble(y4Pc) <= 33.3){
+					y4Lv = "2사분위";
+				}else if(Double.parseDouble(y4Pc) <= 41.6){
+					y4Lv = "3사분위";
+				}else{
+					y4Lv = "4사분위";
+				}
+			}			
+		}
+		map.put("y4Pt", String.valueOf(y4Pt)); //KOSS 관계갈등 점수
+		map.put("y4Pc", y4Pc); //KOSS 관계갈등 점수
+		map.put("y4Lv", y4Lv); //KOSS 관계갈등 위험도
+		
+		// Y5. KOSS 직무불안정
+		int y5Pt = Integer.parseInt(map.get("1-21"))
+				+ Integer.parseInt(map.get("1-22"))
+				+ Integer.parseInt(map.get("1-23"))
+				+ Integer.parseInt(map.get("1-24"))
+				+ Integer.parseInt(map.get("1-25"))
+				+ Integer.parseInt(map.get("1-26"));
+		String y5Pc = form.format( (y5Pt-6) / (double)(24-6) * 100);
+		String y5Lv = "";
+		if(y5Pt > -1){
+			if("M".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y5Pc) <= 44.4){
+					y5Lv = "1사분위";
+				}else if(Double.parseDouble(y5Pc) <= 50.0){
+					y5Lv = "2사분위";
+				}else if(Double.parseDouble(y5Pc) <= 61.1){
+					y5Lv = "3사분위";
+				}else{
+					y5Lv = "4사분위";
+				}
+			}else if("F".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y5Pc) <= 38.8){
+					y5Lv = "1사분위";
+				}else if(Double.parseDouble(y5Pc) <= 50.0){
+					y5Lv = "2사분위";
+				}else if(Double.parseDouble(y5Pc) <= 55.5){
+					y5Lv = "3사분위";
+				}else{
+					y5Lv = "4사분위";
+				}
+			}			
+		}
+		map.put("y5Pt", String.valueOf(y5Pt)); //KOSS 직무불안정 점수
+		map.put("y5Pc", y5Pc); //KOSS 직무불안정 점수
+		map.put("y5Lv", y5Lv); //KOSS 직무불안정 위험도
+		
+		// Y6. KOSS 조직체계
+		int y6Pt = Integer.parseInt(map.get("1-27"))
+				+ Integer.parseInt(map.get("1-28"))
+				+ Integer.parseInt(map.get("1-29"))
+				+ Integer.parseInt(map.get("1-30"))
+				+ Integer.parseInt(map.get("1-31"))
+				+ Integer.parseInt(map.get("1-32"))
+				+ Integer.parseInt(map.get("1-33"));
+		String y6Pc = form.format( (y6Pt-7) / (double)(28-7) * 100);
+		String y6Lv = "";
+		if(y6Pt > -1){
+			if("M".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y6Pc) <= 42.8){
+					y6Lv = "1사분위";
+				}else if(Double.parseDouble(y6Pc) <= 52.3){
+					y6Lv = "2사분위";
+				}else if(Double.parseDouble(y6Pc) <= 61.9){
+					y6Lv = "3사분위";
+				}else{
+					y6Lv = "4사분위";
+				}
+			}else if("F".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y6Pc) <= 42.8){
+					y6Lv = "1사분위";
+				}else if(Double.parseDouble(y6Pc) <= 52.3){
+					y6Lv = "2사분위";
+				}else if(Double.parseDouble(y6Pc) <= 61.9){
+					y6Lv = "3사분위";
+				}else{
+					y6Lv = "4사분위";
+				}
+			}			
+		}
+		map.put("y6Pt", String.valueOf(y6Pt)); //KOSS 조직체계 점수
+		map.put("y6Pc", y6Pc); //KOSS 조직체계 점수
+		map.put("y6Lv", y6Lv); //KOSS 조직체계 위험도
+
+		// y7. KOSS 보상부적절
+		int y7Pt = Integer.parseInt(map.get("1-34"))
+				+ Integer.parseInt(map.get("1-35"))
+				+ Integer.parseInt(map.get("1-36"))
+				+ Integer.parseInt(map.get("1-37"))
+				+ Integer.parseInt(map.get("1-38"))
+				+ Integer.parseInt(map.get("1-39"));
+		String y7Pc = form.format( (y7Pt-6) / (double)(24-6) * 100);
+		String y7Lv = "";
+		if(y7Pt > -1){
+			if("M".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y7Pc) <= 55.5){
+					y7Lv = "1사분위";
+				}else if(Double.parseDouble(y7Pc) <= 66.6){
+					y7Lv = "2사분위";
+				}else if(Double.parseDouble(y7Pc) <= 77.7){
+					y7Lv = "3사분위";
+				}else{
+					y7Lv = "4사분위";
+				}
+			}else if("F".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y7Pc) <= 55.5){
+					y7Lv = "1사분위";
+				}else if(Double.parseDouble(y7Pc) <= 66.6){
+					y7Lv = "2사분위";
+				}else if(Double.parseDouble(y7Pc) <= 77.7){
+					y7Lv = "3사분위";
+				}else{
+					y7Lv = "4사분위";
+				}
+			}			
+		}
+		map.put("y7Pt", String.valueOf(y7Pt)); //KOSS 보상부적절 점수
+		map.put("y7Pc", y7Pc); //KOSS 보상부적절 점수
+		map.put("y7Lv", y7Lv); //KOSS 보상부적절 위험도
+		
+		// y8. KOSS 직장문화
+		int y8Pt = Integer.parseInt(map.get("1-40"))
+				+ Integer.parseInt(map.get("1-41"))
+				+ Integer.parseInt(map.get("1-42"))
+				+ Integer.parseInt(map.get("1-43"));
+		String y8Pc = form.format( (y8Pt-4) / (double)(16-4) * 100);
+		String y8Lv = "";
+		if(y8Pt > -1){
+			if("M".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y8Pc) <= 33.3){
+					y8Lv = "1사분위";
+				}else if(Double.parseDouble(y8Pc) <= 41.6){
+					y8Lv = "2사분위";
+				}else if(Double.parseDouble(y8Pc) <= 50.0){
+					y8Lv = "3사분위";
+				}else{
+					y8Lv = "4사분위";
+				}
+			}else if("F".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(y8Pc) <= 33.3){
+					y8Lv = "1사분위";
+				}else if(Double.parseDouble(y8Pc) <= 41.6){
+					y8Lv = "2사분위";
+				}else if(Double.parseDouble(y8Pc) <= 50.0){
+					y8Lv = "3사분위";
+				}else{
+					y8Lv = "4사분위";
+				}
+			}			
+		}
+		map.put("y8Pt", String.valueOf(y8Pt)); //KOSS 직장문화 점수
+		map.put("y8Pc", y8Pc); //KOSS 직장문화 점수
+		map.put("y8Lv", y8Lv); //KOSS 직장문화 위험도
+		
+		// KOSS 총점
+		int totalPt = y1Pt + y2Pt + y3Pt + y4Pt + y5Pt + y6Pt + y7Pt + y8Pt;
+		String totalPc = form.format(totalPt/(double)172 * 100);
+		String totalLv = "";
+		if(totalPt > -1){
+			if("M".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(totalPc) <= 45.0){
+					totalLv = "1사분위";
+				}else if(Double.parseDouble(totalPc) <= 50.7){
+					totalLv = "2사분위";
+				}else if(Double.parseDouble(totalPc) <= 56.5){
+					totalLv = "3사분위";
+				}else{
+					totalLv = "4사분위";
+				}
+			}else if("F".equalsIgnoreCase((String)map.get("gender"))){
+				if(Double.parseDouble(totalPc) <= 49.5){
+					totalLv = "1사분위";
+				}else if(Double.parseDouble(totalPc) <= 51.1){
+					totalLv = "2사분위";
+				}else if(Double.parseDouble(totalPc) <= 56.6){
+					totalLv = "3사분위";
+				}else{
+					totalLv = "4사분위";
+				}
+			}			
+		}
+		map.put("totalPt", String.valueOf(totalPt)); //KOSS 총점
+		map.put("totalPc", totalPc); //KOSS 총점 환산점수
+		map.put("totalLv", totalLv); //KOSS 총점 위험도
+		
+		
+	}
+
+	@RequestMapping(value="/updateDateAndTime", method=RequestMethod.POST)
+	public ResponseEntity<String> updateDateAndTime(PollInfo pollInfo) {
+		int userCheck = diagnosisService.updateDateAndTime(pollInfo);
+		return new ResponseEntity<>(Integer.toString(userCheck) , HttpStatus.CREATED);
+	}
+	
+	@RequestMapping(value="/pollModify", method=RequestMethod.POST)
+	public String pollModify(@ModelAttribute DiagnosisDto diDto, Model model) {
+		diagnosisService.pollModify(diDto);
+		return "redirect:/madm/diagnosis/infoList";
+	}
+
+	@RequestMapping(value="/checkClientCd", method=RequestMethod.POST)
+	public void checkClientCd(@ModelAttribute DiagnosisDto diDto, Model model) {
+		model.addAttribute("resultValue", diagnosisService.checkClientCd(diDto) );
+	}
+	
+	@RequestMapping(value="/insertDiagnosis", method=RequestMethod.GET)
+	public String insertPageView(Model model) {
+		setMenu(model);
+		return "madm/diagnosis/insertDiagnosis";
+	}
+	
+	@RequestMapping(value="/insertDiagnosis", method=RequestMethod.POST)
+	public String insertDiagnosis(@ModelAttribute DiagnosisDto diDto, Model model) {
+		diagnosisService.insertDiagnosis(diDto);
+		return "redirect:/madm/diagnosis/infoList";
+	}
+
+}

@@ -1,0 +1,439 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ include file="/WEB-INF/jsp/layout/inc/tags.jspf"%>
+
+<html>
+<head>
+<title>센터정보관리</title>
+<script type="text/javascript" src="https://ezutil.ezwel.com/resources/js/address/ez-addr.js"></script>
+<script type="text/javascript">
+var fulPath = "";
+
+function getRealPath(obj){
+	  obj.select();
+	 
+	  fulPath = document.selection.createRangeCollection()[0].text.toString();
+	  var params = {};
+		var strData = "";
+		params.area1  = fulPath;
+		
+		j$('#subPath').remove();	
+		
+		j$.ajax({
+			url: '/partner/centerInfo/ajaxPath',
+			data: params,
+			dataType: 'json',
+			type: 'GET',
+			cache:true,
+			success: function(data, textStatus){
+				strData += "<span id='subPath'>";
+				strData += "size = <labael>"+data.width+"px</label>       <labael>"+data.height+"px</label>";
+				strData += "</span>";
+				j$('#path1').show();
+				j$('#path1').after(strData);  
+			}
+		}); 
+	}
+
+
+
+j$(document).ready(function(){
+	
+	
+
+	$.validate({
+		form : '#addCenter',
+		validateOnBlur : false,
+		validateOnAlert : true,
+		onSuccess : function(){
+		$('[name=telNum]').val($('#telNum1').val() + "-" + $('#telNum2').val() + "-" + $('#telNum3').val()); 
+		$('[name=faxNum]').val($('#faxNum1').val() + "-" + $('#faxNum2').val() + "-" + $('#faxNum3').val()); 	 
+		}
+	});
+	
+	
+	j$("#addBtn").click(function(){
+		var t;
+		if($("#type1").prop("checked") == true ){
+			t = "100471,";
+		}else{
+			t = ",";
+		}
+		if($("#type2").prop("checked") == true ){
+			t += "100472,";
+		}else{
+			t += ",";
+		}
+		if($("#type3").prop("checked") == true ){
+			t += "100473,";
+		}else{
+			t += ",";
+		}
+		if($("#type4").prop("checked") == true ){
+			t += "100474";
+		}else{
+		}
+		j$("#cType").val(t);
+		
+		j$("#addCenter").submit();
+		return false;
+	});
+	
+
+	
+
+	
+	
+	
+	$('.addrPopUp').click(function(){
+		var siteUrl = '<spring:eval expression="@global['site.url']" />' + '/resources/jsp/addrSubmit.jsp';
+		pZip(siteUrl);
+		return false;
+	});
+	
+	
+	 j$('#area1').change(function(){
+		var params = {};
+		var strData = "";
+		var area1 = this.value
+		params.area1  = area1;
+
+		
+		
+		j$('#subData').remove();	
+		
+		if(area1 == 100016){
+			
+		}else{
+		
+		
+			j$.ajax({
+				url: '/madm/centerInfo/ajaxArea',
+				data: params,
+				dataType: 'json',
+				type: 'GET',
+				cache:true,
+				success: function(data, textStatus){
+					strData += "<span id='subData'>";
+					strData += "<select id='area2' name='area2' data-validation='required' data-validation-error-msg-required='구/군을 확인 해주세요.'>";
+					strData += "<option value=''>구/군 선택</option>";
+					
+					j$.each(data.serviceList, function(i, serviceList){
+						strData += "   <option value='"+serviceList.commCd+"'>"+serviceList.commNm+"</option>";
+					});
+					
+					strData += "</select>";
+					strData += "</span>";
+					j$('#area2').show();
+					j$('#area2').after(strData);  
+				}
+			});
+		}
+
+		return false;
+		
+	}); 
+	
+});
+function fSetAddr ( post1, post2, addr1, addr2 ) {
+	$("[name=post]").val(post1 + post2);
+	$("[name=addr1]").val(addr1);
+	$("[name=addr2]").val(addr2);
+}
+
+</script>
+
+</head>
+<body>
+
+
+<form id="addCenter" action="/madm/centerInfo/insert" method="POST" enctype="multipart/form-data">
+<input type="hidden" name="cType" id="cType" >
+<table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
+<tr>
+	<td valign="top" align="left">
+	<!-- 컨텐츠 시작 영역 start -->
+		<table cellpadding="0" cellspacing="0" border="0" width="95%">
+			<tr>
+				<td height="20px"></td>
+			</tr>
+			<tr>
+				<td>
+					<table cellpadding="5" cellspacing="0" border="0" width="100%" align="left" style="border-bottom: 1px solid silver;">
+						<tr>
+					    	<td align="left" class="subtitle">센터정보관리</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td height="20px"></td>
+			</tr>
+			<tr>
+				<td>
+				<ul>
+					<li>상담센터</li>
+				</ul>
+					<!-- 배너 정보 영역 시작 -->
+					<table cellpadding="6" cellspacing="0" border="1" width="100%" style="border-collapse:collapse;">
+						<tr align="left" height="30px">
+							<th class="line"  colspan="1" align="left" bgcolor="#F5F5F5">* 센터코드</th>
+					    	<td class="line" colspan="2">
+					    		※ 센터 등록 시 자동으로 부여됩니다.
+					    	</td>
+					    	<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 센터구분</th>
+					    	<td class="line" colspan="2" >
+					    		<input type="checkbox" name="centerType" id="type1" value="100471" data-validation="checkbox_group" data-validation-qty="min1" data-validation-error-msg="센터구분을 확인 해주세요.">상담
+					    		<input type="checkbox" name="centerType" id="type2" value="100472" >파견상담
+					    		<input type="checkbox" name="centerType" id="type3" value="100473" >집단상담
+					    		<input type="checkbox" name="centerType" id="type4" value="100474" >강의
+					    	</td>
+						</tr>
+						<tr align="left" height="30px">
+							<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 센터명</th>
+					    	<td class="line" colspan="2" >
+					    		<input type="text" name="centerNm"  style="width: 300px;" data-validation="required"  data-validation-error-msg-required="센터명을 확인 해주세요." />
+					    	</td>
+					    	<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">  홈페이지</th>
+					    	<td class="line" colspan="2" >
+					    		<input type="text" name="homepage"  style="width: 300px;" />
+					    	</td>
+						</tr>
+						<tr align="left" height="30px">
+							<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 센터소개</th>
+					    	<td class="line" colspan="4" >
+					    		<input type="text" name="centerIntro"  style="width: 95%;" data-validation="required"  data-validation-error-msg-required="센터소개를 확인 해주세요." />
+					    	</td>
+						</tr>
+						<tr align="left" height="30px">
+							<th rowspan="3" class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 보유시설</th>
+							<th class="line" width="15%" align="left" bgcolor="#F5F5F5">개인상담실</th>
+								    	<td class="line" width="35%" >
+								    		<select name="infraPersonalCnt">
+								    			<option value="0" 	>00</option>
+								    			<option value="1" 	>01</option>
+								    			<option value="2" 	>02</option>
+								    			<option value="3" 	>03</option>
+								    			<option value="4" 	>04</option>
+								    			<option value="5" 	>05</option>
+								    			<option value="6" 	>06</option>
+								    			<option value="7" 	>07</option>
+								    			<option value="8"	>08</option>
+								    			<option value="9"	>09</option>
+								    			<option value="10"	>10</option>
+						    				</select>
+								    		
+								    	</td>
+								    	<th class="line" width="15%" align="left" bgcolor="#F5F5F5">대기실</th>
+								    	<td class="line" width="35%" >
+								    		<input type="radio" name="infraWaitRoomYn" value="Y" data-validation="required"
+				data-validation-error-msg="대기실을 선택해주세요.">유
+								    		<input type="radio" name="infraWaitRoomYn" value="N" >무
+								    	</td>
+						</tr>
+						<tr>
+						<th class="line" width="15%" align="left" bgcolor="#F5F5F5">놀이치료실</th>
+								    	<td class="line" width="35%" >
+								    		<select name="infraPlayRoomCnt">
+								    			<option value="0" 	>00</option>
+								    			<option value="1" 	>01</option>
+								    			<option value="2" 	>02</option>
+								    			<option value="3"	>03</option>
+								    			<option value="4"	>04</option>
+								    			<option value="5" 	>05</option>
+								    			<option value="6" 	>06</option>
+								    			<option value="7" 	>07</option>
+								    			<option value="8" 	>08</option>
+								    			<option value="9"	>09</option>
+								    			<option value="10"	>10</option>
+						    				</select>
+								    	</td>
+								    	<th class="line" width="15%" align="left" bgcolor="#F5F5F5">집단(교육)실</th>
+								    	<td class="line" width="35%" >
+								    		<input type="radio" name="infraEduRoomYn" value="Y" data-validation="required"
+				data-validation-error-msg="집단(교육)실을 선택해주세요.">유
+								    		<input type="radio" name="infraEduRoomYn" value="N"  >무
+								    	</td>
+						</tr>	
+						<tr>
+						<th class="line" width="15%" align="left" bgcolor="#F5F5F5">기타시설</th>
+										<td class="line" colspan="5">
+											<input type="text" name="infraEtc"  style="width: 300px;" />
+										</td>
+						</tr>
+
+						<tr>
+							<th class="line" width="15%" align="center" bgcolor="#F5F5F5">* 센터주소</th>
+							<td class="line" colspan="5">
+								<input type="text" name="post" id="zip" id="b_zipcode01"  class="input_ty center addrPopUp" title="우편번호" style="width:50px;" readonly data-validation="required" data-validation-error-msg-required="센터주소를 확인 해주세요.">
+								<!--  - 
+								<input type="text" name="post" id="zip2"  class="input_ty center addrPopUp" title="우편번호" style="width:50px;" readonly > -->
+								<button class="btn_ty btn_s ml addrPopUp" type="button">우편번호 검색</button>
+								<span id="area2" >
+								<select id="area1" name="area1" data-validation="required"  data-validation-error-msg-required="시/도를 확인 해주세요.">
+												<option value="">시/도 선택</option>
+								    			<option value="100007" >강원도</option>
+								    			<option value="100008" >경기도</option>
+								    			<option value="100009" >경상남도</option>
+								    			<option value="100010" >경상북도</option>
+								    			<option value="100011" >광주광역시</option>
+								    			<option value="100012" >대구광역시</option>
+								    			<option value="100013" >대전광역시</option>
+								    			<option value="100014" >부산광역시</option>
+								    			<option value="100015" >서울특별시</option>
+								    			<option value="100016" >세종특별자치시</option>
+								    			<option value="100017" >울산광역시</option>
+								    			<option value="100018" >인천광역시</option>
+								    			<option value="100019" >전라남도</option>
+								    			<option value="100020" >전라북도</option>
+								    			<option value="100021" >제주특별자치도</option>
+								    			<option value="100022" >충청남도</option>
+								    			<option value="100023" >충천북도</option>
+			    				</select>
+			    				
+						    	  <span id='subData'><select><option> 군/구 선택 </select> </span></span>  
+						    	   
+								<br>
+								<input type="text" name="addr1" id="addr1"  style="width: 300px;"  data-validation="required"  data-validation-error-msg-required="센터주소를 확인 해주세요."/>
+								<input type="text" name="addr2" id="addr2"  style="width: 300px;"  data-validation="required"  data-validation-error-msg-required="센터주소를 확인 해주세요."/>
+							</td>
+						</tr>
+						<tr>
+							<th rowspan="6" class="line" width="15%" align="left" bgcolor="#F5F5F5">* 센터사진</th>
+							<td rowspan="6" colspan="2">
+								<input type="file" name="file1" value="찾아보기" onchange="javascript:getRealPath(this);" data-validation="required" data-validation-error-msg-required="첨부파일은 필수입니다."/><br>
+								<span id="path1"></span>
+							</td>
+							<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 대표자명</th>
+										<td class="line" colspan="2">
+											<input type="text" name="ownerNm"  style="width: 300px;" data-validation="required"  data-validation-error-msg-required="대표자명을 확인 해주세요." />
+										</td>
+						</tr>
+						<tr>
+										<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 사업자등록번호</th>
+										<td class="line" colspan="2">
+											<input type="text" name="bsnsNum"  style="width: 300px;" maxlength="12"  data-validation="required"  data-validation-error-msg-required="사업자등록번호를 확인 해주세요."/>
+										</td>
+									</tr>
+									<tr>
+										<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 업태</th>
+										<td class="line" colspan="2">
+											<input type="text" name="bcond"  style="width: 300px;"  data-validation="required"  data-validation-error-msg-required="업태를 확인 해주세요."/>
+										</td>
+									</tr>
+									<tr>
+										<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 종목</th>
+										<td class="line" colspan="2">
+											<input type="text" name="bitem"  style="width: 300px;"  data-validation="required"  data-validation-error-msg-required="종목을 확인 해주세요."/>
+										</td>
+									</tr>
+									<tr>
+										<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 대표전화번호</th>
+										<td class="line" colspan="2">
+											<input type="text" id="telNum1" value="${centerInfo.telNum1 }" style="width: 10%;" maxlength="3"  data-validation="length number" data-validation-length="2-3"  data-validation-error-msg="대표전화번호를 확인 해주세요."/>-
+											<input type="text" id="telNum2" value="${centerInfo.telNum2 }" style="width: 10%;" maxlength="4"  data-validation="length number" data-validation-length="3-4"  data-validation-error-msg="대표전화번호를 확인 해주세요."/>-
+											<input type="text" id="telNum3" value="${centerInfo.telNum3 }" style="width: 10%;" maxlength="4"  data-validation="length number" data-validation-length="4-4"  data-validation-error-msg="대표전화번호를 확인 해주세요."/>
+											<input type="hidden" name="telNum">
+										</td>
+									</tr>
+									<tr>
+										<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">  팩스번호</th>
+										<td class="line" colspan="2">
+											<input type="text" id="faxNum1" value="${centerInfo.faxNum1 }" style="width: 10%;" />-
+											<input type="text" id="faxNum2" value="${centerInfo.faxNum2 }" style="width: 10%;" />-
+											<input type="text" id="faxNum3" value="${centerInfo.faxNum3 }" style="width: 10%;" />
+											<input type="hidden" name="faxNum">
+										</td>
+									</tr>
+
+						<tr>
+							<th class="line" width="15%" align="left" bgcolor="#F5F5F5">* 은행/예금주</th>
+							<td class="line" colspan="2">
+							<comm:select name="bankCd" code="100475" />
+								<input type="text" name="bankOrder"  style="width: 150px;" data-validation="required" data-validation-error-msg-required="은행/예금주를 확인 해주세요."/>
+							</td>
+							<th class="line" width="15%" align="left" bgcolor="#F5F5F5">* 계좌번호</th>
+							<td class="line" colspan="2">
+								<input type="text" name="bankNum" style="width: 300px;"  data-validation="required custom" data-validation-regexp="^([0-9\-]+)$" data-validation-error-msg="계좌번호를 확인 해주세요."  />
+							</td>
+						</tr>
+						<tr>
+							<th class="line" width="15%" align="left" bgcolor="#F5F5F5">* 통장사본등록</th>
+							<td class="line" colspan="5">
+								<input type="file" name="file2"  size="50" data-validation="required" data-validation-error-msg-required="첨부파일은 필수입니다."/>
+							</td>
+						</tr>
+						<tr>
+							<th class="line" width="15%" align="left" bgcolor="#F5F5F5">* 사업자등록증</th>
+							<td class="line" colspan="5">
+								<input type="file" name="file3"  size="50" data-validation="required" data-validation-error-msg-required="첨부파일은 필수입니다."/>
+							</td>
+						</tr>
+						<tr>
+							<th class="line" width="15%" align="left" bgcolor="#F5F5F5">* 정산유형</th>
+							<td class="line" colspan="2">
+								<input type="radio" name="calcType"  value="100753" data-validation="required" data-validation-error-msg="정산유형을 확인 해주세요.">소득공제
+					    		<input type="radio" name="calcType"  value="100754" >과세
+					    		<input type="radio" name="calcType"  value="100755" >면세
+							</td>
+							<th class="line" width="15%" align="left" bgcolor="#F5F5F5">* 정산주기</th>
+							<td class="line" colspan="2">
+								<input type="text" name="calcDd1" data-validation="required" data-validation-error-msg-required="정산주기를 확인해주세요.">일<input type="text" name="calcDd2" >일 [세금계산서 발행시 사용]
+							</td>
+						</tr>
+						<tr>
+							<th class="line" width="15%" align="left" bgcolor="#F5F5F5">* 노출여부</th>
+							<td class="line" colspan="5">
+							<input type="radio" name="dispYn" value="Y" checked="checked"> 노출함
+				    		<input type="radio" name="dispYn" value="N" > 노출안함
+				    		</td>
+						</tr>
+						<tr>
+							<th class="line" width="15%" align="left" bgcolor="#F5F5F5">위치(지도보기)</th>
+							<td class="line" colspan="5">
+								<input type="text" name="mapUrl" value="" style="width: 95%;" />
+				    		</td>
+						</tr>
+						<tr>
+							<th class="line" width="15%" align="left" bgcolor="#F5F5F5">인근 대중교통</th>
+							<td class="line" colspan="5">
+								<input type="text" name="publicTraffic" value="" style="width: 95%;" />
+				    		</td>
+						</tr>
+						<tr>
+							<th class="line" width="15%" align="left" bgcolor="#F5F5F5">관리자 메모(센터평가 등)</th>
+							<td class="line" colspan="5">
+								<input type="text" name="mgrMemo" value="" style="width: 95%;" />
+				    		</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+					<!-- 버튼 영역 시작 -->
+					<table cellpadding="5" cellspacing="0" border="0" width="80%" style="border-collapse:collapse;" bordercolor="#DDDDDD">
+						<tr>
+							<td align="center" colspan="4">
+								<table cellpadding="0" cellspacing="0" border="0">
+									<tr>
+							    		<button id="addBtn" style="height:30px; width:100px;" type="button">등록</button>
+					    			</tr>
+					    		</table>
+					    	</td>
+						</tr>
+					</table>
+					<!-- 버튼 영역 종료 -->
+				</td>
+			</tr>
+
+
+		</table>
+	</td>
+</tr>
+
+</table>
+</form>
+
+</body>
+</html>

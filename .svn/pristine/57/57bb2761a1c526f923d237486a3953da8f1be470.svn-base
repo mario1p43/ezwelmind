@@ -1,0 +1,197 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ include file="/WEB-INF/jsp/layout/inc/tags.jspf"%>
+<html>
+<head>
+<title>서비스 이용목록</title>
+<script type="text/javascript">
+	$(document).ready(function(){
+		
+		$("#goCounsel").click(function () {
+			var userStatus = '${user.userStatus}';	// 고객 재직상태
+			var userUseYn = '${user.useYn}';		// 고객 사용유무
+			var clientCd = '${user.clientCd}';		// 고객사 코드
+			
+			if(clientCd == 'cjoy'){		// CJ올리브네트웍스
+				if(userUseYn == 'N'){				// 사용불가 상태의 아이디
+					alert('사용불가 처리된 아이디입니다.')
+				}else if(userStatus == '100009'){	// 고객이 퇴직 상태이면
+					alert('퇴직처리된 아이디입니다.')
+				}else if(userStatus == '100008'){	// 고객이 휴직 상태이면
+					alert('휴직처리된 아이디입니다.')
+				}else{
+					location.href = "/madm/counsel/adminCounselForm?userKey=${user.userKey}";
+				}
+			}else{
+				location.href = "/madm/counsel/adminCounselForm?userKey=${user.userKey}";
+			}
+		});
+		
+		$(".btnExtend").click(function () {
+			location.href = "/madm/counsel/adminCounselForm?userKey=${user.userKey}" + "&counselCd=" + $(this).attr("counselCd");
+		});
+			
+	});  // end ready
+	
+
+</script>
+</head>
+<body>
+
+<table cellpadding="0" align="left" cellspacing="0" border="0" width="95%">
+	<tr>
+		<td>
+			<table cellpadding="0" cellspacing="0" border="0" width="100%">
+				<tr>
+					<td height="20px"></td>
+				</tr>
+				<tr>
+					<td align="left" class="subtitle">정보</td>
+				</tr>
+				<tr>
+					<td height="10px"></td>
+				</tr>
+				<tr>
+					<td>
+						<!-- 검색 영역 시작 -->
+						<table cellpadding="5" cellspacing="0" border="1" width="70%" style="border-collapse:collapse;" bordercolor="#DDDDDD">
+							<tr align="left" height="30px">
+								<td width="10%" bgcolor="#F5F5F5" align="center">
+									<strong>이름</strong>
+								</td>
+						    	<td width="40%" align="left">
+						    		${user.userNm}
+						    	</td>
+								<td width="10%" bgcolor="#F5F5F5" align="center">
+									<strong>아이디/사번</strong>
+								</td>
+						    	<td width="40%" align="left">
+						    		${user.userId}
+						    	</td>
+							</tr>
+							<tr align="left" height="30px">
+								<td width="10%" bgcolor="#F5F5F5" align="center">
+									<strong>고객사코드</strong>
+								</td>
+						    	<td width="40%" align="left">
+						    		${user.clientCd}
+						    	</td>
+								<td width="10%" bgcolor="#F5F5F5" align="center">
+									<strong>잔여포인트</strong>
+								</td>
+						    	<td width="40%" align="left">
+						    		개인 한도 : ${ceiling}<br>개인 잔여한도 : ${privateRemainPoint}<br> 고객사 잔여한도 : ${clientRemainPoint}
+						    	</td>
+							</tr>
+							
+							<tr align="left" height="30px">
+								<td width="10%" bgcolor="#F5F5F5" align="center">
+									<strong>인증여부</strong>
+								</td>
+						    	<td colspan="3" width="40%" align="left">
+					    			<c:if test="${not empty user.ipinDi }">
+					    				<span>인증이 완료된 회원입니다.</span>
+					    			</c:if>
+					    			<c:if test="${empty user.ipinDi }">
+					    				<span style="color:red;">인증을 하지 않은 회원입니다.</span>
+					    			</c:if>
+						    		
+						    		<form action="http://${serverType}.sangdam4u.com/login/sso" method="mothod" target="_blank"  style="float:right; margin-right:60%;">
+							    		<input type="hidden" name="clientCd" value="${user.clientCd}">
+							    		<input type="hidden" name="userId" value="${user.clientCd}">
+							    		<input type="hidden" name="userKey" value="${user.userKey}">
+							    		<input type="hidden" name="userType" value="4001">
+							    		<input type="password" name="userPwd" value="1230987" size="10">
+							    		<input type="submit" value="개인정보 수정하기">
+						    		</form>
+						    	</td>
+							</tr>
+						</table>
+						<!-- 검색 영역 종료 -->
+					</td>
+				</tr>
+				
+				<tr>
+					<td height="10px"></td>
+				</tr>
+				
+				<tr>
+					<td>
+						<!-- 버튼 영역 시작 -->
+						<table cellpadding="5" cellspacing="0" border="0" width="70%" style="border-collapse:collapse;" bordercolor="#DDDDDD">
+							<tr>
+								<td align="center" colspan="4">
+									<table cellpadding="0" cellspacing="0" border="0">
+										<tr>
+								    		<td id="btn01"><a href="#"><span id="goCounsel">신규상담신청</span></a></td>
+						    			</tr>
+						    		</table>
+						    	</td>
+							</tr>
+						</table>
+						<!-- 버튼 영역 종료 -->
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+					
+					
+					
+						<table class="" cellpadding="10" align="" id="chRow" cellspacing="0" border="1" width="100%" style="text-align:center; border-collapse:collapse;">
+							<thead>
+								<tr align="center" height="25px">
+									<th>상담코드</th>
+									<th>신청일</th>
+									<th>결제금액</th>
+									<th>유형</th>
+									<th>진행방법</th>
+									<th>진행일자</th>
+									<th>상담사</th>
+									<th>연장하기</th>
+								</tr>
+				            </thead>
+	
+							<tbody>
+								<c:forEach var="list" items="${paging.list}" varStatus="status">
+									<tr align="center" height="30px">
+										<td>${list.counselCd}</td>
+										<td>${list.regDt}</td>
+										<td>${list.counselPrice}</td>
+										<td>${list.categoryNm}</td>
+										<td><comm:commNmOut code="${list.counselType }"  option="commCd"/></td>
+										<td>${list.scheduleDt}</td>
+										<td>${list.counselorId}</td>
+										<td>
+											<input type="button" value="연장신청" class="btnExtend" counselCd="${list.counselCd}">
+										</td>
+										
+									</tr>
+								</c:forEach>
+							</tbody>
+						</table>
+						</div>
+						<br>
+						<table cellpadding="2" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
+							<tr>
+								<td align="center">
+	  								<ui:paging value="${paging}"
+	  									btnFirst="${url:img('/images/btn_first.jpg')}"
+	  									btnPrev="${url:img('/images/btn_prev.jpg')}"
+	  									btnNext="${url:img('/images/btn_next.jpg')}"
+	  									btnLast="${url:img('/images/btn_last.jpg')}" />
+								</td>
+							</tr>
+						</table>
+					
+								
+					</td>
+				</tr>
+			</table>
+						
+		</td>
+	</tr>
+</table>
+<div id="viewlayout" onmouseOver="this.style.display='block'" onMouseOut="this.style.display='none'" style="display:none; position:fixed;"></div>
+</body>
+</html>
+

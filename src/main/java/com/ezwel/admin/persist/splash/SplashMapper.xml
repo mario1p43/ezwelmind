@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezwel.admin.persist.splash.SplashMapper">
+
+	<select id="splashList" resultType="com.ezwel.admin.domain.entity.splash.SplashData">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+				SELECT
+					SPLASH_SEQ as splashSeq
+					, TITLE as title
+					, CONTENT as content
+					, DATE_FORMAT(START_DT,'%Y-%m-%d') as startDt
+					, DATE_FORMAT(END_DT,'%Y-%m-%d') as endDt
+					, USE_YN as useYn
+					, IOS_IMG_1 as iosImg1
+					, IOS_IMG_2 as iosImg2
+					, IOS_IMG_3 as iosImg3
+					, ANDROID_IMG_1 as androidImg1
+					, ANDROID_IMG_2 as androidImg2
+					, ANDROID_IMG_3 as androidImg3
+					, ANDROID_IMG_4 as androidImg4
+					, REG_ID as regId
+					, DATE_FORMAT(STR_TO_DATE(REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt
+					, MODI_ID as modiId
+					, DATE_FORMAT(STR_TO_DATE(MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS modiDt
+				FROM
+					MIND_SPLASH_IMG
+			  WHERE 1=1
+			  <if test="isNotNull(useYn)">
+			  AND USE_YN = #{useYn}
+			  </if>
+			  <if test="isNotNull(startDt)">
+			  AND ( 
+			  		DATE_FORMAT(START_DT, '%Y%m%d') BETWEEN DATE_FORMAT(#{startDt}, '%Y%m%d') AND DATE_FORMAT(#{endDt}, '%Y%m%d') 
+			  		OR
+			  		DATE_FORMAT(END_DT, '%Y%m%d') BETWEEN DATE_FORMAT(#{startDt}, '%Y%m%d') AND DATE_FORMAT(#{endDt}, '%Y%m%d') 
+			  	  )
+			  </if>
+
+			ORDER BY SPLASH_SEQ DESC
+		<choose>
+				<when test="pageCommonFlag == true">
+					) A
+				</when>
+				<otherwise>
+					LIMIT #{firstIndex} , #{pageSize}
+				</otherwise>
+		</choose>
+	</select>
+
+	<select id="splashDetail" resultType="com.ezwel.admin.domain.entity.splash.SplashData">
+		SELECT 
+				SPLASH_SEQ as splashSeq
+				, TITLE as title
+				, CONTENT as content
+				, DATE_FORMAT(START_DT,'%Y/%m/%d') as startDt
+				, DATE_FORMAT(END_DT,'%Y/%m/%d') as endDt
+				, USE_YN as useYn
+				, IOS_IMG_1 as iosImg1
+				, IOS_IMG_2 as iosImg2
+				, IOS_IMG_3 as iosImg3
+				, ANDROID_IMG_1 as androidImg1
+				, ANDROID_IMG_2 as androidImg2
+				, ANDROID_IMG_3 as androidImg3
+				, ANDROID_IMG_4 as androidImg4
+				, REG_ID as regId
+				, DATE_FORMAT(STR_TO_DATE(REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS regDt
+				, MODI_ID as modiId
+				, DATE_FORMAT(STR_TO_DATE(MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s') AS modiDt
+
+			FROM MIND_SPLASH_IMG
+		<if test="isNotNull(splashSeq)">
+		  WHERE SPLASH_SEQ = #{splashSeq}
+		</if>
+	</select>
+
+	<insert id="insertSplash" keyProperty="splashSeq" useGeneratedKeys="true" parameterType="com.ezwel.admin.service.splash.dto.SplashDto" >
+		INSERT INTO MIND_SPLASH_IMG (
+			TITLE
+			, CONTENT
+			, START_DT
+			, END_DT
+			, USE_YN
+			, IOS_IMG_1
+			, IOS_IMG_2
+			, IOS_IMG_3
+			, ANDROID_IMG_1
+			, ANDROID_IMG_2
+			, ANDROID_IMG_3
+			, ANDROID_IMG_4
+			, REG_ID
+			, REG_DT
+		) VALUE (
+			#{title}
+			, #{content}
+			, DATE_FORMAT(#{startDt}, '%Y%m%d%H%i%s')
+			, DATE_FORMAT(#{endDt}, '%Y%m%d%H%i%s')
+			, #{useYn}
+			, #{iosImg1}
+			, #{iosImg2}
+			, #{iosImg3}
+			, #{androidImg1}
+			, #{androidImg2}
+			, #{androidImg3}
+			, #{androidImg4}
+			, #{regId}
+		 	, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<update id="modifySplash"  parameterType="com.ezwel.admin.service.splash.dto.SplashDto">
+		UPDATE MIND_SPLASH_IMG
+		SET 
+			TITLE = #{title}
+			, CONTENT = #{content}
+			, START_DT = DATE_FORMAT(#{startDt}, '%Y%m%d%H%i%s')
+			, END_DT = DATE_FORMAT(#{endDt}, '%Y%m%d%H%i%s')
+			, USE_YN = #{useYn}
+
+			<if test="isNotNull(iosImg1)">, IOS_IMG_1 = #{iosImg1}</if>
+			<if test="isNotNull(iosImg2)">, IOS_IMG_2 = #{iosImg2}</if>
+			<if test="isNotNull(iosImg3)">, IOS_IMG_3 = #{iosImg3}</if>
+
+			<if test="isNotNull(androidImg1)">, ANDROID_IMG_1 = #{androidImg1}</if>
+			<if test="isNotNull(androidImg2)">, ANDROID_IMG_2 = #{androidImg2}</if>
+			<if test="isNotNull(androidImg3)">, ANDROID_IMG_3 = #{androidImg3}</if>
+			<if test="isNotNull(androidImg4)">, ANDROID_IMG_4 = #{androidImg4}</if>
+			
+			, MODI_ID = #{modiId}
+			, MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		WHERE SPLASH_SEQ = #{splashSeq}
+	</update>
+	
+	<delete id="deleteSplash"  parameterType="com.ezwel.admin.service.splash.dto.SplashDto">
+		DELETE FROM MIND_SPLASH_IMG
+		WHERE SPLASH_SEQ = #{splashSeq}
+	</delete>
+
+</mapper>

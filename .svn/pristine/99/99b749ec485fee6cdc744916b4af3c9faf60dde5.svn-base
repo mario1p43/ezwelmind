@@ -1,0 +1,452 @@
+package com.ezwel.admin.service.user;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.ezwel.admin.common.support.bean.EncryptComponent;
+import com.ezwel.admin.persist.common.CommonMapper;
+import com.ezwel.admin.persist.user.UserMapper;
+import com.ezwel.admin.persist.usermanager.UserManagerMapper;
+import com.ezwel.admin.service.user.dto.UserAddDto;
+import com.ezwel.core.framework.web.GlobalsProperties;
+import com.ezwel.core.support.util.StringUtils;
+
+@Service
+public class UserUploadExcelService extends UserServiceCommon {
+	
+	private static Logger log = LoggerFactory.getLogger(UserUploadExcelService.class);
+	
+	@Value("#{global['server.type']}")	private String serverType;
+	
+	@Resource
+	EncryptComponent encryptComponent;
+	
+	@Resource
+	private UserMapper userMapper;
+	
+	@Resource
+	private CommonMapper commonMapper;
+	
+	@Resource
+	private UserManagerMapper userManagerMapper;
+	
+	private boolean doValidation(int cellKey, String value, UserAddDto userAddDto) {
+		String regex = "";
+		boolean nullFlag = true;
+		switch (cellKey) {
+		case 0 :
+			//EMP
+			//필수값
+			if (StringUtils.isNull(value)) nullFlag = false;
+			userAddDto.setEmpNum(value);
+			break;
+		case 1  :
+			//ID
+			//필수값
+			if (StringUtils.isNull(value)) nullFlag = false;
+			userAddDto.setUserId(value);
+			break;
+		case 2 :
+			//NAME
+			//필수값
+			if (StringUtils.isNull(value)) nullFlag = false;
+			if(!GlobalsProperties.REAL.equals(serverType)) {
+				value = changeUserNmAsterisk(value);
+			}
+			userAddDto.setUserNm(value);
+			break;
+		case 3:
+			//PW
+			//필수값
+			if (StringUtils.isNull(value)) nullFlag = false;
+			userAddDto.setUserPwd(encryptComponent.encode(value));
+			break;
+		case 4 :
+			//EMAIL
+			if (StringUtils.isNotNull(value)) { 
+				regex = "^[_a-zA-Z0-9-\\.]+@[\\.a-zA-Z0-9-]+\\.[a-zA-Z]+$";
+				nullFlag = regexMatcher(regex, value);
+				if (nullFlag) {
+					userAddDto.setEmail(value);
+				}
+			}else{
+				userAddDto.setEmail("");
+			}
+			
+			break;
+		case 5 :
+			//BRANCH
+			if (StringUtils.isNotNull(value)) { 
+				userAddDto.setCommNm(value);
+				userAddDto.setBranch(commonMapper.getClientCommCd(userAddDto));
+			}else{
+				userAddDto.setBranch(null);
+			}
+			break;
+		case 6 :
+			//GRADE
+			if (StringUtils.isNotNull(value)) { 
+				userAddDto.setCommNm(value);
+				userAddDto.setGrade(commonMapper.getClientCommCd(userAddDto));
+			}else{
+				userAddDto.setGrade(null);
+			}
+			break;
+		case 7 :
+			//RRN
+			/*if (StringUtils.isNotNull(value)) {
+				userAddDto.setRrn(value);
+			}else{
+				userAddDto.setRrn(null);
+			}*/
+			break;
+		default:
+			nullFlag = true;
+			break;
+		}
+		return nullFlag;
+	}
+	
+	/**
+	 * addUser
+	 * @param workbook
+	 * @return [0] = t/f (성공실패), [1] = 실패 이유,
+	 */
+	public String[] addUser(MultipartFile file, String clientCd) {
+		HashMap<String,Object> map = null;
+		List<UserAddDto> dtolist = null;
+		String[] result = null;
+		XSSFWorkbook workbook = null;
+		try {
+			workbook = new XSSFWorkbook(file.getInputStream());
+			map = doExcelRead(workbook, clientCd);		
+			result = (String[]) map.get("msgArr");
+			dtolist = (List<UserAddDto>) map.get("list");
+			if ("t".equals(result[0])) {
+				result = doExcelInsert(dtolist);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
+		
+		return result;
+	}
+	
+	/**
+	 * addTarget
+	 * @param workbook
+	 * @return [0] = t/f (성공실패), [1] = 실패 이유,
+	 */
+	public String[] addTarget(MultipartFile file, String clientCd) {
+		HashMap<String,Object> map = null;
+		List<UserAddDto> dtolist = null;
+		String[] result = null;
+		XSSFWorkbook workbook = null;
+		try {
+			workbook = new XSSFWorkbook(file.getInputStream());
+			map = doExcelRead(workbook, clientCd);		
+			result = (String[]) map.get("msgArr");
+			dtolist = (List<UserAddDto>) map.get("list");
+			if ("t".equals(result[0])) {
+				result = doExcelOnlieTargetInsert(dtolist, clientCd);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
+		
+		return result;
+	}	
+	
+	/**
+	 * doExcelRead
+	 * @param workbook
+	 * @return [0] = t/f (성공실패), [1] = 실패 이유,
+	 */
+	private HashMap<String,Object> doExcelRead(XSSFWorkbook workbook, String clientCd) throws IOException {
+		String[] msgArr = new String[]{"t", ""};		
+		List<UserAddDto> list = new ArrayList<UserAddDto>();
+		HashMap<String,Object> returnMap = new HashMap<String,Object>();
+		UserAddDto userAddDto = null;
+		XSSFSheet sheet = workbook.getSheetAt(0);		
+		Label:
+		for(int rowindex = 1; rowindex < sheet.getPhysicalNumberOfRows(); rowindex++) {
+			XSSFRow row = sheet.getRow(rowindex);
+			// checkIfRowIsEmpty() 체크 반드시 해야한다.
+			if(row != null && !checkIfRowIsEmpty(row)) {
+				userAddDto = new UserAddDto();
+				userAddDto.setClientCd(clientCd);
+				for(int columnindex = 0; columnindex < row.getPhysicalNumberOfCells(); columnindex++) {
+					String value = "";
+					XSSFCell cell = row.getCell(columnindex);
+					
+					if (cell == null) {
+		                continue;
+					}
+					switch(cell.getCellType()) {
+	                case XSSFCell.CELL_TYPE_NUMERIC:
+						value = Long.toString( ((long) cell.getNumericCellValue()) );
+	                    break;
+	                case XSSFCell.CELL_TYPE_STRING:
+						value = cell.getStringCellValue();
+	                    break;
+	                case XSSFCell.CELL_TYPE_BLANK:
+						value = "";
+						break;
+	                case XSSFCell.CELL_TYPE_ERROR:
+	                	msgArr = new String[]{"f", "알수없는 에러입니다."};
+	                    break Label;
+	                }
+					
+					// doValidation 에서 각 값을 코드화 하거나 암호화한다.
+					if (!doValidation(columnindex, value.trim(), userAddDto)) {
+						int rownum = rowindex;
+						int colnum = columnindex;
+						msgArr = new String[]{"f", (rownum+1) + "번째 줄 " + (colnum+1) + "번째 컬럼에 " + value + "값이 잘못되었습니다."};
+						break Label;
+					}					
+		        } // End of For row.getPhysicalNumberOfCells()+1
+				
+				list.add(userAddDto);
+		    } // if null
+		} // End of For sheet.getPhysicalNumberOfRows()
+		returnMap.put("msgArr", msgArr);
+		returnMap.put("list", list);		
+		return returnMap;
+	}
+	
+	private boolean checkIfRowIsEmpty(XSSFRow row) {
+	    if (row == null) {
+	        return true;
+	    }
+	    if (row.getLastCellNum() <= 0) {
+	        return true;
+	    }
+	    boolean isEmptyRow = true;
+	    for (int cellNum = row.getFirstCellNum(); cellNum < row.getLastCellNum(); cellNum++) {
+	    	XSSFCell cell = row.getCell(cellNum);
+	        if (cell != null && cell.getCellType() != XSSFCell.CELL_TYPE_BLANK && StringUtils.isNotBlank(cell.toString())) {
+	            isEmptyRow = false;
+	        }
+	    }
+	    return isEmptyRow;
+	}
+	
+	/**
+	 * doExcelInsert
+	 * @param workbook
+	 * @return [0] = t/f (성공실패), [1] = 실패 이유,
+	 */
+	@SuppressWarnings("unchecked")
+	private String[] doExcelInsert(List<UserAddDto> dtolist) {
+		String[] returnArr = new String[]{"f", ""};	
+		int returnResult = 0;
+//		int duplicateCnt = 0;
+		Map<String, String> ckeckUser = null;
+		
+		for(UserAddDto dto : dtolist) {
+			ckeckUser = new HashMap<String,String>();
+			ckeckUser.put("userId", dto.getUserId());
+			ckeckUser.put("clientCd", dto.getClientCd());
+			ckeckUser = userMapper.getUser(ckeckUser);
+//			if(ckeckUser != null) {
+//				duplicateCnt++;
+//			}else{
+			
+			userMapper.addUser(dto);
+			returnResult += 1; 
+//			}
+		}
+		
+		if(dtolist.size() == returnResult ) {
+			returnArr[1] = Integer.toString(returnResult) + " 명을 업로드 및 업데이트 했습니다.";
+		}else{			
+			returnArr[1] = "Error : 엑셀파일 인원과 DB insert 인원이 다름니다.";
+		}
+		return returnArr;
+	}
+	
+	/**
+	 * doExcelInsert
+	 * @param dtolist
+	 * @param clientCd
+	 * @return [0] = t/f (성공실패), [1] = 실패 이유,
+	 */
+	@SuppressWarnings("unchecked")
+	private String[] doExcelOnlieTargetInsert(List<UserAddDto> dtolist, String clientCd) {
+		String[] returnArr = new String[]{"f", ""};	
+		int returnResult = 0;
+		Map<String, String> ckeckUser = new HashMap<String,String>();
+
+		if(dtolist == null || dtolist.size() == 0) {
+			returnArr[1] = "Error : 엑셀파일의 인원이 0입니다.";
+			return returnArr;
+		}
+
+		userManagerMapper.delDiagnosisTargetUser(clientCd);
+		
+		for(UserAddDto dto : dtolist) {
+			ckeckUser.clear();
+			ckeckUser.put("userId", dto.getEmpNum());
+			ckeckUser.put("clientCd", dto.getClientCd());
+			
+			int ret = userManagerMapper.addDiagnosisTargetUser(ckeckUser);
+			returnResult += ret; 
+		}
+		
+		if(dtolist.size() == returnResult ) {
+			returnArr[1] = Integer.toString(returnResult) + " 명을 업로드 및 업데이트 했습니다.";
+		}else{			
+			returnArr[1] = "Error : 엑셀파일 인원과 DB insert 인원이 다름니다.";
+		}
+		return returnArr;
+	}
+	
+	// 샘플 엑셀파일 다운로드 공통서비스
+	public Map<String, Object> getSampleExcel(String downType) {
+		Map<String, Object> map = null;
+		if("USER_UPLOAD".equals(downType)) {
+			map = userUploadSampleExcel();
+		}else if("ORDER_HANDWORK_UPLOAD".equals(downType)) {
+			map = orderHandworkUploadSampleExcel();
+		}else if("ONLINE_TARGET_UPLOAD".equals(downType)) {
+			map = onlieTargetUploadSampleExcel();
+		}
+		
+		return map;		
+	}
+	
+	// 임직원 엑셀업로드 샘플파일
+	private Map<String, Object> userUploadSampleExcel() {
+		ArrayList<HashMap<String,String>> sampleList = new ArrayList<HashMap<String,String>>();
+		HashMap<String,String> map = null;
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		StringBuffer headerSb = new StringBuffer();
+		
+		headerSb.append("emp_num,사번(*)//id,ID(*)//name,성명(*)//tempPw,비밀번호(*)//email,이메일//branch,소속//grade,직급//");
+		
+		for(int i = 1; i <= 5; i++) {
+			map = new HashMap<String,String>();
+			map.put("emp_num", "3000000"+i);
+			map.put("id", "ezwel0"+i);
+			map.put("name", "이지웰");
+			map.put("tempPw", "1234");
+			map.put("email", "aaa@ezwel.com");
+			map.put("branch", "Tech");
+			map.put("grade", "전임");			
+			sampleList.add(map);
+		}
+		returnMap.put("ezwel_excel_data", headerSb.toString());
+		returnMap.put("ezwel_excel_value", sampleList);
+		return returnMap;
+	}
+	
+	// 주문&상담내역 엑셀업로드 샘플파일
+	private Map<String, Object> orderHandworkUploadSampleExcel() {
+		ArrayList<HashMap<String,String>> sampleList = new ArrayList<HashMap<String,String>>();
+		HashMap<String,String> map = new HashMap<String,String>();
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		StringBuffer headerSb = new StringBuffer();
+		
+		headerSb.append("no,No(*)//clientCd,고객사(*)//id,ID(*)//relation,상담대상(*)//name,성명(*)//gender,성별(*)//rrn,생년월일(*)//");
+		headerSb.append("education,학력//session,학년//job,직업//mobile,휴대폰(*)//email,이메일//orderDt,접수일(*)//");
+		headerSb.append("counselDiv,상담분야(*)//channelType,상담유형(*)//counselType,상담방법(*)//cause,상담주제(*)//");
+		headerSb.append("counselCenter,상담센터(*)//counselDt,상담일(*)//counselorId,상담사ID(*)//payCd,결제방법(*)//orderAmt,결제금액(*)//");
+		headerSb.append("regdt,작성일(*)//extensionNum,회기(*)//risks,사례위험도(*)//riskReason,사례위험도 이유//finalGoal,전체상담의 목표//");
+		headerSb.append("counselPlan,상담계획//mainIssue,주호소 문제//goal,본 회기 상담목표//intervention,주요 개입 및 접근방법//");
+		headerSb.append("counselContents,상담내용//counselorOpinion,상담사소견//afterPlan,이후계획//memo,기타특이사항//");
+		headerSb.append("recordStatus,일지상태(*)//status,상담상태(*)//extensionStatus,연장상태(*)//");		
+		
+		map.put("no", "1");
+		map.put("clientCd", "police");
+		map.put("id", "police01");
+		map.put("relation", "직원본인");
+		map.put("name", "홍길동");
+		map.put("gender", "M");
+		map.put("rrn", "1974.10.03");
+		map.put("education", "초등학교");
+		map.put("session", "초6");
+		map.put("job", "군인");		
+		map.put("mobile", "010-1111-2222");
+		map.put("email", "aaa@ezwel.com");
+		map.put("orderDt", "2016.03.22");
+		map.put("counselDiv", "심리"); //상담분야
+		map.put("channelType", "개인상담"); //세부상담유형
+		map.put("counselType", "대면");
+		map.put("cause", "가족관련 문제");
+		map.put("counselCenter", "충청심리상담센터");
+		map.put("counselDt", "2016.03.27");
+		map.put("counselorId", "CC00");
+		map.put("payCd", "포인트");
+		map.put("orderAmt", "105000");
+		map.put("regdt", "2016.03.26");
+		map.put("extensionNum", "1");
+		map.put("risks", "3");
+		map.put("riskReason", "위험합니다.");
+		map.put("finalGoal", "완전회복");
+		map.put("counselPlan", "잘하자");
+		map.put("mainIssue", "배우자와의 관계 개선");
+		map.put("goal", "인사하기");
+		map.put("intervention", "이야기를 열심히 듣기");
+		map.put("counselContents", "상담내용입니다.");
+		map.put("counselorOpinion", "상담사 의견입니다.");
+		map.put("afterPlan", "추후계획입니다.");
+		map.put("memo", "메모입니다.");
+		map.put("recordStatus", "완료");
+		map.put("status", "완료");
+		map.put("extensionStatus", "완료");
+		
+		sampleList.add(map);
+		
+		returnMap.put("ezwel_excel_data", headerSb.toString());
+		returnMap.put("ezwel_excel_value", sampleList);
+		
+		return returnMap;
+	}
+	
+	// 온라인 진단자 엑셀업로드 샘플파일
+	private Map<String, Object> onlieTargetUploadSampleExcel() {
+		ArrayList<HashMap<String,String>> sampleList = new ArrayList<HashMap<String,String>>();
+		HashMap<String,String> map = null;
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		StringBuffer headerSb = new StringBuffer();
+		
+		headerSb.append("id,ID(*)//");
+		
+		for(int i = 1; i <= 5; i++) {
+			map = new HashMap<String,String>();
+			map.put("id", "ezwel0"+i);
+			sampleList.add(map);
+		}
+		returnMap.put("ezwel_excel_data", headerSb.toString());
+		returnMap.put("ezwel_excel_value", sampleList);
+		return returnMap;
+	}
+	
+	public int addTarget(ArrayList<Map<String, String>> userData) {
+		int addCnt = 0;
+		Map<String, String> ckeckUser = new HashMap<String,String>();
+		for (int i = 0; i < userData.size(); i++) {
+			ckeckUser.clear();
+			ckeckUser.put("userId", userData.get(i).get("userId"));
+			ckeckUser.put("clientCd", userData.get(i).get("clientCd"));
+			
+			addCnt += userManagerMapper.addDiagnosisTargetUser(ckeckUser);
+		}
+		return addCnt;
+	}
+}

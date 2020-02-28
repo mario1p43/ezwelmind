@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <aop:aspectj-autoproxy />
+
+	<bean id="loggingAspect" class="com.ezwel.core.framework.web.interceptor.aspect.LoggingAspect" />
+
+	<aop:config proxy-target-class="true">
+
+		<aop:aspect id="aspectLoggging" ref="loggingAspect">
+			<aop:pointcut id="servicePointcut" expression="execution(* com.ezwel..service..*Svc.*(..))" />
+			<!--
+			<aop:before method="logBefore" pointcut-ref="servicePointcut" />
+			<aop:after method="logAfter" pointcut-ref="servicePointcut" />
+			-->
+			<aop:around method="serviceAround" pointcut-ref="servicePointcut"  />
+			
+			<aop:pointcut id="componentPointcut" expression="execution(* com.ezwel..service..comp.*Comp.*(..))" />
+			<aop:around method="componentAround" pointcut-ref="componentPointcut"  />
+			
+		</aop:aspect>
+
+
+	</aop:config>
+
+</beans>
