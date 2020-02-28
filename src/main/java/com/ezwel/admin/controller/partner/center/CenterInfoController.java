@@ -51,7 +51,7 @@ public class CenterInfoController {
 		Manager manager = UserDetailsHelper.getAuthenticatedUser();
 
 		centerDto.setCenterSeq(manager.getCenterSeq());
-		centerDto.setUserId(manager.getUserId());
+
 		model.addAttribute("centerInfo", centerService.getCenterInfo(centerDto));
 		
 		//기타 검사 정보
@@ -69,7 +69,7 @@ public class CenterInfoController {
 	}
 	
 	
-	@RequestMapping(value="/update")
+	@RequestMapping(value="/update", method=RequestMethod.POST)
 	public String centerUpdate(@ModelAttribute CenterDto centerDto, Model model, HttpServletRequest request,
 			MultipartHttpServletRequest mhsq) throws Exception{
 		
@@ -83,8 +83,7 @@ public class CenterInfoController {
 		centerDto.init(mhsq);
 		
 		centerService.modifyCenterUpdate(centerDto);
-		return "";
-	//	return "redirect:/partner/centerInfo/getCenterInfo";
+		return "redirect:/partner/centerInfo/getCenterInfo";
 	}
 	
 	
@@ -92,7 +91,7 @@ public class CenterInfoController {
 	public void updateExtraExam(@ModelAttribute CenterDto centerDto, Model model, HttpServletRequest request) {
 		Manager manager = UserDetailsHelper.getAuthenticatedUser();
 		//centerDto.setUserId(manager.getUserId());
-		centerDto.setCenterSeq(manager.getCenterSeq());
+		//centerDto.setCenterSeq(manager.getCenterSeq());
 				
 		centerService.updateExtraExam(centerDto);
 

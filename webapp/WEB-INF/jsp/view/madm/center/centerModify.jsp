@@ -212,7 +212,8 @@
 		var extraInfoAll1 = document.getElementsByName("extraInfo1");
 		var extraInfoAll2 = document.getElementsByName("extraInfo2");
 		var extraInfoAll3 = document.getElementsByName("extraInfo3");
-
+		var centerSeq = $("#centerSeq").val();
+		
 		for(var i=0; i<extraIdxAll.length;i++){
 				var extraIdx = extraIdxAll[i].value;
 				var extraInfo1 = extraInfoAll1[i].value;
@@ -225,6 +226,7 @@
 					params.extraIdx = extraIdx;
 				}
 				
+				params.centerSeq = centerSeq;
 				params.extraNm = extraInfo1;
 				params.extraTarget  = extraInfo2;
 				params.extraCost  = extraInfo3;
@@ -254,7 +256,8 @@
 		var extraExamInfoAll1 = document.getElementsByName("extraExamInfo1");
 		var extraExamInfoAll2 = document.getElementsByName("extraExamInfo2");
 		var extraExamInfoAll3 = document.getElementsByName("extraExamInfo3");
-
+		var centerSeq = $("#centerSeq").val();
+		
 		for(var i=0; i<extraExamIdxAll.length;i++){
 			
 			var extraExamIdx = extraExamIdxAll[i].value;
@@ -267,6 +270,7 @@
 				params.extraIdx = extraExamIdx;
 			}
 			
+			params.centerSeq = centerSeq;
 			params.extraNm = extraExamInfo1;
 			params.extraTarget  = extraExamInfo2;
 			params.extraCost  = extraExamInfo3;
@@ -308,12 +312,19 @@
 		strData += " <input type='hidden' name='extraIdx' value='9999999' />";
 		strData += " 검사명 : <input type='text' name='extraInfo1' value=''	 /> ";
 		strData += " 대상 : <input type='text'	name='extraInfo2' value=''	 /> ";
-		strData += " 센터내 시행비용(해석상담 포함가) :<input type='text' name='extraInfo3' value=''	 /> <br/>";
+		strData += " 센터내 시행비용(해석상담 포함가) :<input type='text' name='extraInfo3' value=''	 />";
+		strData += " <input type='button' class='deleteExtra' value='삭제' onclick='deleteRowExtra("+numExtra+");'> ";
+		strData += " <br/>";
 		strData += "</div>";
 		$( '#etcExtra' ).append(strData);
 		
 		
 	}
+	
+	function deleteRowExtra(numExamEtc){
+		$("#extraSub"+numExamEtc).remove();
+	}
+	
 	
 	function delExtraRow(idx,high_cd){
 		if(confirm("정말 삭제 하시겠습니까?")){
@@ -359,9 +370,15 @@
 		strData += " <input type='hidden' name='extraExamIdx' value='9999999' />";
 		strData += " 프로그램명 : <input type='text' name='extraExamInfo1' value=''	 /> ";
 		strData += " 대상 : <input type='text'	name='extraExamInfo2' value=''	 /> ";
-		strData += " 센터내 시행비용(해석상담 포함가) :<input type='text' name='extraExamInfo3' value=''	 /> <br/>";
+		strData += " 센터 내 시행비용(인당) :<input type='text' name='extraExamInfo3' value=''	 />";
+		strData += " <input type='button' class='deleteExtra' value='삭제' onclick='deleteRowExam("+numExam+");'> ";
+		strData += " <br/>";
 		strData += "</div>";
 		$( '#etcExamExtra' ).append(strData);
+	}
+	
+	function deleteRowExam(numExamEtc){
+		$("#examSub"+numExamEtc).remove();
 	}
 	
 	//상담 외 프로그램(집단, 특강 등) 삭제
@@ -378,7 +395,7 @@
 </head>
 <body>
 
-	<form name="modifyCenter" id="modifyCenter" action="/partner/centerInfo/update" method="POST" enctype="multipart/form-data">
+	<form name="modifyCenter" id="modifyCenter" action="/madm/centerInfo/update" method="POST" enctype="multipart/form-data">
 		<table cellpadding="0" cellspacing="0" border="0" width="100%"
 			height="100%">
 			<tr>
@@ -411,7 +428,7 @@
 									<tr align="left" height="30px">
 										<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">*센터코드</th>
 										<td class="line" colspan="2">
-										<input type="hidden" name="centerSeq" value="${centerInfo.centerSeq }" />
+										<input type="hidden" id="centerSeq"  name="centerSeq" value="${centerInfo.centerSeq }" />
 											${centerInfo.centerSeq }</td>
 										<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 센터구분</th>
 										<td class="line" colspan="2"><input type="checkbox" name="centerType" value="100471" disabled="disabled">상담
@@ -900,7 +917,9 @@
 													<br/>
 												</c:forEach> 
 											</div>
-											
+											<div>
+												<input type="button" class="plus display_none" onclick="addRowEtc();" value="추가" style="margin: 5px 350px;">
+											</div>
 										</td>
 									</tr>
 									<tr>
@@ -917,6 +936,9 @@
 													<input type="button" class="deleteExtra display_none" value="삭제" onclick="delExtraRow('${list.extraIdx }','102005');">
 													<br/>
 												</c:forEach> 
+											</div>
+											<div>
+												<input type="button" class="plus display_none" onclick="addRowExam();" value="추가" style="margin: 5px 350px;">
 											</div>
 										</td>
 									</tr>

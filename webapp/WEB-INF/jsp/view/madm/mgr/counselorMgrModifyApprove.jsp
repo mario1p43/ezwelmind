@@ -290,6 +290,7 @@ j$(document).ready(function(){
 				success: function(data, textStatus){
 					if(data.resultVal == 'success'){
 						alert("변경사항 거절을 정상적으로 등록 하였습니다.");
+						location.href ="/madm/info/reqmodify";
 					}else{
 						alert("변경사항 거절을 등록에 실패했습니다. \n오류가 지속되면 담당자에게 문의바랍니다.");
 					}

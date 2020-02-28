@@ -79,9 +79,20 @@ public class MadmCenterInfoController {
 	@RequestMapping(value="/getCenterModify")
 	public String getCenterModify(@ModelAttribute CenterDto centerDto, Model model, HttpServletRequest request) {
 		
-
 		centerDto.setCenterSeq(Integer.parseInt(request.getParameter("centerSeq")));
+		
 		model.addAttribute("centerInfo", centerService.getCenterInfo(centerDto));
+		
+		//기타 검사 정보
+		centerDto.setHighCommCd("102001");
+		model.addAttribute("extraInfo", centerService.getExtraList(centerDto));
+		
+		
+		//상담 외 프로그램
+		centerDto.setHighCommCd("102005");
+		model.addAttribute("extraExamInfo", centerService.getExtraList(centerDto));
+		
+		
 		setMenu(model);
 		return "madm/center/centerModify";
 	}
