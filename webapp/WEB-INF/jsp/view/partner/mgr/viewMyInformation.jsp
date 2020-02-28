@@ -921,7 +921,9 @@ function fileDownLoad(path,name){
 		strData += " <input type='hidden' name='extraExamIdx' value='9999999' />";
 		strData += " 프로그램명 : <input type='text' name='extraExamInfo1' value=''	 /> ";
 		strData += " 대상 : <input type='text'	name='extraExamInfo2' value=''	 /> ";
-		strData += " 센터내 시행비용(해석상담 포함가) :<input type='text' name='extraExamInfo3' value=''	 /> <br/>";
+		strData += " 센터 내 시행비용(인당) :<input type='text' name='extraExamInfo3' value=''	 />";
+		strData += " <input type='button' class='deleteExtra' value='삭제' onclick='deleteRowExam("+numExam+");'> ";
+		strData += "<br/>";
 		strData += "</div>";
 		$( '#etcExamExtra' ).append(strData);
 	}
@@ -935,6 +937,11 @@ function fileDownLoad(path,name){
 		$("#examSub"+numExam).remove();
 		numExam--;
 	}
+	
+	function deleteRowExam(numExamEtc){
+		$("#examSub"+numExamEtc).remove();
+	}
+	
 	
 </script>
 </head>
@@ -1654,7 +1661,7 @@ function fileDownLoad(path,name){
 			</tr>					
 			<tr>
 				<th class="line" align="left" bgcolor="#F5F5F5" colspan="2">상담	외 프로그램
-				<input type="button" class="plus" onclick="addRowExam();" value="+"  />&nbsp;<input class="minus" type="button" onclick="delRowExam();" value="-" />
+				
 				<br>(집단, 특강 등)
 				</th>
 				<td class="line" colspan="4">
@@ -1669,6 +1676,9 @@ function fileDownLoad(path,name){
 							</c:if>
 							<br/>
 						</c:forEach> 
+					</div>
+					<div>
+						<input type="button" class="plus" onclick="addRowExam();" value="추가" style="margin: 5px 350px;">
 					</div>
 				</td>
 			</tr>

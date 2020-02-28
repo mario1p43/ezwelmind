@@ -96,6 +96,12 @@ j$(document).ready(function(){
 	});
 
 	j$('#insertBtn').click(function(){
+		if($("#reqCd1").val() ==""){
+			alert("구분을 선택해 주세요");
+			return false;
+		}
+		
+		
 		oEditors[0].exec("UPDATE_CONTENTS_FIELD", []);   // 에디터의 내용이 textarea에 적용된다.
 				
 		j$.alert('등록하겠습니까?',function(){
@@ -108,6 +114,12 @@ j$(document).ready(function(){
 	});
 
 	j$('#updateBtn').click(function() {
+		if($("#reqCd1").val() ==""){
+			alert("구분을 선택해 주세요");
+			return false;
+		}
+		
+		
 		j$("#addNotice").attr("action","/madm/bbsNotice/update");
 		oEditors[0].exec("UPDATE_CONTENTS_FIELD", []);   // 에디터의 내용이 textarea에 적용된다.
 		j$.alert('수정하시겠습니까?',function(){
@@ -324,7 +336,7 @@ j$(function(){
 	        <tr>
 	            <td class="line" width="15%" height="40px" align="center" bgcolor="#F5F5F5">구분</td>
 	            <td width="85%">
-					<comm:select name="reqCd1" code="101042"  basicValue="------선택------" selectValue="${vo.reqCd1}"/>
+					<comm:select id="reqCd1" name="reqCd1" code="101042"  basicValue="------선택------" selectValue="${vo.reqCd1}"/>
 				</td>
 	        </tr>
 	        <tr>
@@ -350,7 +362,7 @@ j$(function(){
         	<tr>
 				<td class="line" align="center" bgcolor="#F5F5F5">구분</td>
 	            <td align="left" colspan="3">
-	            	<comm:select name="reqCd1" code="100549" selectValue="${vo.reqCd1 }" />
+	            	<comm:select id="reqCd1" name="reqCd1" code="100549" selectValue="${vo.reqCd1 }" />
 				</td>
 	        </tr>
 	        </c:if>

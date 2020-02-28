@@ -83,8 +83,8 @@ public class CenterInfoController {
 		centerDto.init(mhsq);
 		
 		centerService.modifyCenterUpdate(centerDto);
-		
-		return "redirect:/partner/centerInfo/getCenterInfo";
+		return "";
+	//	return "redirect:/partner/centerInfo/getCenterInfo";
 	}
 	
 	

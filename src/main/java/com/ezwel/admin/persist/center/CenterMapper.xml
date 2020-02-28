@@ -199,7 +199,9 @@
 			<if test="isNotNull(carefulInfo)">
 			, VISIT_CAUTION = #{carefulInfo}
 			</if>
-			,	DISP_YN		= #{dispYn}
+			<if test="isNotNull(dispYn)">
+			, DISP_YN		= #{dispYn}
+			</if>
 			,   MAP_URL		= #{mapUrl}
 			,	PUBLIC_TRAFFIC		= #{publicTraffic}
 			,   MGR_MEMO		= #{mgrMemo}
