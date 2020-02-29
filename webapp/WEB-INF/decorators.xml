@@ -26,6 +26,7 @@
 	
 	<decorator name="default-loginLayout" page="defaultLoginLayout.jsp">
 		<pattern>/login/form</pattern>
+		<pattern>/partner/main/confirmnumberview</pattern>
 	</decorator>
 
 	<decorator name="default-layerPopup" page="defaultLayerPopupLayout.jsp">

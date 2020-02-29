@@ -8,11 +8,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.ezwel.admin.domain.entity.common.Manager;
 import com.ezwel.admin.domain.entity.customermanagement.CustomerManagementVo;
 import com.ezwel.admin.domain.entity.customermanagement.DefaultInformationVo;
 import com.ezwel.admin.service.customermanagement.CustomerManagementService;
-import com.ezwel.admin.service.security.UserDetailsHelper;
 import com.ezwel.core.support.util.FileUploadUtils;
 import com.ezwel.core.support.util.FileUtils;
 
@@ -42,40 +40,18 @@ public class CustomerManagementController {
 		defaultInfo(customerManagementVo, defaultInformationVo, model);
 		return "partner/customermanagement/mainmanage";
 	}
-	
 	private void defaultInfo(CustomerManagementVo customerManagementVo, DefaultInformationVo defaultInformationVo, Model model) {
 		String counselCd = customerManagementVo.getCounselCd();
 		defaultInformationVo.setCounselCd(counselCd);
 		DefaultInformationVo svcDefaultInformationVo = customerManagementService.getDefaultInfo(defaultInformationVo);
-		String scheduleDt = svcDefaultInformationVo.getScheduleDt();
-		svcDefaultInformationVo.setScheduleDt(customerManagementService.setFormatDate(scheduleDt));
-		svcDefaultInformationVo.setScheduleTime(customerManagementService.setFormatTime(scheduleDt));
-		String userKey = svcDefaultInformationVo.getUserKey();
-		svcDefaultInformationVo.setUserNm(customerManagementService.getUserNm(userKey));
-		String regDt = svcDefaultInformationVo.getRegDt();
-		svcDefaultInformationVo.setRegDt(customerManagementService.setFormatDate(regDt));
-		String counselorId = svcDefaultInformationVo.getCounselorId();
-		svcDefaultInformationVo.setCounselorNm(customerManagementService.getCounselorNm(counselorId));
-		
-		String clientCd = svcDefaultInformationVo.getClientCd();
-		svcDefaultInformationVo.setClientNm(customerManagementService.getClientNm(clientCd));
-		svcDefaultInformationVo.setRisks(customerManagementService.getRisks(counselCd));
-		svcDefaultInformationVo.setPeriod(customerManagementService.getPeriod(clientCd));
-		svcDefaultInformationVo.setClientMgrNm(customerManagementService.getClientMgrNm(clientCd));
-		svcDefaultInformationVo.setPoint(customerManagementService.getPoint(clientCd));
-		svcDefaultInformationVo.setCounselNm(customerManagementService.getCounselorNm(clientCd));
-		
-		
 		model.addAttribute("defaultInfo", svcDefaultInformationVo);
 	}
-	
 	private void intakeInfo(CustomerManagementVo customerManagementVo, Model model) {
 		CustomerManagementVo svcCustomerManagementVo = customerManagementService.getCustomerManagementInfo(customerManagementVo);
 		String relation = svcCustomerManagementVo.getRelation();
 		svcCustomerManagementVo.setRelation(customerManagementService.getCommNm(relation));
-		//String counselType = svcCustomerManagementVo.getCounselType();
-		//svcCustomerManagementVo.setCounselType("ㅎㅎㅎㅎ");
-		//svcCustomerManagementVo.setCounselType(customerManagementService.getCommNm(counselType));
+		String counselType = svcCustomerManagementVo.getCounselType();
+		svcCustomerManagementVo.setCounselType(customerManagementService.getCommNm(counselType));
 		String job = svcCustomerManagementVo.getJob();
 		svcCustomerManagementVo.setJob(customerManagementService.getCommNm(job));
 		String education = svcCustomerManagementVo.getEducation();
@@ -88,15 +64,6 @@ public class CustomerManagementController {
 		svcCustomerManagementVo.setRrn(customerManagementService.setFormatDate(rrn));
 		svcCustomerManagementVo.setGoal(customerManagementVo.getGoal());
 		svcCustomerManagementVo.setMemo(customerManagementVo.getMemo());
-		int centerSeq = svcCustomerManagementVo.getCenterSeq();
-		svcCustomerManagementVo.setCenterSeq(centerSeq);
-		int intakeCd = svcCustomerManagementVo.getIntakeCd();
-		svcCustomerManagementVo.setIntakeCd(intakeCd);
-		String counselNm = svcCustomerManagementVo.getCounselNm();
-		svcCustomerManagementVo.setCounselNm(counselNm);
-		//String memo = svcCustomerManagementVo.getMemo();
-		//svcCustomerManagementVo.setMemo(memo);
-		
 		model.addAttribute("customerServiceInfo", svcCustomerManagementVo);
 	}
 	
@@ -104,8 +71,6 @@ public class CustomerManagementController {
 	public String addAgreementFiles(@ModelAttribute CustomerManagementVo customerManagementVo, MultipartHttpServletRequest mhsq, Model model) {
 		customerManagementVo.init(mhsq);
 		FileUtils.fileAddUpload(customerManagementVo,FileUploadUtils.UPLOAD_DIR_PROP);
-		Manager manager = UserDetailsHelper.getAuthenticatedUser();
-		customerManagementVo.setCenterSeq(manager.getCenterSeq());
 		customerManagementVo.setRecordCd(customerManagementService.getMaxRecordCd());
 		customerManagementService.saveFileInfo(customerManagementVo);
 		model.addAttribute("recordCd", customerManagementVo.getRecordCd());
@@ -114,32 +79,5 @@ public class CustomerManagementController {
 		model.addAttribute("goal", "1");
 		model.addAttribute("memo", customerManagementVo.getMemo());
 		return "redirect:/partner/customermanagement/mainmanage";
-	}
-	
-	@RequestMapping(value="/addAgreementFilesMadm")
-	public String addAgreementFilesMadm(@ModelAttribute CustomerManagementVo customerManagementVo, MultipartHttpServletRequest mhsq, Model model) {
-		customerManagementVo.init(mhsq);
-		FileUtils.fileAddUpload(customerManagementVo,FileUploadUtils.UPLOAD_DIR_PROP);
-		Manager manager = UserDetailsHelper.getAuthenticatedUser();
-		customerManagementVo.setCenterSeq(manager.getCenterSeq());
-		customerManagementVo.setRecordCd(customerManagementService.getMaxRecordCd());
-		customerManagementService.saveFileInfo(customerManagementVo);
-		model.addAttribute("recordCd", customerManagementVo.getRecordCd());
-		model.addAttribute("counselCd", customerManagementVo.getCounselCd());
-		model.addAttribute("clientCd", customerManagementVo.getClientCd());
-		model.addAttribute("goal", "1");
-		model.addAttribute("memo", customerManagementVo.getMemo());
-		return "redirect:/madm/userext/userextstatus";
-	}
-	
-	
-	
-	@RequestMapping(value="/updateAgreementStatus")
-	public String updateAgreementStatus(@ModelAttribute CustomerManagementVo customerManagementVo, MultipartHttpServletRequest mhsq, Model model) {
-		Manager manager = UserDetailsHelper.getAuthenticatedUser();
-		customerManagementVo.setRegId(manager.getUserId());
-		customerManagementService.saveStatusInfo(customerManagementVo);
-		return "redirect:/madm/userext/userextstatus";
-		
 	}
 }

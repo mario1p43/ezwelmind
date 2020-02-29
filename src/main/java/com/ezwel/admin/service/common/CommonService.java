@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Service;
 
@@ -12,12 +13,14 @@ import com.ezwel.admin.domain.entity.client.Client;
 import com.ezwel.admin.domain.entity.client.ClientJedoPeriod;
 import com.ezwel.admin.domain.entity.common.CommCd;
 import com.ezwel.admin.domain.entity.common.CommonClientCd;
+import com.ezwel.admin.domain.entity.common.Manager;
 import com.ezwel.admin.domain.entity.counselCategory.CounselCategory;
 import com.ezwel.admin.persist.common.CommonMapper;
 import com.ezwel.admin.service.bbs.dto.BBSAddDto;
 import com.ezwel.admin.service.common.dto.CommonDto;
 import com.ezwel.admin.service.common.dto.CounselCategoryDto;
 import com.ezwel.admin.service.employee.dto.EmployeeDto;
+import com.ezwel.admin.service.security.UserDetailsHelper;
 import com.ezwel.admin.service.usermanager.dto.UserManagerDto;
 import com.ezwel.core.framework.web.GlobalsProperties;
 
@@ -159,5 +162,15 @@ public class CommonService {
 	
 	public ClientJedoPeriod getClientJedoPeriodEndDd(String clientCd){
 		return commonMapper.getClientJedoPeriodEndDd(clientCd);
+	}
+
+	public String getUserMobile() {
+		Manager manager = UserDetailsHelper.getAuthenticatedUser();
+		String userId = manager.getUserId();
+		return commonMapper.getUserMobile(userId);
+	}
+
+	public void setConfirmNumberIntoSession(HttpSession session) {
+		session.setAttribute("ConfirmNumber", "123456");
 	}
 }
