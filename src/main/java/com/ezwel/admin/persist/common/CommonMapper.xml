@@ -318,4 +318,12 @@
 	        AND CLIENT_CD = #{clientCd}
 	</select>
 	
+	<select id="getUserMobile" resultType="String">
+		SELECT 
+			MOBILE
+		FROM MIND_MGR
+		WHERE 1=1
+			AND USER_ID = #{userId}
+	</select>
+	
 </mapper>

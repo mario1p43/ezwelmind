@@ -5,174 +5,54 @@
 
 <mapper namespace="com.ezwel.admin.persist.customermanagement.CustomerManagementMapper">	
 	<select id="getCustomerManagementInfo" parameterType="com.ezwel.admin.domain.entity.customermanagement.CustomerManagementVo" resultType="com.ezwel.admin.domain.entity.customermanagement.CustomerManagementVo">
-		SELECT 
-			A.INTAKE_CD AS intakeCd 
-			, A.CLIENT_CD AS clientCd 
-			, A.RRN AS rrn , A.GENDER 
-			, A.COUNSEL_NM AS counselNm /* 성명 내담당자명 동일 */ 
-			, A.EDUCATION AS education 
-			, A.SESSION AS session 
-			, A.JOB AS job 
-			, AES_DECRYPT(UNHEX(A.MOBILE),'1234') AS mobile 
-			, A.EMAIL AS email 
-			, A.COUNSEL_DIV AS counselDiv 
-			, FN_GET_CATEGORY_NM(A.COUNSEL_DIV) AS counselDivNm 
-			, FN_GET_CATEGORY_NM(A.CHANNEL_TYPE) AS channelNm 
-			, A.COUNSEL_DIV AS counselDivNm 
-			, A.CHANNEL_TYPE AS channelNm 
-			, A.CHANNEL_TYPE AS channelType 
-			, A.COUNSEL_TYPE AS counselType 
-			, A.CAUSE AS cause 
-			, B.COUNSEL_CD AS counselCd 
-			, A.INTAKE_CD AS intakeCd
-			, A.INTAKE_NUM AS intakeNum 
-			, A.RELATION AS relation
-			, C.CONTRACT_MEMO	AS  memoTt
-			,F.File_NM AS filename1
-            ,F.FILE_PATH AS filefath1
-            ,F.APPR_STATUS AS apprStatus1
-            ,F.REG_ID AS regId1
-            ,DATE_FORMAT(CONVERT(F.REG_DT, DATE), '%Y-%m-%d') AS regDt1  
-            ,G.File_NM AS filename2
-            ,G.FILE_PATH AS filefath2
-            ,G.APPR_STATUS AS apprStatus2
-            ,G.REG_ID AS regId2
-            ,DATE_FORMAT(CONVERT(G.REG_DT, DATE), '%Y-%m-%d') AS regDt2  
-            ,H.File_NM AS filename3
-            ,H.FILE_PATH AS filefath3
-            ,H.APPR_STATUS AS apprStatus3
-            ,H.REG_ID AS regId3
-            ,DATE_FORMAT(CONVERT(H.REG_DT, DATE), '%Y-%m-%d') AS regDt3
-		 FROM MIND_COUNSEL_INTAKE A 
-		LEFT OUTER JOIN MIND_COUNSEL B 
-			ON A.USER_KEY = B.USER_KEY 
-				AND A.CLIENT_CD = B.CLIENT_CD 
-				AND A.INTAKE_CD = B.INTAKE_CD 
-		LEFT OUTER JOIN MIND_CLIENT C
-			ON B.CLIENT_CD = C.CLIENT_CD
-		LEFT JOIN (SELECT File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='1' AND COUNSEL_CD = #{counselCd} ) as F 
-			ON B.COUNSEL_CD = F.COUNSEL_CD
-		LEFT JOIN (SELECT File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='2' AND COUNSEL_CD = #{counselCd}) as G 
-			ON B.COUNSEL_CD = G.COUNSEL_CD
-		LEFT JOIN (SELECT File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='3' AND COUNSEL_CD = #{counselCd}) as H 
-			ON B.COUNSEL_CD = H.COUNSEL_CD
-			WHERE 1=1 
-				AND B.COUNSEL_CD = #{counselCd}
+		SELECT A.INTAKE_CD AS intakeCd , A.CLIENT_CD AS clientCd , A.RRN AS rrn , A.GENDER , A.COUNSEL_NM AS counselNm /* 성명 내담당자명 동일 */ , A.EDUCATION AS education 
+, A.SESSION AS session , A.JOB AS job , AES_DECRYPT(UNHEX(A.MOBILE),'1234') AS mobile , A.EMAIL 
+AS email , A.COUNSEL_DIV AS counselDiv , FN_GET_CATEGORY_NM(A.COUNSEL_DIV) AS counselDivNm 
+, FN_GET_CATEGORY_NM(A.CHANNEL_TYPE) AS channelNm , A.COUNSEL_DIV AS counselDivNm , A.CHANNEL_TYPE 
+AS channelNm , A.CHANNEL_TYPE AS channelType , A.COUNSEL_TYPE AS counselType , A.CAUSE AS cause 
+, A.MEMO AS memo , B.COUNSEL_CD AS counselCd , A.INTAKE_NUM AS intakeNum , A.RELATION AS 
+relation FROM MIND_COUNSEL_INTAKE A LEFT OUTER JOIN MIND_COUNSEL B ON A.USER_KEY = B.USER_KEY 
+AND A.CLIENT_CD = B.CLIENT_CD AND A.INTAKE_CD = B.INTAKE_CD WHERE 1=1 AND B.COUNSEL_CD = #{counselCd}
 	</select>
 	<select id="getCommNm" parameterType="String" resultType="String">
 		select comm_nm from mind_comm_cd where comm_cd = #{code}
 	</select>
 	<select id="getDefaultInfo" parameterType="com.ezwel.admin.domain.entity.customermanagement.DefaultInformationVo" resultType="com.ezwel.admin.domain.entity.customermanagement.DefaultInformationVo">
-		select * from mind_counsel where counsel_cd = #{counselCd}
+		SELECT A.COUNSEL_CD AS counselCd , A.USER_KEY AS userKey , A.INTAKE_CD AS intakeCd , A.CLIENT_CD 
+AS clientCd , B.CLIENT_NM AS clientNm , C.USER_NM AS userNm , D.RELATION AS relation , D.COUNSEL_NM 
+AS counselNm , D.COUNSEL_DIV AS counselDiv , D.COUNSEL_TYPE AS counselType , D.RELATION AS 
+relation , E.USER_NM AS counselorNm , D.INTAKE_NUM AS intakeNum , D.EDUCATION AS education 
+, D.SESSION AS session , D.JOB AS job , DATE_FORMAT(STR_TO_DATE(D.RRN, '%Y%m%d'),'%Y-%m-%d') 
+AS rrn , (CASE WHEN D.GENDER = 'M' THEN '남' WHEN D.GENDER = 'F' THEN '여' END) AS gender , AES_DECRYPT(UNHEX(D.MOBILE),'1234') 
+AS intakeMobile , AES_DECRYPT(UNHEX(C.MOBILE),'1234') AS mobile , F.RISKS AS risks , F.TIME 
+AS time , DATE_FORMAT(STR_TO_DATE(F.REG_DT, '%Y%m%d'),'%Y-%m-%d') AS regDt , A.RECORD_STATUS 
+AS recordStatus , DATE_FORMAT(STR_TO_DATE(A.SCHEDULE_DT, '%Y%m%d'),'%Y-%m-%d') AS scheduleDt 
+, IFNULL(A.EXTENSION_NUM, '1') AS extensionNum , A.STATUS AS status , (SELECT USER_NM FROM 
+MIND_MGR WHERE USER_ID = B.COUNSEL_MGR_ID) AS counselMgrNm FROM MIND_COUNSEL A LEFT OUTER JOIN 
+MIND_COUNSEL_INTAKE D ON A.INTAKE_CD = D.INTAKE_CD AND A.CLIENT_CD = D.CLIENT_CD LEFT OUTER 
+JOIN MIND_COUNSEL_RECORD F ON A.COUNSEL_CD = F.COUNSEL_CD LEFT OUTER JOIN MIND_CLIENT B ON 
+A.CLIENT_CD = B.CLIENT_CD LEFT OUTER JOIN MIND_MGR E ON A.COUNSELOR_ID = E.USER_ID LEFT OUTER 
+JOIN MIND_USER C ON A.CLIENT_CD = C.CLIENT_CD AND A.USER_KEY = C.USER_KEY WHERE 1=1 AND A.COUNSEL_CD 
+=  #{counselCd}
 	</select>
-	<select id="getUserNm" parameterType="String" resultType="String">
-		select user_nm from mind_user where user_key = #{userKey}
-	</select>
-	<select id="getTeamCd" parameterType="String" resultType="String">
-		select team_cd from mind_mgr where user_id = #{userId}
-	</select>
-	<select id="getCounselorNm" parameterType="String" resultType="String">
-		select user_nm from MIND_MGR where user_id = #{counselorId}
-	</select>
-	<select id="getClientNm" parameterType="String" resultType="String">
-		select client_nm from mind_client where client_cd = #{clientCd}
-	</select>
-	<select id="getRisks" parameterType="String" resultType="String">
-		select risk_degree from center_counsel where counsel_cd = #{counselCd}
-	</select>
-	<select id="getStartDd" parameterType="com.ezwel.admin.domain.entity.customermanagement.CustomerPeriodVo" resultType="String">
-		select start_dd from mind_client_jedo_period where client_cd = #{clientCd} and period_no = #{maxCount}
-	</select>
-	<select id="getEndDd" parameterType="com.ezwel.admin.domain.entity.customermanagement.CustomerPeriodVo" resultType="String">
-		select end_dd from mind_client_jedo_period where client_cd = #{clientCd} and period_no = #{maxCount}
-	</select>
-	<select id="getMaxCountByClient" parameterType="String" resultType="String">
-		select max(period_no) from mind_client_jedo_period where client_cd = #{clientCd}
-	</select>
-	<select id="getClientMgrNm" parameterType="String" resultType="String">
-		select client_mgr_nm from mind_client_sso where client_cd = #{clientCd}
-	</select>
-	<select id="getPoint" parameterType="String" resultType="String">
-		select point from mind_user_point where client_cd = #{clientCd}
-	</select>
-	<select id="getMaxCounselCd" parameterType="String" resultType="String">
-		select max(counsel_cd) from mind_counsel where client_cd = #{clientCd}
-	</select>
-	<select id="getmaxRecordCd" resultType="String">
-		select max(record_cd)+1 from mind_counsel_record
-	</select>
-	
-	<delete id="deleteFileInfo">
-		DELETE FROM MIND_COUNSEL_FILE 
-		WHERE RECORD_CD = #{recordCd}
-		AND COUNSEL_CD = #{counselCd}
-		AND INTAKE_CD = #{intakeCd}
-		AND CENTER_SEQ = #{centerSeq}
-		AND CLIENT_CD = #{clientCd}
-		AND DOC_TYPE = #{docType}
-		AND DOC_STS = #{status}
-	</delete>
-	
 	<insert id="saveFileInfo" parameterType="com.ezwel.admin.domain.entity.customermanagement.CustomerManagementVo">
-		INSERT INTO MIND_COUNSEL_FILE (
-			RECORD_CD
-			, COUNSEL_CD
-			, FILE_NM
-			, FILE_PATH
-			, DOC_TYPE
-			, DOC_STS
-			,COUNSEL_NM
-			,APPR_STATUS
-			,REG_DT
-			,CLIENT_CD
-			,CENTER_SEQ
-			,INTAKE_CD
+		insert into mind_counsel_record (
+			record_cd
+			, counsel_cd
+			, file_nm
+			, file_path
+			, goal
+			, memo
 		) values (
 			#{recordCd}
 			, #{counselCd}
 			, #{fileNm}
 			, #{fileFullPath}
-			, #{docType}
-			, #{status}
-			, #{counselNm}
 			, '1'
-			, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
-			, #{clientCd}
-			, #{centerSeq}
-			, #{intakeCd}
-		)		
-		ON DUPLICATE KEY UPDATE 
-    	FILE_NM = #{fileNm}
-		,FILE_PATH = #{fileFullPath}
-		,RECORD_CD = #{recordCd}
-		,COUNSEL_CD = #{counselCd}
-		,INTAKE_CD = #{intakeCd}
-		,CENTER_SEQ = #{centerSeq}
-		,CLIENT_CD = #{clientCd}
-		,DOC_TYPE = #{docType}
-		,DOC_STS = #{status}
-		,REG_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
-		
+			, #{memo}
+		)
 	</insert>
-	
-	<update id="saveStatusInfo" parameterType="com.ezwel.admin.domain.entity.customermanagement.CustomerManagementVo">
-		UPDATE MIND_COUNSEL_FILE SET 
-			APPR_STATUS = #{chkInfo}
-			,REG_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
-			,REG_ID = #{regId}
-			,COUNSEL_NM = #{counselNm}
-			<!-- 
-			,REG_ID = #{regId} -->
-		WHERE 1=1
-		AND DOC_TYPE = #{docType}
-		AND DOC_STS = #{status}
-		AND COUNSEL_CD = #{counselCd}
-		AND CLIENT_CD = #{clientCd}
-		AND CENTER_SEQ = #{centerSeq}
-		AND INTAKE_CD = #{intakeCd}
-	</update>
 	<select id="getClientCd" resultType="String">
-		select client_cd as clientCd from mind_counsel 
-		where counsel_cd = #{counselCd}
+		select client_cd as clientCd from mind_counsel where counsel_cd = #{counselCd}
 	</select>
 </mapper>

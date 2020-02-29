@@ -207,6 +207,7 @@ public class NoticeController extends commonController{
 			CounselReservationDto counselReservationDto = new CounselReservationDto();
 			Manager manger = UserDetailsHelper.getAuthenticatedUser();
 			
+			evalDto.setCenterSeq(manger.getCenterSeq());
 			counselReservationDto.setCenterSeq(manger.getCenterSeq());
 			
 			// 센터장일때는 센터의 모든 내역을 볼수 있음

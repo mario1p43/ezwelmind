@@ -110,7 +110,7 @@
 			MGR_STATUS = #{mgrStatus},
 			USE_YN		=	#{useYn},
 			MODI_DT		=	DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
-		WHERE USER_ID = ${userId}
+		WHERE USER_ID = #{userId}
 	</update>
 	
 	<update id="counselorInfoMgrStatus2" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
@@ -118,7 +118,7 @@
 		SET
 			MGR_STATUS = #{mgrStatus},			
 			MODI_DT		=	DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
-		WHERE USER_ID = ${userId}
+		WHERE USER_ID = #{userId}
 	</update>
 	
 	<select id="getChangeCounselorInfo" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto" resultType="com.ezwel.admin.service.mgr.dto.MgrDto">
@@ -130,7 +130,7 @@
 			 (SELECT CENTER_NM FROM MIND_CENTER B WHERE B.CENTER_SEQ = A.CENTER_SEQ)  AS centerNm
 		FROM MIND_MGR A
 	   WHERE A.USER_TYPE = '3001'
-         AND A.USER_ID = ${userId}
+         AND A.USER_ID = #{userId}
 	</select>
 
 	<select id="getCounselorOne" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto" resultType="com.ezwel.admin.service.mgr.dto.MgrDto">
@@ -141,7 +141,7 @@
 	   WHERE USER_TYPE = '3001'
 		 AND MGR_STATUS = 'Y'
          AND USE_YN = 'Y'
-         AND USER_ID = ${userId}
+         AND USER_ID = #{userId}
 	</select>
 	
 	<select id="getCounselorStatusY" resultType="com.ezwel.admin.service.mgr.dto.MgrDto">

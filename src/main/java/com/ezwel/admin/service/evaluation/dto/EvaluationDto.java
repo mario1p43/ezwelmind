@@ -64,7 +64,6 @@ public class EvaluationDto extends PagingVo {
 	private String itemAnsMerge;
 	private String intakeCd;
 	
-	private String centerSeq;
 	private String counselorId;
 	
 
@@ -73,6 +72,7 @@ public class EvaluationDto extends PagingVo {
 	
 	private String showYn;
 	
+	private int centerSeq;	//센터일련번호
 	
 	
 	

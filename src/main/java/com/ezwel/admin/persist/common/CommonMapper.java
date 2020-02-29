@@ -64,5 +64,7 @@ public interface CommonMapper {
 	public List<ClientJedoPeriod> getClientJedoPeriodList(String clientCd, String periodSeq);
 	
 	public ClientJedoPeriod getClientJedoPeriodEndDd(String clientCd);
+
+	public String getUserMobile(String userId);
 	
 }

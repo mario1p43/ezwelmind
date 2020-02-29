@@ -174,6 +174,8 @@ j$(document).ready(function(){
 		params.mgrStatus  = mgrStatus;
 		params.siteCd  = siteCd;
 
+		alert(userId+mgrStatus+siteCd);
+		
  		if(confirm("확정 하시겠습니까?")){
 			j$.ajax({
 				url: '/partner/mgr/counselorInfoMgrStatus',
@@ -199,26 +201,10 @@ j$(document).ready(function(){
  		if( j$("input[class=check]:checked").length > 1 ) {
 			 j$.alert("선택된 값이 1개 이상일 수 없습니다.");
 			 return;
-		}
+		} 
 		
- 		var frm = searchMgr;
-		var temp ="" ;
-		var cnt = 0;
-
-		//재직상태 checkbox 값 
-		for(var i=0;i<frm.elements["check"].length;i++){
-			if(frm.elements["check"][i].checked > 0){
-				if(cnt!=0){   
-				   temp+=","+"'"+ frm.elements["check"][i].value+"'";
-				}else{
-				   temp+= "'"+frm.elements["check"][i].value+"'";
-				}
-				cnt++;
-			    }
-		    }
- 		
 		var params = {};
-		var userId = temp;
+		var userId = $("input[class=check]:checked").val();
 		var mgrStatus  = this.value;
 		var siteCd = 'P'; 	// 파트너의 약자
 		
@@ -234,11 +220,10 @@ j$(document).ready(function(){
 		}
 		
 		
-		
 		params.userId = userId;
 		params.mgrStatus  = mgrStatus;
 		params.siteCd  = siteCd;
-
+		
  		if(confirm(mgrStatusNm+" 상태로 변경 하시겠습니까?")){
 			j$.ajax({
 				url: '/partner/mgr/counselorInfoMgrStatus',
@@ -576,9 +561,9 @@ function monthBtn() {
 								<strong>페이지 : ${paging.currentPage}/${paging.getPageCount()} </strong>
 							</td>
 							<td align="right">
- 								<span class="button"><a id="mgrStatus1" name="mgrStatus1" href="#">승인 -> 중지</a></span>
+ 			<!-- 					<span class="button"><a id="mgrStatus1" name="mgrStatus1" href="#">승인 -> 중지</a></span>
 								<span class="button"><a id="mgrStatus2" name="mgrStatus2" href="#">중지 -> 승인</a></span>
-								 
+								  -->
 								 <sec:authorize access="hasAnyRole('ROLE_PARTNER_CENTER')">
 									<span class="button"><a id="insertBtn" href="#" > 신규등록</a></span>
 								 </sec:authorize>
@@ -652,15 +637,33 @@ function monthBtn() {
 							    	<c:if test="${list.mgrStatus eq '반려' }">반려</c:if>							
 								
 								</td>
-								<sec:authorize access="hasAnyRole('ROLE_PARTNER_CENTER')">
-									<td>
-										<select class="mgrStatus">
-											<option value="">-- 선택 --</option>
-										   <option value="Y" >승인</option>
-										   <option value="N" >중지</option>
-										</select>
-									</td>
-								</sec:authorize>
+								<td>
+								 	<c:if test="${list.mgrStatus eq '승인' }">
+								 	
+								 	<sec:authorize access="hasAnyRole('ROLE_PARTNER_CENTER')">
+	
+											<select class="mgrStatus">
+												<option value="">-- 선택 --</option>
+											   <option value="Y" >승인</option>
+											   <option value="N" >중지</option>
+											</select>
+	
+									</sec:authorize>
+								 	</c:if>
+								
+									<c:if test="${list.mgrStatus eq '중지' }">
+								 	
+								 	<sec:authorize access="hasAnyRole('ROLE_PARTNER_CENTER')">
+										
+											<select class="mgrStatus">
+												<option value="">-- 선택 --</option>
+											   <option value="Y" >승인</option>
+											   <option value="N" >중지</option>
+											</select>
+										
+									</sec:authorize>
+								 	</c:if>
+								</td>
 								
 								
 								<td>${list.regDt}</td>
