@@ -57,4 +57,12 @@ public class CustomerManagementService {
 	public String getClientCd(String counselCd) {
 		return customerManagementMapper.getClientCd(counselCd);
 	}
+	
+	public String getTeamCd(String userId) {
+		return customerManagementMapper.getTeamCd(userId);
+	}
+	
+	public void saveStatusInfo(CustomerManagementVo customerManagementVo) {
+		customerManagementMapper.saveStatusInfo(customerManagementVo);
+	}
 }

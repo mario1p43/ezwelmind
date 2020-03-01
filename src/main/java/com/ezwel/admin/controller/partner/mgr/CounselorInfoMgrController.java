@@ -300,6 +300,9 @@ public class CounselorInfoMgrController {
 		
 		model.addAttribute("mgrCert", mgrCounselService.getMgrCertList(mgrCertDto));
 		model.addAttribute("mgrCertCnt", mgrCounselService.getMgrCertList(mgrCertDto).size());
+		model.addAttribute("mgrCareer", mgrCounselService.getMgrCareer(counselorInfoMgrDto.getUserId()));
+		model.addAttribute("mgrBook", mgrCounselService.getMgrBook(counselorInfoMgrDto.getUserId()));
+		
 		
 		return "/partner/mgr/viewMyInformation";
 	}
@@ -325,6 +328,15 @@ public class CounselorInfoMgrController {
 		
 		model.addAttribute("mgrCert", mgrCounselService.getMgrCertList(mgrCertDto));
 		model.addAttribute("mgrCertCnt", mgrCounselService.getMgrCertList(mgrCertDto).size());
+		model.addAttribute("mgrCareer", mgrCounselService.getMgrCareer(counselorInfoMgrDto.getUserId()));
+		model.addAttribute("mgrBook", mgrCounselService.getMgrBook(counselorInfoMgrDto.getUserId()));
+
+		
+		
+		counselorInfoMgrDto.setCenterSeq(manager.getCenterSeq());
+		counselorInfoMgrDto.setHighCommCd("102015");
+		model.addAttribute("extraExamInfo", counselorInfoMgrService.getExtraList(counselorInfoMgrDto));
+		
 		
 		return "/partner/mgr/counselorInfoMgrCheck";
 	}

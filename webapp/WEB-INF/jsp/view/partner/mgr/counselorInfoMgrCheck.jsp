@@ -1069,7 +1069,33 @@
 
 				</td>
 			</tr>
+<tr>
+				<th class="line" width="20%" align="left" bgcolor="#F5F5F5"  colspan="2">
+					주요 강점 및 핵심역량</th>
+				<td class="line" colspan="5">
+					${mgr.coreVal}
+				</td>
+			</tr>					
+			<tr>
+				<th class="line" align="left" bgcolor="#F5F5F5" colspan="2" rowspan="2">상담	외 프로그램
+				<br>(집단, 특강 등)
+				</th>
+				<td class="line" colspan="4">
+					<div id="etcExamExtra">
+							<c:forEach var="list" items="${extraExamInfo}" varStatus="listCnt">
 
+							프로그램명 : ${list.extraNm }
+							대상 : ${list.extraTarget }
+							센터 내 시행비용(해석상담 포함가) :${list.extraCost }
+
+							<br/>
+						</c:forEach>
+						 
+					</div>
+
+				</td>
+				
+			</tr>
 	</td>
 </tr>
 

@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.ezwel.admin.domain.entity.common.Manager;
 import com.ezwel.admin.domain.entity.customermanagement.CustomerManagementVo;
 import com.ezwel.admin.domain.entity.customermanagement.DefaultInformationVo;
 import com.ezwel.admin.service.customermanagement.CustomerManagementService;
+import com.ezwel.admin.service.security.UserDetailsHelper;
 import com.ezwel.core.support.util.FileUploadUtils;
 import com.ezwel.core.support.util.FileUtils;
 
@@ -67,10 +69,13 @@ public class CustomerManagementController {
 		model.addAttribute("customerServiceInfo", svcCustomerManagementVo);
 	}
 	
+
 	@RequestMapping(value="/addAgreementFiles")
 	public String addAgreementFiles(@ModelAttribute CustomerManagementVo customerManagementVo, MultipartHttpServletRequest mhsq, Model model) {
 		customerManagementVo.init(mhsq);
 		FileUtils.fileAddUpload(customerManagementVo,FileUploadUtils.UPLOAD_DIR_PROP);
+		Manager manager = UserDetailsHelper.getAuthenticatedUser();
+		customerManagementVo.setCenterSeq(manager.getCenterSeq());
 		customerManagementVo.setRecordCd(customerManagementService.getMaxRecordCd());
 		customerManagementService.saveFileInfo(customerManagementVo);
 		model.addAttribute("recordCd", customerManagementVo.getRecordCd());
@@ -79,5 +84,32 @@ public class CustomerManagementController {
 		model.addAttribute("goal", "1");
 		model.addAttribute("memo", customerManagementVo.getMemo());
 		return "redirect:/partner/customermanagement/mainmanage";
+	}
+	
+	@RequestMapping(value="/addAgreementFilesMadm")
+	public String addAgreementFilesMadm(@ModelAttribute CustomerManagementVo customerManagementVo, MultipartHttpServletRequest mhsq, Model model) {
+		customerManagementVo.init(mhsq);
+		FileUtils.fileAddUpload(customerManagementVo,FileUploadUtils.UPLOAD_DIR_PROP);
+		Manager manager = UserDetailsHelper.getAuthenticatedUser();
+		customerManagementVo.setCenterSeq(manager.getCenterSeq());
+		customerManagementVo.setRecordCd(customerManagementService.getMaxRecordCd());
+		customerManagementService.saveFileInfo(customerManagementVo);
+		model.addAttribute("recordCd", customerManagementVo.getRecordCd());
+		model.addAttribute("counselCd", customerManagementVo.getCounselCd());
+		model.addAttribute("clientCd", customerManagementVo.getClientCd());
+		model.addAttribute("goal", "1");
+		model.addAttribute("memo", customerManagementVo.getMemo());
+		return "redirect:/madm/userext/userextstatus";
+	}
+	
+	
+	
+	@RequestMapping(value="/updateAgreementStatus")
+	public String updateAgreementStatus(@ModelAttribute CustomerManagementVo customerManagementVo, MultipartHttpServletRequest mhsq, Model model) {
+		Manager manager = UserDetailsHelper.getAuthenticatedUser();
+		customerManagementVo.setRegId(manager.getUserId());
+		customerManagementService.saveStatusInfo(customerManagementVo);
+		return "redirect:/madm/userext/userextstatus";
+		
 	}
 }

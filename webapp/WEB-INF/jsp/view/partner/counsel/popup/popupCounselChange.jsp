@@ -8,7 +8,7 @@
 		maxDate:'${clientJedoPeriod.endDd}'
 	});
 	
-	
+
 	$(document).ready(function() {
 		var dt = "${counsel.scheduleDt}";
 		var year = dt.substring(0, 4);
@@ -18,25 +18,46 @@
 		var time2 = dt.substring(10, 12);
 		
 		$("#popYmd").val(year + "." + month + "." + day);
-		$("#popStTime").val(time);
-		$("#popStTime2").val(time2);
+		$("#popStTime").val(time+time2);
+		$("#smsTime").val(time);
 		
 		$("#info_date").text(year+"년"+month+"월"+day+"일");
 		$("#info_time").text(time+"시"+time2+"분");
 		$("#info_counselor").text($(".counselNm").val()+"("+$(".counselorId").val()+")");
+		
+		
+		$("#popStTime").change(function (){
+			
+			var str = $("#popStTime").val();
+			var dd = str.substring( 0, 2);
+			
+			$("#smsTime").val(dd);
+		});
+		
 	});
 	
 	function scheduleConfirm() {
+		var dt = "${counsel.scheduleDt}";
+		var year = dt.substring(0, 4);
+		var month = dt.substring(4, 6);
+		var day = dt.substring(6, 8);
 		var params = {};
 		params.userId = $("#popCounselorList").val();
 		params.ymd = replaceAll($("#popYmd").val(), ".", "");
-		params.stTime = $("#popStTime").val()+$("#popStTime2").val();
+		params.stTime = $("#popStTime").val();
 		params.clientCd = $("#clientCd").val();
+		params.smsDt = year+month+day+$("#smsTime").val()+$("#smsTime2").val();
+		
 		if ($("input:checkbox[id='smsYn']").is(":checked")) {
 			params.smsYn = "Y";
 		} else {
 			params.smsYn = "N";
 		}
+		
+		if(params.smsDt == ""){
+			params.smsDt = params.stTime;
+		}
+			
 		
 		if (params.ymd == "") {
 			alert("변경 날짜를 선택해주세요.");
@@ -129,7 +150,33 @@
 	<input type="text" size="10" class="popYmd" id="popYmd" style="width: 76px;" value="" placeholder="==날짜선택==" readonly>
 	<span>변경할 시간 :</span>
 	<select id="popStTime">
-		<option value="">= 시간 선택 =</option>
+		<option value=""> 시간 선택 </option>
+		<option value="0700">07:00</option>
+		<option value="0800">08:00</option>
+		<option value="0900">09:00</option>
+		<option value="1000">10:00</option>
+		<option value="1100">11:00</option>
+		<option value="1200">12:00</option>
+		<option value="1300">13:00</option>
+		<option value="1400">14:00</option>
+		<option value="1500">15:00</option>
+		<option value="1600">16:00</option>
+		<option value="1700">17:00</option>
+		<option value="1800">18:00</option>
+		<option value="1900">19:00</option>
+		<option value="2000">20:00</option>
+		<option value="2100">21:00</option>
+		<option value="2200">22:00</option>
+	</select>
+	<br>
+	<br>
+	<input id="smsYn" type="checkbox">SMS전송여부
+	<br>
+	SMS발송용 상담시간
+	<br>
+						    	
+	<select id="smsTime" disabled="disabled">
+		<option value="">== 시간 선택 ==</option>
 		<option value="07">07</option>
 		<option value="08">08</option>
 		<option value="09">09</option>
@@ -147,9 +194,9 @@
 		<option value="21">21</option>
 		<option value="22">22</option>
 	</select>
-	<span>변경할 분 :</span>
-	<select id="popStTime2">
+	<select id="smsTime2">
 		<option value="">= 분 선택 =</option>
+		<option value="00">00</option>
 		<option value="05">05</option>
 		<option value="10">10</option>
 		<option value="15">15</option>
@@ -161,12 +208,11 @@
 		<option value="45">45</option>
 		<option value="50">50</option>
 		<option value="55">55</option>
-		<option value="00">00</option>
 	</select>
 	<br>
 	<br>
-	<input id="smsYn" type="checkbox">SMS전송여부
-	<br>
+	<span>*입력하지 않으면 변경할 시간으로 문자가 전송됩니다.</span>
+	<br>					
 	<input type="button" onclick="scheduleConfirm();" value="변경가능여부 확인"/>
 	<div style="padding-top:20px;">
  		<strong>[중요공지]</strong><br> 

@@ -34,6 +34,7 @@
 					,C.COUNSEL_RESERV_CHK
 					,'date' AS orderByNm
 					,'DESC' AS orderByType
+					,D.TEAM_CD AS teamCd
                     ,F.File_NM AS filename1
                     ,F.FILE_PATH AS filefath1
                     ,F.APPR_STATUS AS apprStatus1

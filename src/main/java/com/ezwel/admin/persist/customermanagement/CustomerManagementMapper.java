@@ -17,4 +17,12 @@ public interface CustomerManagementMapper {
 	public String getmaxRecordCd();
 
 	public String getClientCd(String counselCd);
+	
+	public String getTeamCd(String userId);
+	
+	public void saveStatusInfo(CustomerManagementVo customerManagementVo);
+	
+	public void deleteFileInfo(CustomerManagementVo customerManagementVo);
+
+	
 }
