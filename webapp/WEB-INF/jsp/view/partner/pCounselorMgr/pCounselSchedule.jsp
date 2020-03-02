@@ -918,6 +918,8 @@ var weekFri = weekStartDay+5;
 var weekSat = weekStartDay+6;
 
 
+
+
 $(".week"+weekNo).removeClass("none");
 $("#weekMoveTitle").text(month+"월 "+weekNo+"째주");
 $(document).ready(function(){
@@ -927,6 +929,20 @@ $(document).ready(function(){
 
 		if(currentInt != 1){
 			weekNo=weekNo-1;
+			weekSun = weekSun-7; 
+			weekMon = weekMon-7;
+			weekTue = weekTue-7;
+			weekWed = weekWed-7;
+			weekThu = weekThu-7;
+			weekFri = weekFri-7;
+			weekSat = weekSat-7;
+			console.log(weekSun+":"+
+					weekMon+":"+
+					weekTue+":"+
+					weekWed+":"+
+					weekThu+":"+
+					weekFri+":"+
+					weekSat);
 			$("#weekMoveTitle").text(month+"월 "+weekNo+"째주");	
 			var beforeInt = currentInt;
 			currentInt = currentInt - 1;	
@@ -940,6 +956,20 @@ $(document).ready(function(){
 		var currentInt = weekNo;
 		if(currentInt != <%=iTotalweeks%>){
 			weekNo=weekNo+1;
+			weekSun = weekSun+7; 
+			weekMon = weekMon+7;
+			weekTue = weekTue+7;
+			weekWed = weekWed+7;
+			weekThu = weekThu+7;
+			weekFri = weekFri+7;
+			weekSat = weekSat+7;
+			console.log(weekSun+":"+
+			weekMon+":"+
+			weekTue+":"+
+			weekWed+":"+
+			weekThu+":"+
+			weekFri+":"+
+			weekSat);
 			$("#weekMoveTitle").text(month+"월 "+weekNo+"째주");
 			var beforeInt = currentInt;
 			currentInt = currentInt + 1;
@@ -957,6 +987,50 @@ $(document).ready(function(){
 			alert("시작시간이 종료시간보다 늦을 수 없습니다.");
 			return false;
 		}
+		var LocalweekSun ="";
+		var LocalweekMon ="";
+		var LocalweekTue ="";
+		var LocalweekWed ="";
+		var LocalweekThu ="";
+		var LocalweekFri ="";
+		var LocalweekSat ="";
+		
+		if(weekSun<10){
+			LocalweekSun="0"+weekSun;
+		}else{
+			LocalweekSun=weekSun;
+		}
+		if(weekMon<10){
+			LocalweekMon="0"+weekMon;
+		}else{
+			LocalweekMon=weekMon;
+		}
+		if(weekTue<10){
+			LocalweekTue="0"+weekTue;
+		}else{
+			LocalweekTue=weekTue;
+		}
+		if(weekWed<10){
+			LocalweekWed="0"+weekWed;
+		}else{
+			LocalweekWed=weekWed;
+		}
+		if(weekThu<10){
+			LocalweekThu="0"+weekThu;
+		}else{
+			LocalweekThu=weekThu;
+		}
+		if(weekFri<10){
+			LocalweekFri="0"+weekFri;
+		}else{
+			LocalweekFri=weekFri;
+		}
+		if(weekSat<10){
+			LocalweekSat="0"+weekSat;
+		}else{
+			LocalweekSat=weekSat;
+		}
+		
 		
 		var week1 = $("#reg_sun_all").is(":checked");
 		var week2 = $("#reg_mon_all").is(":checked");
@@ -968,6 +1042,7 @@ $(document).ready(function(){
 
 		
 		if(week1 ==true){
+			
 			for(var i=startTime; i<= endTime; i++){
 				var idx = "";
 				if(i =="7"){
@@ -979,16 +1054,16 @@ $(document).ready(function(){
 				}else{
 					idx = i;
 				}
+				console.log(".time"+LocalweekSun+""+idx);
 				
-				
-				if($(".time"+weekSun+""+idx).prev().prev().children().is(":checked")){
+				if($(".time"+LocalweekSun+""+idx).prev().prev().children().is(":checked")){
 
-				}else if($(".time"+weekSun+""+idx).prev().children().is(":checked")){
+				}else if($(".time"+LocalweekSun+""+idx).prev().children().is(":checked")){
 		
 				}else{
-					$(".time"+weekSun+""+idx).prev().prev().children().prop("checked", true);
-					$(".time"+weekSun+""+idx).prev().children().prop("checked", false);
-					$(".time"+weekSun+""+idx).css("background","#074f89");  //상담가능일
+					$(".time"+LocalweekSun+""+idx).prev().prev().children().prop("checked", true);
+					$(".time"+LocalweekSun+""+idx).prev().children().prop("checked", false);
+					$(".time"+LocalweekSun+""+idx).css("background","#074f89");  //상담가능일
 				}
 			}
 		}
@@ -1006,15 +1081,16 @@ $(document).ready(function(){
 				}else{
 					idx = i;
 				}
+				console.log(".time"+LocalweekMon+""+idx);
 				
-				if($(".time"+weekMon+""+idx).prev().prev().children().is(":checked")){
+				if($(".time"+LocalweekMon+""+idx).prev().prev().children().is(":checked")){
 
-				}else if($(".time"+weekMon+""+idx).prev().children().is(":checked")){
+				}else if($(".time"+LocalweekMon+""+idx).prev().children().is(":checked")){
 		
 				}else{
-					$(".time"+weekMon+""+idx).prev().prev().children().prop("checked", true);
-					$(".time"+weekMon+""+idx).prev().children().prop("checked", false);
-					$(".time"+weekMon+""+idx).css("background","#074f89");  //상담가능일
+					$(".time"+LocalweekMon+""+idx).prev().prev().children().prop("checked", true);
+					$(".time"+LocalweekMon+""+idx).prev().children().prop("checked", false);
+					$(".time"+LocalweekMon+""+idx).css("background","#074f89");  //상담가능일
 				}
 			}
 		}
@@ -1030,15 +1106,16 @@ $(document).ready(function(){
 				}else{
 					idx = i;
 				}
+				console.log(".time"+LocalweekTue+""+idx);
 				
-				if($(".time"+weekTue+""+idx).prev().prev().children().is(":checked")){
+				if($(".time"+LocalweekTue+""+idx).prev().prev().children().is(":checked")){
 
-				}else if($(".time"+weekTue+""+idx).prev().children().is(":checked")){
+				}else if($(".time"+LocalweekTue+""+idx).prev().children().is(":checked")){
 		
 				}else{
-					$(".time"+weekTue+""+idx).prev().prev().children().prop("checked", true);
-					$(".time"+weekTue+""+idx).prev().children().prop("checked", false);
-					$(".time"+weekTue+""+idx).css("background","#074f89");  //상담가능일
+					$(".time"+LocalweekTue+""+idx).prev().prev().children().prop("checked", true);
+					$(".time"+LocalweekTue+""+idx).prev().children().prop("checked", false);
+					$(".time"+LocalweekTue+""+idx).css("background","#074f89");  //상담가능일
 				}
 			}
 		}
@@ -1054,15 +1131,16 @@ $(document).ready(function(){
 				}else{
 					idx = i;
 				}
+				console.log(".time"+LocalweekWed+""+idx);
 				
-				if($(".time"+weekWed+""+idx).prev().prev().children().is(":checked")){
+				if($(".time"+LocalweekWed+""+idx).prev().prev().children().is(":checked")){
 
-				}else if($(".time"+weekWed+""+idx).prev().children().is(":checked")){
+				}else if($(".time"+LocalweekWed+""+idx).prev().children().is(":checked")){
 		
 				}else{
-					$(".time"+weekWed+""+idx).prev().prev().children().prop("checked", true);
-					$(".time"+weekWed+""+idx).prev().children().prop("checked", false);
-					$(".time"+weekWed+""+idx).css("background","#074f89");  //상담가능일
+					$(".time"+LocalweekWed+""+idx).prev().prev().children().prop("checked", true);
+					$(".time"+LocalweekWed+""+idx).prev().children().prop("checked", false);
+					$(".time"+LocalweekWed+""+idx).css("background","#074f89");  //상담가능일
 				}
 			}
 		}
@@ -1078,15 +1156,16 @@ $(document).ready(function(){
 				}else{
 					idx = i;
 				}
-				
-				if($(".time"+weekThu+""+idx).prev().prev().children().is(":checked")){
+				console.log(".time"+LocalweekThu+""+idx);
 
-				}else if($(".time"+weekThu+""+idx).prev().children().is(":checked")){
+				if($(".time"+LocalweekThu+""+idx).prev().prev().children().is(":checked")){
+
+				}else if($(".time"+LocalweekThu+""+idx).prev().children().is(":checked")){
 		
 				}else{
-					$(".time"+weekThu+""+idx).prev().prev().children().prop("checked", true);
-					$(".time"+weekThu+""+idx).prev().children().prop("checked", false);
-					$(".time"+weekThu+""+idx).css("background","#074f89");  //상담가능일
+					$(".time"+LocalweekThu+""+idx).prev().prev().children().prop("checked", true);
+					$(".time"+LocalweekThu+""+idx).prev().children().prop("checked", false);
+					$(".time"+LocalweekThu+""+idx).css("background","#074f89");  //상담가능일
 				}
 			}
 		}
@@ -1102,15 +1181,17 @@ $(document).ready(function(){
 				}else{
 					idx = i;
 				}
-				
-				if($(".time"+weekFri+""+idx).prev().prev().children().is(":checked")){
+				console.log(".time"+LocalweekFri+""+idx);
 
-				}else if($(".time"+weekFri+""+idx).prev().children().is(":checked")){
+				
+				if($(".time"+LocalweekFri+""+idx).prev().prev().children().is(":checked")){
+
+				}else if($(".time"+LocalweekFri+""+idx).prev().children().is(":checked")){
 		
 				}else{
-					$(".time"+weekFri+""+idx).prev().prev().children().prop("checked", true);
-					$(".time"+weekFri+""+idx).prev().children().prop("checked", false);
-					$(".time"+weekFri+""+idx).css("background","#074f89");  //상담가능일
+					$(".time"+LocalweekFri+""+idx).prev().prev().children().prop("checked", true);
+					$(".time"+LocalweekFri+""+idx).prev().children().prop("checked", false);
+					$(".time"+LocalweekFri+""+idx).css("background","#074f89");  //상담가능일
 				}
 			}
 		}
@@ -1129,18 +1210,16 @@ $(document).ready(function(){
 				}else{
 					idx = i;
 				}
-				console.log(".time"+weekSat+""+idx);
-				//$(".time"+weekMon+""+i).trigger("click");
-				//console.log(".time"+weekMon+""+i);
-				//$(".time"+weekMon+""+i).trigger("click");
-				if($(".time"+weekSat+""+idx).prev().prev().children().is(":checked")){
+				console.log(".time"+LocalweekSat+""+idx);
 
-				}else if($(".time"+weekSat+""+idx).prev().children().is(":checked")){
+				if($(".time"+LocalweekSat+""+idx).prev().prev().children().is(":checked")){
+
+				}else if($(".time"+LocalweekSat+""+idx).prev().children().is(":checked")){
 		
 				}else{
-					$(".time"+weekSat+""+idx).prev().prev().children().prop("checked", true);
-					$(".time"+weekSat+""+idx).prev().children().prop("checked", false);
-					$(".time"+weekSat+""+idx).css("background","#074f89");  //상담가능일
+					$(".time"+LocalweekSat+""+idx).prev().prev().children().prop("checked", true);
+					$(".time"+LocalweekSat+""+idx).prev().children().prop("checked", false);
+					$(".time"+LocalweekSat+""+idx).css("background","#074f89");  //상담가능일
 				}
 			}
 		}
@@ -1154,6 +1233,50 @@ $(document).ready(function(){
 		if(startTime > endTime){
 			alert("시작시간이 종료시간보다 늦을 수 없습니다.");
 			return false;
+		}
+		
+		var LocalweekSun ="";
+		var LocalweekMon ="";
+		var LocalweekTue ="";
+		var LocalweekWed ="";
+		var LocalweekThu ="";
+		var LocalweekFri ="";
+		var LocalweekSat ="";
+		
+		if(weekSun<10){
+			LocalweekSun="0"+weekSun;
+		}else{
+			LocalweekSun=weekSun;
+		}
+		if(weekMon<10){
+			LocalweekMon="0"+weekMon;
+		}else{
+			LocalweekMon=weekMon;
+		}
+		if(weekTue<10){
+			LocalweekTue="0"+weekTue;
+		}else{
+			LocalweekTue=weekTue;
+		}
+		if(weekWed<10){
+			LocalweekWed="0"+weekWed;
+		}else{
+			LocalweekWed=weekWed;
+		}
+		if(weekThu<10){
+			LocalweekThu="0"+weekThu;
+		}else{
+			LocalweekThu=weekThu;
+		}
+		if(weekFri<10){
+			LocalweekFri="0"+weekFri;
+		}else{
+			LocalweekFri=weekFri;
+		}
+		if(weekSat<10){
+			LocalweekSat="0"+weekSat;
+		}else{
+			LocalweekSat=weekSat;
 		}
 		
 		var week1 = $("#del_sun_all").is(":checked");
@@ -1177,18 +1300,19 @@ $(document).ready(function(){
 				}else{
 					idx = i;
 				}
-				console.log(".time"+weekSun+""+idx);
+				console.log(".time"+LocalweekSun+""+idx);
 				
-				if($(".time"+weekSun+""+idx).prev().prev().children().is(":checked")){
+				if($(".time"+LocalweekSun+""+idx).prev().prev().children().is(":checked")){
 					console.log("1");
-					$(".time"+weekSun+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+weekSun+""+idx).prev().children().prop("checked", false);
-					$(".time"+weekSun+""+idx).css("background","white");
-				}else if($(".time"+weekSun+""+idx).prev().children().is(":checked")){
+					$(".time"+LocalweekSun+""+idx).prev().prev().children().prop("checked", false);
+					$(".time"+LocalweekSun+""+idx).prev().children().prop("checked", false);
+					$(".time"+LocalweekSun+""+idx).css("background","white");
+				}else if($(".time"+LocalweekSun+""+idx).prev().children().is(":checked")){
 					console.log("2");
-					$(".time"+weekSun+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+weekSun+""+idx).prev().children().prop("checked", false);
-					$(".time"+weekSun+""+idx).css("background","white");
+
+					$(".time"+LocalweekSun+""+idx).prev().prev().children().prop("checked", false);
+					$(".time"+LocalweekSun+""+idx).prev().children().prop("checked", false);
+					$(".time"+LocalweekSun+""+idx).css("background","white");
 				}else{
 					console.log("3");
 				}
@@ -1208,16 +1332,18 @@ $(document).ready(function(){
 				}else{
 					idx = i;
 				}
-				console.log(".time"+weekMon+""+idx);
+				console.log(".time"+LocalweekMon+""+idx);
 
-				if($(".time"+weekMon+""+idx).prev().prev().children().is(":checked")){
-					$(".time"+weekMon+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+weekMon+""+idx).prev().children().prop("checked", false);
-					$(".time"+weekMon+""+idx).css("background","white");
-				}else if($(".time"+weekMon+""+idx).prev().children().is(":checked")){
-					$(".time"+weekMon+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+weekMon+""+idx).prev().children().prop("checked", false);
-					$(".time"+weekMon+""+idx).css("background","white");
+				if($(".time"+LocalweekMon+""+idx).prev().prev().children().is(":checked")){
+					
+					$(".time"+LocalweekMon+""+idx).prev().prev().children().prop("checked", false);
+					$(".time"+LocalweekMon+""+idx).prev().children().prop("checked", false);
+					$(".time"+LocalweekMon+""+idx).css("background","white");
+				}else if($(".time"+LocalweekMon+""+idx).prev().children().is(":checked")){
+					
+					$(".time"+LocalweekMon+""+idx).prev().prev().children().prop("checked", false);
+					$(".time"+LocalweekMon+""+idx).prev().children().prop("checked", false);
+					$(".time"+LocalweekMon+""+idx).css("background","white");
 				}else{
 
 				}
@@ -1235,16 +1361,16 @@ $(document).ready(function(){
 				}else{
 					idx = i;
 				}
-				console.log(".time"+weekTue+""+idx);
+				console.log(".time"+LocalweekTue+""+idx);
 
-				if($(".time"+weekTue+""+idx).prev().prev().children().is(":checked")){
-					$(".time"+weekTue+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+weekTue+""+idx).prev().children().prop("checked", false);
-					$(".time"+weekTue+""+idx).css("background","white");
-				}else if($(".time"+weekTue+""+idx).prev().children().is(":checked")){
-					$(".time"+weekTue+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+weekTue+""+idx).prev().children().prop("checked", false);
-					$(".time"+weekTue+""+idx).css("background","white");
+				if($(".time"+LocalweekTue+""+idx).prev().prev().children().is(":checked")){
+					$(".time"+LocalweekTue+""+idx).prev().prev().children().prop("checked", false);
+					$(".time"+LocalweekTue+""+idx).prev().children().prop("checked", false);
+					$(".time"+LocalweekTue+""+idx).css("background","white");
+				}else if($(".time"+LocalweekTue+""+idx).prev().children().is(":checked")){
+					$(".time"+LocalweekTue+""+idx).prev().prev().children().prop("checked", false);
+					$(".time"+LocalweekTue+""+idx).prev().children().prop("checked", false);
+					$(".time"+LocalweekTue+""+idx).css("background","white");
 				}else{
 
 				}
@@ -1262,16 +1388,16 @@ $(document).ready(function(){
 				}else{
 					idx = i;
 				}
-				console.log(".time"+weekWed+""+idx);
+				console.log(".time"+LocalweekWed+""+idx);
 
-				if($(".time"+weekWed+""+idx).prev().prev().children().is(":checked")){
-					$(".time"+weekWed+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+weekWed+""+idx).prev().children().prop("checked", false);
-					$(".time"+weekWed+""+idx).css("background","white");
-				}else if($(".time"+weekWed+""+idx).prev().children().is(":checked")){
-					$(".time"+weekWed+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+weekWed+""+idx).prev().children().prop("checked", false);
-					$(".time"+weekWed+""+idx).css("background","white");
+				if($(".time"+LocalweekWed+""+idx).prev().prev().children().is(":checked")){
+					$(".time"+LocalweekWed+""+idx).prev().prev().children().prop("checked", false);
+					$(".time"+LocalweekWed+""+idx).prev().children().prop("checked", false);
+					$(".time"+LocalweekWed+""+idx).css("background","white");
+				}else if($(".time"+LocalweekWed+""+idx).prev().children().is(":checked")){
+					$(".time"+LocalweekWed+""+idx).prev().prev().children().prop("checked", false);
+					$(".time"+LocalweekWed+""+idx).prev().children().prop("checked", false);
+					$(".time"+LocalweekWed+""+idx).css("background","white");
 				}else{
 
 				}
@@ -1289,16 +1415,16 @@ $(document).ready(function(){
 				}else{
 					idx = i;
 				}
-				console.log(".time"+weekThu+""+idx);
+				console.log(".time"+LocalweekThu+""+idx);
 
-				if($(".time"+weekThu+""+idx).prev().prev().children().is(":checked")){
-					$(".time"+weekThu+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+weekThu+""+idx).prev().children().prop("checked", false);
-					$(".time"+weekThu+""+idx).css("background","white");
-				}else if($(".time"+weekThu+""+idx).prev().children().is(":checked")){
-					$(".time"+weekThu+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+weekThu+""+idx).prev().children().prop("checked", false);
-					$(".time"+weekThu+""+idx).css("background","white");
+				if($(".time"+LocalweekThu+""+idx).prev().prev().children().is(":checked")){
+					$(".time"+LocalweekThu+""+idx).prev().prev().children().prop("checked", false);
+					$(".time"+LocalweekThu+""+idx).prev().children().prop("checked", false);
+					$(".time"+LocalweekThu+""+idx).css("background","white");
+				}else if($(".time"+LocalweekThu+""+idx).prev().children().is(":checked")){
+					$(".time"+LocalweekThu+""+idx).prev().prev().children().prop("checked", false);
+					$(".time"+LocalweekThu+""+idx).prev().children().prop("checked", false);
+					$(".time"+LocalweekThu+""+idx).css("background","white");
 				}else{
 
 				}
@@ -1316,16 +1442,16 @@ $(document).ready(function(){
 				}else{
 					idx = i;
 				}
-				console.log(".time"+weekFri+""+idx);
+				console.log(".time"+LocalweekFri+""+idx);
 
-				if($(".time"+weekFri+""+idx).prev().prev().children().is(":checked")){
-					$(".time"+weekFri+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+weekFri+""+idx).prev().children().prop("checked", false);
-					$(".time"+weekFri+""+idx).css("background","white");
-				}else if($(".time"+weekFri+""+idx).prev().children().is(":checked")){
-					$(".time"+weekFri+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+weekFri+""+idx).prev().children().prop("checked", false);
-					$(".time"+weekFri+""+idx).css("background","white");
+				if($(".time"+LocalweekFri+""+idx).prev().prev().children().is(":checked")){
+					$(".time"+LocalweekFri+""+idx).prev().prev().children().prop("checked", false);
+					$(".time"+LocalweekFri+""+idx).prev().children().prop("checked", false);
+					$(".time"+LocalweekFri+""+idx).css("background","white");
+				}else if($(".time"+LocalweekFri+""+idx).prev().children().is(":checked")){
+					$(".time"+LocalweekFri+""+idx).prev().prev().children().prop("checked", false);
+					$(".time"+LocalweekFri+""+idx).prev().children().prop("checked", false);
+					$(".time"+LocalweekFri+""+idx).css("background","white");
 				}else{
 
 				}
@@ -1344,14 +1470,14 @@ $(document).ready(function(){
 				}else{
 					idx = i;
 				}
-				if($(".time"+weekSat+""+idx).prev().prev().children().is(":checked")){
-					$(".time"+weekSat+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+weekSat+""+idx).prev().children().prop("checked", false);
-					$(".time"+weekSat+""+idx).css("background","white");
-				}else if($(".time"+weekSat+""+idx).prev().children().is(":checked")){
-					$(".time"+weekSat+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+weekSat+""+idx).prev().children().prop("checked", false);
-					$(".time"+weekSat+""+idx).css("background","white");
+				if($(".time"+LocalweekSat+""+idx).prev().prev().children().is(":checked")){
+					$(".time"+LocalweekSat+""+idx).prev().prev().children().prop("checked", false);
+					$(".time"+LocalweekSat+""+idx).prev().children().prop("checked", false);
+					$(".time"+LocalweekSat+""+idx).css("background","white");
+				}else if($(".time"+LocalweekSat+""+idx).prev().children().is(":checked")){
+					$(".time"+LocalweekSat+""+idx).prev().prev().children().prop("checked", false);
+					$(".time"+LocalweekSat+""+idx).prev().children().prop("checked", false);
+					$(".time"+LocalweekSat+""+idx).css("background","white");
 				}else{
 
 				}
