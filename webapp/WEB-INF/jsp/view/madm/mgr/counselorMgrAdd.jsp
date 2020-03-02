@@ -1369,26 +1369,8 @@ function delRowExam(){
 					<input type="text" name="coreVal" value="" style="width: 700px;" />
 				</td>
 			</tr>
-			<!-- 상담 외 프로그램(집단, 특강 등) -->					
-			<tr>
-				<th class="line" width="15%" align="left" bgcolor="#F5F5F5" colspan="2">상담	외 프로그램
-				<input type="button" class="plus" onclick="addRowExam();" value="+"  />&nbsp;<input class="minus" type="button" onclick="delRowExam();" value="-" />
-				<br>(집단, 특강 등)
-				</th>
-				<td class="line" colspan="4">
-					<div id="etcExamExtra">
-							<c:forEach var="list" items="${extraExamInfo}" varStatus="listCnt">
-								<input type="hidden" name="extraExamIdx" value="${list.extraIdx }" />
 								
-							프로그램명 : <input type="text" name="extraExamInfo1" value="${list.extraNm }"	 />
-							대상 : <input type="text"	name="extraExamInfo2" value="${list.extraTarget }"	 />
-							센터 내 시행비용(인당) :<input type="text" name="extraExamInfo3" value="${list.extraCost }"	 />
-							<input type="button" class="deleteExtra" value="삭제" onclick="delExtraRow('${list.extraIdx }','102005');">
-							<br/>
-						</c:forEach> 
-					</div>
-				</td>
-			</tr>
+			
 		</table>
  		<!-- 버튼 영역 시작 -->
 		<table cellpadding="5" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">

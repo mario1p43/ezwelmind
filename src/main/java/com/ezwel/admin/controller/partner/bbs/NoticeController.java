@@ -219,6 +219,11 @@ public class NoticeController extends commonController{
 			
 		    model.addAttribute(evaluationService.getPtnSurveyAnsList(evalDto));
 		    
+		    evalDto.setEvalSeq("1");
+		    model.addAttribute("itemAvg",evaluationService.getSurveyAnsAverage(evalDto));
+		    evalDto.setEvalSeq("6");
+		    model.addAttribute("itemAvg2",evaluationService.getSurveyAnsAverage(evalDto));
+		    
 		return "partner/mgr/viewSatisfaction";
 	}
 	
