@@ -904,7 +904,7 @@
 										<th class="line" width="15%" align="left" bgcolor="#F5F5F5" colspan="2">기타 검사
 										
 
-										<input type="button" class="plus display_none" onclick="addRowEtc();" value="+" />&nbsp;<input class="minus display_none" type="button" onclick="delRowEtc();" value="-" />
+										<!-- <input type="button" class="plus display_none" onclick="addRowEtc();" value="+" />&nbsp;<input class="minus display_none" type="button" onclick="delRowEtc();" value="-" /> -->
 										</th>
 										<td colspan="4">
 											<div id="etcExtra">
@@ -924,7 +924,7 @@
 									</tr>
 									<tr>
 										<th class="line" width="15%" align="left" bgcolor="#F5F5F5" colspan="2">상담	외 프로그램(집단, 특강 등)
-										<input type="button" class="plus display_none" onclick="addRowExam();" value="+"  />&nbsp;<input class="minus display_none" type="button" onclick="delRowExam();" value="-" />
+										<!-- <input type="button" class="plus display_none" onclick="addRowExam();" value="+"  />&nbsp;<input class="minus display_none" type="button" onclick="delRowExam();" value="-" /> -->
 										</th>
 										<td class="line" colspan="4">
 											<div id="etcExamExtra">
