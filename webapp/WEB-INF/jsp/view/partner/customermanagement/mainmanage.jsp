@@ -490,11 +490,9 @@ j$(document).ready(function(){
 						<form id="addConsultOpinionFiles" action="/partner/customermanagement/addAgreementFiles" method="POST" enctype="multipart/form-data">
 						<table cellpadding="5" cellspacing="0" border="0" width="100%" align="left">
 							<tr>
-								<td><a href="javascript:fileDownLoad('${customerServiceInfo.filefath2}','${customerServiceInfo.filename2}')">${customerServiceInfo.filename2}</a></td>
-							</tr>
-							<tr>
 								<td>
 									<input type="file" name="ConsultOpinion" style='width: 40%;'>
+									<a href="javascript:fileDownLoad('${customerServiceInfo.filefath2}','${customerServiceInfo.filename2}')">${customerServiceInfo.filename2}</a>
 									<c:if test="${customerServiceInfo.apprStatus2 eq null}">
 										<input type="button" id="btnConsultOpinion" value="파일 업로드">
 									</c:if>
