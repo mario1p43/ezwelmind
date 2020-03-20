@@ -94,6 +94,7 @@ $(document).ready(function(){
 		}
 		
 		location.href = "/partner/pCounselorMgr/pCounselSchedule?iYear=" + cYear + "&iMonth=" + cMonth + "&thisMonth=" + ymd + "&selectId=" + $("[name='selectId']").val(); 
+		
 		return false;
 	});	
 	
@@ -149,7 +150,7 @@ $(document).ready(function(){
 		 },function(){
 		 	return false;
 		 }
- 	);
+ 		);
 	return false;
 	});		
 		
@@ -878,7 +879,7 @@ function counselorChange() {
 							<br>
 							<strong> * 일정을 클릭하여 상담일 지정 및 취소가 가능합니다.</strong>
 							<!-- 수정버튼 영역 -->
-									<input type="button" id="updateBtn" value="등록" style="height:30px; width:100px;margin: 10px 300px;">
+									<!-- <input type="button" id="updateBtn" value="등록" style="height:30px; width:100px;margin: 10px 300px;"> -->
 									<span style="margin-left: 20px;"></span>
 									<!-- 수정버튼 영역 끝 -->
 									<br>
@@ -917,11 +918,17 @@ var weekThu = weekStartDay+4;
 var weekFri = weekStartDay+5;
 var weekSat = weekStartDay+6;
 
+if(<%=iTMonth+1%> == month){
+	$(".week"+weekNo).removeClass("none");	
+	$("#weekMoveTitle").text(month+"월 "+weekNo+"째주");
+}else{
+	weekNo=1;
+	$(".week1").removeClass("none");
+	$("#weekMoveTitle").text(month+"월 1째주");
+}
 
 
 
-$(".week"+weekNo).removeClass("none");
-$("#weekMoveTitle").text(month+"월 "+weekNo+"째주");
 $(document).ready(function(){
 	$('.moveLeft').click(function(){
 		
@@ -981,508 +988,561 @@ $(document).ready(function(){
 
 
 	$('#registAllBtn').click(function(){
-		var startTime = $("#reg_from_all").val();
-		var endTime = $("#reg_to_all").val();
-		if(startTime > endTime){
-			alert("시작시간이 종료시간보다 늦을 수 없습니다.");
-			return false;
-		}
-		var LocalweekSun ="";
-		var LocalweekMon ="";
-		var LocalweekTue ="";
-		var LocalweekWed ="";
-		var LocalweekThu ="";
-		var LocalweekFri ="";
-		var LocalweekSat ="";
-		
-		if(weekSun<10){
-			LocalweekSun="0"+weekSun;
-		}else{
-			LocalweekSun=weekSun;
-		}
-		if(weekMon<10){
-			LocalweekMon="0"+weekMon;
-		}else{
-			LocalweekMon=weekMon;
-		}
-		if(weekTue<10){
-			LocalweekTue="0"+weekTue;
-		}else{
-			LocalweekTue=weekTue;
-		}
-		if(weekWed<10){
-			LocalweekWed="0"+weekWed;
-		}else{
-			LocalweekWed=weekWed;
-		}
-		if(weekThu<10){
-			LocalweekThu="0"+weekThu;
-		}else{
-			LocalweekThu=weekThu;
-		}
-		if(weekFri<10){
-			LocalweekFri="0"+weekFri;
-		}else{
-			LocalweekFri=weekFri;
-		}
-		if(weekSat<10){
-			LocalweekSat="0"+weekSat;
-		}else{
-			LocalweekSat=weekSat;
+		var counselorName =  $("[name='selectId'] option:selected").text();
+		if (counselorName != "") {
+			counselorName += " 상담사의 일정을\n"
 		}
 		
-		
-		var week1 = $("#reg_sun_all").is(":checked");
-		var week2 = $("#reg_mon_all").is(":checked");
-		var week3 = $("#reg_tue_all").is(":checked");
-		var week4 = $("#reg_wed_all").is(":checked");
-		var week5 = $("#reg_thu_all").is(":checked");
-		var week6 = $("#reg_fri_all").is(":checked");
-		var week7 = $("#reg_sat_all").is(":checked");
-
-		
-		if(week1 ==true){
+		$.alert(counselorName + '일괄등록 하시겠습니까?',function(){
+			var startTime = $("#reg_from_all").val();
+			var endTime = $("#reg_to_all").val();
+			if(startTime > endTime){
+				alert("시작시간이 종료시간보다 늦을 수 없습니다.");
+				return false;
+			}
+			var LocalweekSun ="";
+			var LocalweekMon ="";
+			var LocalweekTue ="";
+			var LocalweekWed ="";
+			var LocalweekThu ="";
+			var LocalweekFri ="";
+			var LocalweekSat ="";
 			
-			for(var i=startTime; i<= endTime; i++){
-				var idx = "";
-				if(i =="7"){
-					idx = "07";	
-				}else if(i =="8"){
-					idx = "08";
-				}else if(i =="9"){
-					idx = "09";
-				}else{
-					idx = i;
-				}
-				console.log(".time"+LocalweekSun+""+idx);
-				
-				if($(".time"+LocalweekSun+""+idx).prev().prev().children().is(":checked")){
-
-				}else if($(".time"+LocalweekSun+""+idx).prev().children().is(":checked")){
-		
-				}else{
-					$(".time"+LocalweekSun+""+idx).prev().prev().children().prop("checked", true);
-					$(".time"+LocalweekSun+""+idx).prev().children().prop("checked", false);
-					$(".time"+LocalweekSun+""+idx).css("background","#074f89");  //상담가능일
-				}
+			if(weekSun<10){
+				LocalweekSun="0"+weekSun;
+			}else{
+				LocalweekSun=weekSun;
 			}
-		}
-		
-		if(week2 ==true){
+			if(weekMon<10){
+				LocalweekMon="0"+weekMon;
+			}else{
+				LocalweekMon=weekMon;
+			}
+			if(weekTue<10){
+				LocalweekTue="0"+weekTue;
+			}else{
+				LocalweekTue=weekTue;
+			}
+			if(weekWed<10){
+				LocalweekWed="0"+weekWed;
+			}else{
+				LocalweekWed=weekWed;
+			}
+			if(weekThu<10){
+				LocalweekThu="0"+weekThu;
+			}else{
+				LocalweekThu=weekThu;
+			}
+			if(weekFri<10){
+				LocalweekFri="0"+weekFri;
+			}else{
+				LocalweekFri=weekFri;
+			}
+			if(weekSat<10){
+				LocalweekSat="0"+weekSat;
+			}else{
+				LocalweekSat=weekSat;
+			}
 			
-			for(var i=startTime; i<= endTime; i++){
-				var idx = "";
-				if(i =="7"){
-					idx = "07";	
-				}else if(i =="8"){
-					idx = "08";
-				}else if(i =="9"){
-					idx = "09";
-				}else{
-					idx = i;
-				}
-				console.log(".time"+LocalweekMon+""+idx);
-				
-				if($(".time"+LocalweekMon+""+idx).prev().prev().children().is(":checked")){
-
-				}else if($(".time"+LocalweekMon+""+idx).prev().children().is(":checked")){
-		
-				}else{
-					$(".time"+LocalweekMon+""+idx).prev().prev().children().prop("checked", true);
-					$(".time"+LocalweekMon+""+idx).prev().children().prop("checked", false);
-					$(".time"+LocalweekMon+""+idx).css("background","#074f89");  //상담가능일
-				}
-			}
-		}
-		if(week3 ==true){
-			for(var i=startTime; i<= endTime; i++){
-				var idx = "";
-				if(i =="7"){
-					idx = "07";	
-				}else if(i =="8"){
-					idx = "08";
-				}else if(i =="9"){
-					idx = "09";
-				}else{
-					idx = i;
-				}
-				console.log(".time"+LocalweekTue+""+idx);
-				
-				if($(".time"+LocalweekTue+""+idx).prev().prev().children().is(":checked")){
-
-				}else if($(".time"+LocalweekTue+""+idx).prev().children().is(":checked")){
-		
-				}else{
-					$(".time"+LocalweekTue+""+idx).prev().prev().children().prop("checked", true);
-					$(".time"+LocalweekTue+""+idx).prev().children().prop("checked", false);
-					$(".time"+LocalweekTue+""+idx).css("background","#074f89");  //상담가능일
-				}
-			}
-		}
-		if(week4 ==true){
-			for(var i=startTime; i<= endTime; i++){
-				var idx = "";
-				if(i =="7"){
-					idx = "07";	
-				}else if(i =="8"){
-					idx = "08";
-				}else if(i =="9"){
-					idx = "09";
-				}else{
-					idx = i;
-				}
-				console.log(".time"+LocalweekWed+""+idx);
-				
-				if($(".time"+LocalweekWed+""+idx).prev().prev().children().is(":checked")){
-
-				}else if($(".time"+LocalweekWed+""+idx).prev().children().is(":checked")){
-		
-				}else{
-					$(".time"+LocalweekWed+""+idx).prev().prev().children().prop("checked", true);
-					$(".time"+LocalweekWed+""+idx).prev().children().prop("checked", false);
-					$(".time"+LocalweekWed+""+idx).css("background","#074f89");  //상담가능일
-				}
-			}
-		}
-		if(week5 ==true){
-			for(var i=startTime; i<= endTime; i++){
-				var idx = "";
-				if(i =="7"){
-					idx = "07";	
-				}else if(i =="8"){
-					idx = "08";
-				}else if(i =="9"){
-					idx = "09";
-				}else{
-					idx = i;
-				}
-				console.log(".time"+LocalweekThu+""+idx);
-
-				if($(".time"+LocalweekThu+""+idx).prev().prev().children().is(":checked")){
-
-				}else if($(".time"+LocalweekThu+""+idx).prev().children().is(":checked")){
-		
-				}else{
-					$(".time"+LocalweekThu+""+idx).prev().prev().children().prop("checked", true);
-					$(".time"+LocalweekThu+""+idx).prev().children().prop("checked", false);
-					$(".time"+LocalweekThu+""+idx).css("background","#074f89");  //상담가능일
-				}
-			}
-		}
-		if(week6 ==true){
-			for(var i=startTime; i<= endTime; i++){
-				var idx = "";
-				if(i =="7"){
-					idx = "07";	
-				}else if(i =="8"){
-					idx = "08";
-				}else if(i =="9"){
-					idx = "09";
-				}else{
-					idx = i;
-				}
-				console.log(".time"+LocalweekFri+""+idx);
-
-				
-				if($(".time"+LocalweekFri+""+idx).prev().prev().children().is(":checked")){
-
-				}else if($(".time"+LocalweekFri+""+idx).prev().children().is(":checked")){
-		
-				}else{
-					$(".time"+LocalweekFri+""+idx).prev().prev().children().prop("checked", true);
-					$(".time"+LocalweekFri+""+idx).prev().children().prop("checked", false);
-					$(".time"+LocalweekFri+""+idx).css("background","#074f89");  //상담가능일
-				}
-			}
-		}
-		
-		if(week7 ==true){
 			
-			for(var i=startTime; i<= endTime; i++){
+			var week1 = $("#reg_sun_all").is(":checked");
+			var week2 = $("#reg_mon_all").is(":checked");
+			var week3 = $("#reg_tue_all").is(":checked");
+			var week4 = $("#reg_wed_all").is(":checked");
+			var week5 = $("#reg_thu_all").is(":checked");
+			var week6 = $("#reg_fri_all").is(":checked");
+			var week7 = $("#reg_sat_all").is(":checked");
+
+			
+			if(week1 ==true){
 				
-				var idx = "";
-				if(i =="7"){
-					idx = "07";	
-				}else if(i =="8"){
-					idx = "08";
-				}else if(i =="9"){
-					idx = "09";
-				}else{
-					idx = i;
-				}
-				console.log(".time"+LocalweekSat+""+idx);
+				for(var i=startTime; i<= endTime; i++){
+					var idx = "";
+					if(i =="7"){
+						idx = "07";	
+					}else if(i =="8"){
+						idx = "08";
+					}else if(i =="9"){
+						idx = "09";
+					}else{
+						idx = i;
+					}
+					console.log(".time"+LocalweekSun+""+idx);
+					
+					if($(".time"+LocalweekSun+""+idx).prev().prev().children().is(":checked")){
 
-				if($(".time"+LocalweekSat+""+idx).prev().prev().children().is(":checked")){
-
-				}else if($(".time"+LocalweekSat+""+idx).prev().children().is(":checked")){
-		
-				}else{
-					$(".time"+LocalweekSat+""+idx).prev().prev().children().prop("checked", true);
-					$(".time"+LocalweekSat+""+idx).prev().children().prop("checked", false);
-					$(".time"+LocalweekSat+""+idx).css("background","#074f89");  //상담가능일
+					}else if($(".time"+LocalweekSun+""+idx).prev().children().is(":checked")){
+			
+					}else{
+						$(".time"+LocalweekSun+""+idx).prev().prev().children().prop("checked", true);
+						$(".time"+LocalweekSun+""+idx).prev().children().prop("checked", false);
+						$(".time"+LocalweekSun+""+idx).css("background","#074f89");  //상담가능일
+					}
 				}
 			}
-		}
+			
+			if(week2 ==true){
+				
+				for(var i=startTime; i<= endTime; i++){
+					var idx = "";
+					if(i =="7"){
+						idx = "07";	
+					}else if(i =="8"){
+						idx = "08";
+					}else if(i =="9"){
+						idx = "09";
+					}else{
+						idx = i;
+					}
+					console.log(".time"+LocalweekMon+""+idx);
+					
+					if($(".time"+LocalweekMon+""+idx).prev().prev().children().is(":checked")){
+
+					}else if($(".time"+LocalweekMon+""+idx).prev().children().is(":checked")){
+			
+					}else{
+						$(".time"+LocalweekMon+""+idx).prev().prev().children().prop("checked", true);
+						$(".time"+LocalweekMon+""+idx).prev().children().prop("checked", false);
+						$(".time"+LocalweekMon+""+idx).css("background","#074f89");  //상담가능일
+					}
+				}
+			}
+			if(week3 ==true){
+				for(var i=startTime; i<= endTime; i++){
+					var idx = "";
+					if(i =="7"){
+						idx = "07";	
+					}else if(i =="8"){
+						idx = "08";
+					}else if(i =="9"){
+						idx = "09";
+					}else{
+						idx = i;
+					}
+					console.log(".time"+LocalweekTue+""+idx);
+					
+					if($(".time"+LocalweekTue+""+idx).prev().prev().children().is(":checked")){
+
+					}else if($(".time"+LocalweekTue+""+idx).prev().children().is(":checked")){
+			
+					}else{
+						$(".time"+LocalweekTue+""+idx).prev().prev().children().prop("checked", true);
+						$(".time"+LocalweekTue+""+idx).prev().children().prop("checked", false);
+						$(".time"+LocalweekTue+""+idx).css("background","#074f89");  //상담가능일
+					}
+				}
+			}
+			if(week4 ==true){
+				for(var i=startTime; i<= endTime; i++){
+					var idx = "";
+					if(i =="7"){
+						idx = "07";	
+					}else if(i =="8"){
+						idx = "08";
+					}else if(i =="9"){
+						idx = "09";
+					}else{
+						idx = i;
+					}
+					console.log(".time"+LocalweekWed+""+idx);
+					
+					if($(".time"+LocalweekWed+""+idx).prev().prev().children().is(":checked")){
+
+					}else if($(".time"+LocalweekWed+""+idx).prev().children().is(":checked")){
+			
+					}else{
+						$(".time"+LocalweekWed+""+idx).prev().prev().children().prop("checked", true);
+						$(".time"+LocalweekWed+""+idx).prev().children().prop("checked", false);
+						$(".time"+LocalweekWed+""+idx).css("background","#074f89");  //상담가능일
+					}
+				}
+			}
+			if(week5 ==true){
+				for(var i=startTime; i<= endTime; i++){
+					var idx = "";
+					if(i =="7"){
+						idx = "07";	
+					}else if(i =="8"){
+						idx = "08";
+					}else if(i =="9"){
+						idx = "09";
+					}else{
+						idx = i;
+					}
+					console.log(".time"+LocalweekThu+""+idx);
+
+					if($(".time"+LocalweekThu+""+idx).prev().prev().children().is(":checked")){
+
+					}else if($(".time"+LocalweekThu+""+idx).prev().children().is(":checked")){
+			
+					}else{
+						$(".time"+LocalweekThu+""+idx).prev().prev().children().prop("checked", true);
+						$(".time"+LocalweekThu+""+idx).prev().children().prop("checked", false);
+						$(".time"+LocalweekThu+""+idx).css("background","#074f89");  //상담가능일
+					}
+				}
+			}
+			if(week6 ==true){
+				for(var i=startTime; i<= endTime; i++){
+					var idx = "";
+					if(i =="7"){
+						idx = "07";	
+					}else if(i =="8"){
+						idx = "08";
+					}else if(i =="9"){
+						idx = "09";
+					}else{
+						idx = i;
+					}
+					console.log(".time"+LocalweekFri+""+idx);
+
+					
+					if($(".time"+LocalweekFri+""+idx).prev().prev().children().is(":checked")){
+
+					}else if($(".time"+LocalweekFri+""+idx).prev().children().is(":checked")){
+			
+					}else{
+						$(".time"+LocalweekFri+""+idx).prev().prev().children().prop("checked", true);
+						$(".time"+LocalweekFri+""+idx).prev().children().prop("checked", false);
+						$(".time"+LocalweekFri+""+idx).css("background","#074f89");  //상담가능일
+					}
+				}
+			}
+			
+			if(week7 ==true){
+				
+				for(var i=startTime; i<= endTime; i++){
+					
+					var idx = "";
+					if(i =="7"){
+						idx = "07";	
+					}else if(i =="8"){
+						idx = "08";
+					}else if(i =="9"){
+						idx = "09";
+					}else{
+						idx = i;
+					}
+					console.log(".time"+LocalweekSat+""+idx);
+
+					if($(".time"+LocalweekSat+""+idx).prev().prev().children().is(":checked")){
+
+					}else if($(".time"+LocalweekSat+""+idx).prev().children().is(":checked")){
+			
+					}else{
+						$(".time"+LocalweekSat+""+idx).prev().prev().children().prop("checked", true);
+						$(".time"+LocalweekSat+""+idx).prev().children().prop("checked", false);
+						$(".time"+LocalweekSat+""+idx).css("background","#074f89");  //상담가능일
+					}
+				}
+			}
+			
+			
+			$(".idx").each(function(){
+				var idx = $(this).attr("name").split("_");
+				if($(".sangdam_"+idx[1]).is(':checked') || $(".gumsa_"+idx[1]).is(':checked')) {
+					$("#idx_"+idx[1]).val(idx[1]);
+				}
+			});
+			
+			if( "<%=flagTime%>" == "E" ) {
+				$("#humu_"+"<%=toDay%>").attr("disabled", false);
+			}
+			
+			$("#frm").submit();
+		 	return false;
+		 },function(){
+		 	return false;
+		 }
+ 		);
+		
 		
 	});
 
 	$('#deleteAllBtn').click(function(){
-		
-		var startTime = $("#del_from_all").val(); 
-		var endTime = $("#del_to_all").val();
-		if(startTime > endTime){
-			alert("시작시간이 종료시간보다 늦을 수 없습니다.");
-			return false;
+		var counselorName =  $("[name='selectId'] option:selected").text();
+		if (counselorName != "") {
+			counselorName += " 상담사의 일정을\n"
 		}
 		
-		var LocalweekSun ="";
-		var LocalweekMon ="";
-		var LocalweekTue ="";
-		var LocalweekWed ="";
-		var LocalweekThu ="";
-		var LocalweekFri ="";
-		var LocalweekSat ="";
-		
-		if(weekSun<10){
-			LocalweekSun="0"+weekSun;
-		}else{
-			LocalweekSun=weekSun;
-		}
-		if(weekMon<10){
-			LocalweekMon="0"+weekMon;
-		}else{
-			LocalweekMon=weekMon;
-		}
-		if(weekTue<10){
-			LocalweekTue="0"+weekTue;
-		}else{
-			LocalweekTue=weekTue;
-		}
-		if(weekWed<10){
-			LocalweekWed="0"+weekWed;
-		}else{
-			LocalweekWed=weekWed;
-		}
-		if(weekThu<10){
-			LocalweekThu="0"+weekThu;
-		}else{
-			LocalweekThu=weekThu;
-		}
-		if(weekFri<10){
-			LocalweekFri="0"+weekFri;
-		}else{
-			LocalweekFri=weekFri;
-		}
-		if(weekSat<10){
-			LocalweekSat="0"+weekSat;
-		}else{
-			LocalweekSat=weekSat;
-		}
-		
-		var week1 = $("#del_sun_all").is(":checked");
-		var week2 = $("#del_mon_all").is(":checked");
-		var week3 = $("#del_tue_all").is(":checked");
-		var week4 = $("#del_wed_all").is(":checked");
-		var week5 = $("#del_thu_all").is(":checked");
-		var week6 = $("#del_fri_all").is(":checked");
-		var week7 = $("#del_sat_all").is(":checked");
-
-		if(week1 ==true){
-			for(var i=startTime; i<= endTime; i++){
-				
-				var idx = "";
-				if(i =="7"){
-					idx = "07";	
-				}else if(i =="8"){
-					idx = "08";
-				}else if(i =="9"){
-					idx = "09";
-				}else{
-					idx = i;
-				}
-				console.log(".time"+LocalweekSun+""+idx);
-				
-				if($(".time"+LocalweekSun+""+idx).prev().prev().children().is(":checked")){
-					console.log("1");
-					$(".time"+LocalweekSun+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+LocalweekSun+""+idx).prev().children().prop("checked", false);
-					$(".time"+LocalweekSun+""+idx).css("background","white");
-				}else if($(".time"+LocalweekSun+""+idx).prev().children().is(":checked")){
-					console.log("2");
-
-					$(".time"+LocalweekSun+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+LocalweekSun+""+idx).prev().children().prop("checked", false);
-					$(".time"+LocalweekSun+""+idx).css("background","white");
-				}else{
-					console.log("3");
-				}
-			}
-		}
-		
-		if(week2 ==true){
+		$.alert(counselorName + '삭제 하시겠습니까?',function(){
 			
-			for(var i=startTime; i<= endTime; i++){
-				var idx = "";
-				if(i =="7"){
-					idx = "07";	
-				}else if(i =="8"){
-					idx = "08";
-				}else if(i =="9"){
-					idx = "09";
-				}else{
-					idx = i;
-				}
-				console.log(".time"+LocalweekMon+""+idx);
+			
+			var startTime = $("#del_from_all").val(); 
+			var endTime = $("#del_to_all").val();
+			if(startTime > endTime){
+				alert("시작시간이 종료시간보다 늦을 수 없습니다.");
+				return false;
+			}
+			
+			var LocalweekSun ="";
+			var LocalweekMon ="";
+			var LocalweekTue ="";
+			var LocalweekWed ="";
+			var LocalweekThu ="";
+			var LocalweekFri ="";
+			var LocalweekSat ="";
+			
+			if(weekSun<10){
+				LocalweekSun="0"+weekSun;
+			}else{
+				LocalweekSun=weekSun;
+			}
+			if(weekMon<10){
+				LocalweekMon="0"+weekMon;
+			}else{
+				LocalweekMon=weekMon;
+			}
+			if(weekTue<10){
+				LocalweekTue="0"+weekTue;
+			}else{
+				LocalweekTue=weekTue;
+			}
+			if(weekWed<10){
+				LocalweekWed="0"+weekWed;
+			}else{
+				LocalweekWed=weekWed;
+			}
+			if(weekThu<10){
+				LocalweekThu="0"+weekThu;
+			}else{
+				LocalweekThu=weekThu;
+			}
+			if(weekFri<10){
+				LocalweekFri="0"+weekFri;
+			}else{
+				LocalweekFri=weekFri;
+			}
+			if(weekSat<10){
+				LocalweekSat="0"+weekSat;
+			}else{
+				LocalweekSat=weekSat;
+			}
+			
+			var week1 = $("#del_sun_all").is(":checked");
+			var week2 = $("#del_mon_all").is(":checked");
+			var week3 = $("#del_tue_all").is(":checked");
+			var week4 = $("#del_wed_all").is(":checked");
+			var week5 = $("#del_thu_all").is(":checked");
+			var week6 = $("#del_fri_all").is(":checked");
+			var week7 = $("#del_sat_all").is(":checked");
 
-				if($(".time"+LocalweekMon+""+idx).prev().prev().children().is(":checked")){
+			if(week1 ==true){
+				for(var i=startTime; i<= endTime; i++){
 					
-					$(".time"+LocalweekMon+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+LocalweekMon+""+idx).prev().children().prop("checked", false);
-					$(".time"+LocalweekMon+""+idx).css("background","white");
-				}else if($(".time"+LocalweekMon+""+idx).prev().children().is(":checked")){
+					var idx = "";
+					if(i =="7"){
+						idx = "07";	
+					}else if(i =="8"){
+						idx = "08";
+					}else if(i =="9"){
+						idx = "09";
+					}else{
+						idx = i;
+					}
+					console.log(".time"+LocalweekSun+""+idx);
 					
-					$(".time"+LocalweekMon+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+LocalweekMon+""+idx).prev().children().prop("checked", false);
-					$(".time"+LocalweekMon+""+idx).css("background","white");
-				}else{
+					if($(".time"+LocalweekSun+""+idx).prev().prev().children().is(":checked")){
+						console.log("1");
+						$(".time"+LocalweekSun+""+idx).prev().prev().children().prop("checked", false);
+						$(".time"+LocalweekSun+""+idx).prev().children().prop("checked", false);
+						$(".time"+LocalweekSun+""+idx).css("background","white");
+					}else if($(".time"+LocalweekSun+""+idx).prev().children().is(":checked")){
+						console.log("2");
 
+						$(".time"+LocalweekSun+""+idx).prev().prev().children().prop("checked", false);
+						$(".time"+LocalweekSun+""+idx).prev().children().prop("checked", false);
+						$(".time"+LocalweekSun+""+idx).css("background","white");
+					}else{
+						console.log("3");
+					}
 				}
 			}
-		}
-		if(week3 ==true){
-			for(var i=startTime; i<= endTime; i++){
-				var idx = "";
-				if(i =="7"){
-					idx = "07";	
-				}else if(i =="8"){
-					idx = "08";
-				}else if(i =="9"){
-					idx = "09";
-				}else{
-					idx = i;
-				}
-				console.log(".time"+LocalweekTue+""+idx);
+			
+			if(week2 ==true){
+				
+				for(var i=startTime; i<= endTime; i++){
+					var idx = "";
+					if(i =="7"){
+						idx = "07";	
+					}else if(i =="8"){
+						idx = "08";
+					}else if(i =="9"){
+						idx = "09";
+					}else{
+						idx = i;
+					}
+					console.log(".time"+LocalweekMon+""+idx);
 
-				if($(".time"+LocalweekTue+""+idx).prev().prev().children().is(":checked")){
-					$(".time"+LocalweekTue+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+LocalweekTue+""+idx).prev().children().prop("checked", false);
-					$(".time"+LocalweekTue+""+idx).css("background","white");
-				}else if($(".time"+LocalweekTue+""+idx).prev().children().is(":checked")){
-					$(".time"+LocalweekTue+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+LocalweekTue+""+idx).prev().children().prop("checked", false);
-					$(".time"+LocalweekTue+""+idx).css("background","white");
-				}else{
+					if($(".time"+LocalweekMon+""+idx).prev().prev().children().is(":checked")){
+						
+						$(".time"+LocalweekMon+""+idx).prev().prev().children().prop("checked", false);
+						$(".time"+LocalweekMon+""+idx).prev().children().prop("checked", false);
+						$(".time"+LocalweekMon+""+idx).css("background","white");
+					}else if($(".time"+LocalweekMon+""+idx).prev().children().is(":checked")){
+						
+						$(".time"+LocalweekMon+""+idx).prev().prev().children().prop("checked", false);
+						$(".time"+LocalweekMon+""+idx).prev().children().prop("checked", false);
+						$(".time"+LocalweekMon+""+idx).css("background","white");
+					}else{
 
+					}
 				}
 			}
-		}
-		if(week4 ==true){
-			for(var i=startTime; i<= endTime; i++){
-				var idx = "";
-				if(i =="7"){
-					idx = "07";	
-				}else if(i =="8"){
-					idx = "08";
-				}else if(i =="9"){
-					idx = "09";
-				}else{
-					idx = i;
-				}
-				console.log(".time"+LocalweekWed+""+idx);
+			if(week3 ==true){
+				for(var i=startTime; i<= endTime; i++){
+					var idx = "";
+					if(i =="7"){
+						idx = "07";	
+					}else if(i =="8"){
+						idx = "08";
+					}else if(i =="9"){
+						idx = "09";
+					}else{
+						idx = i;
+					}
+					console.log(".time"+LocalweekTue+""+idx);
 
-				if($(".time"+LocalweekWed+""+idx).prev().prev().children().is(":checked")){
-					$(".time"+LocalweekWed+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+LocalweekWed+""+idx).prev().children().prop("checked", false);
-					$(".time"+LocalweekWed+""+idx).css("background","white");
-				}else if($(".time"+LocalweekWed+""+idx).prev().children().is(":checked")){
-					$(".time"+LocalweekWed+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+LocalweekWed+""+idx).prev().children().prop("checked", false);
-					$(".time"+LocalweekWed+""+idx).css("background","white");
-				}else{
+					if($(".time"+LocalweekTue+""+idx).prev().prev().children().is(":checked")){
+						$(".time"+LocalweekTue+""+idx).prev().prev().children().prop("checked", false);
+						$(".time"+LocalweekTue+""+idx).prev().children().prop("checked", false);
+						$(".time"+LocalweekTue+""+idx).css("background","white");
+					}else if($(".time"+LocalweekTue+""+idx).prev().children().is(":checked")){
+						$(".time"+LocalweekTue+""+idx).prev().prev().children().prop("checked", false);
+						$(".time"+LocalweekTue+""+idx).prev().children().prop("checked", false);
+						$(".time"+LocalweekTue+""+idx).css("background","white");
+					}else{
 
+					}
 				}
 			}
-		}
-		if(week5 ==true){
-			for(var i=startTime; i<= endTime; i++){
-				var idx = "";
-				if(i =="7"){
-					idx = "07";	
-				}else if(i =="8"){
-					idx = "08";
-				}else if(i =="9"){
-					idx = "09";
-				}else{
-					idx = i;
-				}
-				console.log(".time"+LocalweekThu+""+idx);
+			if(week4 ==true){
+				for(var i=startTime; i<= endTime; i++){
+					var idx = "";
+					if(i =="7"){
+						idx = "07";	
+					}else if(i =="8"){
+						idx = "08";
+					}else if(i =="9"){
+						idx = "09";
+					}else{
+						idx = i;
+					}
+					console.log(".time"+LocalweekWed+""+idx);
 
-				if($(".time"+LocalweekThu+""+idx).prev().prev().children().is(":checked")){
-					$(".time"+LocalweekThu+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+LocalweekThu+""+idx).prev().children().prop("checked", false);
-					$(".time"+LocalweekThu+""+idx).css("background","white");
-				}else if($(".time"+LocalweekThu+""+idx).prev().children().is(":checked")){
-					$(".time"+LocalweekThu+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+LocalweekThu+""+idx).prev().children().prop("checked", false);
-					$(".time"+LocalweekThu+""+idx).css("background","white");
-				}else{
+					if($(".time"+LocalweekWed+""+idx).prev().prev().children().is(":checked")){
+						$(".time"+LocalweekWed+""+idx).prev().prev().children().prop("checked", false);
+						$(".time"+LocalweekWed+""+idx).prev().children().prop("checked", false);
+						$(".time"+LocalweekWed+""+idx).css("background","white");
+					}else if($(".time"+LocalweekWed+""+idx).prev().children().is(":checked")){
+						$(".time"+LocalweekWed+""+idx).prev().prev().children().prop("checked", false);
+						$(".time"+LocalweekWed+""+idx).prev().children().prop("checked", false);
+						$(".time"+LocalweekWed+""+idx).css("background","white");
+					}else{
 
+					}
 				}
 			}
-		}
-		if(week6 ==true){
-			for(var i=startTime; i<= endTime; i++){
-				var idx = "";
-				if(i =="7"){
-					idx = "07";	
-				}else if(i =="8"){
-					idx = "08";
-				}else if(i =="9"){
-					idx = "09";
-				}else{
-					idx = i;
-				}
-				console.log(".time"+LocalweekFri+""+idx);
+			if(week5 ==true){
+				for(var i=startTime; i<= endTime; i++){
+					var idx = "";
+					if(i =="7"){
+						idx = "07";	
+					}else if(i =="8"){
+						idx = "08";
+					}else if(i =="9"){
+						idx = "09";
+					}else{
+						idx = i;
+					}
+					console.log(".time"+LocalweekThu+""+idx);
 
-				if($(".time"+LocalweekFri+""+idx).prev().prev().children().is(":checked")){
-					$(".time"+LocalweekFri+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+LocalweekFri+""+idx).prev().children().prop("checked", false);
-					$(".time"+LocalweekFri+""+idx).css("background","white");
-				}else if($(".time"+LocalweekFri+""+idx).prev().children().is(":checked")){
-					$(".time"+LocalweekFri+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+LocalweekFri+""+idx).prev().children().prop("checked", false);
-					$(".time"+LocalweekFri+""+idx).css("background","white");
-				}else{
+					if($(".time"+LocalweekThu+""+idx).prev().prev().children().is(":checked")){
+						$(".time"+LocalweekThu+""+idx).prev().prev().children().prop("checked", false);
+						$(".time"+LocalweekThu+""+idx).prev().children().prop("checked", false);
+						$(".time"+LocalweekThu+""+idx).css("background","white");
+					}else if($(".time"+LocalweekThu+""+idx).prev().children().is(":checked")){
+						$(".time"+LocalweekThu+""+idx).prev().prev().children().prop("checked", false);
+						$(".time"+LocalweekThu+""+idx).prev().children().prop("checked", false);
+						$(".time"+LocalweekThu+""+idx).css("background","white");
+					}else{
 
+					}
 				}
 			}
-		}
-		
-		if(week7 == true){
-			for(var i=startTime; i<= endTime; i++){
-				var idx = "";
-				if(i =="7"){
-					idx = "07";	
-				}else if(i =="8"){
-					idx = "08";
-				}else if(i =="9"){
-					idx = "09";
-				}else{
-					idx = i;
-				}
-				if($(".time"+LocalweekSat+""+idx).prev().prev().children().is(":checked")){
-					$(".time"+LocalweekSat+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+LocalweekSat+""+idx).prev().children().prop("checked", false);
-					$(".time"+LocalweekSat+""+idx).css("background","white");
-				}else if($(".time"+LocalweekSat+""+idx).prev().children().is(":checked")){
-					$(".time"+LocalweekSat+""+idx).prev().prev().children().prop("checked", false);
-					$(".time"+LocalweekSat+""+idx).prev().children().prop("checked", false);
-					$(".time"+LocalweekSat+""+idx).css("background","white");
-				}else{
+			if(week6 ==true){
+				for(var i=startTime; i<= endTime; i++){
+					var idx = "";
+					if(i =="7"){
+						idx = "07";	
+					}else if(i =="8"){
+						idx = "08";
+					}else if(i =="9"){
+						idx = "09";
+					}else{
+						idx = i;
+					}
+					console.log(".time"+LocalweekFri+""+idx);
 
+					if($(".time"+LocalweekFri+""+idx).prev().prev().children().is(":checked")){
+						$(".time"+LocalweekFri+""+idx).prev().prev().children().prop("checked", false);
+						$(".time"+LocalweekFri+""+idx).prev().children().prop("checked", false);
+						$(".time"+LocalweekFri+""+idx).css("background","white");
+					}else if($(".time"+LocalweekFri+""+idx).prev().children().is(":checked")){
+						$(".time"+LocalweekFri+""+idx).prev().prev().children().prop("checked", false);
+						$(".time"+LocalweekFri+""+idx).prev().children().prop("checked", false);
+						$(".time"+LocalweekFri+""+idx).css("background","white");
+					}else{
+
+					}
 				}
 			}
-		}
+			
+			if(week7 == true){
+				for(var i=startTime; i<= endTime; i++){
+					var idx = "";
+					if(i =="7"){
+						idx = "07";	
+					}else if(i =="8"){
+						idx = "08";
+					}else if(i =="9"){
+						idx = "09";
+					}else{
+						idx = i;
+					}
+					if($(".time"+LocalweekSat+""+idx).prev().prev().children().is(":checked")){
+						$(".time"+LocalweekSat+""+idx).prev().prev().children().prop("checked", false);
+						$(".time"+LocalweekSat+""+idx).prev().children().prop("checked", false);
+						$(".time"+LocalweekSat+""+idx).css("background","white");
+					}else if($(".time"+LocalweekSat+""+idx).prev().children().is(":checked")){
+						$(".time"+LocalweekSat+""+idx).prev().prev().children().prop("checked", false);
+						$(".time"+LocalweekSat+""+idx).prev().children().prop("checked", false);
+						$(".time"+LocalweekSat+""+idx).css("background","white");
+					}else{
+
+					}
+				}
+			}
+			
+			
+			
+			$(".idx").each(function(){
+				var idx = $(this).attr("name").split("_");
+				if($(".sangdam_"+idx[1]).is(':checked') || $(".gumsa_"+idx[1]).is(':checked')) {
+					$("#idx_"+idx[1]).val(idx[1]);
+				}
+			});
+			
+			if( "<%=flagTime%>" == "E" ) {
+				$("#humu_"+"<%=toDay%>").attr("disabled", false);
+			}
+			
+			$("#frm").submit();
+		 	return false;
+		 },function(){
+		 	return false;
+		 }
+ 		);
 		
 	});
 });
