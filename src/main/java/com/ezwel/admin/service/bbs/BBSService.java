@@ -66,7 +66,7 @@ public class BBSService {
 		paging.setPaging(bbsDto);
 		paging.setList(bbsMapper.getBbsPartnerList(bbsDto));
 		bbsDto.setPageCommonFlag(true);
-		paging.setTotalCount(bbsMapper.getBbsList(bbsDto).get(0).getPageCommonCount());
+		paging.setTotalCount(bbsMapper.getBbsPartnerList(bbsDto).get(0).getPageCommonCount());
 
 		return paging;
 	}
