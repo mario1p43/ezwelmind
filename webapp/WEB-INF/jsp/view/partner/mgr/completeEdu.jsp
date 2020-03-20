@@ -74,7 +74,7 @@ j$(document).ready(function(){
 						<td>${list.userNm}</td>
 						<td><c:if test="${list.gender eq 'M'}">남</c:if><c:if test="${list.gender eq 'F'}">여</c:if></td>
 						<td>${list.eduNm}</td>
-						<td>${list.eduHour}시간</td>
+						<td>${list.eduHour}</td>
 						<td>${list.eduDtFm}&nbsp;/&nbsp;${list.eduDtTo}</td>
 						<td>${list.eduPlace}</td>
 						<td>${list.eduDiv}</td>
