@@ -1052,7 +1052,7 @@ function fileDownLoad(path,name){
 								<select name="education2" id="education2" style="width:95%;">
 									<option value="M">학사</option>
 									<option value="D">석사</option>
-									<option value="S">전문학사</option>
+									<option value="S">박사</option>
 								</select>
 							</td>
 							<td align="center">
