@@ -318,7 +318,7 @@ public class CounselorMgrController {
 		
 		model.addAttribute("mgrCert", mgrCounselService.getMgrCertList(mgrCertDto));
 		model.addAttribute("mgrCertCnt", mgrCounselService.getMgrCertList(mgrCertDto).size());
-		model.addAttribute("mgrCareer", mgrCounselService.getMgrCareer(counselorInfoMgrDto.getUserId()));
+		model.addAttribute("mgrCareer", mgrCounselService.getMgrCareerExtraList(counselorInfoMgrDto.getUserId()));
 		model.addAttribute("mgrBook", mgrCounselService.getMgrBook(counselorInfoMgrDto.getUserId()));
 		
 		

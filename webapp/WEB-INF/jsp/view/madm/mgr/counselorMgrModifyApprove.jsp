@@ -1564,7 +1564,7 @@ function changeCert(num){
 					<input type="checkbox" class="mentalDivBefore" name="mentalDivBefore"  value="100009"  onclick="return false;" /> 언어치료
 					<input type="checkbox" class="mentalDivBefore" name="mentalDivBefore"  value="100010"  onclick="return false;" /> 특수재활치료 <br />
 					<input type="checkbox" class="mentalDivBefore" name="mentalDivBefore"  value="100011"  onclick="return false;" /> 기타 
-					<input type="text" name="mentalDivEtcBefore" id="mentalDivEtcBefore" style="width:500px;" value="${mgr.mentalDivEtc }" readonly>  
+					<input type="text" name="mentalDivEtcBefore" id="mentalDivEtcBefore" style="width:500px;" value="${mgrBefore.mentalDivEtc }" readonly>  
 				</td>
 			</tr>
 			
@@ -1732,7 +1732,7 @@ function changeCert(num){
 					<input type="checkbox" class="diagnosisDivBefore" name="diagnosisDivBefore"  value="100018" onclick="return false;" /> 진로 및 적성검사
 					<input type="checkbox" class="diagnosisDivBefore" name="diagnosisDivBefore"  value="100019" onclick="return false;" /> 신경심리검사 <br />
 					<input type="checkbox" class="diagnosisDivBefore" name="diagnosisDivBefore"  value="100020" onclick="return false;" /> 기타 
-					<input type="text" name="diagnosisDivEtcBefore" id="diagnosisDivEtcBefore" style="width:500px;" value="${mgr.diagnosisDivEtc }" readonly> 
+					<input type="text" name="diagnosisDivEtcBefore" id="diagnosisDivEtcBefore" style="width:500px;" value="${mgrBefore.diagnosisDivEtc }" readonly> 
 				</td>
 			</tr>
 			<tr class="psyTestGroup" >

@@ -634,6 +634,11 @@ public List<MgrCareer> getMgrCareer(String userId) {
 	return mgrMapper.getMgrCareerList(userId);
 }
 
+public List<MgrCareer> getMgrCareerExtraList(String userId) {
+	return mgrMapper.getMgrCareerExtraList(userId);
+}
+
+
 
 public List<MgrBook> getMgrBook(String userId) {
 	return mgrMapper.getMgrBookList(userId);
