@@ -57,6 +57,8 @@ public interface MgrMapper {
 	public int userImsiModiRefuse(MgrDto mgrDto);
 
 	public List<MgrCareer> getMgrCareerList(String userId);
+	
+	public List<MgrCareer> getMgrCareerExtraList(String userId);
 
 	public List<MgrBook> getMgrBookList(String userId);
 }
