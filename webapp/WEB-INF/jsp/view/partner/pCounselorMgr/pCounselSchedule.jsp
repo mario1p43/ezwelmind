@@ -955,6 +955,8 @@ $(document).ready(function(){
 			currentInt = currentInt - 1;	
 			$(".week"+beforeInt).addClass("none");
 			$(".week"+currentInt).removeClass("none");	
+		}else{
+			$("#preMonth").click();
 		}
 		
 	});
@@ -982,6 +984,8 @@ $(document).ready(function(){
 			currentInt = currentInt + 1;
 			$(".week"+beforeInt).addClass("none");
 			$(".week"+currentInt).removeClass("none");
+		}else{
+			$("#nextMonth").click();
 		}
 		
 	});

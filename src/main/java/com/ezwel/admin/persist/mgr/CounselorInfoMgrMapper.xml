@@ -290,6 +290,7 @@
 			, COUNSEL_FAVOR 
 			, COUNSEL_PATTERN
 			, COUNSEL_SPECIAL_HEAL 
+			, CORE_ABILITY
 		) VALUES (
 			 #{userId}
 			,#{gender}
@@ -338,6 +339,7 @@
 			,#{preferredType}
 			,#{tendencyType}
 			,#{specialHearing}
+			,#{coreVal}
 		)
 	</insert>
 	
@@ -775,7 +777,7 @@
 			, B.MGR_STATUS			AS	mgrStatus
 			, A.CORE_ABILITY			AS	coreVal
 			, A.COUNSEL_SPECIAL_HEAL			AS	specialHeal
-			, (select AUTH_CD from acl_user_auth where USER_AUTH_KEY = CONCAT(#{userId},'3001')) as authCd
+			, (select AUTH_CD from acl_user_auth where USER_AUTH_KEY = CONCAT(#{userId},(SELECT user_type FROM mind_mgr where user_id =#{userId}))) as authCd
 		FROM MIND_MGR_SUB A, MIND_MGR B, MIND_CENTER C
 		WHERE 1=1
 			AND B.CENTER_SEQ = C.CENTER_SEQ
@@ -854,7 +856,7 @@
 			, B.MGR_STATUS			AS	mgrStatus
 			, A.CORE_ABILITY			AS	coreVal
 			, A.COUNSEL_SPECIAL_HEAL			AS	specialHeal
-			, (select AUTH_CD from acl_user_auth where USER_AUTH_KEY = CONCAT(#{userId},'3001')) as authCd
+			, (select AUTH_CD from acl_user_auth where USER_AUTH_KEY = CONCAT(#{userId},(SELECT user_type FROM mind_mgr where user_id =#{userId}))) as authCd
 		FROM EXTRA_MIND_MGR_SUB A, EXTRA_MIND_MGR B, MIND_CENTER C
 		WHERE 1=1
 			AND B.CENTER_SEQ = C.CENTER_SEQ
@@ -906,7 +908,7 @@
 			, B.PRICE					AS price
 			, B.MGR_STATUS			AS mgrStatus					
 			
-			, (select AUTH_CD from acl_user_auth where USER_AUTH_KEY = CONCAT(#{userId},'3001')) as authCd
+			, (select AUTH_CD from acl_user_auth where USER_AUTH_KEY = CONCAT(#{userId},(SELECT user_type FROM ez_mind.mind_mgr where user_id =#{userId}))) as authCd
 		FROM MIND_MGR_SUB A, MIND_MGR B, MIND_CENTER C
 		WHERE 1=1
 			AND B.CENTER_SEQ = C.CENTER_SEQ
@@ -1316,7 +1318,7 @@
 	<update id="updateAclUserAuth" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
 	UPDATE	ACL_USER_AUTH
 	   SET	AUTH_CD = #{authCd}
-	 WHERE	USER_AUTH_KEY = CONCAT(#{userId},'3001')
+	 WHERE	USER_AUTH_KEY = CONCAT(#{userId},(SELECT user_type FROM mind_mgr where user_id =#{userId}))
 	</update>
 	
 	
@@ -1608,7 +1610,7 @@
 			, REG_DT
 		)
 		VALUES (
-			CONCAT(#{userId},'3001')
+			CONCAT(#{userId},(SELECT user_type FROM mind_mgr where user_id =#{userId}))
 			, #{authCd}
 			, date_format(now(), '%Y%m%d%h%i%s')
 		)

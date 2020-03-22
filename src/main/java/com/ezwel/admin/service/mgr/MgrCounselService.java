@@ -411,6 +411,10 @@ public class MgrCounselService {
 		counselorInfoMgrMapper.updateMgrInfoImsi(mgrDto);
 		counselorInfoMgrMapper.updateCounselorInfoMgrImsi(mgrSubDto);
 		
+		if( StringUtils.isNotEmpty(mgrDto.getAuthCd()) ){
+			counselorInfoMgrMapper.updateAclUserAuth(mgrDto);
+		}
+		
 		//상담사가 정보를 수정할 수 없게 변경 
 		counselorInfoMgrMapper.updateCounselorInfoMgrModiN(mgrDto);
 		
