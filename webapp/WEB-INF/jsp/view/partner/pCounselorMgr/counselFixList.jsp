@@ -6,6 +6,48 @@
 <script type="text/javascript">
 j$(document).ready(function(){
 	
+	/**
+	 * 상담사 및 일정 변경 팝업
+	 */
+
+	$(".counselChange").click(function () {
+		var counselType = $(this).attr("counselType");       // 상담코드
+		if (counselType == "100437") {
+			alert("현재 진단은 일정을 변경 할 수 없습니다.");
+			return;
+		}
+		
+		
+		var params = {};
+		params.counselCd = $(this).attr("counselCd");       // 상담코드
+		
+		if (typeof params.counselCd == "undefined") {
+			alert("상담을 선택해주세요.");
+			return;
+		}
+		
+		var date = new Date(); 
+		var year = date.getFullYear(); 
+		var month = new String(date.getMonth()+1); 
+		var day = "01";
+		
+		if(month.length == 1){ 
+		  month = "0" + month; 
+		} 
+		
+		var ymdLimit = year + "-" + month + "-" + day;
+		var ymd = $(this).attr("counselDate");	      // 년월일
+		
+		if(ymd < ymdLimit) {
+			alert("월이 변경되면 지난달의 상담일정 변경은 불가합니다. \n이지웰니스(네이버톡톡)으로 문의 주세요. 감사합니다.");
+			
+			return;
+		}
+		
+		var counselCd = $(this).attr("counselCd");	     // 상담코드
+		$.divPop("counselChangePopup", "상담사/일정 변경", "/partner/pCounselorMgr/counselorChange/layerPopup?counselCd=" + counselCd);
+	});
+	
 	$(".btnExtend").click(function () {
 		
 		var userStatus = $(this).attr("userStatus");	// 고객 재직상태
@@ -35,43 +77,13 @@ j$(document).ready(function(){
 			sameJedoYn = checkCounselExtendsJedo(clientCd, counselDate, nowDate);	// 연장하려는 상담이 현재 제도와 동일한지 체크
 		}
 		
-		
-		var sdate= new Date("2019/12/21 00:00:00"); // KNOC
-		var edate= new Date("2019/12/31 23:59:59"); // KNOC
-		var scheduleDt = $(this).attr("counselDate");
-		
-		var relation = $(this).attr("relation");
-		var userKey = $(this).attr("userKey");
-		var counselToChildrenCount = 0;
-		
-		if((clientCd == "samsunglife" || clientCd == "test") && relation == "100443") { // 자녀상담의 경우 연장신청을 위해 검증을 거침
-			j$.ajax({
-				method : 'get',
-				url : '/partner/pCounselorMgr/countByCounselToChildren',
-				data : {"clientCd" : clientCd, "userKey" : userKey},
-				dataType : 'json',
-				async : false,
-				success : function(data){
-					counselToChildrenCount = data.counselToChildrenCount;
-				}
-			});
-		
-			if(counselToChildrenCount >= 2) {
-				alert("삼성생명의 자녀상담은 2회기로 제한되어 있습니다.\n실제로 1회기만 진행하였으나,\n일정 연장등록이 안될경우 네이버 톡톡 or 전화 부탁드립니다.");			
-					
-				return false;
-			}
-		}
-		
 		if(userUseYn == 'N'){				// 사용불가 상태의 아이디
 			alert('사용불가 처리된 아이디입니다.');
 		}else if(userStatus == '100009'){	// 고객이 퇴직 상태이면
 			alert('퇴직처리된 아이디입니다.');
 		}else if (sameJedoYn == 'N'){		// 연장하려는 상담이 현재 제도와 동일하지않다면
 			alert('해당 고객사의 계약갱신으로 임직원의 신규상담 재신청이 필요합니다.\n아래의 번호로 임직원이 직접 신규상담을 재신청할 수 있도록 안내를 부탁드립니다.\n\n* 신규상담 신청번호 : 02-3439-9412\n* 문의사항 : 이지웰니스 02-6909-4414');
-		} else if((clientCd == "hustory") && scheduleDt <= "2019-12-31") {
-			alert("계약기간 및 이용한도 리뉴얼로,\n이전 연도에서 상담연장신청은 불가능 합니다.\n신규 상담신청 부탁드립니다. ")
-		} else {
+		}else{
 			location.href = "/partner/pCounselorMgr/partnerCounselForm?userKey=" + $(this).attr("userKey") + "&counselCd=" + $(this).attr("counselCd");
 		}
 	});
@@ -414,6 +426,10 @@ function doExtension() {
  * 상담사 및 일정 변경 팝업
  */
 function doCounselChange() {
+	var userStatus = $(this).attr("userStatus");	// 고객 재직상태
+	var userUseYn = $(this).attr("userUseYn");		// 고객 사용유무
+	var channelType = $(this).attr("channelType");		// 고객 사용유무
+	
 	var counselType = $("input[type='radio']:checked").parent().siblings().find("input.counselType").val();       // 상담코드
 	if (counselType == "100437") {
 		alert("현재 진단은 일정을 변경 할 수 없습니다.");
@@ -503,7 +519,7 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 						<!-- 검색 영역 시작 -->
 						<table cellpadding="6" cellspacing="0" border="1" width="100%" style="border-collapse:collapse;" bordercolor="#DDDDDD">
 						
- 							<tr align="left" height="30px">
+ 							<%-- <tr align="left" height="30px">
 								<th width="15%" bgcolor="#F5F5F5" align="center">고객사</th>
 						    	<td width="40%" align="left"  style="padding-left: 5px;">
 						    		<select id="clientCd" name="clientCd" style="height: 20px;" onchange="clientReload('sel');">
@@ -514,7 +530,7 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 						    		</select>
 						    		<input type="text" id="chkClientCd" value="" onkeyup="clientReload('txt');" style="width:350px;" placeholder="고객사명을 입력 또는 선택하세요.">
 						    	</td>
-						    </tr> 
+						    </tr>  --%>
 							<tr align="left" height="30px">
 								<th width="15%" bgcolor="#F5F5F5" align="center">임직원명</th>
 						    	<td colspan="5" align="left">
@@ -639,14 +655,15 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 											<td bgcolor="#F5F5F5" width="6%"><strong>상담사</strong></td>
 											<td bgcolor="#F5F5F5" width="6%"><strong>상담방법</strong></td>
 											<td bgcolor="#F5F5F5" width="7%"><strong>사례위험도</strong></td><!-- 사례위험도 추가 -->
-											<td bgcolor="#F5F5F5" width="10%"><strong>상담분야</strong></td>
+											<td bgcolor="#F5F5F5" width="7%"><strong>상담분야</strong></td>
 											
 											
 											<td bgcolor="#F5F5F5" width="7%"><strong>첫일정<br/>확정</strong></td>
 											<td bgcolor="#F5F5F5" width="6%"><strong>일지작성</strong></td>
 											<!-- <td bgcolor="#F5F5F5" width="auto;"><strong>한도조회</strong></td> --><!-- 사용안함 -->
 											<td bgcolor="#F5F5F5" width="8%"><strong>다음회기등록<!-- <br>(포인트 즉시결제) --></strong></td>
-											<td bgcolor="#F5F5F5" width="10%"><strong>연장신청상태</strong></td>
+											<td bgcolor="#F5F5F5" width="8%"><strong>상담일정변경</strong></td>
+											
 										</tr>
 
 										<c:forEach var="list" items="${paging.list}" varStatus="status">
@@ -723,16 +740,14 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 												</c:if>
 											</td><!-- 다음회기등록 -->
 											<td>
-												<c:if test="${list.extensionStatus eq '100930'}">
-													상담연장 신청상태
-												</c:if>
-								    			<c:if test="${list.extensionStatus eq '100931'}">
-													상담연장 승인
-												</c:if>
-												<c:if test="${list.extensionStatus eq '100932'}">
-													상담연장 완료
-												</c:if>
-											</td><!-- 연장신청상태 -->
+												<input type="button" userKey="${list.userKey}" counselCd="${list.counselCd}" 
+													clientCd="${list.clientCd}" userStatus="${list.userStatus}" userUseYn="${list.useYn}" counselDate="${list.ymd}" channelType="${list.channelType }" value="상담일정변경" class="counselChange" />
+											</td><!-- 상담일정변경 -->
+											
+
+											
+											
+											
 										</tr>
 										</c:forEach>
 									</table>

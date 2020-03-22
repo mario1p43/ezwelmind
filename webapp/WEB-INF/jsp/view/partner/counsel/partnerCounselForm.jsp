@@ -55,11 +55,11 @@
 			if(smsTime == ""){
 				smsTime =stTime;
 			}
-			if(stTime < smsTime){
+			/* if(stTime < smsTime){
 				alert("상담시간보다 sms문자시간이 늦을 수 없습니다.");
 				return;
 			}
-			
+			 */
 			var params = {};
 			params.userId = userId;
 			params.ymd = replaceAll(ymd, ".", "");
