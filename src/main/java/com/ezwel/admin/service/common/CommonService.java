@@ -2,6 +2,7 @@ package com.ezwel.admin.service.common;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -170,7 +171,37 @@ public class CommonService {
 		return commonMapper.getUserMobile(userId);
 	}
 
+    private int certNumLength = 6;
+    
+    public String excuteGenerate() {
+        Random random = new Random(System.currentTimeMillis());
+        
+        int range = (int)Math.pow(10,certNumLength);
+        int trim = (int)Math.pow(10, certNumLength-1);
+        int result = random.nextInt(range)+trim;
+         
+        if(result>range){
+            result = result - trim;
+        }
+        
+        return String.valueOf(result);
+    }
+
+    public int getCertNumLength() {
+        return certNumLength;
+    }
+
+    public void setCertNumLength(int certNumLength) {
+        this.certNumLength = certNumLength;
+    }
+
+	
+	
 	public void setConfirmNumberIntoSession(HttpSession session) {
+
+        setCertNumLength(6);
+        String authKey =excuteGenerate();
+        System.out.println(authKey);
 		session.setAttribute("ConfirmNumber", "123456");
 	}
 }
