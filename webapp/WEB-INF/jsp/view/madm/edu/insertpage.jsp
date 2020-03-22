@@ -219,7 +219,7 @@ j$(document).ready(function(){
 								<td>
 									<input id="eduHour" name="eduHour" type="text" style="height: 20px;width:95%;" onchange="checkHourValue()" value="${param.eduHour}"/>
 								</td>
-								<th bgcolor="#F5F5F5" align="center">등록기간</th>
+								<th bgcolor="#F5F5F5" align="center">교육기간</th>
 						    	<td colspan="3" align="left">
 									<input type="text" id="eduDtFm" name="eduDtFm" size="10" style="height: 20px;width:150px;" class="date_timepicker_start" value="${param.eduDtFm}">
 									<img id="btstartDt" src="http://img.ezwelmind.co.kr/images/icon02.jpg" border="0">

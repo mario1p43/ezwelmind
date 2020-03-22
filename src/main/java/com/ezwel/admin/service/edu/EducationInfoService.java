@@ -200,7 +200,7 @@ public class EducationInfoService {
 		}
 		
 		if(dtolist.size() == returnResult ) {
-			returnArr[1] = Integer.toString(returnResult) + " 개의 [정산데이터]를 업로드 했습니다.";
+			returnArr[1] = Integer.toString(returnResult) + " 개의 교육현황데이터가 업로드 되었습니다.";
 		}else{			
 			returnArr[1] = "Error : 엑셀파일 데이터와 삽입된 데이터의 수가 다릅니다.";
 		}

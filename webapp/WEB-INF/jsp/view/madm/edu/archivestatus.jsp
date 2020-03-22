@@ -32,8 +32,14 @@ j$(document).ready(function(){
 	});
 	
 	$("#btnExcelUpload").click(function() {
-		$("#excelForm").submit();
-		return false;
+		var aa = $('input[type=file]').val();
+		if(aa ==null || aa ==""){
+			alert("파일을 등록하세요");
+		}else{
+			$("#excelForm").submit();
+			return false;
+		}
+		
 	});
 	
 	$("#sampleFile").click(function() {
