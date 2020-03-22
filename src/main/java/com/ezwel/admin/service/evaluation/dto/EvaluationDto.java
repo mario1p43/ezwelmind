@@ -72,7 +72,7 @@ public class EvaluationDto extends PagingVo {
 	
 	private String showYn;
 	
-	private int centerSeq;	//센터일련번호
+	private String centerSeq;	//센터일련번호
 	
 	
 	

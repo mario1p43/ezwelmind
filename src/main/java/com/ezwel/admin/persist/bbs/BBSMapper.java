@@ -110,9 +110,9 @@ public interface BBSMapper {
 	
 	public BBSData getPartnerMain();
 	
-	public BBSData getPartnerMainNotice();
+	public BBSData getPartnerMainNotice(BBSAddDto bbsAddDto);
 	
-	public BBSData getPartnerMainRecruit();
+	public BBSData getPartnerMainRecruit(BBSAddDto bbsAddDto);
 	
 	public BBSData getSangdamCount(BBSAddDto bbsAddDto);
 }

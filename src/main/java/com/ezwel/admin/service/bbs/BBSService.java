@@ -716,12 +716,12 @@ public class BBSService {
 		return bbsMapper.getPartnerMain();
 	}
 	
-	public BBSData getPartnerMainNotice() {
-		return bbsMapper.getPartnerMainNotice();
+	public BBSData getPartnerMainNotice(BBSAddDto bbsAddDto) {
+		return bbsMapper.getPartnerMainNotice(bbsAddDto);
 	}
 	
-	public BBSData getPartnerMainRecruit() {
-		return bbsMapper.getPartnerMainRecruit();
+	public BBSData getPartnerMainRecruit(BBSAddDto bbsAddDto) {
+		return bbsMapper.getPartnerMainRecruit(bbsAddDto);
 	}
 	
 	public BBSData getSangdamCount(BBSAddDto bbsAddDto) {

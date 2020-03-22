@@ -980,6 +980,7 @@
 					, C.ADDR2				AS  addr2
 					, A.CORE_ABILITY			AS	coreVal
 					, A.COUNSEL_SPECIAL_HEAL			AS	specialHeal
+					, C.CENTER_SEQ AS centerSeq
 				FROM MIND_MGR_SUB A , MIND_MGR B, MIND_CENTER C , ACL_USER_AUTH D
 				WHERE 1=1
 					AND B.USER_TYPE = '3001'

@@ -43,11 +43,12 @@ public class MainCpController extends commonController{
 		Manager manager = UserDetailsHelper.getAuthenticatedUser();
 
 		bbsAddDto.setCenterSeq(manager.getCenterSeq());
+		bbsAddDto.setUserId(manager.getUserId());
 		//BBSData notice = bbsService.getPartnerMain();
 		
 		BBSData sangdamcnt = bbsService.getSangdamCount(bbsAddDto);
-		BBSData notice = bbsService.getPartnerMainNotice();
-		BBSData recruit = bbsService.getPartnerMainRecruit();
+		BBSData notice = bbsService.getPartnerMainNotice(bbsAddDto);
+		BBSData recruit = bbsService.getPartnerMainRecruit(bbsAddDto);
 		model.addAttribute("sangdamcnt", sangdamcnt);
 		model.addAttribute("notice", notice);
 		model.addAttribute("recruit", recruit);

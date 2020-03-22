@@ -446,7 +446,7 @@
 				
 				<!-- 접속권한 -->
 				<if test="isNotNull(userId)">
-				AND A.AUTH_CD LIKE CONCAT('%', (SELECT AUTH_CD FROM ACL_USER_AUTH WHERE USER_AUTH_KEY = CONCAT(#{userId},'3001')),'%')
+				AND A.AUTH_CD LIKE CONCAT('%', (SELECT AUTH_CD FROM ACL_USER_AUTH WHERE USER_AUTH_KEY = CONCAT(#{userId},(SELECT user_type FROM mind_mgr where user_id =#{userId}))),'%')
 				</if>
 				<!-- 상담유형 -->
  				<if test="isNotNull(userId)">
@@ -1294,6 +1294,19 @@
 		AND MAIN_DISP_YN = 'Y'
 		AND A.REQ_CD1 ='101231'
 		AND DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') BETWEEN MAIN_START_DT AND MAIN_END_DT
+		<!-- 접속권한 -->
+		<if test="isNotNull(userId)">
+		AND A.AUTH_CD LIKE CONCAT('%', (SELECT AUTH_CD FROM ACL_USER_AUTH WHERE USER_AUTH_KEY = CONCAT(#{userId},(SELECT user_type FROM mind_mgr where user_id =#{userId}))),'%')
+		</if>
+		<!-- 상담유형 -->
+			<if test="isNotNull(userId)">
+		AND A.CHANNEL_TYPE REGEXP (SELECT CONCAT("(",REPLACE(CHANNEL_TYPE, ",", "|"),")") FROM MIND_MGR_SUB WHERE USER_ID = #{userId})
+		</if> 
+		<!-- 지역구분 -->
+			<if test="isNotNull(centerSeq)">
+		AND A.AREA1 LIKE CONCAT('%',(SELECT AREA1 FROM MIND_CENTER WHERE CENTER_SEQ = ${centerSeq}),'%')
+		</if> 
+		
 		ORDER BY A.DATA_SEQ DESC
 		LIMIT 0, 1
 	</select>
@@ -1341,6 +1354,18 @@
 		AND MAIN_DISP_YN = 'Y'
 		AND A.REQ_CD1 ='101232'
 		AND DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') BETWEEN MAIN_START_DT AND MAIN_END_DT
+		<!-- 접속권한 -->
+		<if test="isNotNull(userId)">
+		AND A.AUTH_CD LIKE CONCAT('%', (SELECT AUTH_CD FROM ACL_USER_AUTH WHERE USER_AUTH_KEY = CONCAT(#{userId},(SELECT user_type FROM mind_mgr where user_id =#{userId}))),'%')
+		</if>
+		<!-- 상담유형 -->
+		<if test="isNotNull(userId)">
+		AND A.CHANNEL_TYPE REGEXP (SELECT CONCAT("(",REPLACE(CHANNEL_TYPE, ",", "|"),")") FROM MIND_MGR_SUB WHERE USER_ID = #{userId})
+		</if> 
+		<!-- 지역구분 -->
+			<if test="isNotNull(centerSeq)">
+		AND A.AREA1 LIKE CONCAT('%',(SELECT AREA1 FROM MIND_CENTER WHERE CENTER_SEQ = ${centerSeq}),'%')
+		</if> 
 		ORDER BY A.DATA_SEQ DESC
 		LIMIT 0, 1
 	</select>
