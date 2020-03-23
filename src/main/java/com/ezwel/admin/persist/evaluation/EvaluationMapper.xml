@@ -560,14 +560,23 @@
 		SEARCH_YN = #{showYn},
 		SEARCH_ID = #{userId},
 		SEARCH_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') 
-		where target_seq = #{targetSeq}
+		where 
+		1=1
+		<if test="isNotNull(targetSeq)">
+		and target_seq = #{targetSeq}
+		</if>
+		<if test="isNotNull(evalSeq)">
 		and eval_seq = #{evalSeq}
+		</if>
 	</update>
 	
 	<delete id="deleteHappyCall">
 		delete from mind_evaluation_user
-		where target_seq = #{targetSeq}
+		where 
+		1=1		
+		and target_seq = #{targetSeq}
 		and eval_seq = #{evalSeq}
+		
 	</delete>
 	
 	<update id="updateHappayCallYn">
