@@ -379,12 +379,12 @@ j$(document).ready(function(){
 	
 	$( document ).ready(function() {
 		var previous; 
-		
-		$("#mgrStatusVal").on('focus', function () { // Store the current value on focus and on change 
-			previous = this.value; 
+		$(".mgrStatusVal").on('focus', function () {  
+			previous = this.value;
+		console.log("previous:::"+previous);
 		}).change(function() { 
 			var newval = this.value;
-			
+			console.log("newval:::"+newval);	
 			var con_test = confirm("상담사에 변경내용이 SMS로 전달됩니다.")
 			if(con_test == true){
 				// 대기 -> 반려 
@@ -1754,7 +1754,7 @@ function showDetail(){
 									</c:if>
 								</td> --%>
 								<td>
-									<select id="mgrStatusVal" name="" style="height: 20px;text-align: center;" >
+									<select class="mgrStatusVal" name="" style="height: 20px;text-align: center;" >
 						    				<option value="">---- 선택 ----</option>
 						    				<option value="Y" <c:if test="${list.mgrStatus eq '승인' }"> selected </c:if> >승인</option>
 							    			<option value="N" <c:if test="${list.mgrStatus eq '중지' }"> selected </c:if> >중지</option>
