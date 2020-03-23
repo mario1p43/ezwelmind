@@ -936,7 +936,7 @@
 			  FROM
 				(
 		</if>
-				SELECT
+				SELECT DISTINCT
 					B.USER_NM			AS	userNm
 					, B.USER_ID			AS	userId
 					, (CASE WHEN SUBSTRING(B.RRN,8,1) &lt;= 2 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('19', SUBSTRING(B.RRN,1,2))+1)
@@ -982,6 +982,9 @@
 					, A.COUNSEL_SPECIAL_HEAL			AS	specialHeal
 					, C.CENTER_SEQ AS centerSeq
 				FROM MIND_MGR_SUB A , MIND_MGR B, MIND_CENTER C , ACL_USER_AUTH D
+				<if test="isNotNull(qualify)">
+					,MIND_MGR_CERT F
+				</if>
 				WHERE 1=1
 					AND B.USER_TYPE = '3001'
 					<!-- AND B.USE_YN = 'Y' -->
@@ -1073,7 +1076,13 @@
 				<if test="isNotNull(ages)">
 					AND (CASE WHEN SUBSTRING(B.RRN,8,1) &lt;= 2 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('19', SUBSTRING(B.RRN,1,2))+1)
 							WHEN 2 &lt; SUBSTRING(B.RRN,8,1) &lt;= 4 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('20', SUBSTRING(B.RRN,1,2))+1) END) REGEXP #{ages}
-				</if> 
+				</if>
+				<if test="isNotNull(qualify)">
+					AND A.USER_ID = F.USER_ID
+					AND F.GRADE =#{qualify}
+				</if>
+				
+				 
 				<!-- <if test="isNotNull(ages)">
 					AND (CASE WHEN SUBSTRING(B.RRN,8,1) &lt;= 2 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('19', SUBSTRING(B.RRN,1,2))+1)
 							WHEN 2 &lt; SUBSTRING(B.RRN,8,1) &lt;= 4 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('20', SUBSTRING(B.RRN,1,2))+1) END) REGEXP #{ages}  LIKE CONCAT(#{ages}, '%')

@@ -168,7 +168,9 @@ public class CounselorInfoMgrDto extends PagingVo{
 	
 	private String carefulInfo;
 	private int extraIdx;
-	private String 	extraNm;
-	private String 	extraTarget;
-	private String 	extraCost;  
+	private String extraNm;
+	private String extraTarget;
+	private String extraCost;  
+	
+	private String qualify;
 }

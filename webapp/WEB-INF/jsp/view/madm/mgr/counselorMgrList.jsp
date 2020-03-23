@@ -1446,9 +1446,9 @@ function showDetail(){
 				<td align="left" >
 					<select id="" name="qualify">
 						<option value="">==== 선택 ====</option>
-						<option value="1" >1급</option>
-						<option value="2" >2급</option>
-						<option value="3" >기타</option>
+						<option value="1급" >1급</option>
+						<option value="2급" >2급</option>
+						<option value="기타" >기타</option>
 					</select>
 				</td>
 			</tr>
