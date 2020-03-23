@@ -562,12 +562,8 @@
 		SEARCH_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') 
 		where 
 		1=1
-		<if test="isNotNull(targetSeq)">
 		and target_seq = #{targetSeq}
-		</if>
-		<if test="isNotNull(evalSeq)">
 		and eval_seq = #{evalSeq}
-		</if>
 	</update>
 	
 	<delete id="deleteHappyCall">
