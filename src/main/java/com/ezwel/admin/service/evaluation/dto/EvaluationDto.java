@@ -72,8 +72,6 @@ public class EvaluationDto extends PagingVo {
 	
 	private String showYn;
 	
-	private String centerSeq;	//센터일련번호
-	
-	
+	private String centerSeq;
 	
 }

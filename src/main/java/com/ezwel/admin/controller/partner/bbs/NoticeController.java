@@ -205,16 +205,16 @@ public class NoticeController extends commonController{
 	public String viewSatisfaction(@ModelAttribute EvaluationDto evalDto, Model model, HttpServletRequest request) {
 			setMenu(model);
 			CounselReservationDto counselReservationDto = new CounselReservationDto();
-			Manager manger = UserDetailsHelper.getAuthenticatedUser();
-			
-			evalDto.setCenterSeq(manger.getCenterSeq());
-			counselReservationDto.setCenterSeq(manger.getCenterSeq());
+			Manager manager = UserDetailsHelper.getAuthenticatedUser();
+			String centerSeq=Integer.toString(manager.getCenterSeq());
+			evalDto.setCenterSeq(centerSeq);
 			
 			// 센터장일때는 센터의 모든 내역을 볼수 있음
 			if (request.isUserInRole("ROLE_PARTNER_CENTER")) {
+				counselReservationDto.setCenterSeq(manager.getCenterSeq());
 				model.addAttribute("counselorList", 	counselReservationService.getCounselorList(counselReservationDto));
 			} else {
-				evalDto.setCounselorId(manger.getUserId());
+				evalDto.setCounselorId(manager.getUserId());
 			}
 			
 		    model.addAttribute(evaluationService.getPtnSurveyAnsList(evalDto));
