@@ -75,7 +75,7 @@ public class CustomerManagementController {
 		customerManagementVo.init(mhsq);
 		FileUtils.fileAddUpload(customerManagementVo,FileUploadUtils.UPLOAD_DIR_PROP);
 		Manager manager = UserDetailsHelper.getAuthenticatedUser();
-		customerManagementVo.setCenterSeq(manager.getCenterSeq());
+		//customerManagementVo.setCenterSeq(manager.getCenterSeq());
 		customerManagementVo.setRecordCd(customerManagementService.getMaxRecordCd());
 		customerManagementService.saveFileInfo(customerManagementVo);
 		model.addAttribute("recordCd", customerManagementVo.getRecordCd());
@@ -91,7 +91,6 @@ public class CustomerManagementController {
 		customerManagementVo.init(mhsq);
 		FileUtils.fileAddUpload(customerManagementVo,FileUploadUtils.UPLOAD_DIR_PROP);
 		Manager manager = UserDetailsHelper.getAuthenticatedUser();
-		customerManagementVo.setCenterSeq(manager.getCenterSeq());
 		customerManagementVo.setRecordCd(customerManagementService.getMaxRecordCd());
 		customerManagementService.saveFileInfo(customerManagementVo);
 		model.addAttribute("recordCd", customerManagementVo.getRecordCd());

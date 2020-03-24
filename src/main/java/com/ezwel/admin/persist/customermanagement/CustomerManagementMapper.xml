@@ -28,16 +28,19 @@
 		, A.INTAKE_NUM AS intakeNum 
 		, A.RELATION AS relation 
 		, C.CONTRACT_MEMO	AS  memoTt
+		,F.COUNSEL_FILE_SEQ AS fileSeq1
 		,F.File_NM AS filename1
         ,F.FILE_PATH AS filefath1
         ,F.APPR_STATUS AS apprStatus1
         ,F.REG_ID AS regId1
-        ,DATE_FORMAT(CONVERT(F.REG_DT, DATE), '%Y-%m-%d') AS regDt1  
+        ,DATE_FORMAT(CONVERT(F.REG_DT, DATE), '%Y-%m-%d') AS regDt1
+        ,G.COUNSEL_FILE_SEQ AS fileSeq2  
         ,G.File_NM AS filename2
         ,G.FILE_PATH AS filefath2
         ,G.APPR_STATUS AS apprStatus2
         ,G.REG_ID AS regId2
-        ,DATE_FORMAT(CONVERT(G.REG_DT, DATE), '%Y-%m-%d') AS regDt2  
+        ,DATE_FORMAT(CONVERT(G.REG_DT, DATE), '%Y-%m-%d') AS regDt2
+        ,H.COUNSEL_FILE_SEQ AS fileSeq3  
         ,H.File_NM AS filename3
         ,H.FILE_PATH AS filefath3
         ,H.APPR_STATUS AS apprStatus3
@@ -50,12 +53,15 @@
 		AND A.INTAKE_CD = B.INTAKE_CD 
 		LEFT OUTER JOIN MIND_CLIENT C
 			ON B.CLIENT_CD = C.CLIENT_CD
-		LEFT JOIN (SELECT File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='1' AND COUNSEL_CD = #{counselCd} ) as F 
+		LEFT JOIN (SELECT COUNSEL_FILE_SEQ,File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD,INTAKE_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='1' AND COUNSEL_CD = #{counselCd} ) as F 
 			ON B.COUNSEL_CD = F.COUNSEL_CD
-		LEFT JOIN (SELECT File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='2' AND COUNSEL_CD = #{counselCd}) as G 
+			AND B.INTAKE_CD = F.INTAKE_CD
+		LEFT JOIN (SELECT COUNSEL_FILE_SEQ,File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD,INTAKE_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='2' AND COUNSEL_CD = #{counselCd}) as G 
 			ON B.COUNSEL_CD = G.COUNSEL_CD
-		LEFT JOIN (SELECT File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='3' AND COUNSEL_CD = #{counselCd}) as H 
+			AND B.INTAKE_CD = G.INTAKE_CD
+		LEFT JOIN (SELECT COUNSEL_FILE_SEQ,File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD,INTAKE_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='3' AND COUNSEL_CD = #{counselCd}) as H 
 			ON B.COUNSEL_CD = H.COUNSEL_CD
+			AND B.INTAKE_CD = H.INTAKE_CD
 		WHERE 1=1 
 		AND B.COUNSEL_CD = #{counselCd}
 	</select>
@@ -102,22 +108,43 @@
 		AND A.COUNSEL_CD =  #{counselCd}
 	</select>
 	<insert id="saveFileInfo" parameterType="com.ezwel.admin.domain.entity.customermanagement.CustomerManagementVo">
-		insert into mind_counsel_record (
-			record_cd
-			, counsel_cd
-			, file_nm
-			, file_path
-			, goal
-			, memo
+		INSERT INTO MIND_COUNSEL_FILE (
+			RECORD_CD
+			, COUNSEL_CD
+			, FILE_NM
+			, FILE_PATH
+			, INTAKE_CD
+			, CENTER_SEQ
+			, CLIENT_CD
+			, DOC_STS
+			, DOC_TYPE
+			, COUNSEL_FILE_SEQ
 		) values (
 			#{recordCd}
 			, #{counselCd}
 			, #{fileNm}
 			, #{fileFullPath}
-			, '1'
-			, #{memo}
+			, #{intakeCd}
+			, #{centerSeq}
+			, #{clientCd}
+			, #{docSts}
+			, #{docType}
+			, #{fileSeq}
 		)
 	</insert>
+	
+	<delete id="deleteFileInfo">
+		DELETE FROM MIND_COUNSEL_FILE 
+		WHERE RECORD_CD = #{recordCd}
+		AND COUNSEL_CD = #{counselCd}
+		AND INTAKE_CD = #{intakeCd}
+		AND CLIENT_CD = #{clientCd}
+		AND DOC_TYPE = #{docType}
+		AND DOC_STS = #{docSts}
+		AND COUNSEL_FILE_SEQ = #{fileSeq}
+	</delete>
+	
+	
 	<select id="getClientCd" resultType="String">
 		select client_cd as clientCd from mind_counsel where counsel_cd = #{counselCd}
 	</select>
@@ -127,16 +154,7 @@
 		select team_cd from mind_mgr where user_id = #{userId}
 	</select>
 	
-		<delete id="deleteFileInfo">
-		DELETE FROM MIND_COUNSEL_FILE 
-		WHERE RECORD_CD = #{recordCd}
-		AND COUNSEL_CD = #{counselCd}
-		AND INTAKE_CD = #{intakeCd}
-		AND CENTER_SEQ = #{centerSeq}
-		AND CLIENT_CD = #{clientCd}
-		AND DOC_TYPE = #{docType}
-		AND DOC_STS = #{status}
-	</delete>
+	
 	
 	<update id="saveStatusInfo" parameterType="com.ezwel.admin.domain.entity.customermanagement.CustomerManagementVo">
 		UPDATE MIND_COUNSEL_FILE SET 

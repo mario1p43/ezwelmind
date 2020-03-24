@@ -47,6 +47,7 @@ public class CustomerManagementService {
 	}
 
 	public void saveFileInfo(CustomerManagementVo customerManagementVo) {
+		customerManagementMapper.deleteFileInfo(customerManagementVo);
 		customerManagementMapper.saveFileInfo(customerManagementVo);
 	}
 

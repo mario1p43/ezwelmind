@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ include file="/WEB-INF/jsp/layout/inc/tags.jspf"%>
+<%@ include file="/WEB-INF/jsp/layout/inc/staticAfter.jspf"%>
 <html>
 <head>
 <title>내담자 관리</title>
@@ -122,6 +123,23 @@ j$(document).ready(function(){
 	});
 });
 </script>
+
+<script type="text/javascript">
+function fileDownLoad(path,name){
+    var f = document.downForm;
+
+	f.filepath.value = path;
+	f.filename.value = name;
+	f.action = "/resources/jsp/fileDownload.jsp";
+	f.submit();
+}
+</script>
+
+<form name="downForm" method="post">
+	<input type="hidden" name="filepath" value="">
+	<input type="hidden" name="filename" value="">
+</form>
+
 </head>
 
 <body>
@@ -288,7 +306,7 @@ j$(document).ready(function(){
 							<input type="hidden" name="counselCd" class="counselCd" value="${defaultInfo.counselCd}">
 							<input type="hidden" name="counselNm" class="counselNm" value="${customerServiceInfo.counselNm}">
 							<input type="hidden" name="clientCd" class="clientCd" value="${defaultInfo.clientCd}">
-							<input type="hidden" name="status" class="status" value="1">
+							<input type="hidden" name="docSts" class="docSts" value="1">
 							<input type="hidden" name="docType" class="docType" value="1">
 						
 						</form> 
@@ -316,7 +334,7 @@ j$(document).ready(function(){
 							<input type="hidden" name="counselCd" class="counselCd" value="${defaultInfo.counselCd}">
 							<input type="hidden" name="counselNm" class="counselNm" value="${customerServiceInfo.counselNm}">
 							<input type="hidden" name="clientCd" class="clientCd" value="${defaultInfo.clientCd}">
-							<input type="hidden" name="status" class="status" value="2">
+							<input type="hidden" name="docSts" class="docSts" value="2">
 							<input type="hidden" name="docType" class="docType" value="1">
 						</form>
 					</td>
@@ -343,7 +361,7 @@ j$(document).ready(function(){
 							<input type="hidden" name="counselCd" class="counselCd" value="${defaultInfo.counselCd}">
 							<input type="hidden" name="counselNm" class="counselNm" value="${customerServiceInfo.counselNm}">
 							<input type="hidden" name="clientCd" class="clientCd" value="${defaultInfo.clientCd}">
-							<input type="hidden" name="status" class="status" value="3">
+							<input type="hidden" name="docSts" class="docSts" value="3">
 							<input type="hidden" name="docType" class="docType" value="1">
 						</form>
 					</td>
@@ -370,7 +388,7 @@ j$(document).ready(function(){
 							<input type="hidden" name="counselCd" class="counselCd" value="${defaultInfo.counselCd}">
 							<input type="hidden" name="counselNm" class="counselNm" value="${customerServiceInfo.counselNm}">
 							<input type="hidden" name="clientCd" class="clientCd" value="${defaultInfo.clientCd}">
-							<input type="hidden" name="status" class="status" value="4">
+							<input type="hidden" name="docSts" class="docSts" value="4">
 							<input type="hidden" name="docType" class="docType" value="1">
 						</form>
 					</td>
@@ -397,7 +415,7 @@ j$(document).ready(function(){
 							<input type="hidden" name="counselCd" class="counselCd" value="${defaultInfo.counselCd}">
 							<input type="hidden" name="counselNm" class="counselNm" value="${customerServiceInfo.counselNm}">
 							<input type="hidden" name="clientCd" class="clientCd" value="${defaultInfo.clientCd}">
-							<input type="hidden" name="status" class="status" value="5">
+							<input type="hidden" name="docSts" class="docSts" value="5">
 							<input type="hidden" name="docType" class="docType" value="1">
 						</form>
 					</td>
@@ -476,7 +494,8 @@ j$(document).ready(function(){
 							<input type="hidden" name="counselCd" class="counselCd" value="${defaultInfo.counselCd}">
 							<input type="hidden" name="counselNm" class="counselNm" value="${customerServiceInfo.counselNm}">
 							<input type="hidden" name="clientCd" class="clientCd" value="${defaultInfo.clientCd}">
-							<input type="hidden" name="status" class="status" value="1">
+							<input type="hidden" name="fileSeq" class="fileSeq" value="${customerServiceInfo.fileSeq1}">
+							<input type="hidden" name="docSts" class="docSts" value="1">
 							<input type="hidden" name="docType" class="docType" value="2">
 						</form>
 					</td>
@@ -525,7 +544,8 @@ j$(document).ready(function(){
 							<input type="hidden" name="counselCd" class="counselCd" value="${defaultInfo.counselCd}">
 							<input type="hidden" name="counselNm" class="counselNm" value="${customerServiceInfo.counselNm}">
 							<input type="hidden" name="clientCd" class="clientCd" value="${defaultInfo.clientCd}">
-							<input type="hidden" name="status" class="status" value="2">
+							<input type="hidden" name="fileSeq" class="fileSeq" value="${customerServiceInfo.fileSeq2}">
+							<input type="hidden" name="docSts" class="docSts" value="2">
 							<input type="hidden" name="docType" class="docType" value="2">
 						</form>
 					</td>
@@ -574,7 +594,8 @@ j$(document).ready(function(){
 							<input type="hidden" name="counselCd" class="counselCd" value="${defaultInfo.counselCd}">
 							<input type="hidden" name="counselNm" class="counselNm" value="${customerServiceInfo.counselNm}">
 							<input type="hidden" name="clientCd" class="clientCd" value="${defaultInfo.clientCd}">
-							<input type="hidden" name="status" class="status" value="3">
+							<input type="hidden" name="fileSeq" class="fileSeq" value="${customerServiceInfo.fileSeq3}">
+							<input type="hidden" name="docSts" class="docSts" value="3">
 							<input type="hidden" name="docType" class="docType" value="2">
 						</form>
 					</td>

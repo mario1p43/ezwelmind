@@ -85,6 +85,14 @@ public class CustomerManagementVo extends FileMind{
 	private String regDt1;
 	private String regDt2;
 	private String regDt3;
+	
+	private String fileSeq1;
+	private String fileSeq2;
+	private String fileSeq3;
+	
+	private String docSts;
+	
+	private String fileSeq;
 		
 	@Override
 	public String contextFilePath(String fileNm) {

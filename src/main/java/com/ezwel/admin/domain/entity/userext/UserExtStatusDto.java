@@ -63,9 +63,14 @@ public class UserExtStatusDto  extends PagingVo{
 	private String endDt;
 	private String risk;
 
+	private String fileSeq1;
+	private String fileSeq2;
+	private String fileSeq3;
+	
 	private String filename1;
 	private String filename2;
 	private String filename3;
+	
 	private String filefath1;
 	private String filefath2;
 	private String filefath3;
