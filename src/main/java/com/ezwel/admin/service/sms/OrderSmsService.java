@@ -650,7 +650,7 @@ public class OrderSmsService {
 		
 		// 해외고객사 중, 이름이 영문이면 영어 문자 발송
 		if (englishNmYn && (StringUtils.containsIgnoreCase(smsResult.getClientCd(), "optum") || StringUtils.containsIgnoreCase(smsResult.getClientCd(), "op_")) ) {
-			
+			//String enScheduleDt = smsResult.getSmsDt();
 			String enScheduleDt = smsResult.getScheduleDt();
 			enScheduleDt = enScheduleDt.replaceAll("년", "/");
 			enScheduleDt = enScheduleDt.replaceAll("월", "/");

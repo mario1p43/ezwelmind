@@ -37,5 +37,7 @@ public class SmsResult {
 	private String counselType;
 	
 	private String siteNm;
+	
+	private String smsDt;
 
 }
