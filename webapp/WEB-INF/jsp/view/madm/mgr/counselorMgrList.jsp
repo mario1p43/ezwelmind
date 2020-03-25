@@ -391,6 +391,10 @@ j$(document).ready(function(){
 				 //window.location.reload();
 				 return;
 			}
+			if(leng >1){
+				j$.alert("선택된 값이 1개 이상입니다.");
+				 return;
+			}
 			
 			console.log("newval:::"+newval);	
 			var con_test = confirm("상담사에 변경내용이 SMS로 전달됩니다.")
@@ -662,10 +666,7 @@ j$(document).ready(function(){
 			 j$.alert("선택된 값이 없습니다.");
 			 return;
 		}
-		if(leng >1){
-			j$.alert("선택된 값이 없습니다.");
-			 return;
-		}
+
 		
 		var frm = searchMgr;
 		var temp = "" ;
