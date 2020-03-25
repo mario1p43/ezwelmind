@@ -384,6 +384,14 @@ j$(document).ready(function(){
 		console.log("previous:::"+previous);
 		}).change(function() { 
 			var newval = this.value;
+			var leng = j$("input[class=check]:checked").length;
+			
+			if( leng == 0 ) {
+				 j$.alert("선택된 값이 없습니다.");
+				 //window.location.reload();
+				 return;
+			}
+			
 			console.log("newval:::"+newval);	
 			var con_test = confirm("상담사에 변경내용이 SMS로 전달됩니다.")
 			if(con_test == true){
@@ -487,7 +495,7 @@ j$(document).ready(function(){
 							return false;
 						}
 					}else{
-					   	temp+= "'"+frm.elements["check"][i].value+"'";
+					   	temp+= frm.elements["check"][i].value;
 					   	if(frm.elements["mgrStatusTemp"][i].value != '대기'){
 							alert('대기상태가 아닌 상담사를 선택하셨습니다.');
 							return false;
@@ -530,13 +538,13 @@ j$(document).ready(function(){
 			for(var i=0;i<frm.elements["check"].length;i++){
 				if(frm.elements["check"][i].checked > 0){
 					if(cnt!=0){ 
-					   	temp+=","+"'"+ frm.elements["check"][i].value+"'";
+					   	temp+=","+ frm.elements["check"][i].value;
 						if(frm.elements["mgrStatusTemp"][i].value != '승인'){
 							alert('승인상태가 아닌 상담사를 선택하셨습니다.');
 							return false;
 						}
 					}else{
-					   	temp+= "'"+frm.elements["check"][i].value+"'";
+					   	temp+= frm.elements["check"][i].value;
 					   	if(frm.elements["mgrStatusTemp"][i].value != '승인'){
 							alert('승인상태가 아닌 상담사를 선택하셨습니다.');
 							return false;
@@ -600,13 +608,13 @@ j$(document).ready(function(){
 			for(var i=0;i<frm.elements["check"].length;i++){
 				if(frm.elements["check"][i].checked > 0){
 					if(cnt!=0){ 
-					   	temp+=","+"'"+ frm.elements["check"][i].value+"'";
+					   	temp+=","+ frm.elements["check"][i].value;
 						if(frm.elements["mgrStatusTemp"][i].value != '대기'){
 							alert('대기상태가 아닌 상담사를 선택하셨습니다.');
 							return false;
 						}
 					}else{
-					   	temp+= "'"+frm.elements["check"][i].value+"'";
+					   	temp+= frm.elements["check"][i].value;
 					   	if(frm.elements["mgrStatusTemp"][i].value != '대기'){
 							alert('대기상태가 아닌 상담사를 선택하셨습니다.');
 							return false;
@@ -625,7 +633,7 @@ j$(document).ready(function(){
 		
 		params.userId = temp;
 		params.mgrStatus  = 'Y';
-		
+		console.log(params.userId);
 		
  		if(confirm("해당 상담사를 승인 처리하시겠습니까?")){
  			var spinner = new Spinner().spin().el;
@@ -654,6 +662,11 @@ j$(document).ready(function(){
 			 j$.alert("선택된 값이 없습니다.");
 			 return;
 		}
+		if(leng >1){
+			j$.alert("선택된 값이 없습니다.");
+			 return;
+		}
+		
 		var frm = searchMgr;
 		var temp = "" ;
 		var cnt = 0;
@@ -661,7 +674,7 @@ j$(document).ready(function(){
 		//재직상태 checkbox 값 
 		if ( typeof frm.elements["check"].length == "undefined" ) {
 			// 체크박스가 다 disabled이고 하나만 있으면 배열이 먹지 않아서 undefind체크함
-			temp+= "'"+frm.elements["check"].value+"'";
+			temp+= frm.elements["check"].value;
 			if(frm.elements["mgrStatusTemp"].value != '대기'){
 				alert('대기상태가 아닌 상담사를 선택하셨습니다.');
 				return false;
@@ -670,13 +683,13 @@ j$(document).ready(function(){
 			for(var i=0;i<frm.elements["check"].length;i++){
 				if(frm.elements["check"][i].checked > 0){
 					if(cnt!=0){ 
-					   	temp+=","+"'"+ frm.elements["check"][i].value+"'";
+					   	temp+=","+frm.elements["check"][i].value;
 						if(frm.elements["mgrStatusTemp"][i].value != '대기'){
 							alert('대기상태가 아닌 상담사를 선택하셨습니다.');
 							return false;
 						}
 					}else{
-					   	temp+= "'"+frm.elements["check"][i].value+"'";
+					   	temp+= frm.elements["check"][i].value;
 					   	if(frm.elements["mgrStatusTemp"][i].value != '대기'){
 							alert('대기상태가 아닌 상담사를 선택하셨습니다.');
 							return false;
