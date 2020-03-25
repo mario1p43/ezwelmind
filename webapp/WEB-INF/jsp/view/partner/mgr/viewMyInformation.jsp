@@ -1394,7 +1394,7 @@ function fileDownLoad(path,name){
 	<td>
 		<table cellpadding="5" cellspacing="0" border="1" width="100%" style="border-collapse:collapse;">	
 			<!-- 심리 -->
-			<tr class="psyGroup">
+			<tr class="capability">
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5" rowspan="2">Capability</td>
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 외국어 상담</td>
 				<td >		
@@ -1407,7 +1407,7 @@ function fileDownLoad(path,name){
 				</td>
 			</tr>
 			
-			<tr class="psyGroup">
+			<tr class="capability">
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 특수주제</td>
 				<td>
 					<input type="checkbox" class="specialType" name="specialType"  value="101082"  /> 성피해상담
@@ -1425,7 +1425,7 @@ function fileDownLoad(path,name){
 			</tr>
 			
 			<!-- 직장관련 -->
-			<tr class="psyGroup">
+			<tr class="capability">
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5" rowspan="7">주요주제</td>
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 직장관련</td>
 				<td>
@@ -1445,7 +1445,7 @@ function fileDownLoad(path,name){
 			</tr>
 
 			<!-- 개인관련 -->
-			<tr class="psyGroup">
+			<tr class="capability">
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 개인관련</td>
 				<td>
 					<input type="checkbox" class="personalType" name="personalType"  value="101105"  /> 자기탐색 및 이해
@@ -1474,7 +1474,7 @@ function fileDownLoad(path,name){
 				
 						
 			<!-- 가족관련 -->
-			<tr class="psyGroup">
+			<tr class="capability">
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 가족관련</td>
 				<td>
 					<input type="checkbox" class="familyType" name="familyType"  value="101123"  /> 가족이해
@@ -1499,7 +1499,7 @@ function fileDownLoad(path,name){
 			</tr>
 			
 			<!-- 충격/트라우마 -->
-			<tr class="psyGroup">
+			<tr class="capability">
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 충격/트라우마</td>
 				<td>
 					<input type="checkbox" class="traumaType" name="traumaType"  value="101140"  /> 범죄피해자
@@ -1514,7 +1514,7 @@ function fileDownLoad(path,name){
 			</tr>
 	
 			<!-- 대상별 -->
-			<tr class="psyGroup">
+			<tr class="capability">
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 대상별</td>
 				<td>
 					<input type="checkbox" class="targetType" name="targetType"  value="101149" id="mentalType" /> 임원급
@@ -1526,7 +1526,7 @@ function fileDownLoad(path,name){
 			</tr>
 
 			<!-- 법률 -->
-			<tr class="psyGroup">
+			<tr class="capability">
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 법률</td>
 				<td>
 					<input type="checkbox" class="lawCounselType" name="lawCounselType"  value="101155" id="mentalType" /> 가정사 – 이혼, 상속, 유언 등
@@ -1539,7 +1539,7 @@ function fileDownLoad(path,name){
 			</tr>
 
 			<!-- 재무 -->
-			<tr class="psyGroup">
+			<tr class="capability">
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 재무</td>
 				<td>
 					<input type="checkbox" class="financeCounselType" name="financeCounselType"  value="101162" id="mentalType" /> 신입사원 재무설계
@@ -1551,7 +1551,7 @@ function fileDownLoad(path,name){
 			
 			<!-- 상담선호 -->
 			<!-- 단회기상담  -->
-			<tr class="psyGroup">
+			<tr class="capability">
 			<td class="line" height="30" align="left" bgcolor="#F5F5F5" rowspan="2">상담선호</td>
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 단회기상담</td>
 				<td>
@@ -1559,7 +1559,7 @@ function fileDownLoad(path,name){
 				</td>
 			</tr>
 			<!-- 선호접근 -->
-			<tr class="psyGroup">
+			<tr class="capability">
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 선호접근</td>
 				<td>
 					<input type="checkbox" class="preferredType" name="preferredType"  value="101168"	 /> 인지행동접근
@@ -1570,7 +1570,7 @@ function fileDownLoad(path,name){
 				</td>
 			</tr>
 			<!-- 상담성향 -->
-			<tr class="psyGroup">
+			<tr class="capability">
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5" colspan="2">상담성향</td>
 				<td>
 					<input type="checkbox" class="tendencyType" name="tendencyType"  value="101173"  /> 공감적인

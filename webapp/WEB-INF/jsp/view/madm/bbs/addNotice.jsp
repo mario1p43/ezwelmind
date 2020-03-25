@@ -418,6 +418,8 @@ j$(function(){
 										
 					</td>
 	 					<td align="left" colspan="3">
+	 					
+	 					<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_ADMIN" />제휴사관리자
 						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_CENTER" />센터장
 						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_SANGDAM" />상담
 						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_SEND" />파견
