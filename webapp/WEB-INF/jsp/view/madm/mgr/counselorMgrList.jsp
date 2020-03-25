@@ -388,7 +388,7 @@ j$(document).ready(function(){
 			
 			if( leng == 0 ) {
 				 j$.alert("선택된 값이 없습니다.");
-				 //window.location.reload();
+				 window.location.reload();
 				 return;
 			}
 			if(leng >1){
