@@ -505,7 +505,9 @@ function updateCheckYnManager(){
 													</td>
 												</sec:authorize>
 												<td align="right">
-												<sec:authorize access="hasAnyRole('ROLE_PARTNER_CENTER')">
+												
+												
+												
 												
 													<input type="button" id="excelBtn" onclick="excelDownPayCheck();" 
 														startDt="${param.startDt }" endDt="${param.endDt }"
@@ -516,7 +518,7 @@ function updateCheckYnManager(){
 														searchCenterSeq="${payCheckAddDto.searchCenterSeq }"
 														value="엑셀 다운로드"/>
 															<input type="button"  onclick="javascript:updateCheckYn();" value="정산 확인">
-														
+														<sec:authorize access="hasAnyRole('ROLE_PARTNER_CENTER')">
 															<input type="button"  onclick="javascript:updateCheckYnOwner();" value="센터장 확인">
 														</sec:authorize>
 														<sec:authorize access="hasAnyRole('ROLE_PARTNER_ADMIN')">

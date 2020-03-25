@@ -879,7 +879,7 @@ function counselorChange() {
 							<br>
 							<strong> * 일정을 클릭하여 상담일 지정 및 취소가 가능합니다.</strong>
 							<!-- 수정버튼 영역 -->
-									 <input type="button" id="updateBtn" value="등록" style="height:30px; width:100px;margin: 10px 300px;"> 
+									 <input type="button" id="updateBtn" value="개별 등록" style="height:30px; width:100px;margin: 10px 300px;"> 
 									<span style="margin-left: 20px;"></span>
 									<!-- 수정버튼 영역 끝 -->
 									<br>
