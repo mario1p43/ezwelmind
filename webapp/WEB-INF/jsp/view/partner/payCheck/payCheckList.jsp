@@ -517,7 +517,9 @@ function updateCheckYnManager(){
 														searchCounselorNm="${payCheckAddDto.searchCounselorNm}"
 														searchCenterSeq="${payCheckAddDto.searchCenterSeq }"
 														value="엑셀 다운로드"/>
+														<sec:authorize access="hasAnyRole('ROLE_PARTNER_SANGDAM')">
 															<input type="button"  onclick="javascript:updateCheckYn();" value="정산 확인">
+														</sec:authorize>
 														<sec:authorize access="hasAnyRole('ROLE_PARTNER_CENTER')">
 															<input type="button"  onclick="javascript:updateCheckYnOwner();" value="센터장 확인">
 														</sec:authorize>
