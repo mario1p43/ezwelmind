@@ -289,6 +289,7 @@ j$(document).ready(function(){
 							<tr>
 								<td>
 									<input type="file" name="consultAgreement" style='width: 40%;'>
+									<a href="javascript:fileDownLoad('${customerServiceInfo.filefath2}','${customerServiceInfo.filename101}')">${customerServiceInfo.filename101}</a>
 									<input type="button" id="btnConsultAgreement" value="등록">
 								</td>
 							</tr>
@@ -299,6 +300,7 @@ j$(document).ready(function(){
 							<input type="hidden" name="counselCd" class="counselCd" value="${defaultInfo.counselCd}">
 							<input type="hidden" name="counselNm" class="counselNm" value="${customerServiceInfo.counselNm}">
 							<input type="hidden" name="clientCd" class="clientCd" value="${defaultInfo.clientCd}">
+							<input type="hidden" name="fileSeq" class="fileSeq" value="${customerServiceInfo.fileSeq101}">
 							<input type="hidden" name="docSts" class="docSts" value="1">
 							<input type="hidden" name="docType" class="docType" value="1">
 						
@@ -318,6 +320,7 @@ j$(document).ready(function(){
 							<tr>
 								<td>
 									<input type="file" name="privateAgreement" style='width: 40%;'>
+									<a href="javascript:fileDownLoad('${customerServiceInfo.filefath102}','${customerServiceInfo.filename102}')">${customerServiceInfo.filename102}</a>
 									<input type="button" id="btnPrivateAgreement" value="등록">
 								</td>
 							</tr>
@@ -327,6 +330,7 @@ j$(document).ready(function(){
 							<input type="hidden" name="counselCd" class="counselCd" value="${defaultInfo.counselCd}">
 							<input type="hidden" name="counselNm" class="counselNm" value="${customerServiceInfo.counselNm}">
 							<input type="hidden" name="clientCd" class="clientCd" value="${defaultInfo.clientCd}">
+							<input type="hidden" name="fileSeq" class="fileSeq" value="${customerServiceInfo.fileSeq102}">
 							<input type="hidden" name="docSts" class="docSts" value="2">
 							<input type="hidden" name="docType" class="docType" value="1">
 						</form>
@@ -345,6 +349,7 @@ j$(document).ready(function(){
 							<tr>
 								<td>
 									<input type="file" name="lifeAgreement" style='width: 40%;'>
+									<a href="javascript:fileDownLoad('${customerServiceInfo.filefath103}','${customerServiceInfo.filename103}')">${customerServiceInfo.filename103}</a>
 									<input type="button" id="btnLifeAgreement" value="등록">
 								</td>
 							</tr>
@@ -354,6 +359,7 @@ j$(document).ready(function(){
 							<input type="hidden" name="counselCd" class="counselCd" value="${defaultInfo.counselCd}">
 							<input type="hidden" name="counselNm" class="counselNm" value="${customerServiceInfo.counselNm}">
 							<input type="hidden" name="clientCd" class="clientCd" value="${defaultInfo.clientCd}">
+							<input type="hidden" name="fileSeq" class="fileSeq" value="${customerServiceInfo.fileSeq103}">
 							<input type="hidden" name="docSts" class="docSts" value="3">
 							<input type="hidden" name="docType" class="docType" value="1">
 						</form>
@@ -372,6 +378,7 @@ j$(document).ready(function(){
 							<tr>
 								<td>
 									<input type="file" name="mentalAgreement" style='width: 40%;'>
+									<a href="javascript:fileDownLoad('${customerServiceInfo.filefath104}','${customerServiceInfo.filename104}')">${customerServiceInfo.filename104}</a>
 									<input type="button" id="btnMentalAgreement" value="등록">
 								</td>
 							</tr>
@@ -381,6 +388,7 @@ j$(document).ready(function(){
 							<input type="hidden" name="counselCd" class="counselCd" value="${defaultInfo.counselCd}">
 							<input type="hidden" name="counselNm" class="counselNm" value="${customerServiceInfo.counselNm}">
 							<input type="hidden" name="clientCd" class="clientCd" value="${defaultInfo.clientCd}">
+							<input type="hidden" name="fileSeq" class="fileSeq" value="${customerServiceInfo.fileSeq104}">
 							<input type="hidden" name="docSts" class="docSts" value="4">
 							<input type="hidden" name="docType" class="docType" value="1">
 						</form>
@@ -399,6 +407,7 @@ j$(document).ready(function(){
 							<tr>
 								<td>
 									<input type="file" name="ReflectionAgreement" style='width: 40%;'>
+									<a href="javascript:fileDownLoad('${customerServiceInfo.filefath105}','${customerServiceInfo.filename105}')">${customerServiceInfo.filename105}</a>
 									<input type="button" id="btnReflectionAgreement" value="등록">
 								</td>
 							</tr>
@@ -408,6 +417,7 @@ j$(document).ready(function(){
 							<input type="hidden" name="counselCd" class="counselCd" value="${defaultInfo.counselCd}">
 							<input type="hidden" name="counselNm" class="counselNm" value="${customerServiceInfo.counselNm}">
 							<input type="hidden" name="clientCd" class="clientCd" value="${defaultInfo.clientCd}">
+							<input type="hidden" name="fileSeq" class="fileSeq" value="${customerServiceInfo.fileSeq105}">
 							<input type="hidden" name="docSts" class="docSts" value="5">
 							<input type="hidden" name="docType" class="docType" value="1">
 						</form>
