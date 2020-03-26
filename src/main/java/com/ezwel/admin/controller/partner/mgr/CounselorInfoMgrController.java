@@ -222,7 +222,7 @@ public class CounselorInfoMgrController {
 	/*비디앱스 2020.01.01 
 	 * 나의정보 관리 / 상담사 정보 관리
 	 * 임시 상태값 저장 */
-	@RequestMapping(value="/updateCounselorInfoMgrImsi")
+	@RequestMapping(value="/updateCounselorInfoMgrImsi",method = {RequestMethod.POST,RequestMethod.GET})
 	public String updateCounselorInfoMgrImsi(@ModelAttribute MgrDto mgrDto, @ModelAttribute MgrSubDto mgrSubDto, @ModelAttribute MgrCertDto mgrCertDto, @ModelAttribute MgrCareerArray mgrCareerArray, @ModelAttribute MgrBookArray mgrBookArray, Model model, HttpServletRequest request,
 			MultipartHttpServletRequest mhsq){
 		Manager manager = UserDetailsHelper.getAuthenticatedUser();

@@ -118,7 +118,6 @@
 			, CLIENT_CD
 			, DOC_STS
 			, DOC_TYPE
-			, COUNSEL_FILE_SEQ
 		) values (
 			#{recordCd}
 			, #{counselCd}
@@ -129,7 +128,6 @@
 			, #{clientCd}
 			, #{docSts}
 			, #{docType}
-			, #{fileSeq}
 		)
 	</insert>
 	

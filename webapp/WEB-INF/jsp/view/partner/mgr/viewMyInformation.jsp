@@ -6,21 +6,6 @@
 <head>
 <title>개인 정보관리 수정</title>
 <link href="${url:resource('/resources/js/plugin/jquery-ui-1.8.9.custom-datepicker.css')}" rel="stylesheet" type="text/css" />
-<script type="text/javascript">
-function fileDownLoad(path,name){
-    var f = document.downForm;
-
-	f.filepath.value = path;
-	f.filename.value = name;
-	f.action = "/resources/jsp/fileDownload.jsp";
-	f.submit();
-}
-</script>
-
-<form name="downForm" method="post">
-	<input type="hidden" name="filepath" value="">
-	<input type="hidden" name="filename" value="">
-</form>
 
 <script type="text/javascript">
 	var num = 0;
@@ -1216,7 +1201,9 @@ function fileDownLoad(path,name){
 				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">&nbsp;&nbsp;사진</th>
 		    	<td class="line" colspan="3" >
 		    		<input type="file" name="picAdd" />&nbsp;
+		    		<a href="javascript:fileDownLoad('${mgr.filePath}', '${mgr.fileNm}');">
 		    		${mgr.fileNm }
+		    		</a>
 		    		<input type="button" value="삭제" id="delPhotoBtn"/>
 		    	</td>
 			</tr>

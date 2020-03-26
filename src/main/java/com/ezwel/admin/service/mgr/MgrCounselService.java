@@ -411,6 +411,8 @@ public class MgrCounselService {
 		counselorInfoMgrMapper.updateMgrInfoImsi(mgrDto);
 		counselorInfoMgrMapper.updateCounselorInfoMgrImsi(mgrSubDto);
 		
+		counselorInfoMgrMapper.updateCounselorInfoMgrImg(mgrSubDto);
+		
 		if( StringUtils.isNotEmpty(mgrDto.getAuthCd()) ){
 			counselorInfoMgrMapper.updateAclUserAuth(mgrDto);
 		}

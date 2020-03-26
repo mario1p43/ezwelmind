@@ -611,7 +611,7 @@
 											<a
 											href="javascript:fileDownLoad('${centerInfo.filePath1}', '${centerInfo.fileNm1}');">
 											
-											<img src="<spring:eval expression="@global['upload.http.img']" />${centerInfo.filePath1}" style="width: 280px;height: 150px;">${centerInfo.fileNm1}
+											<img src="<spring:eval expression="@global['upload.dir']" />${centerInfo.filePath1}" style="width: 280px;height: 150px;">${centerInfo.fileNm1}
 											</a>
 											<span id="path1"></span> <input type="hidden" name="fileNm1"
 											value="${centerInfo.fileNm1 }" /> <input type="hidden"
@@ -706,7 +706,7 @@
 										<td class="line" colspan="5"><input type="file"
 											name="file2" size="50" /> <a
 											href="javascript:fileDownLoad('${centerInfo.filePath2}', '${centerInfo.fileNm2}');">
-											<img src="<spring:eval expression="@global['upload.http.img']" />${centerInfo.filePath2}" style="width: 280px;height: 150px;">
+											<img src="<spring:eval expression="@global['upload.dir']" />${centerInfo.filePath2}" style="width: 280px;height: 150px;">
 											${centerInfo.fileNm2}</a>
 											<input type="hidden" name="fileNm2"
 											value="${centerInfo.fileNm2 }" /> <input type="hidden"
@@ -718,7 +718,7 @@
 										<td class="line" colspan="5"><input type="file"
 											name="file3" size="50" /> <a
 											href="javascript:fileDownLoad('${centerInfo.filePath3}', '${centerInfo.fileNm3}');">
-											<img src="<spring:eval expression="@global['upload.http.img']" />${centerInfo.filePath3}" style="width: 280px;height: 150px;">
+											<img src="<spring:eval expression="@global['upload.dir']" />${centerInfo.filePath3}" style="width: 280px;height: 150px;">
 											${centerInfo.fileNm3}</a>
 											<input type="hidden" name="fileNm3"
 											value="${centerInfo.fileNm3 }" /> <input type="hidden"

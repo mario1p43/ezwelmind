@@ -121,24 +121,17 @@ j$(document).ready(function(){
 			j$("#addConsultConfirmFiles").submit();
 		}
 	});
+	
+	
 });
+
 </script>
 
 <script type="text/javascript">
-function fileDownLoad(path,name){
-    var f = document.downForm;
 
-	f.filepath.value = path;
-	f.filename.value = name;
-	f.action = "/resources/jsp/fileDownload.jsp";
-	f.submit();
-}
 </script>
 
-<form name="downForm" method="post">
-	<input type="hidden" name="filepath" value="">
-	<input type="hidden" name="filename" value="">
-</form>
+
 
 </head>
 
@@ -561,7 +554,7 @@ function fileDownLoad(path,name){
 							<tr>
 								<td>
 									<input type="file" name="ConsultConfirm" style='width: 40%;'>
-									<a href="javascript:fileDownLoad('${customerServiceInfo.filefath3}','${customerServiceInfo.filename3}')">${customerServiceInfo.filename3}</a>
+									<a href='javascript:fileDownLoad("${customerServiceInfo.filefath3}","${customerServiceInfo.filename3}")'>${customerServiceInfo.filename3}</a>
 									<c:if test="${customerServiceInfo.apprStatus3 eq null}">
 									<input type="button" id="btnConsultConfirm" value="파일 업로드">
 									</c:if>
