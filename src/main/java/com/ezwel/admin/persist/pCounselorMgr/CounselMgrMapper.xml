@@ -160,6 +160,7 @@
 					,E.USER_NM as counselMgrNm
 					,C.COUNSEL_RESERV_CHK
 					,C.RELATION
+					, IFNULL(A.EXTENSION_NUM, '1')   AS  extensionNum
 					<choose>
 						<when test="orderByNm =='counselor' ">
 							,'counselor' AS orderByNm
@@ -280,6 +281,7 @@
 					,C.COUNSEL_RESERV_CHK
 					,C.RELATION
 					,F.RISKS AS risk
+					, IFNULL(A.EXTENSION_NUM, '1')   AS  extensionNum
 					<choose>
 						<when test="orderByNm =='counselor' ">
 							,'counselor' AS orderByNm

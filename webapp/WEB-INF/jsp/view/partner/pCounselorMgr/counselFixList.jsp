@@ -659,6 +659,7 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 											
 											
 											<td bgcolor="#F5F5F5" width="7%"><strong>첫일정<br/>확정</strong></td>
+											<td bgcolor="#F5F5F5" width="3%"><strong>회기</strong></td>
 											<td bgcolor="#F5F5F5" width="6%"><strong>일지작성</strong></td>
 											<!-- <td bgcolor="#F5F5F5" width="auto;"><strong>한도조회</strong></td> --><!-- 사용안함 -->
 											<td bgcolor="#F5F5F5" width="8%"><strong>다음회기등록<!-- <br>(포인트 즉시결제) --></strong></td>
@@ -703,7 +704,7 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 											
 											<td >${list.counselReservChk }</td><!-- 1회기 -->
 											
-											
+											<td >${list.extensionNum }회차</td>
 											<%-- 데이터 날짜 데이터 --%>
 											<c:set scope="page" var="userCounselDate">${list.ymd } ${list.stTime }</c:set>
 											<fmt:parseDate value="${userCounselDate }" pattern="yyyy-MM-dd HH:mm" var="userCounselDt" />
@@ -714,7 +715,14 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 													<td><strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></td><!--  -->
 												</c:when>
 												<c:when test="${list.recordStatus == 100696}">
-													<td><strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></td>
+												<c:choose>
+														<c:when test="${list.extensionNum == 1 }">
+															<td><a href="#" class="pCounselorDateModify" value="${list.counselCd}&${list.userKey}&${list.counselType}&${list.intakeCd}" ><strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></a></td>
+														</c:when>
+														<c:otherwise>
+															<td><strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></td>
+														</c:otherwise>
+												</c:choose>
 												</c:when>
 												<c:otherwise>
 													<c:choose>
