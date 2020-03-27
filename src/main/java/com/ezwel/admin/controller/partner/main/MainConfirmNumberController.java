@@ -19,16 +19,22 @@ import com.ezwel.admin.service.bbs.BBSService;
 import com.ezwel.admin.service.pCounselorMgr.CounselReservationService;
 import com.ezwel.admin.service.pCounselorMgr.dto.CounselReservationDto;
 import com.ezwel.admin.service.security.UserDetailsHelper;
+import com.ezwel.common.commonController;
 import com.ezwel.core.framework.web.vo.Paging;
 
 
 @Controller
-public class MainConfirmNumberController {	
+public class MainConfirmNumberController  extends commonController {	
 	private static Logger log = LoggerFactory.getLogger(MainConfirmNumberController.class);
 	
 	@RequestMapping(value={"/partner/main/confirmnumberview"}, method=RequestMethod.GET)
-	public String confirmNumberView(Model model, HttpServletRequest request) {		
-		return "partner/confirmnumber";
+	public String confirmNumberView(Model model, HttpServletRequest request) {	
+		if(isDevice(request) == IS_PC) {
+			return "partner/confirmnumber";
+		}else {
+			return "partner/confirmnumber_mo";
+		}
+		
 	}
 
 	@RequestMapping(value={"/partner/main/confirmnumber"}, method=RequestMethod.POST)
