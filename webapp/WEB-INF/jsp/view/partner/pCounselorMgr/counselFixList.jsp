@@ -658,13 +658,13 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 											<td bgcolor="#F5F5F5" width="7%"><strong>상담분야</strong></td>
 											
 											
-											<td bgcolor="#F5F5F5" width="7%"><strong>첫일정<br/>확정</strong></td>
+											<td bgcolor="#F5F5F5" width="4%"><strong>첫일정<br/>확정</strong></td>
 											<td bgcolor="#F5F5F5" width="3%"><strong>회기</strong></td>
 											<td bgcolor="#F5F5F5" width="6%"><strong>일지작성</strong></td>
 											<!-- <td bgcolor="#F5F5F5" width="auto;"><strong>한도조회</strong></td> --><!-- 사용안함 -->
 											<td bgcolor="#F5F5F5" width="8%"><strong>다음회기등록<!-- <br>(포인트 즉시결제) --></strong></td>
 											<td bgcolor="#F5F5F5" width="8%"><strong>상담일정변경</strong></td>
-											
+											<td bgcolor="#F5F5F5" width="8%"><strong>연장신청서<br>승인상태</strong></td>
 										</tr>
 
 										<c:forEach var="list" items="${paging.list}" varStatus="status">
@@ -751,7 +751,30 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 												<input type="button" userKey="${list.userKey}" counselCd="${list.counselCd}" 
 													clientCd="${list.clientCd}" userStatus="${list.userStatus}" userUseYn="${list.useYn}" counselDate="${list.ymd}" channelType="${list.channelType }" value="상담일정변경" class="counselChange" />
 											</td><!-- 상담일정변경 -->
+											<td>
 											
+												<c:if test="${list.apprStatus1 eq '1' }">
+							 					미확인
+							 					</c:if>
+							 					<c:if test="${list.apprStatus1 eq '2' }">
+							 					승인요청
+							 					</c:if>
+							 					<c:if test="${list.apprStatus1 eq '3' }">
+							 					승인대기
+							 					</c:if>
+							 					<c:if test="${list.apprStatus1 eq '4' }">
+							 					고객사 승인완료
+							 					</c:if>
+							 					<c:if test="${list.apprStatus1 eq '5' }">
+							 					고객사 승인불가
+							 					</c:if>
+							 					<c:if test="${list.apprStatus1 eq '6' }">
+							 					승인
+							 					</c:if>
+							 					<c:if test="${list.apprStatus1 eq '7' }">
+							 					승인불가
+							 					</c:if>
+											</td><!-- 연장신청상태 -->
 
 											
 											

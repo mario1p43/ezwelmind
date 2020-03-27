@@ -211,10 +211,9 @@
 			,REG_ID = #{regId} -->
 		WHERE 1=1
 		AND DOC_TYPE = #{docType}
-		AND DOC_STS = #{status}
+		AND DOC_STS = #{docSts}
 		AND COUNSEL_CD = #{counselCd}
 		AND CLIENT_CD = #{clientCd}
-		AND CENTER_SEQ = #{centerSeq}
 		AND INTAKE_CD = #{intakeCd}
 	</update>
 	<select id="getmaxRecordCd" resultType="String">
