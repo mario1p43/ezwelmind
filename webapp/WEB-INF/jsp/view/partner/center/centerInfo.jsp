@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"%>
 <%@ include file="/WEB-INF/jsp/layout/inc/tags.jspf"%>
-
 <html>
 <head>
 <title>센터정보관리</title>
@@ -861,7 +860,7 @@
 									</tr>
 									<tr>
 										<th>학습 / 진로검사1</th>
-										<td colspan="4"><input type="checkbox" name="" value="101070" disabled="disabled">Holland
+										<td colspan="4"><input type="checkbox" name="mentalPsy" value="101070" disabled="disabled">Holland
 										</td>
 									</tr>
 									<tr>

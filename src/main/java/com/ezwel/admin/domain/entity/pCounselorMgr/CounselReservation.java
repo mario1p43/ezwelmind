@@ -105,4 +105,10 @@ public class CounselReservation extends PagingVo{
 	private String relation;
 	
 	private String risk; // 사례위험도
+	
+	private String filename1;
+	private String filefath1;
+	private String apprStatus1;
+	
+	
 }

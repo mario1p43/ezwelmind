@@ -876,7 +876,7 @@
 									</tr>
 									<tr>
 										<th>학습 / 진로검사1</th>
-										<td colspan="4"><input type="checkbox" name="" value="101070" disabled="disabled">Holland
+										<td colspan="4"><input type="checkbox" name="mentalPsy" value="101070" disabled="disabled">Holland
 										</td>
 									</tr>
 									<tr>

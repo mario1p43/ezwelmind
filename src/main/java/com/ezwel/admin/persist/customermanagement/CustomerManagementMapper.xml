@@ -165,6 +165,7 @@
 			, CLIENT_CD
 			, DOC_STS
 			, DOC_TYPE
+			, APPR_STATUS
 		) values (
 			#{recordCd}
 			, #{counselCd}
@@ -175,6 +176,7 @@
 			, #{clientCd}
 			, #{docSts}
 			, #{docType}
+			, '1'
 		)
 	</insert>
 	
