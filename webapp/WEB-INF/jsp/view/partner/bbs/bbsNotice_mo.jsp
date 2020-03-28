@@ -2,7 +2,48 @@
 <%@ include file="/WEB-INF/jsp/layout/inc/tags.jspf"%>
 <html>
 <head>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 <title>센터정보관리</title>
+
+<style>
+	table{border-spacing:0!important}
+	table td{background:none!important}
+	.notice-wrapper{padding:0 5vw}
+	.notice-wrapper .data-list-wrapper{display:flow-root;margin-top:5vw}
+	.notice-wrapper .data-list-wrapper table{width:100%;text-align:center;border:0;border-collapse:collapse}
+	.notice-wrapper .data-list-wrapper table tr{height:8vw}
+	
+	.notice-wrapper .content-wrapper:first-child{margin-top:0vw}
+	.notice-wrapper .content-wrapper .title-block{font-size:16px;font-weight:bold;line-height:130%}
+	.notice-wrapper .content-wrapper .input-block{display:flow-root;margin-top:2vw}
+	.notice-wrapper .content-wrapper .input-block.line-bottom input[type=text]{width:100%;float:left;padding:4px 0;font-size:16px;line-height:130%;border:none;outline:none}
+	.notice-wrapper .content-wrapper .input-block .checkbox-wrapper{float:left;margin-right:4vw;font-size:14px}
+	.notice-wrapper .content-wrapper .line-bottom{border-bottom:1px solid #C4C4C4}
+	.notice-wrapper .content-wrapper .datetimepicker-block{display:flex}
+	.notice-wrapper .content-wrapper .datetimepicker-block span{display:inline-block;float:left;width:20px;text-align:center;line-height:36px}
+	.notice-wrapper .content-wrapper .datetimepicker-block input[type=text]{float:left;width:calc(50% - 10px);height:32px;padding:0 8px;font-size:14px;border:1px solid #828282}
+	.notice-wrapper .content-wrapper .datetimepicker-btn-block{display:flow-root;margin-top:2vw}
+	.notice-wrapper .content-wrapper .datetimepicker-btn-block input[type=button]{float:left;width:calc((100% - 6vw) / 4);height:32px;font-weight:bold;font-size:16px;background-color:#E0E0E0;border:1px solid #BDBDBD;border-radius:4px}
+	.notice-wrapper .content-wrapper .datetimepicker-btn-block input[type=button]:not(:last-child){margin-right:2vw}
+	.notice-wrapper .content-wrapper .search-btn{height:40px;width:100%;color:white;font-weight:bold;font-size:16px;background-color:#006CBA;border:1px solid #004B85;border-radius:4px}
+	.notice-wrapper .content-wrapper .result-info-left{float:left}
+	.notice-wrapper .content-wrapper .result-info-right{float:right}
+	.notice-wrapper .content-wrapper .insert-btn{color:#2F80ED;font-size:14px;line-height:130%}
+	
+	.notice-wrapper .data-list-wrapper{display:table;width:100%;margin-top:2vw;table-layout:fixed;border-collapse:collapse}
+	.notice-wrapper .data-list-wrapper .result-list-left{float:left;width:calc(43% - 1px);border-right:1px solid #C4C4C4}
+	.notice-wrapper .data-list-wrapper .result-list-right{float:left;width:57%;overflow:auto}
+	.notice-wrapper .data-list-wrapper table{width:100%;text-align:center;border-collapse:collapse}
+	.notice-wrapper .data-list-wrapper table thead{background-color:#F2F2F2;border-bottom:1px solid #C4C4C4}
+	.notice-wrapper .data-list-wrapper .result-list-left table tr th{height:32px;padding:0}
+	.notice-wrapper .data-list-wrapper .result-list-right table tr th{height:32px;padding:0 2vw}
+	.notice-wrapper .data-list-wrapper table tr td{height:44px;padding:0 2vw}
+	.notice-wrapper .data-list-wrapper table tr:nth-child(odd){background-color:#E0E0E0}
+	.notice-wrapper .data-list-wrapper table tr:nth-child(even){background-color:#F2F2F2}
+	
+	.notice-wrapper .data-list-wrapper select{width:20vw;height:8vw;padding:0 2vw;border:1px solid #828282;background:url('/resources/img/ic_select.png') no-repeat;background-size:12px 7px;background-position:right 6px top 50%;background-color:white;-webkit-appearance:none;-moz-appearance:none;appearance:none;}
+</style>
+
 <script type="text/javascript">
 j$(document).ready(function(){
 	
@@ -35,9 +76,31 @@ j$(document).ready(function(){
 </script>
 </head>
 <body>
-<div class="web">
 <form:form name="searchNotice" id="searchNotice" modelAttribute="bbsAddDto" action="/partner/bbsNotice/list" method="GET">
-<table cellpadding="0" cellspacing="0" border="0" width="80%">
+	<div class="notice-wrapper">
+		<div class="data-list-wrapper">
+			<table>
+			<c:forEach var="list" items="${paging.list}" varStatus="status">
+				<tr>
+					<td class="" width="" align="" bgcolor="">
+						${(paging.totalCount - ((paging.currentPage-1) * paging.pageSize)) - status.index}
+					</td>
+					<td>
+						<c:if test='${ list.reqCd1 eq "101231" }'>
+						공지사항
+						</c:if>
+						<c:if test='${ list.reqCd1 eq "101232" }'>
+						모집공고
+						</c:if>							
+					</td>
+					<td><a href="#" class="noticeDetail" value="${list.dataSeq}"><strong>${list.subject}</strong></a></td>
+					<td>${list.regDt}</td>
+				</tr>
+			</c:forEach>
+			</table>
+		</div>
+	</div>
+<%-- <table cellpadding="0" cellspacing="0" border="0" width="80%">
 <tr>
 	<td height="20px"></td>
 </tr>
@@ -140,9 +203,9 @@ j$(document).ready(function(){
 		<!-- 채널 영역 종료 -->
 	</td>
 </tr>
-</table>
+</table> --%>
 </form:form>
-</div>
+
 
 </body>
 </html>

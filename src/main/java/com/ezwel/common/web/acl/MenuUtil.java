@@ -29,7 +29,7 @@ private static Logger log = LoggerFactory.getLogger(MenuUtil.class);
 			//return "<jsp:include page='/WEB-INF/jsp/layout/inc/defaultHeader.jsp' />";
 			return "/WEB-INF/jsp/layout/inc/defaultHeader.jsp";
 		}else {
-			return "";
+			return "/WEB-INF/jsp/layout/inc/defaultHeader_mo.jsp";
 		}
 	}
 	
@@ -85,11 +85,11 @@ private static Logger log = LoggerFactory.getLogger(MenuUtil.class);
 						
 			sb.append("<div class='mobile_nav'>");
 			sb.append("<ul>");
-			sb.append("<li><a href='/partner/main/index'><strong>Home</strong></a></li>");
-			sb.append("<li><a href='/partner/pCounselorMgr/totalSchedule'><strong>개인상담관리</strong></a></li>");
-			sb.append("<li><a href='/partner/pCounselorMgr/counselFixList'><strong>예약확정현황</strong></a></li>");
-			sb.append("<li><a href='/partner/bbsNotice/list?bbsCd=notice&serviceType=PARTNER'><strong>커뮤니티</strong></a></li>");
-			sb.append("<li><a href='/partner/payCheck/payCheckList'><strong>정산</strong></a></li>");
+			sb.append("<li><a href='/partner/main/index'><img src='/resources/img/home_icon.png'><p>홈</p></a></li>");
+			sb.append("<li><a href='/partner/pCounselorMgr/totalSchedule'><img src='/resources/img/consulting_icon.png'><p>개인상담관리</p></a></li>");
+			sb.append("<li><a href='/partner/pCounselorMgr/counselFixList'><img src='/resources/img/re_list_icon.png'><p>예약확정현황</p></a></li>");
+			sb.append("<li><a href='/partner/bbsNotice/list?bbsCd=notice&serviceType=PARTNER'><img src='/resources/img/comunity_icon.png'><p>커뮤니티</p></a></li>");
+			sb.append("<li><a href='/partner/payCheck/payCheckList'><img src='/resources/img/calculate_icon.png'><p>정산</p></a></li>");
 			sb.append("</ul>");
 			sb.append("</div>");
 			

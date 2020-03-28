@@ -32,13 +32,14 @@ import com.ezwel.admin.service.pCounselorMgr.CounselReservationService;
 import com.ezwel.admin.service.pCounselorMgr.CounselorCalendarService;
 import com.ezwel.admin.service.pCounselorMgr.dto.CounselReservationDto;
 import com.ezwel.admin.service.security.UserDetailsHelper;
+import com.ezwel.common.commonController;
 import com.ezwel.core.support.util.Base64Utils;
 import com.ezwel.core.support.util.DateUtils;
 import com.ezwel.core.support.util.StringUtils;
 
 @Controller
 @RequestMapping("/partner/mgr")
-public class CounselorInfoMgrController {
+public class CounselorInfoMgrController extends commonController {
 
 	@Resource
 	private MgrService mgrService;
@@ -113,7 +114,12 @@ public class CounselorInfoMgrController {
 
 		model.addAttribute(counselorInfoMgrService.counselorInfoMgrList(counselorInfoMgrDto));
 
-		return "partner/mgr/counselorInfoMgrList";
+		if(isDevice(request) == IS_PC) {
+			return "partner/mgr/counselorInfoMgrList";
+		}else {	
+			return "partner/mgr/counselorInfoMgrList_mo";
+		}
+		
 	}
 
 	//승인/중지
@@ -170,7 +176,7 @@ public class CounselorInfoMgrController {
 	
 	
 	@RequestMapping(value="/counselorInfoMgrAdd")
-	public String counselorInfoMgrAdd(@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, Model model){
+	public String counselorInfoMgrAdd(@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, Model model, HttpServletRequest request){
 		if (logger.isDebugEnabled()){
 			logger.debug("======추가 화면단=====");
 		}
@@ -178,7 +184,12 @@ public class CounselorInfoMgrController {
 		CommonDto commonDto = new CommonDto();
 		commonDto.setHighCommCd("100732");
 		model.addAttribute("certList", commonService.getTypeList(commonDto) );
-		return "partner/mgr/counselorInfoMgrAdd";
+		
+		if(isDevice(request) == IS_PC) {
+			return "partner/mgr/counselorInfoMgrAdd";
+		}else {	
+			return "partner/mgr/counselorInfoMgrAdd_mo";
+		}
 	}
 
 	
