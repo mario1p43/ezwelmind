@@ -15,7 +15,7 @@
 	<script src="${url:resource('/resources/js/plugin/fullcalendar-2.5.0/fullcalendar.min.js')}" ></script>
 	<script src="${url:resource('/resources/js/plugin/fullcalendar-2.5.0/lang/ko.js')}" ></script>
 	<script src="${url:resource('/resources/js/plugin/qtip/jquery.qtip.min.js')}" ></script>
-
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style>
 		body {
 			padding: 0;
@@ -38,10 +38,158 @@
 		.fc-day-number{
 			cursor: pointer;
 		}
+		
+		/* select box */
+		article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+			display: block;
+		}
+		body {
+			line-height: 1;
+		}
+		ol, ul {
+			list-style: none;
+		}
+		blockquote, q {
+			quotes: none;
+		}
+		blockquote:before, blockquote:after, q:before, q:after {
+			content: '';
+			content: none;
+		}
+		table {
+			border-collapse: collapse;
+			border-spacing: 0;
+		}
+
+		*, *:after, *:before {
+			box-sizing: border-box;
+		}
+
+		.custom-select-wrapper {
+			position: relative;
+			user-select: none;
+			width: 100%;
+		}
+		.custom-select {
+			position: relative;
+			display: flex;
+			flex-direction: column;
+		}
+		.custom-select__trigger {
+			position: relative;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 22px;
+			font-size: 4.4444vw;
+			color: #3b3b3b;
+			height: 11.1111vw;
+			line-height: 11.1111vw;
+			background: #F2F2F2;
+			cursor: pointer;
+			box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+		}
+		.custom-options {
+			position: absolute;
+			display: block;
+			top: 100%;
+			left: 0;
+			right: 0;
+			background: #F2F2F2;;
+			transition: all 0.2s;
+			opacity: 0;
+			visibility: hidden;
+			pointer-events: none;
+			border-bottom: 1px solid ;
+			z-index: 2;
+		}
+		.custom-select.open .custom-options {
+			opacity: 1;
+			visibility: visible;
+			pointer-events: all;
+		}
+		.custom-option {
+			position: relative;
+			display: block;
+			padding: 0 22px 0 22px;
+			font-size: 4.4444vw;
+			font-weight: 300;
+			color: #3b3b3b;
+			line-height: 11.1111vw;
+			cursor: pointer;
+			transition: all 0.5s;
+			text-align: center;
+		}
+		.item_border{
+			display: block;
+			border-bottom: 1px solid #C4C4C4;
+		}
+		.custom-option:hover {
+			cursor: pointer;
+			background-color: #b2b2b2;
+		}
+		.custom-option.selected {
+			color: #ffffff;
+			background-color: #2F80ED;
+		}
+
+		.arrow {
+			position: relative;
+			height: 7px;
+			width: 7px;
+		}
+		.arrow::before, .arrow::after {
+			content: "";
+			position: absolute;
+			bottom: 0px;
+			width: 0.15rem;
+			height: 100%;
+			transition: all 0.5s;
+		}
+		.arrow::before {
+			left: -2.3px;
+			transform: rotate(45deg);
+			background-color: #394a6d;
+		}
+		.arrow::after {
+			left: 2.3px;
+			transform: rotate(-45deg);
+			background-color: #394a6d;
+		}
+		.open .arrow::before {
+			left: -2.3px;
+			transform: rotate(-45deg);
+		}
+		.open .arrow::after {
+			left: 2.3px;
+			transform: rotate(45deg);
+		}
+		
 		</style>
 	<script type="text/javascript">
 		$(document).ready(function() {
+			document.querySelector('.custom-select-wrapper').addEventListener('click', function() {
+				this.querySelector('.custom-select').classList.toggle('open');
+				for (const option of document.querySelectorAll(".custom-option")) {
+					option.addEventListener('click', function() {
+						if (!this.classList.contains('selected')) {
+							this.parentNode.querySelector('.custom-option.selected').classList.remove('selected');
+							this.classList.add('selected');
+							this.closest('.custom-select').querySelector('.custom-select__trigger span').textContent = '상담사 : ' + this.textContent;
+							//monthMove();
+						}
+					})
+				}
+			});
 			
+
+			window.addEventListener('click', function(e) {
+				const select = document.querySelector('.custom-select')
+				if (!select.contains(e.target)) {
+					select.classList.remove('open');
+				}
+			});
+
 			$('.calendar').fullCalendar({
 				header: {
 					left: 'prev,next',
@@ -107,7 +255,6 @@
 			return false;
 		}
 		
-		
 		$("#clickday").click(function(){
 			alert("dddd");
 		});
@@ -149,11 +296,31 @@
 <body>
 
 <div class="web">
+	<div class="">
+		<c:if test="${not empty counselorList }">
+			<div class="custom-select-wrapper">
+				<div class="custom-select">
+					<div class="custom-select__trigger"><span>전체</span>
+						<div class="arrow"></div>
+					</div>
+					<div class="custom-options">
+						<span class="custom-option selected" data-value="">전체</span>
+						<c:forEach var="list" items="${counselorList }">
+							<span data-value="${list.userId }" class='custom-option <c:if test="${param.userId eq list.userId }"> selected </c:if>' >
+								${list.userNm }
+								<span class="item_border"></span>
+							</span>
+							
+						</c:forEach>
+					</div>
+				</div>
+			</div>
+		</c:if>
+	</div>
 <table width="80%" border="0" cellspacing="0" cellpadding="0" style="margin-top:20px;">
 		<tr>
 			<td>
 				<c:if test="${not empty counselorList }">
-					<b>상담사 선택 : </b>
 					<select name="userId" onchange="monthMove();" >
 						<option value="">전체</option>
 							<c:forEach var="list" items="${counselorList }">
