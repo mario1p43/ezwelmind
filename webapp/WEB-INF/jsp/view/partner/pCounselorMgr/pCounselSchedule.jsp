@@ -902,25 +902,34 @@ function counselorChange() {
 </table>
 <script type="text/javascript">
 
-
-var weekNo = Math.ceil((<%=weekStartDay %> - 1 + <%=toDay %>) / 7);
-
+var totalWeek = Math.ceil((<%=weekStartDay %> - 1 + <%=toDay %>) / 7);
+var weekNo = 1;
 
 var month = <%=iMonth %>+1; 
 
-var weekStartDay =(((weekNo*7)-6)-<%=weekStartDay %>)+1;
+var weekStartDay =<%=weekStartDay %>;
 
-var weekSun = weekStartDay; 
-var weekMon = weekStartDay+1;
-var weekTue = weekStartDay+2;
-var weekWed = weekStartDay+3;
-var weekThu = weekStartDay+4;
-var weekFri = weekStartDay+5;
-var weekSat = weekStartDay+6;
+var weekSun = 1; 
+var weekMon = 2;
+var weekTue = 3;
+var weekWed = 4;
+var weekThu = 5;
+var weekFri = 6;
+var weekSat = 7;
+var addWeekday=(7*weekNo)-7+1;
+
+weekSun = addWeekday+weekSun-weekStartDay;//1 
+weekMon = addWeekday+weekMon-weekStartDay;//2
+weekTue = addWeekday+weekTue-weekStartDay;
+weekWed = addWeekday+weekWed-weekStartDay; //4번째 날이면 01이 되어야 함
+weekThu = addWeekday+weekThu-weekStartDay;
+weekFri = addWeekday+weekFri-weekStartDay;
+weekSat = addWeekday+weekSat-weekStartDay; 
 
 if(<%=iTMonth+1%> == month){
 	$(".week"+weekNo).removeClass("none");	
 	$("#weekMoveTitle").text(month+"월 "+weekNo+"째주");
+	//weekNo=totalWeek;
 }else{
 	weekNo=1;
 	$(".week1").removeClass("none");
@@ -932,10 +941,8 @@ if(<%=iTMonth+1%> == month){
 $(document).ready(function(){
 	$('.moveLeft').click(function(){
 		
-		var currentInt = weekNo;
-
-		if(currentInt != 1){
-			weekNo=weekNo-1;
+		if(weekNo != 1){
+			weekNo = weekNo-1;
 			weekSun = weekSun-7; 
 			weekMon = weekMon-7;
 			weekTue = weekTue-7;
@@ -943,18 +950,11 @@ $(document).ready(function(){
 			weekThu = weekThu-7;
 			weekFri = weekFri-7;
 			weekSat = weekSat-7;
-			console.log(weekSun+":"+
-					weekMon+":"+
-					weekTue+":"+
-					weekWed+":"+
-					weekThu+":"+
-					weekFri+":"+
-					weekSat);
+
 			$("#weekMoveTitle").text(month+"월 "+weekNo+"째주");	
-			var beforeInt = currentInt;
-			currentInt = currentInt - 1;	
-			$(".week"+beforeInt).addClass("none");
-			$(".week"+currentInt).removeClass("none");	
+			var beforeWeek = weekNo+1;
+			$(".week"+beforeWeek).addClass("none");
+			$(".week"+weekNo).removeClass("none");	
 		}else{
 			$("#preMonth").click();
 		}
@@ -962,8 +962,8 @@ $(document).ready(function(){
 	});
 
 	$('.moveRight').click(function(){
-		var currentInt = weekNo;
-		if(currentInt != <%=iTotalweeks%>){
+		
+		if(weekNo != <%=iTotalweeks%>){
 			weekNo=weekNo+1;
 			weekSun = weekSun+7; 
 			weekMon = weekMon+7;
@@ -972,18 +972,11 @@ $(document).ready(function(){
 			weekThu = weekThu+7;
 			weekFri = weekFri+7;
 			weekSat = weekSat+7;
-			console.log(weekSun+":"+
-			weekMon+":"+
-			weekTue+":"+
-			weekWed+":"+
-			weekThu+":"+
-			weekFri+":"+
-			weekSat);
+
 			$("#weekMoveTitle").text(month+"월 "+weekNo+"째주");
-			var beforeInt = currentInt;
-			currentInt = currentInt + 1;
-			$(".week"+beforeInt).addClass("none");
-			$(".week"+currentInt).removeClass("none");
+			var beforeWeek = weekNo-1;
+			$(".week"+beforeWeek).addClass("none");
+			$(".week"+weekNo).removeClass("none");
 		}else{
 			$("#nextMonth").click();
 		}
@@ -1059,7 +1052,6 @@ $(document).ready(function(){
 
 			
 			if(week1 ==true){
-				
 				for(var i=startTime; i<= endTime; i++){
 					var idx = "";
 					if(i =="7"){
@@ -1086,7 +1078,6 @@ $(document).ready(function(){
 			}
 			
 			if(week2 ==true){
-				
 				for(var i=startTime; i<= endTime; i++){
 					var idx = "";
 					if(i =="7"){

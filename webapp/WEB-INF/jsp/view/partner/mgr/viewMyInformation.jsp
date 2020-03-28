@@ -263,6 +263,30 @@
         	tbl_cnt_book = tbl_cnt_book+1;
         });
 		
+        j$("#userImsiPwdUpdateBtn").click(function(){
+			// 비밀번호 초기화 - 임시비밀번호 : mind1234!@
+			var params = {};
+			params.userId = j$(this).attr("value");
+			alert(params.userId);
+			
+			if( params.userId.length > 0 ){
+				jQuery.ajax({
+					url: "/madm/service/csp/userImsiPwdUpdate",
+					data: params,
+					type: "POST",
+					dataType: "json",
+					success: function(data, textStatus){
+						if(data.resultVal == 'success'){
+							alert(" 정상적으로 변경 하였습니다. \n- 임시 비밀번호는 'mind1234!@'입니다. \n- 로그인 후 비밀번호를 변경해야 이용 가능합니다.");
+						}else{
+							alert("비밀번호 변경에 실패했습니다. \n오류가 지속되면 담당자에게 문의바랍니다.");
+						}
+					}
+				});
+			}
+			
+		});
+        
 		<c:if test='${not empty mgr.channelType}'>
 		var chkValue = '${mgr.channelType}';
 		var chkArr = chkValue.split(',');
@@ -948,16 +972,28 @@
 	</tr>
 </table>
 <br>
-ㆍ개인정보
 <table cellpadding="0" cellspacing="0" border="0" width="95%" height="100%">
 <tr>
 	<td valign="top" align="left">
 		<table  cellspacing="0" border="1" width="100%" style="border-collapse:collapse;">
+			<tr align="left" height="30px">ㆍ개인정보
+				<th align="left">&nbsp;&nbsp;센터코드</th>
+				<td><input type="hidden" name="centerSeq" value="${mgr.centerSeq}"> ${mgr.centerSeq}</td>
+				<th align="left">&nbsp;&nbsp;센터명</th>
+				<td><input type="hidden" name="centerNm" value="${mgr.centerNm}">${mgr.centerNm}</td>
+			</tr>
 			<tr align="left" height="30px">
 				<th class="line" height="30" align="left" bgcolor="#F5F5F5" width="10%" na>&nbsp;&nbsp;성명(아이디)</th>
 				<td width="40%">
-					<input type="hidden" name="userNm" value="${mgr.userNm}"/>${mgr.userNm}
-					<input type="hidden" name="userId" value="${mgr.userId}"/>(${mgr.userId})
+					<table>
+		    			<tr>
+		    				<td>
+								<input type="hidden" name="userNm" value="${mgr.userNm}"/>${mgr.userNm}
+								<input type="hidden" name="userId" value="${mgr.userId}"/>(${mgr.userId})
+							</td>
+		    				<td id="btn01" style="padding-left: 40px;"> <a href="javascript:void(0);" id="userImsiPwdUpdateBtn" value="${mgr.userId }"> <span>비밀번호 초기화</span> </a> </td>
+		    			</tr>
+		    		</table>
 				</td>
 				<th class="line" height="30" align="left" bgcolor="#F5F5F5" width="10%">&nbsp;&nbsp;나이/성별</th>
 				<td width="40%" class="line"><label id="age" ></label>
@@ -970,7 +1006,9 @@
 							</c:otherwise>
 						</c:choose>
 				</td>
+				
 			</tr>
+			
 			<tr align="left" height="30px">
 				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 연락처</th>
 				<td class="line" colspan="1" >
