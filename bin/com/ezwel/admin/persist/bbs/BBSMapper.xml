@@ -446,7 +446,7 @@
 				
 				<!-- 접속권한 -->
 				<if test="isNotNull(userId)">
-				AND A.AUTH_CD LIKE CONCAT('%', (SELECT AUTH_CD FROM ACL_USER_AUTH WHERE USER_AUTH_KEY = CONCAT(#{userId},'3001')),'%')
+				AND A.AUTH_CD LIKE CONCAT('%', (SELECT AUTH_CD FROM ACL_USER_AUTH WHERE USER_AUTH_KEY = CONCAT(#{userId},(SELECT user_type FROM mind_mgr where user_id =#{userId}))),'%')
 				</if>
 				<!-- 상담유형 -->
  				<if test="isNotNull(userId)">
@@ -1294,6 +1294,19 @@
 		AND MAIN_DISP_YN = 'Y'
 		AND A.REQ_CD1 ='101231'
 		AND DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') BETWEEN MAIN_START_DT AND MAIN_END_DT
+		<!-- 접속권한 -->
+		<if test="isNotNull(userId)">
+		AND A.AUTH_CD LIKE CONCAT('%', (SELECT AUTH_CD FROM ACL_USER_AUTH WHERE USER_AUTH_KEY = CONCAT(#{userId},(SELECT user_type FROM mind_mgr where user_id =#{userId}))),'%')
+		</if>
+		<!-- 상담유형 -->
+			<if test="isNotNull(userId)">
+		AND A.CHANNEL_TYPE REGEXP (SELECT CONCAT("(",REPLACE(CHANNEL_TYPE, ",", "|"),")") FROM MIND_MGR_SUB WHERE USER_ID = #{userId})
+		</if> 
+		<!-- 지역구분 -->
+			<if test="isNotNull(centerSeq)">
+		AND A.AREA1 LIKE CONCAT('%',(SELECT AREA1 FROM MIND_CENTER WHERE CENTER_SEQ = ${centerSeq}),'%')
+		</if> 
+		
 		ORDER BY A.DATA_SEQ DESC
 		LIMIT 0, 1
 	</select>
@@ -1341,6 +1354,18 @@
 		AND MAIN_DISP_YN = 'Y'
 		AND A.REQ_CD1 ='101232'
 		AND DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') BETWEEN MAIN_START_DT AND MAIN_END_DT
+		<!-- 접속권한 -->
+		<if test="isNotNull(userId)">
+		AND A.AUTH_CD LIKE CONCAT('%', (SELECT AUTH_CD FROM ACL_USER_AUTH WHERE USER_AUTH_KEY = CONCAT(#{userId},(SELECT user_type FROM mind_mgr where user_id =#{userId}))),'%')
+		</if>
+		<!-- 상담유형 -->
+		<if test="isNotNull(userId)">
+		AND A.CHANNEL_TYPE REGEXP (SELECT CONCAT("(",REPLACE(CHANNEL_TYPE, ",", "|"),")") FROM MIND_MGR_SUB WHERE USER_ID = #{userId})
+		</if> 
+		<!-- 지역구분 -->
+			<if test="isNotNull(centerSeq)">
+		AND A.AREA1 LIKE CONCAT('%',(SELECT AREA1 FROM MIND_CENTER WHERE CENTER_SEQ = ${centerSeq}),'%')
+		</if> 
 		ORDER BY A.DATA_SEQ DESC
 		LIMIT 0, 1
 	</select>
@@ -1348,8 +1373,27 @@
 		
 	<select id="getSangdamCount" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
 		SELECT 
-		(SELECT count(*) as cnt FROM MIND_COUNSEL WHERE	 COUNSEL_CD != '91756' AND CENTER_SEQ = #{centerSeq}	AND	STATUS in ('100520', '100521', '100884')) as processCsCnt,
 		(SELECT count(*) as cnt FROM MIND_COUNSEL WHERE	 COUNSEL_CD != '91756' AND CENTER_SEQ = #{centerSeq}	AND	STATUS in ('100520', '100521', '100884') and DATE_FORMAT(Schedule_dt, '%Y-%m-%d') = curdate()) as todayCsCnt,
+		(SELECT	count(*) as cnt
+				FROM	MIND_COUNSEL A LEFT JOIN (SELECT AA.USER_NM, BB.CLIENT_CD FROM MIND_MGR AA LEFT JOIN MIND_CLIENT BB ON AA.USER_ID = BB.COUNSEL_MGR_ID ) as E 
+				ON A.CLIENT_CD = E.CLIENT_CD
+				LEFT JOIN MIND_COUNSEL_RECORD as F
+                ON A.COUNSEL_CD = F.COUNSEL_CD, 
+					MIND_COUNSEL_INTAKE C, MIND_MGR D
+				<if test="isNotNull(centerSeq)  and (centerSeq > 0)">
+					JOIN MIND_CENTER CT
+					ON CT.CENTER_SEQ = #{centerSeq}
+				</if>
+				WHERE	1=1
+				AND A.COUNSEL_CD NOT IN ('91756', '105785')
+				<if test="isNotNull(centerSeq) and (centerSeq > 0)">
+				AND		A.CENTER_SEQ = #{centerSeq}
+				</if>
+				AND		C.INTAKE_CD = A.INTAKE_CD
+				AND		A.STATUS in ('100520', '100521', '100884')
+				AND		A.COUNSELOR_ID = D.USER_ID
+		) as processCsCnt,
+		
 		(SELECT count(*) AS	cnt FROM MIND_MGR_SUB A , MIND_MGR B ,ACL_USER_AUTH C	
 			WHERE 1=1
 				AND A.USER_ID = B.USER_ID

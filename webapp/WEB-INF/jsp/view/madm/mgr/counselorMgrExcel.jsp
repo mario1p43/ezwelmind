@@ -62,6 +62,18 @@
 								<th style="width: 100px !important;">법률</th>
 								<th style="width: 100px !important;">재무</th>
 								<th style="width: 100px !important;">심리검사</th>
+								<%-- <th style="width: 100px !important;">외국어 상담</th>
+								<th style="width: 100px !important;">특수주제</th>
+								<th style="width: 100px !important;">직장관련</th>
+								<th style="width: 100px !important;">개인관련</th>
+								<th style="width: 100px !important;">가족관련</th>
+								<th style="width: 100px !important;">충격/트라우마</th>
+								<th style="width: 100px !important;">대상별</th>
+								<th style="width: 100px !important;">법률</th>
+								<th style="width: 100px !important;">재무</th>
+								<th style="width: 100px !important;">상담선호</th>
+								<th style="width: 100px !important;">선호접근</th>
+								<th style="width: 100px !important;">상담성향</th> --%>
 							</tr>
 						</thead>
 
@@ -148,11 +160,23 @@
 										${list.diagnosisType}
 									</c:if>
 								</td>
-								<td>${list.mgrStatus}</td>
+<%-- 								<td>${list.mgrStatus}</td>
 								<td>${list.regDt}</td>
 								<td>${list.modiDt}</td>
 								<td>${list.education eq 'M' ? '박사' : '석사'} ${list.university } ${list.department }</td>
 								<td>${list.etc}</td>
+								<td>${list.languageType}</td>
+								<td>${list.specialType}</td>
+								<td>${list.specialHearing}</td>
+								<td>${list.jobType}</td>
+								<td>${list.personalType}</td>
+								<td>${list.familyType}</td>
+								<td>${list.traumaType}</td>
+								<td>${list.targetType}</td>
+								<td>${list.lawCounselType}</td>
+								<td>${list.financeCounselType}</td>
+								<td>${list.preferredType}</td>
+								<td>${list.tendencyType}</td> --%>
 							</tr>
  						</c:forEach> 
  						

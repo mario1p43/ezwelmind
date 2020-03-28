@@ -42,7 +42,7 @@
 	
 	<entry key="upload.dir">/data/nas_image/ezwelmind-upload</entry>		<!-- 업로드 경로 -->
 	<entry key="upload.dir.img">/data/nas_image/image-ezwelmind</entry>		<!-- 이미지서버 업로드 경로 -->
-	<entry key="upload.http.img">http://img.ezwelmind.co.kr</entry>			<!-- 이미지서버 HTTP 접근 Domain -->
+	<entry key="upload.http.img">/data/nas_image/image-ezwelmind</entry>			<!-- 이미지서버 HTTP 접근 Domain -->
 	<!-- =======================파일 업로드, 다운로드 관련=============================================== -->
 	
 	<!-- cp사이트 코드명 -->
