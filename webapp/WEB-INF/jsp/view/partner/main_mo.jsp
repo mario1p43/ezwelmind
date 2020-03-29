@@ -47,7 +47,6 @@ if(iTMonth2<10){
 		    background: #FFFFFF;
 		}
 		.tab_content {
-		    padding: 5px;
 		    width:100%;
 		    font-size: 12px;
 		    display: none;
@@ -121,6 +120,9 @@ if(iTMonth2<10){
 		.m_main_box a {
 			width: 100%;
 			height: 100%;
+		}
+		.m_main_box a:hover {
+			text-decoration: none;
 		}
 		.m_main_box p{
 			font-size: 13.8889vw;

@@ -2,11 +2,53 @@
 <%@ include file="/WEB-INF/jsp/layout/inc/tags.jspf"%>
 <html>
 <head>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 <title>상세조회</title>
+
+<style>
+	table{border-spacing:0!important}
+	table td{background:none!important}
+	.notice-wrapper{padding:0 5vw}
+	.notice-wrapper .content-wrapper{display:flow-root;margin-top:5vw}
+	.notice-wrapper .content-wrapper
+	.notice-wrapper .border-bottom{border-bottom:1px solid #C4C4C4}
+</style>
+
 </head>
 <body>
-
-<table cellpadding="0" cellspacing="0" border="0" width="95%" height="100%">
+	<div class="notice-wrapper">
+		<div class="content-wrapper border-bottom">
+			<div class="notice-title">${vo.subject}</div>
+			<div class="notice-date">${vo.regDt}</div>
+		</div>
+		<div class="content-wrapper border-bottom">
+			${fn:replace(vo.content,newLineChar,'<br>')}
+		</div>
+		<div class="content-wrapper border-bottom">
+			<c:choose>
+				<c:when test="${not empty files1.filePath}">
+						<a href="<spring:eval expression="@global['upload.http.img']" />${files1.filePath}" class="attach_file" target="_blank">${files1.fileNm}</a><br>
+					<c:if test="${not empty files2.filePath}">
+						<a href="<spring:eval expression="@global['upload.http.img']" />${files2.filePath}" class="attach_file"  target="_blank">${files2.fileNm}</a><br>
+					</c:if>
+					<c:if test="${not empty files3.filePath}">
+						<a href="<spring:eval expression="@global['upload.http.img']" />${files3.filePath}" class="attach_file"  target="_blank">${files3.fileNm}</a><br>
+					</c:if>
+					<c:if test="${not empty files4.filePath}">
+						<a href="<spring:eval expression="@global['upload.http.img']" />${files4.filePath}" class="attach_file"  target="_blank">${files4.fileNm}</a><br>
+					</c:if>
+					<c:if test="${not empty files5.filePath}">
+						<a href="<spring:eval expression="@global['upload.http.img']" />${files5.filePath}" class="attach_file" target="_blank">${files5.fileNm}</a><br>
+					</c:if>
+				</c:when>
+				<c:otherwise>등록된 첨부 파일이 없습니다.</c:otherwise>
+			</c:choose>
+		</div>
+		<div class="content-wrapper">
+			<button id="modifyBtn" style="height:30px; width:100px;" onclick="history.back()" type="button">목록</button>
+		</div>
+	</div>
+<%-- <table cellpadding="0" cellspacing="0" border="0" width="95%" height="100%">
 <tr><td height="20px"></td></tr>
 
 <tr>
@@ -103,7 +145,7 @@
 	</td>
 </tr>
 
-</table>
+</table> --%>
 
 
 </body>
