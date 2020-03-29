@@ -1629,6 +1629,9 @@
 		)
 	</insert>
 	
+	
+	
+	
 	<insert id="insertMgrInfo2" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
 		INSERT INTO MIND_MGR(
 			  USER_NM
@@ -1864,6 +1867,10 @@
 			, #{bookYear}
 		)
 	</insert>	
-	
+	<update id="updateMgrPwd" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
+		UPDATE	MIND_MGR
+		SET	USER_PWD = #{userPwd}
+		WHERE	USER_ID = #{userId}
+	</update>
 
 </mapper>

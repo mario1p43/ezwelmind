@@ -597,11 +597,16 @@
 		j$("#modifyBtn").click(function(){
 			j$("#num").val(num);
 			j$("#count").val(count);
+			
+			var tempPwd = $.trim($("#userPwd").val());
+			if(tempPwd != "1230987" && tempPwd != ""){
+				j$("#imsiPwdYn").val("N");
+			}
+			
 			j$("#updateCounselorInfoMgr").submit();
 			return false;
 		});
-
-		
+			
 		//밸리데이션 체크
 		$.validate({
 			form : '#updateCounselorInfoMgr',
@@ -931,7 +936,8 @@
 </script>
 </head>
 <body>
-<form id="updateCounselorInfoMgr" name="updateCounselorInfoMgr" action="/partner/mgr/updateCounselorInfoMgrImsi" method="POST" enctype="multipart/form-data">
+<form id="updateCounselorInfoMgr" name="updateCounselorInfoMgr" action="/partner/mgr/update" method="POST" enctype="multipart/form-data">
+<input type="hidden" name="imsiPwdYn" id="imsiPwdYn">
 <input type="hidden" name="num" id="num">
 <input type="hidden" name="count" id="count">
 <input type="hidden" name="delPhoto" id="delPhoto">
