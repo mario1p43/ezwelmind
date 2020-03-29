@@ -16,6 +16,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.ezwel.admin.common.support.bean.EncryptComponent;
 import com.ezwel.admin.domain.entity.common.Manager;
+import com.ezwel.admin.domain.entity.mgr.MgrBookArray;
+import com.ezwel.admin.domain.entity.mgr.MgrCareerArray;
 import com.ezwel.admin.service.mgr.CounselorInfoMgrService;
 import com.ezwel.admin.service.mgr.MgrCounselService;
 import com.ezwel.admin.service.mgr.MgrService;
@@ -50,21 +52,31 @@ public class CadmMgrController {
 
 
 	@RequestMapping(value = "/modifyMyInformation")
-	public String myImformation(@ModelAttribute MgrDto mgrDto, @ModelAttribute MgrSubDto mgrSubDto, @ModelAttribute MgrCertDto mgrCertDto, Model model, HttpServletRequest request ) {
+	public String myImformation(@ModelAttribute MgrDto mgrDto, @ModelAttribute MgrSubDto mgrSubDto,@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, @ModelAttribute MgrCertDto mgrCertDto, Model model, HttpServletRequest request ) {
 		Manager manager = UserDetailsHelper.getAuthenticatedUser();
 
 		mgrDto.setUserId( Base64Utils.encode(StringUtils.defaultString(manager.getUserId())));
 		
 		setMenu(model);
-		model.addAttribute("mgr", mgrService.getMgrSelectOne(mgrDto));
+		model.addAttribute("loginId", manager.getUserId());
 
 		mgrSubDto.setUserId(mgrDto.getUserId());
 		mgrCertDto.setUserId(mgrDto.getUserId());
-
-		model.addAttribute("mgrSub", mgrCounselService.getMgrSelectOne(mgrSubDto));
-
+		counselorInfoMgrDto.setUserId(manager.getUserId());
+		
+		
+		model.addAttribute("mgr", counselorInfoMgrService.getCounselorInfoMgrDetail(counselorInfoMgrDto));
+		
+		//상담 외 프로그램
+		counselorInfoMgrDto.setCenterSeq(manager.getCenterSeq());
+		counselorInfoMgrDto.setHighCommCd("102015");
+		model.addAttribute("extraExamInfo", counselorInfoMgrService.getExtraList(counselorInfoMgrDto));
+		
+		
 		model.addAttribute("mgrCert", mgrCounselService.getMgrCertList(mgrCertDto));
 		model.addAttribute("mgrCertCnt", mgrCounselService.getMgrCertList(mgrCertDto).size());
+		model.addAttribute("mgrCareer", mgrCounselService.getMgrCareer(counselorInfoMgrDto.getUserId()));
+		model.addAttribute("mgrBook", mgrCounselService.getMgrBook(counselorInfoMgrDto.getUserId()));
 		
 		if("Y".equals(manager.getImsiPwdYn())){
 			model.addAttribute("redirectNo", "Y");
@@ -81,7 +93,7 @@ public class CadmMgrController {
 	
 	
 	@RequestMapping(value="/update")
-	public String updateMyInformation(@ModelAttribute MgrDto mgrDto, @ModelAttribute MgrSubDto mgrSubDto, @ModelAttribute MgrCertDto mgrCertDto, Model model, HttpServletRequest request,
+	public String updateMyInformation(@ModelAttribute MgrDto mgrDto, @ModelAttribute MgrSubDto mgrSubDto, @ModelAttribute MgrCertDto mgrCertDto,@ModelAttribute MgrCareerArray mgrCareerArray, @ModelAttribute MgrBookArray mgrBookArray, Model model, HttpServletRequest request,
 			MultipartHttpServletRequest mhsq) throws Exception{
 		setMenu(model);
 		mgrCertDto.init(mhsq, true);
@@ -95,11 +107,15 @@ public class CadmMgrController {
 			mgrSubDto.setFileNm(" ");
 			mgrSubDto.setFilePath(" ");
 		}
+				
 		if(StringUtils.isNotNull(mgrDto.getUserPwd())){
 			mgrDto.setUserPwd(encryptComponent.encode(mgrDto.getUserPwd()));
 		}
-		mgrCounselService.modifyMyinfoMgr(mgrDto, mgrSubDto, mgrCertDto, request);
 		
+		mgrCounselService.modifyCounselMgrImsi(mgrDto, mgrSubDto, mgrCertDto, request);
+		mgrCounselService.modifyCounselMgrCareerImsi(mgrDto, mgrCareerArray);
+		mgrCounselService.modifyCounselMgrBook(mgrDto, mgrBookArray);
+				
 		model.addAttribute("alertYn", "Y");
 		
 		return "redirect:/partner/mgr/modifyMyInformation";

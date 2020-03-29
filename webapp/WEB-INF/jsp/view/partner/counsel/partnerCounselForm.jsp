@@ -235,7 +235,7 @@
 			
 			<table cellpadding="0" cellspacing="0" border="0" width="100%">
 				<tr>
-					<td align="left" class="subtitle">상담유형</td>
+					<td align="left" class="subtitle">다음회기등록</td>
 				</tr>
 				<tr>
 					<td height="10px"></td>

@@ -10,7 +10,7 @@ String filename = request.getParameter("filename");
 //filename = new String(filename.getBytes("8859_1"), "MS949");
 //logger.info("filename2 : "+filename);
 
-String fpath = "/data/nas_image/ezwelmind-upload";
+String fpath = "D:/temp/upload";
 File file = new File(fpath+savefile);
 if(!file.exists()) {
 	out.println("<script>");
