@@ -468,7 +468,7 @@ if(iTMonth2<10){
 				    승인 대기
 				</text>
 				<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="">
-				    ${sangdamcnt.unWritenCsCnt}
+				    ${sangdamcnt.waitAppCnt}
 				</text>
 				</svg>
 			</a>
