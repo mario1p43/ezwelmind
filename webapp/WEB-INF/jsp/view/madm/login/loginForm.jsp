@@ -64,10 +64,11 @@
 	</div>
 	<div class="login_contents">
 		<div class="cont_bn">
-			<img src="//img.ezwelmind.co.kr/sangdam4u/images/member/img_login_bn03.jpg" alt="이지웰니스상담포유 관리자시스템 이지웰니스는 사람이 행복한 하루, 그 하루로 행복해지는 세상을 만들어 갑니다." />
+			<div class="madm"></div>
+			<!-- <img src="//img.ezwelmind.co.kr/sangdam4u/images/member/img_login_bn03.jpg" alt="이지웰니스상담포유 관리자시스템 이지웰니스는 사람이 행복한 하루, 그 하루로 행복해지는 세상을 만들어 갑니다." /> -->
 		</div>
 		<fieldset class="field_pd02">
-			<h2><img src="//img.ezwelmind.co.kr/sangdam4u/images/member/tit_login.gif" alt="LOGIN" /></h2>
+			<h2><div class="partner_login"></div></h2> <!-- <img src="//img.ezwelmind.co.kr/sangdam4u/images/member/tit_login.gif" alt="LOGIN" /> -->
 			<p>관리시스템은 지정된 관리자만 로그인이 가능합니다.</p>
 			<div class="write_wrap">
 				<div class="input_area">

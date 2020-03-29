@@ -101,10 +101,11 @@
 			</div>
 			<div class="login_contents">
 				<div class="cont_bn">
-					<img src="//img.ezwelmind.co.kr/sangdam4u/images/member/img_login_bn04.jpg" alt="이지웰니스상담포유 관리자시스템 이지웰니스는 사람이 행복한 하루, 그 하루로 행복해지는 세상을 만들어 갑니다." />
+					<div class="partner"></div>
+					<!-- <img alt="이지웰니스상담포유 관리자시스템 이지웰니스는 사람이 행복한 하루, 그 하루로 행복해지는 세상을 만들어 갑니다." /> src="//img.ezwelmind.co.kr/sangdam4u/images/member/img_login_bn04.jpg" -->
 				</div>
 				<fieldset class="field_pd02">
-					<h2><img src="//img.ezwelmind.co.kr/sangdam4u/images/member/tit_login.gif" alt="LOGIN" /></h2>
+					<h2><div class="partner_login"></div></h2> <!-- <img src="//img.ezwelmind.co.kr/sangdam4u/images/member/tit_login.gif" alt="LOGIN" /> -->
 					<p>관리시스템은 지정된 관리자만 로그인이 가능합니다.</p>
 					<div class="write_wrap">
 						<div class="input_area">
@@ -120,7 +121,7 @@
 			</div>
 			<div class="login_footer">
 				<ul>
-					<li>아이디, 비밀번호를 분실하신 경우 상담센터 혹은 소속 기업의 담당자에게 문의바랍니다.</li>
+					<li>아이디 분실 시, 이지웰니스로 문의바랍니다. <span style="color:brown;">이지웰니스 상담센터 담당(02-6909-4405)</span></li>
 				</ul>
 			</div>
 			
