@@ -903,11 +903,20 @@ function counselorChange() {
 <script type="text/javascript">
 
 var totalWeek = Math.ceil((<%=weekStartDay %> - 1 + <%=toDay %>) / 7);
-var weekNo = 1;
-
 var month = <%=iMonth %>+1; 
-
 var weekStartDay =<%=weekStartDay %>;
+var weekNo = 1;
+if(<%=iTMonth+1%> == month){
+	weekNo=totalWeek;
+	$(".week"+weekNo).removeClass("none");	
+	$("#weekMoveTitle").text(month+"월 "+weekNo+"째주");
+}else{
+	$(".week1").removeClass("none");
+	$("#weekMoveTitle").text(month+"월 1째주");
+}
+
+
+
 
 var weekSun = 1; 
 var weekMon = 2;
@@ -925,16 +934,6 @@ weekWed = addWeekday+weekWed-weekStartDay; //4번째 날이면 01이 되어야 �
 weekThu = addWeekday+weekThu-weekStartDay;
 weekFri = addWeekday+weekFri-weekStartDay;
 weekSat = addWeekday+weekSat-weekStartDay; 
-
-if(<%=iTMonth+1%> == month){
-	$(".week"+weekNo).removeClass("none");	
-	$("#weekMoveTitle").text(month+"월 "+weekNo+"째주");
-	//weekNo=totalWeek;
-}else{
-	weekNo=1;
-	$(".week1").removeClass("none");
-	$("#weekMoveTitle").text(month+"월 1째주");
-}
 
 
 
