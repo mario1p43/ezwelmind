@@ -271,9 +271,11 @@
 			, REG_DT
 			, MODI_ID
 			, MODI_DT
+			<if test="subjectItemCd1 != ''">
 			, SUBJECT_ITEM_CD1 
 			, SUBJECT_ITEM_CD2
 			, SUBJECT_ITEM_CD3
+			</if>
 		) VALUES (
 			 #{counselCd}
 			,#{subject}
@@ -292,9 +294,11 @@
 			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
 			,#{modiId}
 			,DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			<if test="subjectItemCd1 != ''">
 			,#{subjectItemCd1}
 			,#{subjectItemCd2}
 			,#{subjectItemCd3}
+			</if>
 		)
 	</insert>
 

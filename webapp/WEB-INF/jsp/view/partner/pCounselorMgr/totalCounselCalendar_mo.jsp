@@ -13,9 +13,9 @@
 	
 	<script src="${url:resource('/resources/js/plugin/fullcalendar-2.5.0/lib/moment.min.js')}" ></script>
 	<script src="${url:resource('/resources/js/plugin/fullcalendar-2.5.0/fullcalendar.min.js')}" ></script>
-	<script src="${url:resource('/resources/js/plugin/fullcalendar-2.5.0/lang/ko.js')}" ></script>
+	<script src="${url:resource('/resources/js/plugin/fullcalendar-2.5.0/lang/ko_mo.js')}" ></script>
 	<script src="${url:resource('/resources/js/plugin/qtip/jquery.qtip.min.js')}" ></script>
-
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style>
 		body {
 			padding: 0;
@@ -38,39 +38,356 @@
 		.fc-day-number{
 			cursor: pointer;
 		}
+		
+		/* select box */
+		article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+			display: block;
+		}
+		body {
+			line-height: 1;
+		}
+		ol, ul {
+			list-style: none;
+		}
+		blockquote, q {
+			quotes: none;
+		}
+		blockquote:before, blockquote:after, q:before, q:after {
+			content: '';
+			content: none;
+		}
+		table {
+			border-collapse: collapse;
+			border-spacing: 0;
+		}
+
+		*, *:after, *:before {
+			box-sizing: border-box;
+		}
+
+		.custom-select-wrapper {
+			position: relative;
+			user-select: none;
+			width: 100%;
+		}
+		.custom-select {
+			position: relative;
+			display: flex;
+			flex-direction: column;
+		}
+		.custom-select__trigger {
+			position: relative;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 22px;
+			font-size: 4.4444vw;
+			color: #3b3b3b;
+			height: 11.1111vw;
+			line-height: 11.1111vw;
+			background: #F2F2F2;
+			cursor: pointer;
+			box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+		}
+		.custom-options {
+			position: absolute;
+			display: block;
+			top: 100%;
+			left: 0;
+			right: 0;
+			background: #F2F2F2;;
+			transition: all 0.2s;
+			opacity: 0;
+			visibility: hidden;
+			pointer-events: none;
+			border-bottom: 1px solid ;
+			z-index: 2;
+		}
+		.custom-select.open .custom-options {
+			opacity: 1;
+			visibility: visible;
+			pointer-events: all;
+		}
+		.custom-option {
+			position: relative;
+			display: block;
+			padding: 0 22px 0 22px;
+			font-size: 4.4444vw;
+			font-weight: 300;
+			color: #3b3b3b;
+			line-height: 11.1111vw;
+			cursor: pointer;
+			transition: all 0.5s;
+			text-align: center;
+		}
+		.item_border{
+			display: block;
+			border-bottom: 1px solid #C4C4C4;
+		}
+		.custom-option:hover {
+			cursor: pointer;
+			background-color: #b2b2b2;
+		}
+		.custom-option.selected {
+			color: #ffffff;
+			background-color: #2F80ED;
+		}
+
+		.arrow {
+			position: relative;
+			height: 7px;
+			width: 7px;
+		}
+		.arrow::before, .arrow::after {
+			content: "";
+			position: absolute;
+			bottom: 0px;
+			width: 0.15rem;
+			height: 100%;
+			transition: all 0.5s;
+		}
+		.arrow::before {
+			left: -2.3px;
+			transform: rotate(45deg);
+			background-color: #394a6d;
+		}
+		.arrow::after {
+			left: 2.3px;
+			transform: rotate(-45deg);
+			background-color: #394a6d;
+		}
+		.open .arrow::before {
+			left: -2.3px;
+			transform: rotate(-45deg);
+		}
+		.open .arrow::after {
+			left: 2.3px;
+			transform: rotate(45deg);
+		}
+
+		.counselor_wrapper {
+			margin-bottom: 7.2222vw;
+		}
+
+		/* 달력 커스텀 */
+		.calendar_wrapper {
+			padding: 0 4.1667vw;
+		}
+		.fc-toolbar .fc-center h2 { 
+			color:#004B85;
+			font-size: 20px;
+			font-weight: bold;
+			border: none;
+			background: none;
+			box-shadow: none;
+			letter-spacing: 0.15em;
+		}
+		
+		.fc .fc-toolbar > * > :first-child { 
+			border: none;
+		}
+		.fc .fc-toolbar > * > div:first-child { 
+			color:#004B85;
+			font-size: 14px;
+			border: none;
+			background: none;
+			box-shadow: none;
+			float: none;
+			text-align: left;
+			margin-left: 1.2em;
+			margin-bottom: 3px;
+		}
+
+		.fc .fc-prev-button {
+			background-image: url('/resources/img/left_arrow.png');
+			background-repeat: no-repeat;
+			background-color: white;
+			background-blend-mode: multiply;
+			background-position: center;
+			box-shadow: none;
+		}
+
+		.fc .fc-next-button {
+			background-image: url('/resources/img/right_arrow.png');
+			background-repeat: no-repeat;
+			background-color: white;
+			background-blend-mode: multiply;
+			background-position: center;
+			box-shadow: none;
+		}
+		.fc th, .fc td {
+			border: none;
+		}
+		.fc-ltr .fc-basic-view .fc-day-number {
+			text-align: center;
+		}
+		th {
+			background-color: white;
+		}
+		.fc-head-container .fc-widget-header {
+			margin-bottom: 2.7778vw;
+		}
+		.fc-sun {
+			color :#EB5757 !important;
+		}
+		.fc-sat {
+			color: #2F80ED !important;
+		}
+		.fc-basic-view .fc-body .fc-row {
+			min-height: 11.1111vw;
+		}
+		.fc-day-number { 
+			font-size: 4.4444vw;
+		}
+		.fc table {
+			font-size: 4.4444vw;
+			font-weight: normal;
+		}
+		td {
+			font-size: 4.4444vw;
+			font-weight: normal;
+		}
+		.fc-day-grid-event{
+			width: 2px;
+			height: 4px;
+			margin: auto;
+		}
+		.fc-icon-left-single-arrow, .fc-icon-right-single-arrow {
+			visibility: hidden;
+		}
+		.fc td.fc-today {
+			border: none;
+		}
+		.fc td.fc-today {
+			background: none;
+		}
+		.fc-row .fc-content-skeleton {
+			min-height: 11.111vw;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		.fc-highlight{
+			background-color: #006CBA !important;
+			border-radius: 2.2222vw !important;
+			opacity: 1 !important;
+		}
+		.day-active {
+			color:white !important;
+		}
+		/* calendar custom */
+
+		.counsel_list_wrapper {
+			height: 13.3333vw;
+			display: flex;
+			align-items: stretch;
+		}
+		.counsel_date {
+			width: 15.2778vw;
+			display: flex;
+			align-items: center;
+		}
+		.counsel_date {
+			width: 20vw;
+			display: flex;
+			align-items: center;
+		}
+		.counsel_name {
+
+		}
+		.linked_icon {
+
+		}
+		.line {
+			width: 0.5px;
+			margin: 3.3333vw 0;
+			height: 100%;
+		}
 		</style>
 	<script type="text/javascript">
+	Date.prototype.toStringFormat = function(pattern) {
+		if(pattern) {
+			/*return this.getFullYear() + pattern + this.getMonth() > 10 ? (this.getMonth() + 1) : '0' + (this.getMonth() + 1) + pattern + this.getDate();*/
+			let Y = this.getFullYear()
+			let M = this.getMonth()+1 >= 10 ? (this.getMonth() + 1) : '0' + (this.getMonth() + 1)
+			let D = this.getDate() >= 10 ? this.getDate() : '0' + this.getDate();
+			return Y + pattern + M + pattern + D
+		}
+	}
 		$(document).ready(function() {
+			document.querySelector('.custom-select-wrapper').addEventListener('click', function() {
+				this.querySelector('.custom-select').classList.toggle('open');
+				for (const option of document.querySelectorAll(".custom-option")) {
+					option.addEventListener('click', function() {
+						if (!this.classList.contains('selected')) {
+							this.parentNode.querySelector('.custom-option.selected').classList.remove('selected');
+							this.classList.add('selected');
+							this.closest('.custom-select').querySelector('.custom-select__trigger span').textContent = '상담사 : ' + this.textContent;
+							//monthMove();
+						}
+					})
+				}
+			});
 			
-			$('.calendar').fullCalendar({
+
+			window.addEventListener('click', function(e) {
+				const select = document.querySelector('.custom-select')
+				if (!select.contains(e.target)) {
+					select.classList.remove('open');
+				}
+			});
+
+			let cal = $('.calendar').fullCalendar({
 				header: {
-					left: 'prev,next',
+					left: 'prev',
 					center: 'title',
 					height: 300,
-					right: 'month'
-				}
-				,height: "auto"
-				,defaultDate: '${initDay}'
-				,editable: false
-				,eventLimit: false // allow "more" link when too many events
+					right: 'next',
+				},
+				titleFormat:'MMMM',
+				height: "auto",
+				defaultDate: '${initDay}',
+				editable: false,
+				eventLimit: false,
+				datesRender:function(info) {
+					console.log(info);
+				},
+				dayClick:function(info) {
+					if(typeof info == 'string') {
+						selectDate(info);
+					} else {
+						selectDate(info._d.toStringFormat('-'));
+					}
+					
+				},
+				selectable: true,
 				<c:if test="${not empty totalScheduleList}">
-				,events: ${totalScheduleList}
-			    ,eventRender: function(event, element, view) {
-			        element.qtip({ content: replaceAll(event.title, "\n", "<br>") });
-			    }
-		    	,eventClick: function(event) {
-		    		viewDetail(event.counselCd);
-			    }
+				events: ${totalScheduleList},
+			    eventRender: function(event, element, view) {
+					//element.qtip({ content: replaceAll(event.title, "\n", "<br>") });
+					element.qtip({content : ''});
+				},
+				eventClick: function(event, e, el) {
+					//viewDetail(event.counselCd);
+					//selectDate(event.start._i);
+					selectDate(event.start._i);
+					$('.calendar').fullCalendar('select', $.fullCalendar.moment(event.start._i));
+					
+				},
 				</c:if>
 			});
-	
+
+			var today = '${today}'.substring(0, 7);
+			var text = $(".calendar").fullCalendar('getDate').format('YYYY.MM');
+			
+			$('.fc .fc-toolbar .fc-center h2').before('<div>' + text + '</div>');
 			
 			$('.fc-prev-button,.fc-next-button').click(function() {
 				monthMove();
 			});
 			
 			$(".fc-other-month").text(""); 
-			var today = '${today}'.substring(0, 7);
+			
 			if (today != $(".calendar").fullCalendar('getDate').format("YYYY-MM")) {
 				$(".fc-today ").removeClass("fc-today");
 			}
@@ -107,17 +424,23 @@
 			return false;
 		}
 		
-		
 		$("#clickday").click(function(){
 			alert("dddd");
 		});
 
 		function selectDate(date){
-			
-			$(".clickday").text(date);
+			//$(".clickday").text(date);
 			var date1 =date.replace(/-/gi,"");
 			var params = {};
 			var ymd = date1;
+
+			$('.fc-day-number').removeClass('day-active');
+			$('.fc-day-number').each(function() {
+				if($(this).attr('data-date') == date) {
+					$(this).addClass('day-active');
+					return false;
+				}
+			})
 			
 			params.ymd = ymd;
 			
@@ -126,19 +449,42 @@
 				data: params,
 				dataType: 'json',
 				success: function(data){
-					console.log(data.totalScheduleList2);
-					var aa="<tr>";
-						aa=aa+"<td>상담시간</td><td>상담사</td><td>내담자</td><td>임직원명</td><td>고객사</td><td>일정관리</td>";
-						aa=aa+"</tr>";
-					for(var i=0;i<data.totalScheduleList2.length;i++){
-						aa=aa+"<tr>";
-						aa=aa+"<td>"+data.totalScheduleList2[i].stTime +"~"+data.totalScheduleList2[i].edTime+"</td><td>"+data.totalScheduleList2[i].counselorNm+"</td><td>"+data.totalScheduleList2[i].counselNm+"</td>";
-						aa=aa+"<td>"+data.totalScheduleList2[i].counselNm+"</td><td>"+data.totalScheduleList2[i].clientNm+"</td><td>"+"<a href='/partner/pCounselorMgr/counselFixList?counselNm="+data.totalScheduleList2[i].counselNm +"'>"+data.totalScheduleList2[i].counselNm +" 일정관리 이동</a></td>";
-						aa=aa+"</tr>";  
-						//console.log(data.totalScheduleList2[i].clientNm+":"+i);
+					// var aa="<tr>";
+					// 	aa=aa+"<td>상담시간</td><td>상담사</td><td>내담자</td><td>임직원명</td><td>고객사</td><td>일정관리</td>";
+					// 	aa=aa+"</tr>";
+					// for(var i=0;i<data.totalScheduleList2.length;i++){
+					// 	aa=aa+"<tr>";
+					// 	aa=aa+"<td>"+data.totalScheduleList2[i].stTime +"~"+data.totalScheduleList2[i].edTime+"</td><td>"+data.totalScheduleList2[i].counselorNm+"</td><td>"+data.totalScheduleList2[i].counselNm+"</td>";
+					// 	aa=aa+"<td>"+data.totalScheduleList2[i].counselNm+"</td><td>"+data.totalScheduleList2[i].clientNm+"</td><td>"+"<a href='/partner/pCounselorMgr/counselFixList?counselNm="+data.totalScheduleList2[i].counselNm +"'>"+data.totalScheduleList2[i].counselNm +" 일정관리 이동</a></td>";
+					// 	aa=aa+"</tr>";  
+					// 	//console.log(data.totalScheduleList2[i].clientNm+":"+i);
+					// }
+					// $(".councelDetail").append(aa);
+					let wrapper = $('.counsel_list_wrapper').empty();
+					if(data.totalScheduleList2.length != 0) {
+						let fragment = $(document.createDocumentFragment());
+						data.totalScheduleList2.forEach(function(v) {
+							let item = $(
+								`<div class="flex">
+									<div class="line"></div>
+									<div class="counsel_date"><span class="month"></span><span class="day"></span></div>
+									<div class="counsel_time"></div>
+									<div class="counsel_name"></div>
+									<div class="linked_icon"></div>
+								</div>`
+								);
+							let dateArr = date.split('-');
+							$('.month', item).text(dateArr[1] + '월');
+							$('.day', item).text(dateArr[2] + '일');
+							$('.counsel_time', item).text(v.stTime);
+							$('.counsel_name', item).text(v.clientNm);
+							fragment.append(item);
+						});
+						wrapper.append(fragment);
 					}
-					$(".councelDetail").append(aa);
-
+				},
+				error:function(err) {
+					console.err(err);
 				}
 			});
 		}
@@ -149,11 +495,44 @@
 <body>
 
 <div class="web">
+	<div class="counselor_wrapper">
+		<c:if test="${not empty counselorList }">
+			<div class="custom-select-wrapper">
+				<div class="custom-select">
+					<div class="custom-select__trigger"><span>전체</span>
+						<div class="arrow"></div>
+					</div>
+					<div class="custom-options">
+						<span class="custom-option selected" data-value="">전체</span>
+						<c:forEach var="list" items="${counselorList }">
+							<span data-value="${list.userId }" class='custom-option <c:if test="${param.userId eq list.userId }"> selected </c:if>' >
+								${list.userNm }
+								<span class="item_border"></span>
+							</span>
+							
+						</c:forEach>
+					</div>
+				</div>
+			</div>
+		</c:if>
+	</div>
+	<div class="calendar_wrapper">
+		<div class='calendar'></div>
+	</div>
+	<div class="counsel_list_wrapper">
+		<div class="flex">
+			<div class="counsel_date"></div>
+			<div class="line"></div>
+			<div class="counsel_time"></div>
+			<div class="line"></div>
+			<div class="counsel_name"></div>
+			<div class="linked_icon"></div>
+		</div>
+	</div>
 <table width="80%" border="0" cellspacing="0" cellpadding="0" style="margin-top:20px;">
 		<tr>
 			<td>
 				<c:if test="${not empty counselorList }">
-					<b>상담사 선택 : </b>
 					<select name="userId" onchange="monthMove();" >
 						<option value="">전체</option>
 							<c:forEach var="list" items="${counselorList }">
@@ -170,7 +549,7 @@
 		</tr>
 		<tr>
 			<td>
-				<div class='calendar'></div>
+				<!-- <div class='calendar'></div> -->
 			</td>
 		</tr>
 		<tr>

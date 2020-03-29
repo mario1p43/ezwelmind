@@ -2,7 +2,42 @@
 <%@ include file="/WEB-INF/jsp/layout/inc/tags.jspf"%>
 <html>
 <head>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 <title>서비스 이용목록</title>
+<style>
+	table{border-spacing:0!important}
+	table td{background:none!important}
+	.counsel-wrapper{padding:0 5vw}
+	.counsel-wrapper .content-wrapper{display:flow-root;margin-top:5vw}
+	.counsel-wrapper .content-wrapper:first-child{margin-top:0vw}
+	.counsel-wrapper .content-wrapper .title-block{font-size:16px;font-weight:bold;line-height:130%}
+	.counsel-wrapper .content-wrapper .input-block{display:flow-root;margin-top:2vw}
+	.counsel-wrapper .content-wrapper .input-block input[type=text]{height:30px;padding:0 1vw;font-size:14px;border-color:#BDBDBD;outline:none}
+	.counsel-wrapper .content-wrapper .input-block select{height:32px;padding:0 1vw;font-size:14px;border:1px solid #BDBDBD;outline:none}
+	.counsel-wrapper .content-wrapper .input-block select#centerList{float:left;width:55vw}
+	.counsel-wrapper .content-wrapper .input-block select#counselorList{float:right;width:30vw}
+	.counsel-wrapper .content-wrapper .input-block input#counselYmd{float:left;width:calc(53vw - 2px)}
+	.counsel-wrapper .content-wrapper .input-block select#stTime{float:right;width:30vw}
+	.counsel-wrapper .content-wrapper .input-block select#smsTime{float:left;width:30vw;margin-right:4.5vw}
+	.counsel-wrapper .content-wrapper .input-block select#smsTime2{float:left;width:30vw}
+	.counsel-wrapper .description{margin-top:4.5vw}
+	.counsel-wrapper .content-wrapper .description{margin-top:1.5vw}
+	
+	.counsel-wrapper .data-list-wrapper{display:table;width:100%;table-layout:fixed;border-collapse:collapse}
+	.counsel-wrapper .data-list-wrapper .data-wrapper{margin-top:3vw;font-size:14px}
+	.counsel-wrapper .data-list-wrapper .data-select .selectUser{vertical-align:text-top;margin:0 1vw}
+	.counsel-wrapper .data-list-wrapper table{width:100%;margin-top:2vw;border-collapse:collapse}
+	.counsel-wrapper .data-list-wrapper table tr{height:32px}
+	.counsel-wrapper .data-list-wrapper table tr th{width:35%;font-size:14px;background-color:#D2D2D2}
+	.counsel-wrapper .data-list-wrapper table tr td{font-size:14px;text-align:left;padding:0 2vw}
+	
+	.bottom-btn-wrapper .bottom-fixed-btn{position:fixed;left:0;bottom:50px;width:100%;height:40px;color:white;font-weight:bold;font-size:16px;background-color:#006CBA}
+	
+	.popup-wrapper{position:fixed;top:0;bottom:0;left:0;right:0;background-color:rgba(0, 0, 0, 0.6);z-index:10}
+	.popup-wrapper .popup-body{position:absolute;width:88vw;top:50%;left:50%;transform:translate(-50%, -50%);box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);}
+	.popup-wrapper .popup-body .popup-content{padding:4.5vw;font-size:14px;text-align:center;background:white}
+	.popup-wrapper .popup-body #btnCounselConfirm{height:11vw;line-height:11vw;color:white;text-align:center;font-weight:bold;font-size:16px;background-color:#006CBA}
+</style>
 <script type="text/javascript">
 	$(document).ready(function(){
 		
@@ -183,52 +218,136 @@
 </script>
 </head>
 <body>
-
-
-
-
 <input type="hidden" id="userKey" name="userKey" value="${param.userKey}">
 <input type="hidden" id="clientCd" name="clientCd" value="${user.clientCd}">
-
 <input type="hidden" id="intakeCd" name="intakeCd" value="${intakeCd}">
 <input type="hidden" id="scheduleSeq" name="scheduleSeq" value="">
-
 <input type="hidden" id="ceilingCategoryCd" name="ceilingCategoryCd" value="100681">
-<style>
-#popupBox{
-	border: 1px solid gray;
-    width: 450px;
-    height: 100px;
-    z-index: 100;
-    position: absolute;
-    background: white;
-    top: 200px;
-    left: 350px;
-    box-shadow: 5px 5px 5px 5px #dddddd6b;
-    padding:40px;
-    text-align: center;
-    font-size: 13px;
-}
-
-#btnCounselConfirm{
-	border:1px solid gray;
-	width: 100px;
-	padding:5px;
-	margin-top:50px;
-	margin-left: auto;
-    margin-right: auto;
-    cursor: pointer;
-}
-</style>
-
-
-<div class="web">
-<div id="popupBox" style="display: none;">
-즉시 포인트/회기가 차감되며, 내담자용 페이지에서 확인이 가능합니다. 
-<br>
-내담자와 사전 협의된 일정만 등록하십시오.
-	<div id="btnCounselConfirm" onclick="blind();">확인</div>
+<div class="counsel-wrapper">
+	<div class="content-wrapper">
+		<div class="title-block">상담센터/상담사</div>
+		<div class="input-block">
+			<c:choose>
+	   			<c:when test="${empty intakeCd}">
+	   				<select id="centerList">
+						<option value="">센터를 선택해주세요.</option>
+						<c:forEach var="list" items="${ centerList }">
+							<option value="${list.centerSeq}" <c:if test="${centerSeq eq list.centerSeq}">selected</c:if>>${list.centerNm}</option>
+						</c:forEach>
+					</select>
+					<select id="counselorList">
+					</select>
+	   			</c:when>
+	   			<c:otherwise>
+	   				<select id="centerList">
+	   					<option value="${counsel.centerSeq}">${counsel.centerNm}</option>
+	   				</select>
+	   				<select id="counselorList">
+	   					<option value="${counsel.counselorId}">${counsel.counselorId}(${counsel.counselorNm})</option>
+					</select>
+	   			</c:otherwise>
+	   		</c:choose>
+		</div>
+	</div>
+	<div class="content-wrapper">
+		<div class="title-block">날짜/시간</div>
+		<div class="input-block">
+			<input type="text" class="counselYmd" id="counselYmd" value="" placeholder="=== 날짜 선택 ===" readonly>
+   			<select id="stTime">
+   				<option value=""> 시간 선택 </option>
+				<option value="0700">07:00</option>
+				<option value="0800">08:00</option>
+				<option value="0900">09:00</option>
+				<option value="1000">10:00</option>
+				<option value="1100">11:00</option>
+				<option value="1200">12:00</option>
+				<option value="1300">13:00</option>
+				<option value="1400">14:00</option>
+				<option value="1500">15:00</option>
+				<option value="1600">16:00</option>
+				<option value="1700">17:00</option>
+				<option value="1800">18:00</option>
+				<option value="1900">19:00</option>
+				<option value="2000">20:00</option>
+				<option value="2100">21:00</option>
+				<option value="2200">22:00</option>
+			</select>
+		</div>
+	</div>
+	<div class="description">
+		<div>[중요공지]</div>
+		<div><span style="color:#EB5757">상담신청은 서비스기간 내</span>에서만 일정등록이 가능합니다.</div>
+		<div>* 서비스 기간 : ${clientJedoPeriod.startDd} ~ ${clientJedoPeriod.endDd}</div>
+		<div>문의사항은 이지웰니스로 연락부탁드립니다.</div>
+		<div>(네이버톡톡:초록색배너 클릭)</div>
+	</div>
+	<div class="content-wrapper">
+		<div class="title-block">
+			SMS전송여부
+			<div class="checkbox-wrapper">
+				<input id="smsYn" type="checkbox" checked>
+				<label for="smsYn"></label>
+			</div>
+		</div>
+		<div class="description">* SMS를 전송하지 않으려면 체크를 해제 해주세요.</div>
+	</div>
+	<div class="content-wrapper">
+		<div class="title-block">SMS발송용 상담시간</div>
+		<div class="input-block">
+			<select id="smsTime" disabled="disabled">
+				<option value="">== 시간 선택 ==</option>
+				<option value="07">07</option>
+				<option value="08">08</option>
+				<option value="09">09</option>
+				<option value="10">10</option>
+				<option value="11">11</option>
+				<option value="12">12</option>
+				<option value="13">13</option>
+				<option value="14">14</option>
+				<option value="15">15</option>
+				<option value="16">16</option>
+				<option value="17">17</option>
+				<option value="18">18</option>
+				<option value="19">19</option>
+				<option value="20">20</option>
+				<option value="21">21</option>
+				<option value="22">22</option>
+			</select>
+			<select id="smsTime2">
+				<option value="">= 분 선택 =</option>
+				<option value="00">00</option>
+				<option value="05">05</option>
+				<option value="10">10</option>
+				<option value="15">15</option>
+				<option value="20">20</option>
+				<option value="25">25</option>
+				<option value="30">30</option>
+				<option value="35">35</option>
+				<option value="40">40</option>
+				<option value="45">45</option>
+				<option value="50">50</option>
+				<option value="55">55</option>
+			</select>
+		</div>
+		<div class="description">* 입력하지 않으면 변경할 시간으로 문자가 전송됩니다.</div>
+	</div>
 </div>
+<div class="bottom-btn-wrapper">
+	<input type="button" class="bottom-fixed-btn" onclick="popupBoxShow()" value="상담스케줄 확인 / 주문확인">
+</div>
+
+<div id="popupBox" class="popup-wrapper" style="display:none">
+	<div class="popup-body">
+		<div class="popup-content">
+			<div>즉시 포인트/회기가 차감되며,</div>
+			<div>내담자용 페이지에서 확인이 가능합니다.</div>
+			<div>내담자와 사전 협의된 일정만 등록하십시오.</div>
+		</div>
+		<div id="btnCounselConfirm" onclick="blind();">확인</div>
+	</div>
+</div>
+<%-- <div class="web">
+
 <table cellpadding="0" align="left" cellspacing="0" border="0" width="95%">
 	<tr>
 		<td>
@@ -420,7 +539,7 @@
 	</tr>
 </table>
 	<div id="viewlayout" onmouseOver="this.style.display='block'" onMouseOut="this.style.display='none'" style="display:none; position:fixed;"></div>
-</div>
+</div> --%>
 
 </body>
 </html>

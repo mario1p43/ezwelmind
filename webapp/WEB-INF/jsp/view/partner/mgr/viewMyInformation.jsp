@@ -6,21 +6,6 @@
 <head>
 <title>개인 정보관리 수정</title>
 <link href="${url:resource('/resources/js/plugin/jquery-ui-1.8.9.custom-datepicker.css')}" rel="stylesheet" type="text/css" />
-<script type="text/javascript">
-function fileDownLoad(path,name){
-    var f = document.downForm;
-
-	f.filepath.value = path;
-	f.filename.value = name;
-	f.action = "/resources/jsp/fileDownload.jsp";
-	f.submit();
-}
-</script>
-
-<form name="downForm" method="post">
-	<input type="hidden" name="filepath" value="">
-	<input type="hidden" name="filename" value="">
-</form>
 
 <script type="text/javascript">
 	var num = 0;
@@ -989,9 +974,9 @@ function fileDownLoad(path,name){
 			<tr align="left" height="30px">
 				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 연락처</th>
 				<td class="line" colspan="1" >
-				    <input type="number" maxlength="3" id="mobile1" value="${mgr.mobile1 }" style="width: 10%;" data-validation="length number" data-validation-length="2-3"  data-validation-error-msg="연락처를 확인 해주세요."/>-
-		    		<input type="number" maxlength="4" id="mobile2" value="${mgr.mobile2 }" style="width: 10%;" data-validation="length number" data-validation-length="3-4"  data-validation-error-msg="연락처를 확인 해주세요." />-
-		    		<input type="number" maxlength="4" id="mobile3" value="${mgr.mobile3 }" style="width: 10%;" data-validation="length number" data-validation-length="4-4"  data-validation-error-msg="연락처를 확인 해주세요." />
+				    <input type="text" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"  maxlength="3" id="mobile1" value="${mgr.mobile1 }" style="width: 10%;" data-validation="length number" data-validation-length="2-3"  data-validation-error-msg="연락처를 확인 해주세요."/>-
+		    		<input type="text" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"  maxlength="4" id="mobile2" value="${mgr.mobile2 }" style="width: 10%;" data-validation="length number" data-validation-length="3-4"  data-validation-error-msg="연락처를 확인 해주세요." />-
+		    		<input type="text" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"  maxlength="4" id="mobile3" value="${mgr.mobile3 }" style="width: 10%;" data-validation="length number" data-validation-length="4-4"  data-validation-error-msg="연락처를 확인 해주세요." />
 		    		<input type="hidden" name="mobile">
 				</td>
 				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 이메일</th>
@@ -1001,10 +986,10 @@ function fileDownLoad(path,name){
 			</tr>
 			<tr align="left" height="30px">
 				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* SMS 인증용 연락처</th>
-				<td class="line" colspan="3" >
-				    <input type="number" maxlength="3" id="mobilesms1" value="${mgr.mobilesms1 }" style="width: 10%;" data-validation="length number" data-validation-length="2-3"  data-validation-error-msg="연락처를 확인 해주세요."/>-
-		    		<input type="number" maxlength="4" id="mobilesms2" value="${mgr.mobilesms2 }" style="width: 10%;" data-validation="length number" data-validation-length="3-4"  data-validation-error-msg="연락처를 확인 해주세요." />-
-		    		<input type="number" maxlength="4" id="mobilesms3" value="${mgr.mobilesms3 }" style="width: 10%;" data-validation="length number" data-validation-length="4-4"  data-validation-error-msg="연락처를 확인 해주세요." />
+				<td class="line" colspan="1" >
+				    <input type="text" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"  maxlength="3" id="mobilesms1" value="${mgr.mobilesms1 }" style="width: 10%;" data-validation="length number" data-validation-length="2-3"  data-validation-error-msg="연락처를 확인 해주세요."/>-
+		    		<input type="text" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"  maxlength="4" id="mobilesms2" value="${mgr.mobilesms2 }" style="width: 10%;" data-validation="length number" data-validation-length="3-4"  data-validation-error-msg="연락처를 확인 해주세요." />-
+		    		<input type="text" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"  maxlength="4" id="mobilesms3" value="${mgr.mobilesms3 }" style="width: 10%;" data-validation="length number" data-validation-length="4-4"  data-validation-error-msg="연락처를 확인 해주세요." />
 				</td>
 				<input type="hidden" name="mobileSms">
 			</tr>
@@ -1216,7 +1201,9 @@ function fileDownLoad(path,name){
 				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">&nbsp;&nbsp;사진</th>
 		    	<td class="line" colspan="3" >
 		    		<input type="file" name="picAdd" />&nbsp;
+		    		<a href="javascript:fileDownLoad('${mgr.filePath}', '${mgr.fileNm}');">
 		    		${mgr.fileNm }
+		    		</a>
 		    		<input type="button" value="삭제" id="delPhotoBtn"/>
 		    	</td>
 			</tr>

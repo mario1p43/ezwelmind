@@ -118,8 +118,9 @@ $(document).ready(function(){
 				}
 			
 			}
-			
-			if("${isNotSaveSubjectItem}" == "true") {
+
+			var endType = $(":input:radio[name=endType]:checked").val();
+			if("${isNotSaveSubjectItem}" == "true" && endType != "ns") {
 				var subjectItemCd1 = $.trim($("#subjectItemCd1").val()); //상담 세부 분류
 				var subjectItemCd2 = $.trim($("#subjectItemCd2").val()); //상담 세부 분류
 				
@@ -136,7 +137,7 @@ $(document).ready(function(){
 					return false;
 				}
 			}
-			if(mainIssue.length == 0){
+			if(mainIssue.length == 0 && endType != "ns"){
 				alert("상담의 주제(회기 내 내담자의 주호소 문제 주제)를 입력하세요");
 				return false;
 			}
@@ -183,7 +184,7 @@ $(document).ready(function(){
 			}
 
 			
-			if(counselChannelType == '100002' && counselFeedBack.length <= 50){
+			if(counselChannelType == '100002' && counselFeedBack.length <= 50 && endType != "ns"){
 				alert("상담사가 내담자에게 전하는 메시지를 입력하세요.(최소 50자 이상)\n해당 내용은 내담자에게 SMS, e-mail이 전송되며 상담포유를 통해 확인 가능합니다.");
 				$("#counselFeedBack").focus();
 				return false;
@@ -897,19 +898,19 @@ j$(function(){
 									<c:if test="${ record_detail.counselType eq '100433' or record_detail.counselType eq '100434' }">
 										<c:choose>
 											<c:when test="${record_detail.endType eq 'ns'}">
-						    					<input type="radio" name="endType" id="ns" value="ns" checked/><label for="ns">N/S : 당일취소 및 No Show </label>
+						    					<input type="radio" name="endType" id="ns" value="ns" checked/><label for="ns">N/S : No Show</label>
 											</c:when>
 											<c:otherwise>
-						    					<input type="radio" name="endType" id="ns" value="ns"/><label for="ns">N/S : 당일취소 및 No Show</label>
+						    					<input type="radio" name="endType" id="ns" value="ns"/><label for="ns">N/S : No Show</label>
 											</c:otherwise>
 						    			</c:choose>
 						    		</c:if>
 									<c:choose>
 										<c:when test="${record_detail.endType eq 'end'}">
-						    				<input type="radio" name="endType" id="end" value="end" checked/><label for="end">종결 : 마지막 회기 진행 및 케이스 종결</label>
+						    				<input type="radio" name="endType" id="end" value="end" checked/><label for="end">진행 및 종결 : 마지막 회기 진행 및 케이스 종결</label>
 										</c:when>
 										<c:otherwise>
-						    				<input type="radio" name="endType" id="end" value="end"/><label for="end">종결 : 마지막 회기 진행 및 케이스 종결</label>
+						    				<input type="radio" name="endType" id="end" value="end"/><label for="end">진행 및 종결 : 마지막 회기 진행 및 케이스 종결</label>
 										</c:otherwise>
 					    			</c:choose>
 		   						</td>

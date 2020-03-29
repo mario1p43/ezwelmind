@@ -505,6 +505,20 @@
 	</update>
 	
 	
+	<!-- 비디앱스 임시 추가 2020.01.01  -->
+	<update id="updateCounselorInfoMgrImg" parameterType="com.ezwel.admin.service.mgr.dto.MgrSubDto">
+		UPDATE MIND_MGR_SUB
+		SET
+		<if test="isNotNull(fileNm)">
+			FILE_NM	= #{fileNm},
+		</if>
+		<if test="isNotNull(filePath)">
+			FILE_PATH = #{filePath}
+		</if>
+		WHERE USER_ID = #{userId}
+		
+	</update>
+		
 	
 	<!-- 비디앱스 임시 추가 2020.01.01  -->
 	<update id="updateCounselorInfoMgrImsi" parameterType="com.ezwel.admin.service.mgr.dto.MgrSubDto">

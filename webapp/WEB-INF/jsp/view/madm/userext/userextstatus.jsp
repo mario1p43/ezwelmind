@@ -504,7 +504,7 @@ button{
 			<table cellpadding="5" align="" id="chRow" cellspacing="0" border="1" width="100%" style="text-align:center; border-collapse:collapse;">
 				<thead>
 				<tr align="center" height="50px">
-					<th width="5%" >작성일자</th>			
+					<th width="5%" >신청일자</th>			
 					<th width="10%" >고객사</th>			
 					<th width="5%" >임직원명</th>			
 					<th width="5%" >내담자명</th>			
@@ -526,7 +526,7 @@ button{
 				<tbody>
 				<c:forEach var="list" items="${paging.list}" varStatus="status">
 					<tr height="50px">
-					<td>${list.ymd}</td>
+					<td>${list.regDt1}</td>
 					<td>${list.clientNm}</td>
 					<td>${list.ownerNm}</td>
 					<td>${list.counselNm}</td>

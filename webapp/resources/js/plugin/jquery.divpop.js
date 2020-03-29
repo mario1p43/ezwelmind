@@ -106,5 +106,75 @@
 		});
 		return layerEl;
 	};
+	
+	// 팝업 모바일
+	jQuery.divPop_mo = function(id, title, popup, options){
+		var defaultOptions = {
+				focusId: ''
+		}
+		
+		options = jQuery.extend({}, defaultOptions, options);
+		
+		var popupHtml = '';
+		if( popup instanceof Object ){
+			popupHtml = popup.html();
+			popup.empty();
+		}else{
+			jQuery.ajax({
+				url: popup,
+				async: false,
+				dataType: "html",
+				success: function(data, textStatus){
+					popupHtml = data;
+				}
+			});
+		}
+		
+		if( jQuery('#' + id).length == 0 ) {
+			var templeteHtml = "";
+			templeteHtml += '<div class="divpopuplayer">';
+			templeteHtml += '	<div class="divpopupLayerbg"></div>';
+			templeteHtml += '	<div id="'+id+'" class="divPopupContentLayer-mo">';
+			templeteHtml += '	</div>';
+			templeteHtml += '</div>';
+			jQuery('body').append(templeteHtml);
+		}
+		var layerEl = jQuery('#' + id);
+		layerEl.append(popupHtml);
+		
+		var rootLayer = layerEl.parent();
+		rootLayer.fadeIn();
+		
+		if( options.focusId == "" ){
+			jQuery("#" +id + " input[type='text']").each(function(){
+				if( !jQuery(this).attr("readonly") ){
+					jQuery(this).focus();
+					return false;
+				}
+			});
+		}else{
+			jQuery("#" + options.focusId).focus();
+		}
+		
+		layerEl.find('.btClose').bind('click', function(e){
+			if ( typeof popup == 'string' ) {
+				jQuery("div[class='divpopuplayer']").eq($("div[class='divpopuplayer']").length-1).remove();
+				rootLayer.fadeOut();
+				eval($(this).attr("callback"));
+			} else if ( typeof popup == 'object') {
+				if( jQuery(this).attr("callback") ){
+					eval($(this).attr("callback"));
+				}
+				rootLayer.fadeOut();
+				if( popup instanceof Object ){
+					popup.html(layerEl.html());
+					layerEl.empty();
+				}
+				e.preventDefault();
+				jQuery(this).remove();
+			}
+		});
+		return layerEl;
+	};
 
 })(jQuery);

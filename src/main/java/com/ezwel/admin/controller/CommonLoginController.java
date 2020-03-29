@@ -11,12 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.ezwel.admin.service.common.CommonService;
 import com.ezwel.admin.service.security.UserDetailsHelper;
+import com.ezwel.common.commonController;
 import com.ezwel.core.framework.web.GlobalsProperties;
 import com.ezwel.core.security.EzUserDetailsServiceImpl;
 import com.ezwel.core.support.util.UrlUtil;
 
 @Controller
-public class CommonLoginController {
+public class CommonLoginController extends commonController {
 	private static Logger log = LoggerFactory.getLogger(CommonLoginController.class);
 	
 	@Resource
@@ -62,7 +63,14 @@ public class CommonLoginController {
 		 */
 		if (globalsProperties.getProperty("cp.site.code").equals(
 				UrlUtil.getUrlClientCd(request))) {
-			return "partner/login/loginForm";
+			
+			if(isDevice(request) == IS_PC) {
+				return "partner/login/loginForm";
+			}else {
+				return "partner/login/loginForm_mo";
+			}
+			
+			
 		} else {
 			return "madm/login/loginForm";
 		}

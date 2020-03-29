@@ -90,6 +90,42 @@ public class CustomerManagementVo extends FileMind{
 	private String fileSeq2;
 	private String fileSeq3;
 	
+	
+	
+	private String fileSeq101;
+	private String filename101;
+	private String filefath101;
+	private String apprStatus101;
+	private String regId101;
+	private String regDt101;
+	private String fileSeq102;  
+	private String filename102;
+	private String filefath102;
+	private String apprStatus102;
+	private String regId102;
+	private String regDt102;
+	private String fileSeq103;  
+	private String filename103;
+	private String filefath103;
+	private String apprStatus103;
+	private String regId103;
+	private String regDt103;
+	private String fileSeq104;  
+	private String filename104;
+	private String filefath104;
+	private String apprStatus104;
+	private String regId104;
+	private String regDt104;
+	private String fileSeq105;  
+	private String filename105;
+	private String filefath105;
+	private String apprStatus105;
+	private String regId105;
+	private String regDt105;
+	
+	
+	
+	
 	private String docSts;
 	
 	private String fileSeq;

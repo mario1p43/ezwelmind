@@ -16,50 +16,37 @@ if(iTMonth2<10){
 <html>
 	<head>
 		<title>Main</title>
-		
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 	<body>
 	<style>
 		ul.tabs {
-		    margin: 0;
-		    padding: 0;
-		    float: left;
-		    list-style: none;
-		    height: 32px;
-		    border-bottom: 1px solid #eee;
-		    border-left: 1px solid #eee;
-		    width: 100%;
-		    font-family:"dotum";
-		    font-size:12px;
+			padding: 0;
+			padding-right: 15px;
+			display: flex;
+			-webkit-justify-content: center; 
+			justify-content: center; 
+			-webkit-align-items: center; 
+			align-items: center;
+			list-style-type: none;
 		}
 		ul.tabs li {
-		    float: left;
-		    text-align:center;
-		    cursor: pointer;
-		    width:30%;
-		    height: 31px;
-		    line-height: 31px;
-		    border: 1px solid #eee;
-		    border-left: none;
-		    font-weight: bold;
-		    background: #fafafa;
-		    overflow: hidden;
-		    position: relative;
+			height: 11.1111vw;
+			font-size:3.8889vw;
+		    color:#828282;
+		}
+		ul.tabs li:last-child {
+		    margin-left: 4.4444vw;
 		}
 		ul.tabs li.active {
-		    background: #FFFFFF;
-		    border-bottom: 1px solid #FFFFFF;
+			color: #F58900;
+			border-bottom: 1px solid #F58900;
 		}
 		.tab_container {
-		    border: 1px solid #eee;
-		    border-top: none;
-		    clear: both;
-		    float: left;
 		    width: 100%;
 		    background: #FFFFFF;
 		}
 		.tab_content {
-		    padding: 5px;
 		    width:100%;
 		    font-size: 12px;
 		    display: none;
@@ -76,6 +63,100 @@ if(iTMonth2<10){
 		#container {
 		    width: 100%;
 		    margin: 0 auto;
+		}
+		
+		/* mobile style */
+		.flexColumn{display: flex;  flex-direction: column; display: -webkit-flex;  -webkit-flex-direction: column; }
+		.flex{display: flex; display: -webkit-flex;}
+		.flexGrow{-webkit-flex-grow: 1; flex-grow: 1; flex : 1 1 0;  -webkit-flex : 1 1 0;}
+		.center{-webkit-justify-content: center; justify-content: center; -webkit-align-items: center; align-items: center; }/* 가로세로중앙정렬 */
+		.centerH{-webkit-align-items: center; align-items: center; }/* 세로중앙정렬 */
+		.rightR{-webkit-justify-content: flex-end; justify-content: flex-end; }
+		.rightC{-webkit-align-items: flex-end; align-items: flex-end;}
+		.m_main_header{
+			display:flex;
+			padding-top: 4.2667vw;
+			padding-bottom: 6.4vw;
+			padding-right: 5.5556vw;
+		}
+		.m_header_logo{
+			height: 6.9444vw;
+		}
+		.m_header_logout {
+			display:flex;
+		}
+		.m_header_nav a span {
+			letter-spacing: 0.0427vw;
+			color: #FF8B7E;
+			font-size: 3.8889vw;
+		}
+		.m_header_logout {
+			justify-content: space-evenly;
+		}
+		.m_header_nav a img{
+			margin-left: 2.2667vw;
+			height: 3.8889vw;
+		}
+		.box_row {
+			padding-right:15px;
+			justify-content: space-between;
+		}
+		.box_row:last-child {
+			margin-top:5.5556vw;
+		}
+		.consulting_count {
+			margin-top:2.2222vw;
+			color:#8D8D8D;
+			font-size: 3.8889vw;
+		}
+		.m_main_box {
+			width: 26.6667vw;
+			height: 26.6667vw;
+			box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+			border-radius: 2.7778vw;
+			background-size: 115%;
+			background-position: center;
+		}
+		.m_main_box a {
+			width: 100%;
+			height: 100%;
+		}
+		.m_main_box a:hover {
+			text-decoration: none;
+		}
+		.m_main_box p{
+			font-size: 13.8889vw;
+			color: white;
+		}
+		.today_consulting {
+			background-image: url('/resources/img/box1.png');
+		}
+		.consulting {
+			background-image: url('/resources/img/box2.png');
+		}
+		.counselor_count {
+			background-image: url('/resources/img/box3.png');
+		}
+		.unwritten {
+			background-image: url('/resources/img/box4.png');
+		}
+		.extension {
+			background-image: url('/resources/img/box5.png');
+		}
+		.approval {
+			background-image: url('/resources/img/box6.png');
+		}
+		.notice_subject a {
+			color:black;
+			font-size: 4.4444vw;
+			font-weight: bold;
+		}
+		.notice_content a {
+			font-size: 3.8889vw;
+			color:black;
+			line-height: 130%;
+			white-space: normal;
+			word-wrap: break-word;
 		}
 		</style>
 	<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
@@ -114,359 +195,115 @@ if(iTMonth2<10){
 		</sec:authorize>
 <div class="web">
 
-
-
-	<table cellpadding="0" cellspacing="0" border="0" width="100%" style="display: inline-table">
- 
-		<tr>
-			<td height="20px"></td>
-		</tr>
-		<tr>
-		<td>
-		<div id="container">
-		    <ul class="tabs">
-		        <li class="active" rel="tab1">공지사항</li>
-		        <li rel="tab2">모집공고</li>
-		    </ul>
-		    <div class="tab_container">
-		        <div id="tab1" class="tab_content">
-		             <c:if test="${!empty notice }">
-				        <table>
-					        <tr>
-								<td align="left" class="subtitle">공지사항</td>
-								</tr>
-								<tr>
-									<td height="10px"></td>
-								</tr>
-								<tr>
-									<td>
-										<div style="width: 100%; height: auto; overflow-y:auto">
-											<table cellpadding="5" cellspacing="0" border="0" style="border-collapse:collapse; width: 100%" bordercolor="#DDDDDD">
-												<tr height="30px">													
-											    	<td class="pt_size16">
-											    		
-											    		<a href="/partner/bbsNotice/noticeDetailForm?dataSeq=${notice.dataSeq}"><b>${notice.subject }</b></a>
-											    	</td>
-												</tr>
-												<tr>
-											    	<td>
-											    	<a href="/partner/bbsNotice/noticeDetailForm?dataSeq=${notice.dataSeq}"><b>${notice.content }</b></a>
-											    		
-											    	</td>
-												</tr>
-											</table>
-										</div>
-									</td>
-								</tr>
-				        </table>
-						</c:if>
-		        </div>
-        		<!-- #tab1 -->
-		        <div id="tab2" class="tab_content">
-		        <c:if test="${!empty recruit }">
-				        <table>
-					        <tr>
-								<td align="left" class="subtitle">모집공고</td>
-								</tr>
-								<tr>
-									<td height="10px"></td>
-								</tr>
-								<tr>
-									<td>
-										<div style="width: 550px; height: auto; overflow-y:auto">
-											<table cellpadding="5" cellspacing="0" border="0" style="border-collapse:collapse; width: 100%" bordercolor="#DDDDDD">
-												<tr height="30px">													
-											    	<td class="pt_size16">
-											    		
-											    		<a href="/partner/bbsNotice/noticeDetailForm?dataSeq=${recruit.dataSeq}"><b>${recruit.subject }</b></a>
-											    	</td>
-												</tr>
-												<tr>
-											    	<td>
-											    	<a href="/partner/bbsNotice/noticeDetailForm?dataSeq=${recruit.dataSeq}"><b>${recruit.content }</b></a>
-											    		
-											    	</td>
-												</tr>
-											</table>
-										</div>
-									</td>
-								</tr>
-				        </table>
-						</c:if>
-		        </div>
-        <!-- #tab2 -->
-        
-        <!-- #tab3 -->
-    </div>
-    <!-- .tab_container -->
-</div>
-<br>
-
-<div class="clear_both"></div>
-<div class="h20"></div>
-<c:if test="${sesUser.authCd eq 'ROLE_PARTNER_CENTER'}">
-	<div class="wd100 ">
-		<div class="float_left padding10">
-			<a href="/partner/pCounselorMgr/counselFixList?startDt=<%=iTYear  %>%2F<%=iTMonth  %>%2F<%=iTDay  %>&endDt=<%=iTYear  %>%2F<%=iTMonth %>%2F<%=iTDay  %>">
-				<svg width="134" height="134" viewBox="0 0 134 134" fill="none" xmlns="http://www.w3.org/2000/svg">
-				<circle cx="67" cy="67" r="64" stroke="url(#paint0_linear)" stroke-width="6"/>
-				<defs>
-				<linearGradient id="paint0_linear" x1="21.5" y1="16.5" x2="118.5" y2="116" gradientUnits="userSpaceOnUse">
-				<stop stop-color="#006DBA"/>
-				<stop offset="1" stop-color="#7EC041"/>
-				</linearGradient>
-				</defs>
-				<text text-anchor="middle"   x="50%" y="25%" fill="#191919" font-size="14" font-family="">
-				    오늘 상담
-				</text>
-				<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="">
-				    ${sangdamcnt.todayCsCnt}
-				</text>
-				</svg>
-			</a>
+	
+	<div id="container">
+		<c:if test="${sesUser.authCd eq 'ROLE_PARTNER_CENTER' || sesUser.authCd eq 'ROLE_PARTNER_ADMIN' }">
+		<div class="flex box_row">
+			<div class="consulting_container">
+				<div class="m_main_box flex center today_consulting">
+					<a class="flex center" href="/partner/pCounselorMgr/counselFixList?startDt=<%=iTYear  %>%2F<%=iTMonth  %>%2F<%=iTDay  %>&endDt=<%=iTYear  %>%2F<%=iTMonth %>%2F<%=iTDay  %>">	
+						<p>
+							${sangdamcnt.todayCsCnt}
+						</p>
+					</a>
+				</div>
+				<div class="flex center">
+					<p class="consulting_count">오늘 상담</p>
+				</div>
+			</div>
+			<div class="consulting_container">
+				<div class="m_main_box flex center consulting">
+					<a class="flex center" href="/partner/pCounselorMgr/counselFixList">	
+						<p>
+							${sangdamcnt.processCsCnt}
+						</p>
+					</a>
+				</div>
+				<div class="flex center">
+					<p class="consulting_count">진행 중 상담</p>
+				</div>
+			</div>
+			<div class="consulting_container">
+				<div class="m_main_box counselor_count">
+					<a class="flex center" href="/partner/mgr/counselorInfoMgrList">	
+						<p>
+							${sangdamcnt.counselorCnt}
+						</p>
+					</a>
+				</div>
+				<div class="flex center">
+					<p class="consulting_count">상담사 수</p>
+				</div>
+			</div>
 		</div>
-		<div class="float_left padding10">
-			<a href="/partner/pCounselorMgr/counselFixList">
-				<svg width="134" height="134" viewBox="0 0 134 134" fill="none" xmlns="http://www.w3.org/2000/svg">
-				<circle cx="67" cy="67" r="64" stroke="url(#paint0_linear)" stroke-width="6"/>
-				<defs>
-				<linearGradient id="paint0_linear" x1="21.5" y1="16.5" x2="118.5" y2="116" gradientUnits="userSpaceOnUse">
-				<stop stop-color="#006DBA"/>
-				<stop offset="1" stop-color="#7EC041"/>
-				</linearGradient>
-				</defs>
-				<text text-anchor="middle"   x="50%" y="25%" fill="#191919" font-size="14" font-family="">
-				    진행중 상담
-				</text>
-				<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="">
-				    ${sangdamcnt.processCsCnt}
-				</text>
-				</svg>
-			</a>
+		<div class="flex box_row">
+			<div class="consulting_container">
+				<div class="m_main_box flex center unwritten">
+					<a class="flex center" href="/partner/pCounselorMgr/pCounselorDateList">	
+						<p>
+							${sangdamcnt.unWritenCsCnt}
+						</p>
+					</a>
+				</div>
+				<div class="flex center">
+					<p class="consulting_count">미작성일지</p>
+				</div>
+			</div>
+			<div class="consulting_container">
+				<div class="m_main_box flex center extension">
+					<a class="flex center" href="/partner/pCounselorMgr/counselFixList">	
+						<p>
+							${sangdamcnt.extenCsCnt}
+						</p>
+					</a>
+				</div>
+				<div class="flex center">
+					<p class="consulting_count">연장신청</p>
+				</div>
+			</div>
+			<div class="consulting_container">
+				<div class="m_main_box flex center approval">
+					<a class="flex center" href="/partner/mgr/counselorInfoMgrList?searchMgrStatus=S">	
+						<p>
+							${sangdamcnt.unWritenCsCnt}
+						</p>
+					</a>
+				</div>
+				<div class="flex center">
+					<p class="consulting_count">승인대기</p>
+				</div>
+			</div>
 		</div>
-		<div class="float_left padding10">
-			<a href="/partner/pCounselorMgr/pCounselorDateList">
-				<svg width="134" height="134" viewBox="0 0 134 134" fill="none" xmlns="http://www.w3.org/2000/svg">
-				<circle cx="67" cy="67" r="64" stroke="url(#paint0_linear)" stroke-width="6"/>
-				<defs>
-				<linearGradient id="paint0_linear" x1="21.5" y1="16.5" x2="118.5" y2="116" gradientUnits="userSpaceOnUse">
-				<stop stop-color="#006DBA"/>
-				<stop offset="1" stop-color="#7EC041"/>
-				</linearGradient>
-				</defs>
-				<text text-anchor="middle"   x="50%" y="20%" fill="#191919" font-size="14" font-family="">
-				    미작성
-				</text>
-				<text text-anchor="middle"   x="50%" y="35%" fill="#191919" font-size="14" font-family="">   
-				    상담일지
-				</text>
-				<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="">
-				    ${sangdamcnt.unWritenCsCnt}
-				</text>
-				</svg>
-			</a>
-		</div>
-		<div class="float_left padding10">
-			<a href="/partner/pCounselorMgr/counselFixList">
-				<svg width="134" height="134" viewBox="0 0 134 134" fill="none" xmlns="http://www.w3.org/2000/svg">
-				<circle cx="67" cy="67" r="64" stroke="url(#paint0_linear)" stroke-width="6"/>
-				<defs>
-				<linearGradient id="paint0_linear" x1="21.5" y1="16.5" x2="118.5" y2="116" gradientUnits="userSpaceOnUse">
-				<stop stop-color="#006DBA"/>
-				<stop offset="1" stop-color="#7EC041"/>
-				</linearGradient>
-				</defs>
-				<text text-anchor="middle"   x="50%" y="25%" fill="#191919" font-size="14" font-family="">
-				    연장 신청
-				</text>
-				<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="">
-				    ${sangdamcnt.extenCsCnt}
-				</text>
-				</svg>
-			</a>
-		</div>
-		<div class="float_left padding10">
-			<a href="/partner/mgr/counselorInfoMgrList?searchMgrStatus=S">
-				<svg width="134" height="134" viewBox="0 0 134 134" fill="none" xmlns="http://www.w3.org/2000/svg">
-				<circle cx="67" cy="67" r="64" stroke="url(#paint0_linear)" stroke-width="6"/>
-				<defs>
-				<linearGradient id="paint0_linear" x1="21.5" y1="16.5" x2="118.5" y2="116" gradientUnits="userSpaceOnUse">
-				<stop stop-color="#006DBA"/>
-				<stop offset="1" stop-color="#7EC041"/>
-				</linearGradient>
-				</defs>
-				<text text-anchor="middle"   x="50%" y="25%" fill="#191919" font-size="14" font-family="">
-				    승인 대기
-				</text>
-				<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="">
-				    ${sangdamcnt.unWritenCsCnt}
-				</text>
-				</svg>
-			</a>
-		</div>
+		</c:if>
 		
-		<div class="float_left padding10">
-		<a href="/partner/mgr/counselorInfoMgrList">
-			<svg width="134" height="134" viewBox="0 0 134 134" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<circle cx="67" cy="67" r="64" stroke="url(#paint0_linear)" stroke-width="6"/>
-			<defs>
-			<linearGradient id="paint0_linear" x1="21.5" y1="16.5" x2="118.5" y2="116" gradientUnits="userSpaceOnUse">
-			<stop stop-color="#006DBA"/>
-			<stop offset="1" stop-color="#7EC041"/>
-			</linearGradient>
-			</defs>
-			<text text-anchor="middle"   x="50%" y="25%" fill="#191919" font-size="14" font-family="">
-			    상담사 수
-			</text>
-			<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="">
-			   ${sangdamcnt.counselorCnt}
-			</text>
-			</svg>
-		</a>
-	</div>
-	</div>
+		<ul class="tabs">
+			<li class="flex center flexGrow active" rel="tab1"><span class="">공지사항</span></li>
+			<li class="flex center flexGrow" rel="tab2"><span>모집공고</span></li>
+		</ul>
+		<div class="tab_container">
+			<div id="tab1" class="tab_content">
+				<c:if test="${!empty notice }">
+					<div class="notice_subject">
+						<a href="/partner/bbsNotice/noticeDetailForm?dataSeq=${notice.dataSeq}">${notice.subject }</a>
+					</div>
+					<div class="notice_content">
+						<a href="/partner/bbsNotice/noticeDetailForm?dataSeq=${notice.dataSeq}">${notice.content }</a>
+					</div>
+				</c:if>
+			</div>
+			<div id="tab2" class="tab_content">
+				<c:if test="${!empty recruit }">
+					<div class="notice_subject">
+						<a href="/partner/bbsNotice/noticeDetailForm?dataSeq=${recruit.dataSeq}">${recruit.subject }</a>
+					</div>
+					<div class="notice_content">
+						<a href="/partner/bbsNotice/noticeDetailForm?dataSeq=${recruit.dataSeq}">${recruit.content }</a>
+					</div>
+				</c:if>
+			</div>
 
-</c:if>
 
-<c:if test="${sesUser.authCd eq 'ROLE_PARTNER_SANGDAM'}">
-	<div class="clear_both"></div>
-	<div class="h20"></div>
-<div class="wd100 c2">
-	<div class="float_left padding15">
-		<a href="/partner/pCounselorMgr/counselFixList">
-			<svg width="134" height="134" viewBox="0 0 134 134" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<circle cx="67" cy="67" r="64" stroke="url(#paint0_linear)" stroke-width="6"/>
-			<defs>
-			<linearGradient id="paint0_linear" x1="21.5" y1="16.5" x2="118.5" y2="116" gradientUnits="userSpaceOnUse">
-			<stop stop-color="#006DBA"/>
-			<stop offset="1" stop-color="#7EC041"/>
-			</linearGradient>
-			</defs>
-			<text text-anchor="middle"   x="50%" y="25%" fill="#191919" font-size="14" font-family="'Leckerli One', cursive">
-			    내담자
-			</text>
-			<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="'Leckerli One', cursive">
-			    30
-			</text>
-			</svg>
-		</a>
-	</div>
-	<div class="float_left padding15">
-		<a href="/partner/pCounselorMgr/counselFixList?startDt=<%=iTYear  %>%2F<%=iTMonth  %>%2F<%=iTDay  %>&endDt=<%=iTYear  %>%2F<%=iTMonth  %>%2F<%=iTDay  %>">
-			<svg width="134" height="134" viewBox="0 0 134 134" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<circle cx="67" cy="67" r="64" stroke="url(#paint0_linear)" stroke-width="6"/>
-			<defs>
-			<linearGradient id="paint0_linear" x1="21.5" y1="16.5" x2="118.5" y2="116" gradientUnits="userSpaceOnUse">
-			<stop stop-color="#006DBA"/>
-			<stop offset="1" stop-color="#7EC041"/>
-			</linearGradient>
-			</defs>
-			<text text-anchor="middle"   x="50%" y="25%" fill="#191919" font-size="14" font-family="'Leckerli One', cursive">
-			    오늘 상담
-			</text>
-			<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="'Leckerli One', cursive">
-			    ${sangdamcnt.todayCsCnt}
-			</text>
-			</svg>
-		</a>
-	</div>
 	
-	<div class="float_left padding15">
-		<a href="/partner/pCounselorMgr/counselFixList">
-			<svg width="134" height="134" viewBox="0 0 134 134" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<circle cx="67" cy="67" r="64" stroke="url(#paint0_linear)" stroke-width="6"/>
-			<defs>
-			<linearGradient id="paint0_linear" x1="21.5" y1="16.5" x2="118.5" y2="116" gradientUnits="userSpaceOnUse">
-			<stop stop-color="#006DBA"/>
-			<stop offset="1" stop-color="#7EC041"/>
-			</linearGradient>
-			</defs>
-			<text text-anchor="middle"   x="50%" y="25%" fill="#191919" font-size="14" font-family="'Leckerli One', cursive">
-			    연장 신청
-			</text>
-			<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="'Leckerli One', cursive">
-			    ${sangdamcnt.extenCsCnt}
-			</text>
-			</svg>
-		</a>
-	</div>
-	<div class="float_left padding15">
-		<a href="/partner/pCounselorMgr/pCounselorDateList">
-			<svg width="134" height="134" viewBox="0 0 134 134" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<circle cx="67" cy="67" r="64" stroke="url(#paint0_linear)" stroke-width="6"/>
-			<defs>
-			<linearGradient id="paint0_linear" x1="21.5" y1="16.5" x2="118.5" y2="116" gradientUnits="userSpaceOnUse">
-			<stop stop-color="#006DBA"/>
-			<stop offset="1" stop-color="#7EC041"/>
-			</linearGradient>
-			</defs>
-			<text text-anchor="middle"   x="50%" y="20%" fill="#191919" font-size="14" font-family="'Leckerli One', cursive">
-			    미작성
-			</text>
-			<text text-anchor="middle"   x="50%" y="35%" fill="#191919" font-size="14" font-family="'Leckerli One', cursive">   
-			    상담일지
-			</text>
-			<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="'Leckerli One', cursive">
-			    ${sangdamcnt.unWritenCsCnt}
-			</text>
-			</svg>
-		</a>
-	</div>
-	
-</div>
-</c:if>
-<c:if test="${sesUser.authCd eq 'ROLE_PARTNER_SEND'}">
-
-<div class="clear_both"></div>
-<div class="h20"></div>
-<div class="wd100 c3">
-	<div class="float_left padding15">
-			<a href="/partner/pCounselorMgr/counselFixList">
-				<svg width="134" height="134" viewBox="0 0 134 134" fill="none" xmlns="http://www.w3.org/2000/svg">
-				<circle cx="67" cy="67" r="64" stroke="url(#paint0_linear)" stroke-width="6"/>
-				<defs>
-				<linearGradient id="paint0_linear" x1="21.5" y1="16.5" x2="118.5" y2="116" gradientUnits="userSpaceOnUse">
-				<stop stop-color="#006DBA"/>
-				<stop offset="1" stop-color="#7EC041"/>
-				</linearGradient>
-				</defs>
-				<text text-anchor="middle"   x="50%" y="25%" fill="#191919" font-size="14" font-family="'Leckerli One', cursive">
-				    진행중 상담
-				</text>
-				<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="'Leckerli One', cursive">
-				    ${sangdamcnt.processCsCnt}
-				</text>
-				</svg>
-			</a>
-		</div>
-		<div class="float_left padding15">
-			<a href="/partner/pCounselorMgr/pCounselorDateList">
-				<svg width="134" height="134" viewBox="0 0 134 134" fill="none" xmlns="http://www.w3.org/2000/svg">
-				<circle cx="67" cy="67" r="64" stroke="url(#paint0_linear)" stroke-width="6"/>
-				<defs>
-				<linearGradient id="paint0_linear" x1="21.5" y1="16.5" x2="118.5" y2="116" gradientUnits="userSpaceOnUse">
-				<stop stop-color="#006DBA"/>
-				<stop offset="1" stop-color="#7EC041"/>
-				</linearGradient>
-				</defs>
-				<text text-anchor="middle"   x="50%" y="20%" fill="#191919" font-size="14" font-family="'Leckerli One', cursive">
-				    미작성
-				</text>
-				<text text-anchor="middle"   x="50%" y="35%" fill="#191919" font-size="14" font-family="'Leckerli One', cursive">   
-				    상담일지
-				</text>
-				<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="'Leckerli One', cursive">
-				    ${sangdamcnt.unWritenCsCnt}
-				</text>
-				</svg>
-			</a>
-		</div>
-	</div>
-</c:if>
-	<!-- #container -->
-	</td>
-</tr>
-</table>
 
 </div>
 
