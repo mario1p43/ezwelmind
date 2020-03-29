@@ -33,22 +33,20 @@ public class MainCpController extends commonController{
 	//메인화면 을 뿌려주는 곳
 	@RequestMapping(value={"/partner/main/index"}, method=RequestMethod.GET)
 	public String bnrDetail(@ModelAttribute BBSAddDto bbsAddDto, Model model, HttpServletRequest request) {
-/*		Manager manger = UserDetailsHelper.getAuthenticatedUser();
-		CounselReservationDto counselReservationDto = new CounselReservationDto();
-		counselReservationDto.setCounselorId(manger.getUserId());
-		counselReservationDto.setCenterSeq(manger.getCenterSeq());
-		model.addAttribute(counselReservationService.getReservationFixList(counselReservationDto));
-		*/
-		
 		Manager manager = UserDetailsHelper.getAuthenticatedUser();
-
 		bbsAddDto.setCenterSeq(manager.getCenterSeq());
 		bbsAddDto.setUserId(manager.getUserId());
-		//BBSData notice = bbsService.getPartnerMain();
 		
-		BBSData sangdamcnt = bbsService.getSangdamCount(bbsAddDto);
 		BBSData notice = bbsService.getPartnerMainNotice(bbsAddDto);
 		BBSData recruit = bbsService.getPartnerMainRecruit(bbsAddDto);
+
+		BBSData sangdamcnt;
+		if(manager.getAuthCd().equals("ROLE_PARTNER_SEND") || manager.getAuthCd().equals("ROLE_PARTNER_SANGDAM") ) {
+			sangdamcnt = bbsService.getSangdamCount(bbsAddDto);
+		}else {
+			sangdamcnt = bbsService.getCenterCount(bbsAddDto);
+		}
+
 		model.addAttribute("sangdamcnt", sangdamcnt);
 		model.addAttribute("notice", notice);
 		model.addAttribute("recruit", recruit);
