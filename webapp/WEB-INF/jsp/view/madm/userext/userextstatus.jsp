@@ -241,7 +241,7 @@ function showDocument(counselCd ,intakeCd,counselNm,centerSeq,clientCd,apprStatu
 							<input type="radio" class="chk_info1" name="chk_info1" value="6">승인
 							<input type="radio" class="chk_info1" name="chk_info1" value="7">승인불가
 						</c:if>
-						<c:if test="${userTeam.teamCd eq '101032'}">
+						<c:if test="${userTeam.teamCd eq '101033'}">
 							<input type="radio" class="chk_info1" name="chk_info1" value="1">미확인
 							<input type="radio" class="chk_info1" name="chk_info1" value="2">승인요청
 							<input type="radio" class="chk_info1" name="chk_info1" value="3">승인대기
@@ -249,7 +249,7 @@ function showDocument(counselCd ,intakeCd,counselNm,centerSeq,clientCd,apprStatu
 							<input type="radio" class="chk_info1" name="chk_info1" value="6">승인
 							<input type="radio" class="chk_info1" name="chk_info1" value="7">승인불가
 						</c:if>
-						<c:if test="${userTeam.teamCd eq '101033'}">
+						<c:if test="${userTeam.teamCd eq '101032'}">
 							<input type="radio" class="chk_info1" name="chk_info1" value="1">미확인
 							<br>
 							<input type="radio" class="chk_info1" name="chk_info1" value="4">고객사 승인완료
@@ -319,7 +319,7 @@ function showDocument(counselCd ,intakeCd,counselNm,centerSeq,clientCd,apprStatu
 							<input type="radio" class="chk_info2" name="chk_info2" value="6">승인
 							<input type="radio" class="chk_info2" name="chk_info2" value="7">승인불가
 						</c:if>
-						<c:if test="${userTeam.teamCd eq '101032'}">
+						<c:if test="${userTeam.teamCd eq '101033'}">
 							<input type="radio" class="chk_info2" name="chk_info2" value="1">미확인
 							<input type="radio" class="chk_info2" name="chk_info2" value="2">승인요청
 							<input type="radio" class="chk_info2" name="chk_info2" value="3">승인대기
@@ -327,7 +327,7 @@ function showDocument(counselCd ,intakeCd,counselNm,centerSeq,clientCd,apprStatu
 							<input type="radio" class="chk_info2" name="chk_info2" value="6">승인
 							<input type="radio" class="chk_info2" name="chk_info2" value="7">승인불가
 						</c:if>
-						<c:if test="${userTeam.teamCd eq '101033'}">
+						<c:if test="${userTeam.teamCd eq '101032'}">
 							<input type="radio" class="chk_info2" name="chk_info2" value="1">미확인
 							<br>
 							<input type="radio" class="chk_info2" name="chk_info2" value="4">고객사 승인완료
@@ -398,7 +398,7 @@ function showDocument(counselCd ,intakeCd,counselNm,centerSeq,clientCd,apprStatu
 							<input type="radio" class="chk_info3" name="chk_info3" value="6">승인
 							<input type="radio" class="chk_info3" name="chk_info3" value="7">승인불가
 						</c:if>
-						<c:if test="${userTeam.teamCd eq '101032'}">
+						<c:if test="${userTeam.teamCd eq '101033'}">
 							<input type="radio" class="chk_info3" name="chk_info3" value="1">미확인
 							<input type="radio" class="chk_info3" name="chk_info3" value="2">승인요청
 							<input type="radio" class="chk_info3" name="chk_info3" value="3">승인대기
@@ -406,7 +406,7 @@ function showDocument(counselCd ,intakeCd,counselNm,centerSeq,clientCd,apprStatu
 							<input type="radio" class="chk_info3" name="chk_info3" value="6">승인
 							<input type="radio" class="chk_info3" name="chk_info3" value="7">승인불가
 						</c:if>
-						<c:if test="${userTeam.teamCd eq '101033'}">
+						<c:if test="${userTeam.teamCd eq '101032'}">
 							<input type="radio" class="chk_info3" name="chk_info3" value="1">미확인
 							<br>
 							<input type="radio" class="chk_info3" name="chk_info3" value="4">고객사 승인완료
