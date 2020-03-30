@@ -23,7 +23,8 @@
 
 <script type="text/javascript">
 j$(document).ready(function(){
-	
+	$('.mobile_nav ul li a').eq(3).addClass('active');
+	$('.mobile_nav ul li a img').eq(3).attr('src', '/resources/img/home_icon_active.png');
 	$.validate({
 		form : '#searchNotice',
 		validateOnBlur : false,
@@ -65,7 +66,7 @@ j$(document).ready(function(){
 						<c:if test='${ list.reqCd1 eq "101232" }'>모집공고</c:if>							
 					</td>
 					<td><a href="#" class="noticeDetail" value="${list.dataSeq}">${list.subject}</a></td>
-					<td width="20%">${list.regDt}</td>
+					<td width="20%">${fn:replace(fn:substring(list.regDt, 2, 10), '-', '.')}</td>
 				</tr>
 			</c:forEach>
 			</table>
