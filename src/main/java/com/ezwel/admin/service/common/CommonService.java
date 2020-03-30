@@ -21,6 +21,7 @@ import com.ezwel.admin.service.bbs.dto.BBSAddDto;
 import com.ezwel.admin.service.common.dto.CommonDto;
 import com.ezwel.admin.service.common.dto.CounselCategoryDto;
 import com.ezwel.admin.service.employee.dto.EmployeeDto;
+import com.ezwel.admin.service.message.queue.SmsService;
 import com.ezwel.admin.service.security.UserDetailsHelper;
 import com.ezwel.admin.service.usermanager.dto.UserManagerDto;
 import com.ezwel.core.framework.web.GlobalsProperties;
@@ -30,6 +31,9 @@ public class CommonService {
 
 	@Resource
 	private CommonMapper commonMapper;
+	
+	@Resource
+	private SmsService smsService;
 	
 	@Resource
 	private GlobalsProperties globalsProperties;
@@ -197,11 +201,20 @@ public class CommonService {
 
 	
 	
-	public void setConfirmNumberIntoSession(HttpSession session) {
+	public void setConfirmNumberIntoSession(HttpSession session,String userMobile) {
 
         setCertNumLength(6);
         String authKey =excuteGenerate();
         System.out.println(authKey);
+        
+        StringBuffer message = new StringBuffer();
+		
+		message.append("인증번호 : ");
+		message.append(authKey);
+		
+		smsService.send(userMobile, "1644-4474", message.toString());
+		
+        
 		session.setAttribute("ConfirmNumber", "123456");
 	}
 }
