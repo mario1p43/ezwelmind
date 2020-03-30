@@ -418,7 +418,10 @@ j$(document).ready(function(){
 				//중지 -> 대기
 				}else if(previous == 'N' && newval == 'S'){
 					$("#mgrStatus6").click();
-					
+				//승인 -> 중지
+				}else if(previous == 'Y' && newval == 'N'){
+					alert("대기로 변경 후 중지로 변경 가능합니다.");
+					window.location.reload();
 				//반려 -> 대기
 				}else if(previous == 'R' && newval == 'S'){
 					$("#mgrStatus7").click();
