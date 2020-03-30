@@ -728,8 +728,5 @@ public class BBSService {
 		return bbsMapper.getSangdamCount(bbsAddDto);
 	}
 	
-	public BBSData getCenterCount(BBSAddDto bbsAddDto) {
-		return bbsMapper.getCenterCount(bbsAddDto);
-	}
 	
 }

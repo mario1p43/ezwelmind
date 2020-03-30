@@ -93,8 +93,8 @@ public class CounselorInfoMgrService {
 				}
 				// 이린아 팀장님, 박병준 선생님께 메일 발송
 				
-				//mailService.send("lina@ezwel.com", mailSangdam4u, title, content);
-				//mailService.send("park861108@ezwel.com", mailSangdam4u, title, content);
+				mailService.send("lina@ezwel.com", mailSangdam4u, title, content);
+				mailService.send("park861108@ezwel.com", mailSangdam4u, title, content);
 			}
 		}
 		
@@ -107,7 +107,7 @@ public class CounselorInfoMgrService {
 						   + "상담사명 : " + mailInfo.getUserNm() + "<br>"
 			 			   + "반려사유 : " + mgrDto.getChangeReason() + "<br>";
 			
-			//mailService.send(mailInfo.getEmail(), mailSangdam4u, title, content);
+			mailService.send(mailInfo.getEmail(), mailSangdam4u, title, content);
 		}
 		
 		// 상담사가 승인인 경우

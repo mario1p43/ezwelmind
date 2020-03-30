@@ -193,9 +193,18 @@ j$(document).ready(function(){
 	});
 	
  	$('select.mgrStatus').on('change', function() {
+ 		
+ 		if( j$("input[class=check]:checked").length == 0 ) {
+			 j$.alert("선택된 값이 없습니다.");
+			 return;
+		}
+ 		if( j$("input[class=check]:checked").length > 1 ) {
+			 j$.alert("선택된 값이 1개 이상일 수 없습니다.");
+			 return;
+		} 
 		
 		var params = {};
-		var userId = $(this).parent("td").children(".mgrUserId").val();
+		var userId = $("input[class=check]:checked").val();
 		var mgrStatus  = this.value;
 		var siteCd = 'P'; 	// 파트너의 약자
 		
@@ -279,6 +288,16 @@ j$(document).ready(function(){
 		return false;
 	});	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
 
  	//달력
 	j$('.date_timepicker_start').datetimepicker({
@@ -308,6 +327,9 @@ j$(document).ready(function(){
 	j$("#btendDt").click(function(){
 		j$('.date_timepicker_end').datetimepicker('show');
 	});
+
+
+
 
 
 });
@@ -556,7 +578,7 @@ function monthBtn() {
 					<table class="" cellpadding="5" align="" id="" cellspacing="0" border="1" width="100%" style="text-align:center; border-collapse:collapse;">
 						<thead>
 							<tr>
-								<!-- <th width="5%" >선택</th> -->
+								<th width="5%" >선택</th>
 								<th width="5%" >순번</th>
 								<th width="10%">상담사명</th>
 								<th width="10%">정보확인/수정</th>
@@ -569,7 +591,7 @@ function monthBtn() {
 								<th width="10%">상담유형</th>
 								<th width="5%">상태</th>
 								<sec:authorize access="hasAnyRole('ROLE_PARTNER_CENTER')">
-									<th width="7%">상태설정</th>
+									<th width="5%">상태설정</th>
 								</sec:authorize>
 								<th width="7%">최초등록일</th>
 								<th width="7%">정보변경일</th>
@@ -581,8 +603,7 @@ function monthBtn() {
 						<tbody>
 						<c:forEach var="list" items="${paging.list}" varStatus="status">
 							<tr align="" height="50px">
-								<%-- <td>
-								
+								<td>
 								<c:choose>
 									<c:when test="${list.mgrStatus eq '대기' or list.mgrStatus eq '반려'}">
 										<input type="checkbox"  disabled="disabled"/>
@@ -591,7 +612,7 @@ function monthBtn() {
 										<input type="checkbox" class="check" name="check" value="${list.userId}" />									
 									</c:otherwise>
 								</c:choose>
-								</td> --%>
+								</td>
 								<td>
 									${(paging.totalCount - ((paging.currentPage-1) * paging.pageSize)) - status.index}
 								</td>
@@ -617,7 +638,6 @@ function monthBtn() {
 								
 								</td>
 								<td>
-									<input type="hidden" class="mgrUserId" value="${list.userId}"/>
 								 	<c:if test="${list.mgrStatus eq '승인' }">
 								 	
 								 	<sec:authorize access="hasAnyRole('ROLE_PARTNER_CENTER')">
@@ -635,7 +655,7 @@ function monthBtn() {
 								 	
 								 	<sec:authorize access="hasAnyRole('ROLE_PARTNER_CENTER')">
 										
-											<select class="mgrStatus" >
+											<select class="mgrStatus">
 												<option value="">-- 선택 --</option>
 											   <option value="Y" >승인</option>
 											   <option value="N" >중지</option>

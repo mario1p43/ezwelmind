@@ -256,7 +256,7 @@ public class CounselorInfoMgrController extends commonController {
 	
 	//상담사 정보 관리
 	@RequestMapping(value="/getCounselorInfoMgrDetail")
-	public String getCounselorInfoMgrDetail(@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, @ModelAttribute MgrCertDto mgrCertDto, Model model, HttpServletRequest request){
+	public String getCounselorInfoMgrDetail(@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, @ModelAttribute MgrCertDto mgrCertDto, Model model){
 		if (logger.isDebugEnabled()){
 			logger.debug("=====수정 상세 디버깅=====");
 		}
@@ -279,17 +279,14 @@ public class CounselorInfoMgrController extends commonController {
 		counselorInfoMgrDto.setCenterSeq(manager.getCenterSeq());
 		counselorInfoMgrDto.setHighCommCd("102015");
 		model.addAttribute("extraExamInfo", counselorInfoMgrService.getExtraList(counselorInfoMgrDto));
-
-		if(isDevice(request) == IS_PC) {
-			return "/partner/mgr/counselorInfoMgrModify";
-		}else {	
-			return "/partner/mgr/counselorInfoMgrModify_mo";
-		}
+		
+		
+		return "/partner/mgr/counselorInfoMgrModify";
 	}
 	
 	//개인정보 관리
-	@RequestMapping(value="/getModifyMyInformation")
-	public String getModifyMyInformation(@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, @ModelAttribute MgrCertDto mgrCertDto, Model model){
+	@RequestMapping(value="/viewMyInformation")
+	public String myImformation(@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, @ModelAttribute MgrCertDto mgrCertDto, Model model){
 		if (logger.isDebugEnabled()){
 			logger.debug("=====수정 상세 디버깅=====");
 		}
@@ -318,7 +315,7 @@ public class CounselorInfoMgrController extends commonController {
 		model.addAttribute("mgrBook", mgrCounselService.getMgrBook(counselorInfoMgrDto.getUserId()));
 		
 		
-		return "/partner/mgr/modifyMyInformation";
+		return "/partner/mgr/viewMyInformation";
 	}
 	
 	
@@ -328,7 +325,7 @@ public class CounselorInfoMgrController extends commonController {
 	 * 작업자: 김재훈
 	 * */
 	@RequestMapping(value="/getCounselorInfoMgrDetailCheck")
-	public String getCounselorInfoMgrDetailCheck(@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, @ModelAttribute MgrCertDto mgrCertDto, Model model, HttpServletRequest request){
+	public String getCounselorInfoMgrDetailCheck(@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, @ModelAttribute MgrCertDto mgrCertDto, Model model){
 		if (logger.isDebugEnabled()){
 			logger.debug("=====수정 상세 디버깅=====");
 		}
@@ -351,11 +348,8 @@ public class CounselorInfoMgrController extends commonController {
 		counselorInfoMgrDto.setHighCommCd("102015");
 		model.addAttribute("extraExamInfo", counselorInfoMgrService.getExtraList(counselorInfoMgrDto));
 		
-		if(isDevice(request) == IS_PC) {
-			return "/partner/mgr/counselorInfoMgrCheck";
-		}else {	
-			return "/partner/mgr/counselorInfoMgrCheck_mo";
-		}
+		
+		return "/partner/mgr/counselorInfoMgrCheck";
 	}
 	
 	

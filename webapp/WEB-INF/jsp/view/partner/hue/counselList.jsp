@@ -380,9 +380,9 @@ function updateDateAndTime(pollSeq, name, datetime, type){
 <tr>
 	<td>
 		<!-- 버튼 영역 시작 -->
-		<table cellpadding="5" cellspacing="0" border="0" width="100%" align="center" style="border-bottom: 1px solid silver;">
-			<tr>
-				<td align="left" class="subtitle">마음컨설팅 관리</td>
+		<table cellpadding="5" cellspacing="0" border="0" width="100%" align="center" style="border-bottom: 1px solid silver; margin-top:20px;">
+			<tr >
+				<td align="left" class="subtitle" >마음컨설팅 관리</td>
 				<td align="right">
 					<input type="button" id="insertBtn" value="신규등록">
 					<input type="button" id="excelBtn" value="엑셀다운로드">

@@ -40,9 +40,7 @@
 		}
 		</style>
 	<script type="text/javascript">
-
 		$(document).ready(function() {
-
 			
 			$('.calendar').fullCalendar({
 				header: {
@@ -76,40 +74,6 @@
 			if (today != $(".calendar").fullCalendar('getDate').format("YYYY-MM")) {
 				$(".fc-today ").removeClass("fc-today");
 			}
-			
-			
-			$(".fc-day-number").click(function(){
-				var date=$(this).attr('data-date');
-				$(".clickday").text(date);
-				var date1 =date.replace(/-/gi,"");
-				var params = {};
-				var ymd = date1;
-				
-				params.ymd = ymd;
-				
-				$.ajax({
-					url: '/partner/pCounselorMgr/ajaxCounselCalendar',
-					data: params,
-					dataType: 'json',
-					success: function(data){
-						console.log(data.totalScheduleList2);
-						var aa="<tr>";
-							aa=aa+"<td>상담시간</td><td>상담사</td><td>내담자</td><td>임직원명</td><td>고객사</td><td>일정관리</td>";
-							aa=aa+"</tr>";
-						for(var i=0;i<data.totalScheduleList2.length;i++){
-							aa=aa+"<tr>";
-							aa=aa+"<td>"+data.totalScheduleList2[i].stTime +"~"+data.totalScheduleList2[i].edTime+"</td><td>"+data.totalScheduleList2[i].counselorNm+"</td><td>"+data.totalScheduleList2[i].counselNm+"</td>";
-							aa=aa+"<td>"+data.totalScheduleList2[i].counselNm+"</td><td>"+data.totalScheduleList2[i].clientNm+"</td><td>"+"<a href='/partner/pCounselorMgr/counselFixList?counselNm="+data.totalScheduleList2[i].counselNm +"'>"+data.totalScheduleList2[i].counselNm +" 일정관리 이동</a></td>";
-							aa=aa+"</tr>";  
-							//console.log(data.totalScheduleList2[i].clientNm+":"+i);
-						}
-						$(".councelDetail").html("");
-						$(".councelDetail").append(aa);
-
-					}
-				});
-			});
-			
 		});
 		
 		
@@ -145,8 +109,39 @@
 		
 		
 		$("#clickday").click(function(){
-
+			alert("dddd");
 		});
+
+		function selectDate(date){
+			
+			$(".clickday").text(date);
+			var date1 =date.replace(/-/gi,"");
+			var params = {};
+			var ymd = date1;
+			
+			params.ymd = ymd;
+			
+			$.ajax({
+				url: '/partner/pCounselorMgr/ajaxCounselCalendar',
+				data: params,
+				dataType: 'json',
+				success: function(data){
+					console.log(data.totalScheduleList2);
+					var aa="<tr>";
+						aa=aa+"<td>상담시간</td><td>상담사</td><td>내담자</td><td>임직원명</td><td>고객사</td><td>일정관리</td>";
+						aa=aa+"</tr>";
+					for(var i=0;i<data.totalScheduleList2.length;i++){
+						aa=aa+"<tr>";
+						aa=aa+"<td>"+data.totalScheduleList2[i].stTime +"~"+data.totalScheduleList2[i].edTime+"</td><td>"+data.totalScheduleList2[i].counselorNm+"</td><td>"+data.totalScheduleList2[i].counselNm+"</td>";
+						aa=aa+"<td>"+data.totalScheduleList2[i].counselNm+"</td><td>"+data.totalScheduleList2[i].clientNm+"</td><td>"+"<a href='/partner/pCounselorMgr/counselFixList?counselNm="+data.totalScheduleList2[i].counselNm +"'>"+data.totalScheduleList2[i].counselNm +" 일정관리 이동</a></td>";
+						aa=aa+"</tr>";  
+						//console.log(data.totalScheduleList2[i].clientNm+":"+i);
+					}
+					$(".councelDetail").append(aa);
+
+				}
+			});
+		}
 
 	</script>
 </head>

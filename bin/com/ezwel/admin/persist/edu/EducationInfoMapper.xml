@@ -136,11 +136,7 @@
 			and EDU_SEQ = #{eduId}
 	</select>
 	<select id="getCenterList" resultType="com.ezwel.admin.domain.entity.edu.EducationInfoDto">
-		select 
-			center_seq as centerSeq, 
-			center_nm as centerNm 
-		from mind_center
-		order by centerNm ASC
+		select center_seq as centerSeq, center_nm as centerNm from mind_center
 	</select>
 	<select id="getCounserlorList" resultType="com.ezwel.admin.domain.entity.edu.EducationInfoDto">
 		select USER_ID as userId, USER_NM as userNm from mind_mgr where center_seq = #{centerSeq}

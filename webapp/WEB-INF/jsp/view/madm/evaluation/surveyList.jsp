@@ -275,21 +275,21 @@ function updateShowYn(selectYn){
 			params.evalSeq  = evalSeq;
 			params.showYn  = showYn;
 			console.log(params);
-			j$.ajax({
+				 j$.ajax({
 				url: '/madm/evaluation/updateHappyCallShow',
 				data: params,
 				dataType: 'json',
 				type: 'GET',
 				cache:true,
 				success: function(data, textStatus){
-					window.location.reload();
+					//window.location.reload();
 				}
-			});   
+			});  
 			
 		}
 	} 
 	
-	//window.location.reload();
+	window.location.reload();
 	return false;
 	
 	

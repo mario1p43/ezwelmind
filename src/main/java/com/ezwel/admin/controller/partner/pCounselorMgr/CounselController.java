@@ -416,11 +416,8 @@ public class CounselController extends commonController{
 		model.addAttribute("counselCd", counselCd);
 		model.addAttribute("counsel", counsel);
 		
-		if(isDevice(request) == IS_PC) {
-			return "partner/counsel/popup/popupCounselChange";
-		}else {	
-			return "partner/counsel/popup/popupCounselChange_mo";
-		}
+		
+		return "partner/counsel/popup/popupCounselChange";
 	}
 	
 	

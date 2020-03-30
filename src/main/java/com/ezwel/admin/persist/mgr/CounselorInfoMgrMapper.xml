@@ -677,7 +677,6 @@
 	<update id="updateCounselorInfoMgrModiN" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
 	UPDATE MIND_MGR
 		SET
-		MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'),
 		MODI_YN = 'N'
 		WHERE USER_ID = #{userId}
 	</update>
@@ -685,7 +684,6 @@
 	<update id="updateCounselorInfoMgrModiY" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
 	UPDATE MIND_MGR
 		SET
-		MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'),
 		MODI_YN = 'Y'
 		WHERE USER_ID = #{userId}
 	</update>
@@ -1162,52 +1160,6 @@
 					, C.AREA2				AS	area2
 					, C.ADDR1				AS  addr1
 					, C.ADDR2				AS  addr2
-					, B.EMAIL				AS	email
-					, A.EDUCATION			AS	education
-					, A.UNIVERSITY			AS	university
-					, A.DEPARTMENT			AS	department
-					, A.EDUCATION2			AS	education2
-					, A.UNIVERSITY2			AS	university2
-					, A.DEPARTMENT2			AS	department2
-					, A.EDUCATION3			AS	education3
-					, A.UNIVERSITY3			AS	university3
-					, A.DEPARTMENT3			AS	department3
-					, A.EDU_YEAR1			AS	eduYear
-					, A.EDU_YEAR2			AS	eduYear2
-					, A.EDU_YEAR3			AS	eduYear3
-					, A.EDU_STATUS1			AS	eduStatus
-					, A.EDU_STATUS2			AS	eduStatus2
-					, A.EDU_STATUS3			AS	eduStatus3
-					, A.MEMO				AS	memo
-					, A.CAREER				AS	career
-					, A.WORK_TYPE			AS	workType
-					, B.CENTER_OWNER_YN		AS	centerOwnerYn
-					, A.CHANNEL_TYPE		AS	channelType
-					, A.MENTAL_AGES			AS	mentalAges
-					, A.MENTAL_DIV			AS	mentalDiv
-					, A.MENTAL_DIV_ETC		AS	mentalDivEtc
-					, A.MENTAL_TYPE			AS	mentalType
-					, A.LAW_DIV				AS	lawDiv
-					, A.LAW_TYPE			AS	lawType
-					, A.FINANCE_DIV			AS	financeDiv
-					, A.FINANCE_TYPE		AS	financeType
-					, A.DIAGNOSIS_AGES		AS	diagnosisAges
-					, A.DIAGNOSIS_DIV		AS	diagnosisDiv
-					, A.DIAGNOSIS_DIV_ETC	AS	diagnosisDivEtc
-					, A.DIAGNOSIS_TYPE		AS	diagnosisType
-					, A.COUNSEL_LANGUAGE	AS languageType
-					, A.COUNSEL_SPECIAL	AS	specialType
-					, A.COUNSEL_JOB	AS	jobType 
-					, A.COUNSEL_PERSONAL	AS	personalType 
-					, A.COUNSEL_FAMILY	AS	familyType 
-					, A.COUNSEL_TRAUMA	AS	traumaType 
-					, A.COUNSEL_TARGET	AS	targetType 
-					, A.COUNSEL_LAW	AS	lawCounselType 
-					, A.COUNSEL_FINANCE	AS	financeCounselType  
-					, A.COUNSEL_FAVOR	AS preferredType
-					, A.COUNSEL_PATTERN	AS tendencyType 
-					, A.CORE_ABILITY			AS	coreVal
-					, A.COUNSEL_SPECIAL_HEAL			AS	specialHeal
 				FROM MIND_MGR_SUB A , MIND_MGR B, MIND_CENTER C , ACL_USER_AUTH D
 				WHERE 1=1
 					AND B.USER_TYPE = '3001'
@@ -1629,9 +1581,6 @@
 		)
 	</insert>
 	
-	
-	
-	
 	<insert id="insertMgrInfo2" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
 		INSERT INTO MIND_MGR(
 			  USER_NM
@@ -1867,10 +1816,6 @@
 			, #{bookYear}
 		)
 	</insert>	
-	<update id="updateMgrPwd" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
-		UPDATE	MIND_MGR
-		SET	USER_PWD = #{userPwd}
-		WHERE	USER_ID = #{userId}
-	</update>
+	
 
 </mapper>

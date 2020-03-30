@@ -7,15 +7,15 @@
 <!-- 개인상담관리 -->
 	<title>전체상담일정</title>
 
-	<link href="${url:resource('/resources/js/plugin/fullcalendar-2.5.0/fullcalendar.css')}" rel="stylesheet" />
-	<link href="${url:resource('/resources/js/plugin/fullcalendar-2.5.0/fullcalendar.print.css')}" rel="stylesheet" media="print" />
-	<link href="${url:resource('/resources/js/plugin/qtip/jquery.qtip.min.css')}" rel="stylesheet" />
+	<link href="${url:resource('/resources/js/plugin/fullcalendar-2.5.0/fullcalendar.css')}" rel="stylesheet">
+	<link href="${url:resource('/resources/js/plugin/fullcalendar-2.5.0/fullcalendar.print.css')}" rel="stylesheet" media="print">
+	<link href="${url:resource('/resources/js/plugin/qtip/jquery.qtip.min.css')}" rel="stylesheet">
 	
 	<script src="${url:resource('/resources/js/plugin/fullcalendar-2.5.0/lib/moment.min.js')}" ></script>
 	<script src="${url:resource('/resources/js/plugin/fullcalendar-2.5.0/fullcalendar.min.js')}" ></script>
 	<script src="${url:resource('/resources/js/plugin/fullcalendar-2.5.0/lang/ko_mo.js')}" ></script>
 	<script src="${url:resource('/resources/js/plugin/qtip/jquery.qtip.min.js')}" ></script>
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style>
 		body {
 			padding: 0;
@@ -275,114 +275,46 @@
 		.day-active {
 			color:white !important;
 		}
-		/* calendar custom end */
-		i {
-			border: solid #2F80ED;
-			border-width: 0 0.5556vw 0.5556vw 0;
-			display: inline-block;
-			padding: 1.3889vw;
-		}
+		/* calendar custom */
 
-		.right {
-			transform: rotate(-45deg);
-			-webkit-transform: rotate(-45deg);
-		}
 		.counsel_list_wrapper {
+			height: 13.3333vw;
 			display: flex;
 			align-items: stretch;
-			-webkit-flex-grow: 1; 
-			flex-grow: 1; 
-			flex : 1 1 0;  
-			-webkit-flex : 1 1 0;
-		}
-		.counsel_list_wrapper > div {
-			margin: 4.4444vw 5.5556vw 0 5.5556vw;
-			height: 13.3333vw;
-			border-left: 2px solid #2F80ED;
-			width: 100%;
-			background-color:#F2F2F2;
-			box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 		}
 		.counsel_date {
 			width: 15.2778vw;
 			display: flex;
 			align-items: center;
-			-webkit-justify-content: center; 
-			justify-content: center;
 		}
-		.counsel_time {
+		.counsel_date {
 			width: 20vw;
 			display: flex;
 			align-items: center;
-			-webkit-justify-content: center; 
-			justify-content: center;
-			font-size: 4.4444vw;
-			color: #333333;
 		}
 		.counsel_name {
-			display: flex;
-			align-items: center;
-			-webkit-flex-grow: 1; 
-			flex-grow: 1; 
-			flex : 1 1 0;  
-			-webkit-flex : 1 1 0;
-			font-size:4.4444vw;
-			color:#333333;
-			padding-left:3.8889vw;
+
 		}
 		.linked_icon {
-			width: 11.1111vw;
-			display: flex;
-			align-items: center;
+
 		}
 		.line {
-			width: 1px;
+			width: 0.5px;
 			margin: 3.3333vw 0;
-			background-color:#BDBDBD;
+			height: 100%;
 		}
-		.month {
-			display: flex;
-			align-items: center;
-			-webkit-justify-content: center; 
-			justify-content: center;
-			font-size: 2.7778vw;
-			color:#333333;
-			line-height: 1;
+		</style>
+	<script type="text/javascript">
+	Date.prototype.toStringFormat = function(pattern) {
+		if(pattern) {
+			/*return this.getFullYear() + pattern + this.getMonth() > 10 ? (this.getMonth() + 1) : '0' + (this.getMonth() + 1) + pattern + this.getDate();*/
+			let Y = this.getFullYear()
+			let M = this.getMonth()+1 >= 10 ? (this.getMonth() + 1) : '0' + (this.getMonth() + 1)
+			let D = this.getDate() >= 10 ? this.getDate() : '0' + this.getDate();
+			return Y + pattern + M + pattern + D
 		}
-		.day {
-			display: flex;
-			align-items: center;
-			-webkit-justify-content: center; 
-			justify-content: center;
-			font-size: 2.7778vw;
-			color:#333333;
-			line-height: 1;
-		}
-	</style>
-	<script>
-		
-		Date.prototype.toStringFormat = function(pattern) {
-			if(pattern) {
-				let Y = this.getFullYear();
-				let M = this.getMonth()+1 >= 10 ? (this.getMonth() + 1) : '0' + (this.getMonth() + 1);
-				let D = this.getDate() >= 10 ? this.getDate() : '0' + this.getDate();
-				return Y + pattern + M + pattern + D;
-			}
-		}
-
+	}
 		$(document).ready(function() {
-			$('.mobile_nav ul li a').eq(1).addClass('active');
-			$('.mobile_nav ul li a img').eq(1).attr('src', '/resources/img/home_icon_active.png');
-			window.userId = '${param.userId}';
-
-			for (const option of document.querySelectorAll(".custom-option")) {
-				if($(option).attr('data-value') == userId) {
-					option.parentNode.querySelector('.custom-option.selected').classList.remove('selected');
-					option.classList.add('selected');
-					option.closest('.custom-select').querySelector('.custom-select__trigger span').textContent = '상담사 : ' + option.textContent;
-				} 
-			}
-
 			document.querySelector('.custom-select-wrapper').addEventListener('click', function() {
 				this.querySelector('.custom-select').classList.toggle('open');
 				for (const option of document.querySelectorAll(".custom-option")) {
@@ -391,8 +323,7 @@
 							this.parentNode.querySelector('.custom-option.selected').classList.remove('selected');
 							this.classList.add('selected');
 							this.closest('.custom-select').querySelector('.custom-select__trigger span').textContent = '상담사 : ' + this.textContent;
-							userId = $(option).attr('data-value');
-							monthMove();
+							//monthMove();
 						}
 					})
 				}
@@ -406,7 +337,7 @@
 				}
 			});
 
-			$('.calendar').fullCalendar({
+			let cal = $('.calendar').fullCalendar({
 				header: {
 					left: 'prev',
 					center: 'title',
@@ -429,7 +360,6 @@
 					}
 					
 				},
-				unselectAuto: false,
 				selectable: true,
 				<c:if test="${not empty totalScheduleList}">
 				events: ${totalScheduleList},
@@ -444,7 +374,6 @@
 					$('.calendar').fullCalendar('select', $.fullCalendar.moment(event.start._i));
 					
 				},
-				
 				</c:if>
 			});
 
@@ -469,7 +398,7 @@
 			wrapWindowByMask();
 			$(".fc-content").remove();
 			var date = $(".calendar").fullCalendar('getDate');
-			location.href = "/partner/pCounselorMgr/totalSchedule?ymd=" + date.format("YYYY-MM") + "&userId=" + userId;
+			location.href = "/partner/pCounselorMgr/totalSchedule?ymd=" + date.format("YYYY-MM") + "&userId=" + $("[name='userId']").val();
 		}
 		
 		
@@ -537,14 +466,11 @@
 						data.totalScheduleList2.forEach(function(v) {
 							let item = $(
 								`<div class="flex">
-									<div class="counsel_date">
-										<div><span class="month"></span><span class="day"></span></div>
-									</div>
 									<div class="line"></div>
+									<div class="counsel_date"><span class="month"></span><span class="day"></span></div>
 									<div class="counsel_time"></div>
-									<div class="line"></div>
 									<div class="counsel_name"></div>
-									<div class="linked_icon"><i class="right"></i></div>
+									<div class="linked_icon"></div>
 								</div>`
 								);
 							let dateArr = date.split('-');
@@ -552,10 +478,6 @@
 							$('.day', item).text(dateArr[2] + '일');
 							$('.counsel_time', item).text(v.stTime);
 							$('.counsel_name', item).text(v.clientNm);
-							item.on('click', function() {
-								$('body').css('overflow', 'hidden');
-								$.divPop_mo("viewDetail", "상세보기 (신청코드 : " + v.counselCd + " )", "/madm/layerPopup/intakeDetail?counselCd="+v.counselCd);
-							});
 							fragment.append(item);
 						});
 						wrapper.append(fragment);
@@ -598,9 +520,16 @@
 		<div class='calendar'></div>
 	</div>
 	<div class="counsel_list_wrapper">
-		
+		<div class="flex">
+			<div class="counsel_date"></div>
+			<div class="line"></div>
+			<div class="counsel_time"></div>
+			<div class="line"></div>
+			<div class="counsel_name"></div>
+			<div class="linked_icon"></div>
+		</div>
 	</div>
-<!-- <table width="80%" border="0" cellspacing="0" cellpadding="0" style="margin-top:20px;">
+<table width="80%" border="0" cellspacing="0" cellpadding="0" style="margin-top:20px;">
 		<tr>
 			<td>
 				<c:if test="${not empty counselorList }">
@@ -620,7 +549,7 @@
 		</tr>
 		<tr>
 			<td>
-				<div class='calendar'></div>
+				<!-- <div class='calendar'></div> -->
 			</td>
 		</tr>
 		<tr>
@@ -635,7 +564,7 @@
 
 			</td>
 		<tr>
-	</table> -->
+	</table>
 </div>
 
 
