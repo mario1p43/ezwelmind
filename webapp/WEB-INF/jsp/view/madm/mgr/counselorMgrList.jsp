@@ -379,7 +379,7 @@ j$(document).ready(function(){
 	
 	$( document ).ready(function() {
 		var previous; 
-		$(".mgrStatusVal").on('focus', function () {  
+		/* $(".mgrStatusVal").on('focus', function () {  
 			previous = this.value;
 		console.log("previous:::"+previous);
 		}).change(function() { 
@@ -435,6 +435,47 @@ j$(document).ready(function(){
 			}
 				
 				
+		}); */
+		
+		$(".mgrStatusVal").on('focus', function () {  
+			previous = this.value;
+		}).change(function() { 
+			var userId = $(this).attr("user-id");
+			var newval = this.value;
+			var statusNew="";
+			
+			if(newval == 'R'){
+				statusNew="반려";
+			}else if(newval == 'S'){
+				statusNew="대기";
+			}else if(newval == 'Y'){
+				statusNew="승인";
+			}else if(newval == 'N'){
+				statusNew="중지";
+			}
+
+			
+			var params = {};
+			
+			params.userId = userId;
+			params.mgrStatus = newval;
+			params.changeReason = $("#changeReason").val();
+			
+			if(confirm("해당 상담사를 "+statusNew+" 처리하시겠습니까?")){
+					var spinner = new Spinner().spin().el;
+	        		jQuery(document.body).append(spinner);
+			
+					j$.ajax({
+						url: '/madm/mgr/counselorInfoMgrStatus',
+						data: params,
+						dataType: 'json',
+						type: 'GET',
+						cache:true,
+						success: function(data, textStatus){
+							window.location.reload();
+						}
+					});
+			}
 		});
 	});
 	
@@ -442,7 +483,21 @@ j$(document).ready(function(){
 	
 	
 	function mgrStatusChange(){
-		/* var aaa = $("#mgrStatusVal").val();
+		var aaa = $("#mgrStatusVal").val();
+		var newval ="";
+		
+		
+		if(newval == 'R'){
+			newval="반려";
+		}else if(previous == 'Y'){
+			newval="대기";
+		}else if(newval == 'Y'){
+			newval="승인";
+		}else if(newval == 'N'){
+			newval="중지";
+		}
+		
+		
 		
 		var params = {};
 		
@@ -450,27 +505,21 @@ j$(document).ready(function(){
 		params.mgrStatus = 'R';
 		params.changeReason = $("#changeReason").val();
 		
-		if(params.changeReason == '' || params.changeReason == null){
-			alert('반려사유를 적어주세요.');
-			//sendChangeRPop();
-			return false;
-		}
+		if(confirm("해당 상담사를 대기 처리하시겠습니까?")){
+			var spinner = new Spinner().spin().el;
+        jQuery(document.body).append(spinner);
 		
-		if(confirm("해당 상담사를 중지 처리하시겠습니까?")){
-				var spinner = new Spinner().spin().el;
-	        jQuery(document.body).append(spinner);
-			
-			j$.ajax({
-				url: '/madm/mgr/counselorInfoMgrStatus',
-				data: params,
-				dataType: 'json',
-				type: 'GET',
-				cache:true,
-				success: function(data, textStatus){
-					window.location.reload();
-				}
-			}); 
-		} */
+		j$.ajax({
+			url: '/madm/mgr/counselorInfoMgrStatus',
+			data: params,
+			dataType: 'json',
+			type: 'GET',
+			cache:true,
+			success: function(data, textStatus){
+				window.location.reload();
+			}
+		}); 
+	}
 		
 
 	}
@@ -1775,7 +1824,7 @@ function showDetail(){
 									</c:if>
 								</td> --%>
 								<td>
-									<select class="mgrStatusVal" name="" style="height: 20px;text-align: center;" >
+									<select class="mgrStatusVal" name="" user-id="${list.userId}" style="height: 20px;text-align: center;" >
 						    				<option value="">---- 선택 ----</option>
 						    				<option value="Y" <c:if test="${list.mgrStatus eq '승인' }"> selected </c:if> >승인</option>
 							    			<option value="N" <c:if test="${list.mgrStatus eq '중지' }"> selected </c:if> >중지</option>
