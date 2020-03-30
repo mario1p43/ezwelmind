@@ -409,7 +409,10 @@ public class MgrCounselService {
 		mgrDto.setModiId(manager.getUserId());
 
 		//패스워드를 변경하는 펑션
-		counselorInfoMgrMapper.updateMgrPwd(mgrDto);
+		if(StringUtils.isNotNull(mgrDto.getUserPwd())){
+			counselorInfoMgrMapper.updateMgrPwd(mgrDto);
+		}
+		
 		counselorInfoMgrMapper.updateMgrInfoImsi(mgrDto);
 		counselorInfoMgrMapper.updateCounselorInfoMgrImsi(mgrSubDto);
 		
