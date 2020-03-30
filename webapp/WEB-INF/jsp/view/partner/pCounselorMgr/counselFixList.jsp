@@ -619,7 +619,7 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 									<!-- 채널 정보 시작 -->
 									<table cellpadding="5" align="" id="chRow" cellspacing="0" border="1" width="100%" style="border-collapse:collapse;">
 										<tr align="center" height="50px">
-											<td bgcolor="#F5F5F5" width="3%"><strong>선택</strong></td>
+											<td bgcolor="#F5F5F5" width="3%"><strong>No</strong></td>
 											<!-- <td bgcolor="#F5F5F5" width="7%"><strong>상담코드</strong></td> --> <!-- 사용안함 -->
 											<td bgcolor="#F5F5F5" width="8%"><strong>고객사</strong></td>
 											<td bgcolor="#F5F5F5" width="5%"><strong>임직원명</strong></td><!-- 임직원 추가 -->
@@ -688,9 +688,7 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 											</td>
 											<td >${list.ymd } ${list.stTime }</td><!-- 상담일시 -->
 											<td >${list.mobile }</td><!-- 연락처 -->
-											<td >
-												
-												<a href="/partner/pCounselorMgr/pCounselSchedule?selectId=${list.counselorId}">${list.counselorNm }</a>
+											<td >${list.counselorNm }
 												<input type="hidden" class="counselorId" value="${list.counselorId}"/>
 												<input type="hidden" class="centerSeq" value="${list.centerSeq}"/>
 											</td><!-- 상담사 -->
@@ -709,20 +707,12 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 											<c:set scope="page" var="userCounselDate">${list.ymd } ${list.stTime }</c:set>
 											<fmt:parseDate value="${userCounselDate }" pattern="yyyy-MM-dd HH:mm" var="userCounselDt" />
 											<fmt:formatDate value="${userCounselDt }" pattern="yyyyMMddHHmm" var="userCounselDtStr" />
-											
 											<c:choose>
 												<c:when test="${list.recordStatus == 100695}">
 													<td><strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></td><!--  -->
 												</c:when>
 												<c:when test="${list.recordStatus == 100696}">
-												<c:choose>
-														<c:when test="${list.extensionNum == 1 }">
-															<td><a href="#" class="pCounselorDateModify" value="${list.counselCd}&${list.userKey}&${list.counselType}&${list.intakeCd}" ><strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></a></td>
-														</c:when>
-														<c:otherwise>
-															<td><strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></td>
-														</c:otherwise>
-												</c:choose>
+													<td><strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></td>
 												</c:when>
 												<c:otherwise>
 													<c:choose>
@@ -786,7 +776,7 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 									<table cellpadding="2" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
 										<tr>
 											<td align="left">
-												<input type="button" onclick="doCounselChange();" value="상담사/일정 변경" style="font-size:18px;"/>
+												<!-- <input type="button" onclick="doCounselChange();" value="상담사/일정 변경" style="font-size:18px;"/> -->
 												<br/><br/>
 												<span style="font-weight: bold; color: red">[상담사/일정 변경방법]
 												<br/>* 희망하는 내담자의 "선택버튼"을 누른 후 상담사/일정 변경버튼 클릭시 변경하실수있습니다.</span>

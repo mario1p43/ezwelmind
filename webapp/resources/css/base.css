@@ -442,7 +442,8 @@ a.text_deco_none:hover{
 	border-top: 1px solid #bdbdbd;
 	position:absolute;
 	width:100%;
-    bottom:0;
+	bottom:0;
+	height: 100%;
     background: white;
 }
 

@@ -65,7 +65,7 @@ j$(document).ready(function(){
 						<c:if test='${ list.reqCd1 eq "101232" }'>모집공고</c:if>							
 					</td>
 					<td><a href="#" class="noticeDetail" value="${list.dataSeq}">${list.subject}</a></td>
-					<td width="20%">${list.regDt}</td>
+					<td width="20%">${fn:replace(fn:substring(list.regDt, 2, 10), '-', '.')}</td>
 				</tr>
 			</c:forEach>
 			</table>

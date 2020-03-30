@@ -40,7 +40,7 @@ j$(document).ready(function(){
 
 	j$(".viewDetail").click(function(){
 		var counselCd = $(this).attr("val");
-		j$.divPop("viewDetail", "상세보기 (신청코드 : " + counselCd + " )", "/madm/layerPopup/intakeDetail?counselCd="+counselCd);
+		j$.divPop_mo("viewDetail", "상세보기 (신청코드 : " + counselCd + " )", "/madm/layerPopup/intakeDetail?counselCd="+counselCd);
 		return false;
 	});
 	
@@ -131,7 +131,7 @@ j$(document).ready(function(){
 	$(".counselDiagnosis").click(function(){
 		var counselCd = $(this).attr("counselCd");
 		var intakeCd = $(this).attr("intakeCd");
-		$.divPop("counselDiagnosis", "상세보기 (신청코드 : " + counselCd + " )", "/madm/layerPopup/counselDiagnosis/"+intakeCd+"/"+counselCd);
+		$.divPop_mo("counselDiagnosis", "상세보기 (신청코드 : " + counselCd + " )", "/madm/layerPopup/counselDiagnosis/"+intakeCd+"/"+counselCd);
 		return false;
 	});
 	
@@ -183,37 +183,29 @@ j$(document).ready(function(){
 			<div class="title-block">일지상태</div>
 			<div class="input-block">
 				<div class="checkbox-wrapper">
-						<input type="checkbox" name="recordStatus" id="recordStatus1" value="100692">
-						<label for="recordStatus1"></label>
-						<label for="recordStatus1">완료</label>
+					<input type="checkbox" name="recordStatus" id="recordStatus1" value="100692">
+					<label for="recordStatus1"></label>
+					<label for="recordStatus1">완료</label>
 				</div>
 				<div class="checkbox-wrapper">
-					<label>
-						<input type="checkbox" name="recordStatus" id="recordStatus2" value="100693">
-						<label for="recordStatus2"></label>
-						작성
-					</label>
+					<input type="checkbox" name="recordStatus" id="recordStatus2" value="100693">
+					<label for="recordStatus2"></label>
+					<label for="recordStatus2">작성</label>
 				</div>
 				<div class="checkbox-wrapper">
-					<label>
-						<input type="checkbox" name="recordStatus" id="recordStatus3" value="100694">
-						<label for="recordStatus3"></label>
-						소명
-					</label>
+					<input type="checkbox" name="recordStatus" id="recordStatus3" value="100694">
+					<label for="recordStatus3"></label>
+					<label for="recordStatus3">소명</label>
 				</div>
 				<div class="checkbox-wrapper">
-					<label>
-						<input type="checkbox" name="recordStatus" id="recordStatus4" value="100695">
-						<label for="recordStatus4"></label>
-						불가
-					</label>
+					<input type="checkbox" name="recordStatus" id="recordStatus4" value="100695">
+					<label for="recordStatus4"></label>
+					<label for="recordStatus4">불가</label>
 				</div>
 				<div class="checkbox-wrapper">
-					<label>
-						<input type="checkbox" name="recordStatus" id="recordStatus5" value="100696">
-						<label for="recordStatus5"></label>
-						N/S
-					</label>
+					<input type="checkbox" name="recordStatus" id="recordStatus5" value="100696">
+					<label for="recordStatus5"></label>
+					<label for="recordStatus5">N/S</label>
 				</div>
 				<input type="hidden" name="rStatusNm" value="${param.rStatusNm}" >
 			</div>

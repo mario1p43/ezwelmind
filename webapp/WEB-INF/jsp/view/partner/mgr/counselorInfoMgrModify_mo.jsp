@@ -4,8 +4,9 @@
 <fmt:formatDate var="currentYear" value="${now}" pattern="yyyy" />
 <html>
 <head>
-<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 <title>상담사 정보관리 수정</title>
+<link href="${url:resource('/resources/js/plugin/jquery-ui-1.8.9.custom-datepicker.css')}" rel="stylesheet" type="text/css" />
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
 <style>
 	table{border-spacing: 0 !important}
@@ -70,25 +71,26 @@
 	.bottomPadding{padding-bottom: 5px;}
 	.bottomMargin{margin-bottom: 5px;}
 	#addBtn { margin-top: 1.3889vw; }
-</style>
 
-<!-- 
-<link href="${url:resource('/resources/js/plugin/jquery-ui-1.8.9.custom-datepicker.css')}" rel="stylesheet" type="text/css" />
- -->
+</style>
 
 <script type="text/javascript">
 	var num = 0;
 	var de ="";
+	var count = 0;
 	var delCnt = 1;
-	var chkId = 0;
 	
 	var tbl_cnt = 1;
 	var tbl_cnt_cert = 1;
 	var tbl_cnt_book = 1;
 
-	function tblRowDel(rownum){
-		$('#organizationRow'+rownum).remove();
-	}
+	<c:if test="${! empty(mgrCert)}">
+		var tbl_cnt_cert = ${mgrCert.size()};
+	</c:if>
+
+	<c:if test="${! empty(mgrBook)}">
+		var tbl_cnt_book = ${mgrBook.size()};
+	</c:if>
 	
 	function selectCert(sel, count){
 		$('#certNameTd'+count).children().remove();
@@ -198,7 +200,7 @@
 	}
 	
 	j$(document).ready(function(){
-		//사진 추가
+        //사진 추가
 		$('#picAdd').on('change', function() {
 			$('#picFileName').text(this.files[0].name);
 			$('#picDeleteBtn').css('display', 'block');
@@ -209,6 +211,7 @@
 			$('#picAdd').val('');
 			$('#picFileName').text('');
 			$(this).css('display', 'none');
+			$("#delPhoto").val('${mgr.fileNm }');
 			return false;
 		});
 
@@ -218,11 +221,9 @@
 			$('#picAdd').trigger('click');
 			return false;
 		});
-
-		$("#add-row-cert").click(function(){
-			console.log(111);
-        	// var markup = '<div id="certOrgRow'+tbl_cnt_cert+'">';
-        	// markup += '<div align="center">';
+        $("#add-row-cert").click(function(){
+        	// var markup = '<tr id="certOrgRow'+tbl_cnt_cert+'">';
+        	// markup += '<td align="center">';
         	// markup += '<select id="certOrg'+tbl_cnt_cert+'" name="certOrg'+tbl_cnt_cert+'" onchange="selectCert(this, '+tbl_cnt_cert+')" style="width:95%;">';
         	// markup += '<option value="한국상담심리학회">한국상담심리학회</option>';
         	// markup += '<option value="한국임상심리학회">한국임상심리학회</option>';
@@ -235,30 +236,30 @@
         	// markup += '<option value="한국놀이치료학회">한국놀이치료학회</option>';
         	// markup += '<option value="기타">기타</option>';
         	// markup += '</select>';
-        	// markup += '</div>';
-        	// markup += '<div id="certNameTd'+tbl_cnt_cert+'" align="center">';
+        	// markup += '</td>';
+        	// markup += '<td id="certNameTd'+tbl_cnt_cert+'" align="center">';
         	// markup += '<select id="certName'+tbl_cnt_cert+'" name="certName'+tbl_cnt_cert+'" onchange="selectGrade(this, '+tbl_cnt_cert+')" style="width:95%;">';
         	// markup += '<option value="상담심리사">상담심리사</option>';
         	// markup += '</select>';
-        	// markup += '</div>';
-        	// markup += '<div id="certGradeTd'+tbl_cnt_cert+'" align="center">';
+        	// markup += '</td>';
+        	// markup += '<td id="certGradeTd'+tbl_cnt_cert+'" align="center">';
         	// markup += '<select id="certGrade'+tbl_cnt_cert+'" name="certGrade'+tbl_cnt_cert+'" style="width:95%;">';
         	// markup += '<option value="1급">1급</option>';
         	// markup += '<option value="2급">2급</option>';
         	// markup += '</select>';
-        	// markup += '</div>';
-        	// markup += '<div align="center">';
+        	// markup += '</td>';
+        	// markup += '<td align="center">';
         	// markup += '<select id="certYear'+tbl_cnt_cert+'" name="certYear'+tbl_cnt_cert+'" style="width:95%;"></select>';
-        	// markup += '</div>';
-        	// markup += '<div>';
+        	// markup += '</td>';
+        	// markup += '<td>';
         	// markup += '<input type="file" name="file_'+tbl_cnt_cert+'" data-validation="required" data-validation-error-msg-required="첨부파일은 필수입니다." style="width:95%;"/>';
-        	// markup += '</div>';
-        	// markup += '<div align="center">';
+        	// markup += '</td>';
+        	// markup += '<td align="center">';
         	// markup += '<input type="button" name="certDel" id="certDel'+tbl_cnt+'" onclick="certTblRowDel('+tbl_cnt_cert+');" value="삭제" style="width:95%;"/>';
-        	// markup += '</div>';
-			// markup += '</div>';
+        	// markup += '</td>';
+			// markup += '</tr>';
 			var markupObj = $(
-				`
+				`<div id="certOrgRow">
 					<span class="flex centerH contentLabel width-thirty height-one-tenth">발급기관</span>
 					<div class="flex flexGrow">
 						<select class="flexGrow height-one-tenth contentLabel" id="certOrg">
@@ -297,7 +298,7 @@
 					<div class="flex flexGrow rightR">
 						<input class="button-red width-one-tenth centerH height-one-tenth" type="button" name="organizationDel" id="organizationDel" value="삭제">
 					</div>
-				`);
+				</div>`);
 
 			$('#certOrgRow', markupObj).attr('id', 'certOrgRow' + tbl_cnt_cert).attr('name', 'certOrgRow' + tbl_cnt_cert);
 			
@@ -333,7 +334,7 @@
 
     		$('#certYear'+tbl_cnt_cert+' option[value=2010]').attr('selected', 'selected');        	
         	
-        	tbl_cnt_cert = tbl_cnt_cert + 1;
+        	tbl_cnt_cert = tbl_cnt_cert+1;
         });
         
 		$( ".startDt, .endDt").datepicker({
@@ -360,19 +361,18 @@
 		
         $("#add-row").click(function(){
         	tbl_cnt = tbl_cnt+1;
-        	// var markup = '<div id="organizationRow'+tbl_cnt+'">';
-        	// markup += '<div align="center">';
+        	// var markup = '<tr id="organizationRow'+tbl_cnt+'">';
+        	// markup += '<td align="center">';
         	// markup += '<input type="text" style="width:95%;" id="organizationName'+tbl_cnt+'" name="organizationName" />';
-        	// markup += '</div>';
-        	// markup += '<div align="center">';
+        	// markup += '</td>';
+        	// markup += '<td align="center">';
         	// markup += '<input type="text" style="width:95%;" id="role'+tbl_cnt+'" name="role" />';
-        	// markup += '</div><div align="center">';
+        	// markup += '</td><td align="center">';
         	// markup += '<input type="text" name="roleStartDate"  id="roleStartDate'+tbl_cnt+'" class="startDt cal_box" datetimeonly="true" style="width:93px;" />';
         	// markup += '~<input type="text" name="roleEndDate"  id="roleEndDate'+tbl_cnt+'" class="endDt cal_box" datetimeonly="true" style="width:93px;" />';
-        	// markup += '<div align="center">';
-        	// markup += '<input type="button" name="organizationDel" id="organizationDel'+tbl_cnt+'" onclick="tblRowDel('+tbl_cnt+');" value="삭제" style="width:95%;"/></div>';
-        	// markup += '</div>';
-
+        	// markup += '<td align="center">';
+        	// markup += '<input type="button" name="organizationDel" id="organizationDel'+tbl_cnt+'" onclick="tblRowDel('+tbl_cnt+');" value="삭제" style="width:95%;"/></td>';
+			// markup += '</tr>';		
 			var markup =	$(`<div class="flex flexColumn" id="organizationRow">
 							<div class="flex flexGrow">
 								<input class="content-input flexGrow height-one-tenth" type="text" id="organizationName" name="organizationName" placeholder="기관명">
@@ -397,7 +397,6 @@
 			$('#organizationDel', markup).attr('id', 'organizationDel' + tbl_cnt).on('click', function(){
 				markup.remove();
 			});
-
         	$("#tbl_organization_body").append(markup);
     		
     		$( ".startDt, .endDt").datepicker({
@@ -425,15 +424,13 @@
         });
         
         $("#add-row-book").click(function(){
-        	// var markup = '<div id="mgrBookRow'+tbl_cnt_book+'">';
-        	// markup += '<div align="center"><input type="text" style="width:95%;" id="bookTitle'+tbl_cnt_book+'" name="bookTitle"/></div>';
-        	// markup += '<div align="center"><input type="text" style="width:95%;" id="bookOrg'+tbl_cnt_book+'" name="bookOrg"/></div>';
-        	// markup += '<div align="center"><input type="text" style="width:95%;" id="author'+tbl_cnt_book+'" name="author"/></div>';
-        	// markup += '<div align="center"><select id="bookYear'+tbl_cnt_book+'" name="bookYear" style="width:95%;"></select></div>';
-        	// markup += '<div align="center"><input type="button" name="bookDel" id="bookDel'+tbl_cnt_book+'" onclick="bookTblRowDel('+tbl_cnt_book+');" value="삭제" style="width:95%;"/></div>';
-        	// markup += '</div>';		
-			// $("#tbl_organization_body_book").append(markup);
-			
+        	// var markup = '<tr id="mgrBookRow'+tbl_cnt_book+'">';
+        	// markup += '<td align="center"><input type="text" style="width:95%;" id="bookTitle'+tbl_cnt_book+'" name="bookTitle"/></td>';
+        	// markup += '<td align="center"><input type="text" style="width:95%;" id="bookOrg'+tbl_cnt_book+'" name="bookOrg"/></td>';
+        	// markup += '<td align="center"><input type="text" style="width:95%;" id="author'+tbl_cnt_book+'" name="author"/></td>';
+        	// markup += '<td align="center"><select id="bookYear'+tbl_cnt_book+'" name="bookYear" style="width:95%;"></select></td>';
+        	// markup += '<td align="center"><input type="button" name="bookDel" id="bookDel'+tbl_cnt_book+'" onclick="bookTblRowDel('+tbl_cnt_book+');" value="삭제" style="width:95%;"/></td>';
+			// markup += '</tr>';		
 			var markup = $(`
 						<div id="mgrBookRow">
 							<div class="flex flexGrow">
@@ -453,7 +450,8 @@
 							</div>
 						</div>`
 					);
-			
+			$("#tbl_organization_body_book").append(markup);
+			$('#mgrBookRow', markup).attr('id', 'mgrBookRow' + tbl_cnt_book);
 			$('#bookTitle', markup).attr('id', 'bookTitle' + tbl_cnt_book).attr('name', 'bookTitle' + tbl_cnt_book);
 			$('#bookOrg', markup).attr('id', 'bookOrg' + tbl_cnt_book).attr('name', 'bookOrg' + tbl_cnt_book);
 			$('#author', markup).attr('id', 'author' + tbl_cnt_book).attr('name', 'author' + tbl_cnt_book);
@@ -461,8 +459,6 @@
 			$('#organizationDel', markup).attr('id', 'organizationDel' + tbl_cnt_book).on('click', function() {
 				markup.remove();
 			});
-			
-			$("#tbl_organization_body_book").append(markup);
         	
     		for (i = new Date().getFullYear(); i > 1959; i--){
     		    $('#bookYear'+tbl_cnt_book).append($('<option />').val(i).html(i));
@@ -471,160 +467,391 @@
     		$('#bookYear'+tbl_cnt_book+' option[value=2010]').attr('selected', 'selected');  
         	
         	tbl_cnt_book = tbl_cnt_book+1;
-        }); 
-		
-		
+        });
 		
 		<c:if test='${not empty mgr.channelType}'>
 		var chkValue = '${mgr.channelType}';
 		var chkArr = chkValue.split(',');
 		for (var i = 0; i < chkArr.length; i++) {
 			if(chkArr[i] != ""){
-				$('[name=channelType][value=' + chkArr[i] + ']').attr('checked',true);
-				if(chkArr[i] == 100001){
-					$(".psyGroup").show();
-					$("#mentalAges").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담대상을 선택해주세요");
-					$("#mentalDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
-					$("#mentalType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
-				}else if(chkArr[i] == 100002){
-					$(".lawGroup").show();
-					$("#lawDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
-					$("#lawType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
-				}else if(chkArr[i] == 100003){
-					$(".finGroup").show();
-					$("#financeDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
-					$("#financeType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
-				}else if(chkArr[i] == 100004){
-					$(".psyTestGroup").show();
-					$("#diagnosisAges").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담대상을 선택해주세요");
-					$("#diagnosisDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
-					$("#diagnosisType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
-				}
+			$('[name=channelType][value=' + chkArr[i] + ']').attr('checked',true);
+			if(chkArr[i] == 100001){
+		    	$(".psyGroup").show();
+		    	$("#mentalAges").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담대상을 선택해주세요");
+		    	$("#mentalDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
+		    	$("#mentalType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
+		    }else if(chkArr[i] == 100002){
+		    	$(".lawGroup").show();
+		    	$("#lawDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
+		    	$("#lawType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
+		    }else if(chkArr[i] == 100003){
+		    	$(".finGroup").show();
+		    	$("#financeDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
+		    	$("#financeType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
+		    }else if(chkArr[i] == 100004){
+		    	$(".psyTestGroup").show();
+		    	$("#diagnosisAges").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담대상을 선택해주세요");
+		    	$("#diagnosisDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
+		    	$("#diagnosisType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
+		    }
 			}
 		}
 		</c:if>
-	
-		j$("input:checkbox").on("click",function() {
-		    var check = $(this).val();
+		
+		<c:if test='${not empty mgr.mentalAges}'>
+		var chkValue = '${mgr.mentalAges}';
+		var chkArr = chkValue.split(',');
+		for (var i = 0; i < chkArr.length; i++) {
+			if(chkArr[i] != ""){
+			$('[name=mentalAges][value=' + chkArr[i] + ']').attr('checked',true);
+			}
+		}
+		</c:if>
+		
+		<c:if test='${not empty mgr.mentalDiv}'>
+		var chkValue = '${mgr.mentalDiv}';
+		var chkArr = chkValue.split(',');
+		for (var i = 0; i < chkArr.length; i++) {
+			if(chkArr[i] != ""){
+			$('[name=mentalDiv][value=' + chkArr[i] + ']').attr('checked',true);
+			}
+		}
+		</c:if>
+		
+		<c:if test='${not empty mgr.mentalType}'>
+		var chkValue = '${mgr.mentalType}';
+		var chkArr = chkValue.split(',');
+		for (var i = 0; i < chkArr.length; i++) {
+			if(chkArr[i] != ""){
+			$('[name=mentalType][value=' + chkArr[i] + ']').attr('checked',true);
+			}
+		}
+		</c:if>
+		
+		<c:if test='${not empty mgr.lawDiv}'>
+		var chkValue = '${mgr.lawDiv}';
+		var chkArr = chkValue.split(',');
+		for (var i = 0; i < chkArr.length; i++) {
+			if(chkArr[i] != ""){
+			$('[name=lawDiv][value=' + chkArr[i] + ']').attr('checked',true);
+			}
+		}
+		</c:if>
+		
+		<c:if test='${not empty mgr.lawType}'>
+		var chkValue = '${mgr.lawType}';
+		var chkArr = chkValue.split(',');
+		for (var i = 0; i < chkArr.length; i++) {
+			if(chkArr[i] != ""){
+			$('[name=lawType][value=' + chkArr[i] + ']').attr('checked',true);
+			}
+		}
+		</c:if>
+		
+		<c:if test='${not empty mgr.financeDiv}'>
+		var chkValue = '${mgr.financeDiv}';
+		var chkArr = chkValue.split(',');
+		for (var i = 0; i < chkArr.length; i++) {
+			if(chkArr[i] != ""){
+			$('[name=financeDiv][value=' + chkArr[i] + ']').attr('checked',true);
+			}
+		}
+		</c:if>
+		
+		<c:if test='${not empty mgr.financeType}'>
+		var chkValue = '${mgr.financeType}';
+		var chkArr = chkValue.split(',');
+		for (var i = 0; i < chkArr.length; i++) {
+			if(chkArr[i] != ""){
+			$('[name=financeType][value=' + chkArr[i] + ']').attr('checked',true);
+			}
+		}
+		</c:if>
+		
+		<c:if test='${not empty mgr.diagnosisAges}'>
+		var chkValue = '${mgr.diagnosisAges}';
+		var chkArr = chkValue.split(',');
+		for (var i = 0; i < chkArr.length; i++) {
+			if(chkArr[i] != ""){
+			$('[name=diagnosisAges][value=' + chkArr[i] + ']').attr('checked',true);
+			}
+		}
+		</c:if>
+		
+		<c:if test='${not empty mgr.diagnosisDiv}'>
+		var chkValue = '${mgr.diagnosisDiv}';
+		var chkArr = chkValue.split(',');
+		for (var i = 0; i < chkArr.length; i++) {
+			if(chkArr[i] != ""){
+			$('[name=diagnosisDiv][value=' + chkArr[i] + ']').attr('checked',true);
+			}
+		}
+		</c:if>
+		
+		<c:if test='${not empty mgr.diagnosisType}'>
+		var chkValue = '${mgr.diagnosisType}';
+		var chkArr = chkValue.split(',');
+		for (var i = 0; i < chkArr.length; i++) {
+			if(chkArr[i] != ""){
+			$('[name=diagnosisType][value=' + chkArr[i] + ']').attr('checked',true);
+			}
+		}
+		</c:if>
+		
+		<c:if test='${not empty mgr.rrn}'>
+		var rrn = '${mgr.rrn}';
+		var time = new Date();
+		var year = time.getFullYear();
+		var rrnYear;
+	 	if(rrn.substring(7) <= 2){
+			rrnYear  = "19"+rrn.substring(0,2) ;
+		}else if(2 < rrn.substring(7) <= 4){
+			rrnYear  = "20"+rrn.substring(0,2) ;
+		}
+	 	
+		var age = (year - rrnYear+1)+'세';
+		 document.getElementById("age").innerHTML = age;
+		</c:if>
+		
+		
+		<c:if test='${not empty mgr.languageType}'>
+		var chkValue = '${mgr.languageType}';
+		var chkArr = chkValue.split(',');
+		for (var i = 0; i < chkArr.length; i++) {
+			if(chkArr[i] != ""){
+			$('[name=languageType][value=' + chkArr[i] + ']').attr('checked',true);
+			}
+		}
+		</c:if>
 
-		    if($(this).is(":checked")){
-			    if(check == 100001){
-			    	$(".psyGroup").show();
-			    	$("#mentalAges").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담대상을 선택해주세요");
-			    	$("#mentalDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
-			    	$("#mentalType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
-			    }else if(check == 100002){
-			    	$(".lawGroup").show();
-			    	$("#lawDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
-			    	$("#lawType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
-			    }else if(check == 100003){
-			    	$(".finGroup").show();
-			    	$("#financeDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
-			    	$("#financeType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
-			    }else if(check == 100004){
-			    	$(".psyTestGroup").show();
-			    	$("#diagnosisAges").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담대상을 선택해주세요");
-			    	$("#diagnosisDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
-			    	$("#diagnosisType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
-			    }
-			}else{
-				if(check == 100001){
-			    	$(".psyGroup").attr("style","display: none");
-			    	$(".mentalAges").attr("checked", false);
-			    	$(".mentalDiv").attr("checked", false);
-			    	$(".mentalType").attr("checked", false);
-			    	$("#mentalDivEtc").val("");
-			    	$("#mentalAges").removeAttr("data-validation");
-			    	$("#mentalDiv").removeAttr("data-validation");
-			    	$("#mentalType").removeAttr("data-validation");
-			    }else if(check == 100002){
-			    	$(".lawGroup").attr("style","display: none");
-			    	$(".lawDiv").attr("checked", false);
-			    	$(".lawType").attr("checked", false);
-			    	$("#lawDiv").removeAttr("data-validation");
-			    	$("#lawType").removeAttr("data-validation");
-			    }else if(check == 100003){
-			    	$(".finGroup").attr("style","display: none");
-			    	$(".financeDiv").attr("checked", false);
-			    	$(".financeType").attr("checked", false);
-			    	$("#financeDiv").removeAttr("data-validation");
-			    	$("#financeType").removeAttr("data-validation");
-			    }else if(check == 100004){
-			    	$(".psyTestGroup").attr("style","display: none");
-			    	$(".diagnosisAges").attr("checked", false);
-			    	$(".diagnosisDiv").attr("checked", false);
-			    	$(".diagnosisType").attr("checked", false);
-			    	$("#diagnosisDivEtc").val("");
-			    	$("#diagnosisAges").removeAttr("data-validation");
-			    	$("#diagnosisDiv").removeAttr("data-validation");
-			    	$("#diagnosisType").removeAttr("data-validation");
-			    }else if(check == 100011){
-			    	$("#mentalDivEtc").val("");
-			    }else if(check == 100024){
-			    	$("#diagnosisDivEtc").val("");
-			    }
+		<c:if test='${not empty mgr.specialType}'>
+		var chkValue = '${mgr.specialType}';
+		var chkArr = chkValue.split(',');
+		for (var i = 0; i < chkArr.length; i++) {
+			if(chkArr[i] != ""){
+			$('[name=specialType][value=' + chkArr[i] + ']').attr('checked',true);
 			}
-		});
+		}
+		</c:if>
 		
+
+		<c:if test='${not empty mgr.jobType}'>
+		var chkValue = '${mgr.jobType}';
+		var chkArr = chkValue.split(',');
+		for (var i = 0; i < chkArr.length; i++) {
+			if(chkArr[i] != ""){
+			$('[name=jobType][value=' + chkArr[i] + ']').attr('checked',true);
+			}
+		}
+		</c:if>
+		<c:if test='${not empty mgr.personalType}'>
+		var chkValue = '${mgr.personalType}';
+		var chkArr = chkValue.split(',');
+		for (var i = 0; i < chkArr.length; i++) {
+			if(chkArr[i] != ""){
+			$('[name=personalType][value=' + chkArr[i] + ']').attr('checked',true);
+			}
+		}
+		</c:if>
 		
-		j$('#chkId').click(function() {
-			
-			var params = {};
-			var strData = "";
-			var userId = $("#userId").val()
-			params.userId  = userId;
-			if(userId == ""){
+		<c:if test='${not empty mgr.familyType}'>
+		var chkValue = '${mgr.familyType}';
+		var chkArr = chkValue.split(',');
+		for (var i = 0; i < chkArr.length; i++) {
+			if(chkArr[i] != ""){
+			$('[name=familyType][value=' + chkArr[i] + ']').attr('checked',true);
+			}
+		}
+		</c:if>
+		<c:if test='${not empty mgr.traumaType}'>
+		var chkValue = '${mgr.traumaType}';
+		var chkArr = chkValue.split(',');
+		for (var i = 0; i < chkArr.length; i++) {
+			if(chkArr[i] != ""){
+			$('[name=traumaType][value=' + chkArr[i] + ']').attr('checked',true);
+			}
+		}
+		</c:if>
+		
+		<c:if test='${not empty mgr.targetType}'>
+		var chkValue = '${mgr.targetType}';
+		var chkArr = chkValue.split(',');
+		for (var i = 0; i < chkArr.length; i++) {
+			if(chkArr[i] != ""){
+			$('[name=targetType][value=' + chkArr[i] + ']').attr('checked',true);
+			}
+		}
+		</c:if>
+				
+		<c:if test='${not empty mgr.financeCounselType}'>
+		var chkValue = '${mgr.financeCounselType}';
+		var chkArr = chkValue.split(',');
+		for (var i = 0; i < chkArr.length; i++) {
+			if(chkArr[i] != ""){
+			$('[name=financeCounselType][value=' + chkArr[i] + ']').attr('checked',true);
+			}
+		}
+		</c:if>
+		
+		<c:if test='${not empty mgr.lawCounselType}'>
+		var chkValue = '${mgr.lawCounselType}';
+		var chkArr = chkValue.split(',');
+		for (var i = 0; i < chkArr.length; i++) {
+			if(chkArr[i] != ""){
+			$('[name=lawCounselType][value=' + chkArr[i] + ']').attr('checked',true);
+			}
+		}
+		</c:if>
+		
+		<c:if test='${not empty mgr.preferredType}'>
+		var chkValue = '${mgr.preferredType}';
+		var chkArr = chkValue.split(',');
+		for (var i = 0; i < chkArr.length; i++) {
+			if(chkArr[i] != ""){
+			$('[name=preferredType][value=' + chkArr[i] + ']').attr('checked',true);
+			}
+		}
+		</c:if>
+		
+		<c:if test='${not empty mgr.tendencyType}'>
+		var chkValue = '${mgr.tendencyType}';
+		var chkArr = chkValue.split(',');
+		for (var i = 0; i < chkArr.length; i++) {
+			if(chkArr[i] != ""){
+			$('[name=tendencyType][value=' + chkArr[i] + ']').attr('checked',true);
+			}
+		}
+		</c:if>
+		
+		// 상담사가 상태가 승인이면, 상담유형을 변경할 수 없도록
+		j$("#counselTypeInfo").find('input').click(function(){
+			/* if('${mgr.mgrStatus}' == 'Y'){
+				alert('승인된 상담사의 상담유형정보는 변경할 수 없습니다.');
 				return false;
-			}else{
-			j$.ajax({
-				url: '/partner/mgr/checkId',
-				data: params,
-				dataType: 'json',
-				type: 'GET',
-				cache:true,
-				success: function(data, textStatus){
-					var d =  data.mgr
-					if(data.mgr != null){
-					if(d.userId != ""){
-						alert("중복되는 아이디가 존재합니다.");
-						$("#userId").val("");
-						chkId = 0;
-					}
-					}else{
-						chkId = 1;
-						alert("등록가능한 아아디입니다.");
-					}
-				}
-			});
-			}
+			} */
 			
+
+			
+				var check = $(this).val();
+	
+			    if($(this).is(":checked")){
+				    if(check == 100001){
+				    	$(".psyGroup").show();
+				    	$("#mentalAges").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담대상을 선택해주세요");
+				    	$("#mentalDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
+				    	$("#mentalType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
+				    }else if(check == 100002){
+				    	$(".lawGroup").show();
+				    	$("#lawDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
+				    	$("#lawType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
+				    }else if(check == 100003){
+				    	$(".finGroup").show();
+				    	$("#financeDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
+				    	$("#financeType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
+				    }else if(check == 100004){
+				    	$(".psyTestGroup").show();
+				    	$("#diagnosisAges").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담대상을 선택해주세요");
+				    	$("#diagnosisDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
+				    	$("#diagnosisType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
+				    }
+				}else{
+					if(check == 100001){
+				    	$(".psyGroup").attr("style","display: none");
+				    	$(".mentalAges").attr("checked", false);
+				    	$(".mentalDiv").attr("checked", false);
+				    	$(".mentalType").attr("checked", false);
+				    	$("#mentalDivEtc").val("");
+				    	$("#mentalAges").removeAttr("data-validation");
+				    	$("#mentalDiv").removeAttr("data-validation");
+				    	$("#mentalType").removeAttr("data-validation");
+				    }else if(check == 100002){
+				    	$(".lawGroup").attr("style","display: none");
+				    	$(".lawDiv").attr("checked", false);
+				    	$(".lawType").attr("checked", false);
+				    	$("#lawDiv").removeAttr("data-validation");
+				    	$("#lawType").removeAttr("data-validation");
+				    }else if(check == 100003){
+				    	$(".finGroup").attr("style","display: none");
+				    	$(".financeDiv").attr("checked", false);
+				    	$(".financeType").attr("checked", false);
+				    	$("#financeDiv").removeAttr("data-validation");
+				    	$("#financeType").removeAttr("data-validation");
+				    }else if(check == 100004){
+				    	$(".psyTestGroup").attr("style","display: none");
+				    	$(".diagnosisAges").attr("checked", false);
+				    	$(".diagnosisDiv").attr("checked", false);
+				    	$(".diagnosisType").attr("checked", false);
+				    	$("#diagnosisDivEtc").val("");
+				    	$("#diagnosisAges").removeAttr("data-validation");
+				    	$("#diagnosisDiv").removeAttr("data-validation");
+				    	$("#diagnosisType").removeAttr("data-validation");
+				    }else if(check == 100011){
+				    	$("#mentalDivEtc").val("");
+				    }else if(check == 100024){
+				    	$("#diagnosisDivEtc").val("");
+				    }
+					
+				}
+				
 		});
+
+		j$("#delPhotoBtn").click(function(){
+			j$("#delPhoto").val('${mgr.fileNm }');
+			return false;
+		});
+		
+		j$("#modifyBtn").click(function(){
+			j$("#num").val(num);
+			j$("#count").val(count);
+			j$("#updateCounselorInfoMgr").submit();
+			return false;
+		});
+
 		
 		//밸리데이션 체크
 		$.validate({
-			form : '#insertCounselorInfoMgr',
+			form : '#updateCounselorInfoMgr',
 			validateOnBlur : false,
 			validateOnAlert : true,
 			onSuccess : function(){
 				$('[name=mobile]').val($('#mobile1').val() + "-" + $('#mobile2').val() + "-" + $('#mobile3').val()); 
-				$('[name=mobileSms]').val($('#mobilesms1').val() + "-" + $('#mobilesms2').val() + "-" + $('#mobilesms3').val());
-				$('[name=rrn]').val($('#rrn1').val() + "-" + $('#rrn2').val()); 
-				if(chkId != 1){
-					alert("아이디 중복확인을 해야합니다.");
-					return false;
-				}
-				else if(j$('#userPwd').val() != j$('#userPwdChk').val()){
-					alert("비밀번호가 일치하지 않습니다.");
-					return false;
-				}
+				$('[name=mobileSms]').val($('#mobilesms1').val() + "-" + $('#mobilesms2').val() + "-" + $('#mobilesms3').val()); 
 			}
 		});
+
 		
-		j$('#addBtn').click(function() {
-			j$("#num").val(num);
-			j$("#insertCounselorInfoMgr").submit();
+		j$('#updateBtn').click(function() {
+			if(confirm("승인된 상담사의 상담유형정보는 즉시 변경할 수 없습니다. 수정요청 후 이지웰니스 승인을 받아 최종 수정됩니다.")){
+				updateExtraExam();
+				if(j$("#centerOwnerYn").is(":checked")){
+					j$("#ownerYn").val("Y");				
+					
+					if('${loginId}' == '${mgr.userId}'){
+					
+						j$("#num").val(num);
+						j$("#count").val(count);
+						j$("#updateCounselorInfoMgr").submit();
+					}else{
+						j$.alert('이미 등록된 대표 센터장을 교체하시겠습니까?',function(){
+							j$("#num").val(num);
+							j$("#count").val(count);
+							j$("#updateCounselorInfoMgr").submit();
+						 },function(){
+						 	return false;
+						 }
+						);
+					}
+				}else{
+					
+					j$("#ownerYn").val("N");
+					j$("#num").val(num);
+					j$("#count").val(count);
+					j$("#updateCounselorInfoMgr").submit();
+				}	
+			}
+			
+			return false;
 		});
-		
 		
 		for (i = new Date().getFullYear(); i > 1959; i--){
 		    $('#eduYear').append($('<option />').val(i).html(i));
@@ -636,51 +863,74 @@
 		$('#eduYear2 option[value=2010]').attr('selected', 'selected');
 		$('#eduYear3 option[value=2010]').attr('selected', 'selected');
 
+		<c:if test='${not empty mgr.eduYear}'>
+			$("#eduYear option[value='${mgr.eduYear}']").attr('selected', 'selected');
+		</c:if>
+		<c:if test='${not empty mgr.eduYear2}'>
+			$("#eduYear2 option[value='${mgr.eduYear2}']").attr('selected', 'selected');
+		</c:if>
+		<c:if test='${not empty mgr.eduYear3}'>
+			$("#eduYear3 option[value='${mgr.eduYear3}']").attr('selected', 'selected');
+		</c:if>
+
+		<c:if test='${not empty mgr.eduStatus}'>
+			$("#eduStatus option[value='${mgr.eduStatus}']").attr('selected', 'selected');
+		</c:if>
+
+		<c:if test='${not empty mgr.eduStatus2}'>
+			$("#eduStatus2 option[value='${mgr.eduStatus2}']").attr('selected', 'selected');
+		</c:if>
+
+		<c:if test='${not empty mgr.eduStatus3}'>
+			$("#eduStatus3 option[value='${mgr.eduStatus3}']").attr('selected', 'selected');
+		</c:if>
+
+		<c:if test='${not empty mgr.education}'>
+			$("#education option[value='${mgr.education}']").attr('selected', 'selected');
+		</c:if>
+
+		<c:if test='${not empty mgr.education2}'>
+			$("#education2 option[value='${mgr.education2}']").attr('selected', 'selected');
+		</c:if>
+
+		<c:if test='${not empty mgr.education3}'>
+			$("#education3 option[value='${mgr.education3}']").attr('selected', 'selected');
+		</c:if>
+
+		<c:forEach var="list" items="${mgrBook}" varStatus="listCnt">
+			$("#bookYear${listCnt.index} option[value='${list.bookYear}']").attr('selected', 'selected');
+		</c:forEach>
+		
 	});
-
-	 function addRow(e){
-		var params = {};
-		var strData = "";
-		
-		if(num == (9-'${mgrCertCnt}')){
-			alert("10개까지 등록 가능합니다.");
-			return false;
-		}
-		num++;
-		var oRow = e.insertRow(num);
-		var oCel = oRow.insertCell();
-		
-		//oCel.innerHTML = "<comm:select name='certCd"+num+"'  code='100275'  basicValue='선택'  /><input type='text' name='etc"+num+"' id='certEtc"+num+"' /><input type='file' name='file"+num+"' data-validation='required' data-validation-error-msg-required='첨부파일은 필수입니다.' />";
-		j$.ajax({
-			url: '/partner/mgr/ajaxCert',
-			data: params,
-			dataType: 'json',
-			type: 'GET',
-			cache:true,
-			success: function(data, textStatus){
-				strData =	"<select class='certClass' name='certCd"+num+"' id='certCd"+num+"' onChange='changeCert("+num+")' data-validation='required'>";
-				strData +=	"<option value=''>선택</option>";
-				j$.each(data.serviceList, function(i, serviceList){
-					strData += "   <option value='"+serviceList.commCd+"'>"+serviceList.commNm+"</option>";
-				});
-				strData +=	"</select>";	
-				strData +=	"<input type='text' name='etc"+num+"' id='certEtc"+num+"' style='width: 210px'/><input type='file' name='file_"+num+"' data-validation='required' data-validation-error-msg-required='첨부파일은 필수입니다.' />";
-				oCel.innerHTML = strData;
-				
-			}
-		});
-	} 
-
-	function delRow(e){
-		if(num == 0){
-			alert("최소1개 이상 등록 하셔야 합니다.");
-			return false;
-		}
-		var oTr = e.deleteRow(num);
-		num--;
+	
+	function tblRowDel(rownum){
+		$('#organizationRow'+rownum).remove();
 	}
+	
+	function certTblRowDel(rownum){
+		$('#certOrgRow'+rownum).remove();
+	}
+	
+	function bookTblRowDel(rownum){
+		$('#mgrBookRow'+rownum).remove();
+	}
+		
+	function delCertRow(e,h){
+		var certCnt = '${mgrCertCnt}';
+		if(certCnt == delCnt){
+			alert("최소 1개 이상 등록 해야합니다.");
+			return false;
+		}
+		de += e+",";
+		
+		document.getElementById("d").innerHTML = "<input type='hidden' name='D' value='"+de+"' /> "
+		count++;
+		delCnt++
+		document.getElementById(h).style.display = "none";
+	}
+	
 	function changeCert(num){
-		var fm =  document.insertCounselorInfoMgr;
+		var fm =  document.updateCounselorInfoMgr;
 		switch(num){
 			case(1) :
 				if(fm.certCd1.options[fm.certCd1.selectedIndex].value != "100747" && fm.certCd1.options[fm.certCd1.selectedIndex].value != ""){
@@ -763,13 +1013,13 @@
 			        $("#certEtc9").attr('disabled', false);
 				}
 				break;
-			case(0) :
-				if(fm.certCd0.options[fm.certCd0.selectedIndex].value != "100747" && fm.certCd0.options[fm.certCd0.selectedIndex].value != ""){
-					$("#certEtc0").val(fm.certCd0.options[fm.certCd0.selectedIndex].text);
-				    $("#certEtc0").attr('disabled', true);
+			case(10) :
+				if(fm.certCd10.options[fm.certCd10.selectedIndex].value != "100747" && fm.certCd10.options[fm.certCd10.selectedIndex].value != ""){
+					$("#certEtc10").val(fm.certCd10.options[fm.certCd10.selectedIndex].text);
+				    $("#certEtc10").attr('disabled', true);
 				}else{
-					$("#certEtc0").val("");
-			        $("#certEtc0").attr('disabled', false);
+					$("#certEtc10").val("");
+			        $("#certEtc10").attr('disabled', false);
 				}
 				break;
 			default :
@@ -777,6 +1027,7 @@
 		}
 	}
 
+	
 
 	function updateExtraExam(){
 		console.log("updateExtraExam 타고 있음");
@@ -855,13 +1106,23 @@
 		} 
 		
 		numExam++;
-		var strData = "";
-		strData += "<div id='examSub"+numExam+"'>";
-		strData += " <input type='hidden' name='extraExamIdx' value='9999999' />";
-		strData += " 프로그램명 : <input type='text' name='extraExamInfo1' value=''	 /> ";
-		strData += " 대상 : <input type='text'	name='extraExamInfo2' value=''	 /> ";
-		strData += " 센터내 시행비용(해석상담 포함가) :<input type='text' name='extraExamInfo3' value=''	 /> <br/>";
-		strData += "</div>";
+		var strData = $(`<div id="examSub">
+							<div class="flex flexGrow">
+								<input class="content-input flexGrow height-one-tenth" type="text" name="extraExamInfo1" placeholder="프로그램명">
+							</div>
+							<div class="flex flexGrow">
+								<input class="content-input flexGrow height-one-tenth" type="text" name="extraExamInfo2" placeholder="대상">
+							</div>
+							<div class="flex flexGrow">
+								<input class="content-input flexGrow height-one-tenth" type="text" name="extraExamInfo3" placeholder="센터 내 시행비용(해석상담 포함가)">
+							</div>
+							<div class="flex flexGrow rightR">
+								<input class="button-red width-one-tenth centerH height-one-tenth" type="button" value="삭제">
+							</div>
+						</div>`);
+		$('.button-red', strData).on('click', function() {
+			strData.remove();
+		});
 		$( '#etcExamExtra' ).append(strData);
 	}
 	
@@ -874,46 +1135,49 @@
 		$("#examSub"+numExam).remove();
 		numExam--;
 	}
+	
+	function deleteRowExam(numExamEtc){
+		$("#examSub"+numExamEtc).remove();
+	}
+	
+	
 </script>
 </head>
 <body>
-<form name="insertCounselorInfoMgr" id="insertCounselorInfoMgr" action="/partner/mgr/insertCounselorInfoMgr" method="POST" enctype="multipart/form-data">
+<form id="updateCounselorInfoMgr" name="updateCounselorInfoMgr" action="/partner/mgr/updateCounselorInfoMgrImsi" method="POST" enctype="multipart/form-data">
 	<input type="hidden" name="num" id="num">
+	<input type="hidden" name="count" id="count">
+	<input type="hidden" name="delPhoto" id="delPhoto">
+	<input type="hidden" name="ownerYn" id="ownerYn">
+	<input type="hidden" name="mgrCertCnt" id="mgrCertCnt" value="${mgrCertCnt}">
+	<input type="hidden" name="mgrStatus" id="mgrStatus" value="${mgr.mgrStatus}">
+	<input type="hidden" name="centerSeq" value="${mgr.centerSeq}"/>
 	<div class="content-wrapper flex flexColumn">
 		<span class="flex title height-fifteen">상담사 정보관리</span>
 		<span class="flex subject height-one-tenth">개인정보</span>
 		<div class="underline flex height-one-tenth">
 			<span class="flex centerH label width-thirty">성명</span>
-			<input class="content-input flexGrow" type="text" name="userNm" data-validation="required" data-validation-error-msg-required="성명을 확인해주세요." placeholder="한글로 입력하세요">
+			<span class="content-input flexGrow">${mgr.userNm} (${mgr.userId})</span>
+			<!-- <input class="content-input flexGrow" readonly type="text" name="userNm" data-validation="required" data-validation-error-msg-required="성명을 확인해주세요." placeholder="한글로 입력하세요"> -->
+			<input type="hidden" name="userNm" value="${mgr.userNm}"/>
+			<input type="hidden" name="userId" value="${mgr.userId}"/>
 		</div>
 		<div class="underline flex height-one-tenth">
-			<span class="flex centerH label width-thirty">아이디</span>
-			<input class="content-input flexGrow" type="text" name="userId" id="userId" data-validation="required" data-validation-error-msg-required="아이디를 확인해주세요." placeholder="아이디를 입력하세요">
-			<input class="button-blue width-fifteen" type="button" id="chkId" value="중복확인">
-		</div>
-		<div class="underline flex height-one-tenth">
-			<span class="flex centerH label width-thirty">비밀번호</span>
-			<input type="password" maxlength="12" minlength="6" name="userPwd" id="userPwd" data-validation="alphanumeric" data-validation-error-msg="비밀번호를 확인해주세요." class="content-input flexGrow" placeholder="영문(대, 소)+숫자 6~12자 이내">
-		</div>
-		<div class="underline flex height-one-tenth">
-			<span class="flex centerH label width-thirty">비밀번호 확인</span>
-			<input type="password" maxlength="12" minlength="6" name="userPwdChk" id="userPwdChk" data-validation="alphanumeric" data-validation-error-msg="비밀번호 학인을 확인해주세요." class="content-input flexGrow" placeholder="영문(대, 소)+숫자 6~12자 이내">
-		</div>
-		<div class="underline flex height-one-tenth">
-			<span class="flex centerH label width-thirty">생년월일</span>
-			<input type="number" maxlength="6" class="content-input width-one-quarter" id="rrn1" style="width: 20%;" data-validation="length number" data-validation-length="6-6"  data-validation-error-msg="생년월일을 확인 해주세요." placeholder="901234">
-			<span class="flex label centerH hyphen">-</span>
-			<input type="number" maxlength="1" class="content-input width-one-quarter" id="rrn2" style="width: 10%;" data-validation="length number" data-validation-length="1-1"  data-validation-error-msg="생년월일을 확인 해주세요." placeholder="1">
-			<input type="hidden" name="rrn">
-		</div>
-		<div class="underline flex height-one-tenth">
-			<span class="flex centerH label width-thirty">성별</span>
-			<span class="flex centerH contentLabel width-one-quarter"><input type="radio" name="gender" value="M" data-validation="required" data-validation-error-msg-required="성별을 확인해주세요.">남성</span>
-			<span class="flex centerH contentLabel width-one-quarter"><input type="radio" name="gender" value="F">여성</span>
+			<span class="flex centerH label width-thirty">나이/성별</span>
+			<span class="content-input width-one-quarter flex centerH"><span id="age"></span>
+				<c:choose>
+					<c:when test="${mgr.gender eq 'M'}">
+						남성
+					</c:when>
+					<c:otherwise>
+						여성
+					</c:otherwise>
+				</c:choose>
+			</span>
 		</div>
 		<div class="underline flex height-one-tenth">
 			<span class="flex centerH label width-thirty">이메일</span>
-			<input class="content-input flexGrow" type="text" name="email" style="width:150px;" data-validation="email" data-validation-error-msg-email="이메일을 확인 해주세요." placeholder="asdf1234@gmail.com">
+			<input class="content-input flexGrow" type="text" name="email" style="width:150px;" value="${mgr.email}" data-validation="email" data-validation-error-msg-email="이메일을 확인 해주세요." placeholder="asdf1234@gmail.com">
 		</div>
 		<div class="underline flex height-one-tenth">
 			<span class="flex centerH label width-thirty">연락처</span>
@@ -936,10 +1200,10 @@
 		<div class="underline flex flexColumn bottomPadding">
 			<span class="flex centerH label width-thirty height-one-tenth">학위취득사항</span>
 			<div class="flex flexGrow">
-				<input class="content-input flexGrow height-one-tenth" type="text" name="university" value="" placeholder="학교명">
+				<input class="content-input flexGrow height-one-tenth" type="text" name="university" value="${mgr.university}" placeholder="학교명">
 			</div>
 			<div class="flex flexGrow">
-				<input class="content-input flexGrow height-one-tenth" type="text" name="department" value="" placeholder="학과(전공)">
+				<input class="content-input flexGrow height-one-tenth" type="text" name="department" value="${mgr.department}" placeholder="학과(전공)">
 			</div>
 			<div class="flex selectGroupThird">
 				<select class="flexGrow height-one-tenth contentLabel" name="education" id="education">
@@ -954,10 +1218,10 @@
 				<select class="flexGrow height-one-tenth contentLabel" name="eduYear" id="eduYear"></select>
 			</div>
 			<div class="flex flexGrow">
-				<input class="content-input flexGrow height-one-tenth" type="text" name="university2" value="" placeholder="학교명">
+				<input class="content-input flexGrow height-one-tenth" type="text" name="university2" value="${mgr.university2}" placeholder="학교명">
 			</div>
 			<div class="flex flexGrow">
-				<input class="content-input flexGrow height-one-tenth" type="text" name="department2" value="" placeholder="학과(전공)">
+				<input class="content-input flexGrow height-one-tenth" type="text" name="department2" value="${mgr.department2}" placeholder="학과(전공)">
 			</div>
 			<div class="flex selectGroupThird">
 				<select class="flexGrow height-one-tenth contentLabel" name="education2" id="education2">
@@ -972,10 +1236,10 @@
 				<select class="flexGrow height-one-tenth contentLabel" name="eduYear2" id="eduYear2"></select>
 			</div>
 			<div class="flex flexGrow">
-				<input class="content-input flexGrow height-one-tenth" type="text" name="university3" value="" placeholder="학교명">
+				<input class="content-input flexGrow height-one-tenth" type="text" name="university3" value="${mgr.university3}" placeholder="학교명">
 			</div>
 			<div class="flex flexGrow">
-				<input class="content-input flexGrow height-one-tenth" type="text" name="department3" value="" placeholder="학과(전공)">
+				<input class="content-input flexGrow height-one-tenth" type="text" name="department3" value="${mgr.department3}" placeholder="학과(전공)">
 			</div>
 			<div class="flex selectGroupThird">
 				<select class="flexGrow height-one-tenth contentLabel" name="education3" id="education3">
@@ -996,7 +1260,7 @@
 				<input class="button-blue width-one-tenth centerH" type="button" id="add-row" value="추가">
 			</div>
 			<div class="flex flexColumn" id="tbl_organization_body">
-				<!-- <div class="flex flexColumn" id="organizationRow1">
+				<div class="flex flexColumn" id="organizationRow1">
 					<div class="flex flexGrow">
 						<input class="content-input flexGrow height-one-tenth" type="text" id="organizationName1" name="organizationName" placeholder="기관명">
 					</div>
@@ -1011,7 +1275,7 @@
 					<div class="flex flexGrow rightR">
 						<input class="button-red width-one-tenth centerH height-one-tenth" type="button" name="organizationDel" id="organizationDel1" onclick="tblRowDel(1);" value="삭제">
 					</div>
-				</div> -->
+				</div>
 			</div>
 		</div>
 		<div class="underline flex flexColumn">
@@ -1020,43 +1284,42 @@
 				<input class="button-blue width-one-tenth centerH" type="button" id="add-row-cert" value="추가">
 			</div>
 			<div class="flex flexColumn" id="tbl_organization_body_cert">
-				<!-- <span class="flex centerH contentLabel width-thirty height-one-tenth">발급기관</span>
-				<div class="flex flexGrow">
-					<select class="flexGrow height-one-tenth contentLabel">
-						<option value="1">한국상담심리학회</option>
-						<option value="2">한국상담심리학회</option>
-						<option value="3">한국상담심리학회</option>
-					</select>
-				</div>
-				<span class="flex centerH contentLabel width-thirty height-one-tenth">자격명</span>
-				<div class="flex flexGrow bottomPadding">
-					<select class="flexGrow height-one-tenth contentLabel">
-						<option value="1">상담심리사</option>
-						<option value="2">상담심리사</option>
-						<option value="3">상담심리사</option>
-					</select>	
-				</div>
-				<div class="flex selectGroupTwo">
-					<select class="flexGrow height-one-tenth contentLabel">
-						<option value="1">1급</option>
-						<option value="2">2급</option>
-						<option value="3">3급</option>
-					</select>
-					<select class="flexGrow height-one-tenth contentLabel">
-						<option value="1">2010</option>
-						<option value="2">2000</option>
-						<option value="3">1990</option>
-					</select>
-				</div>
-				<span class="flex centerH subContentLabel width-thirty height-one-tenth">사본첨부</span>
-				<div class="flex flexGrow height-one-tenth ">
-					<button class="button-blue width-one-fifth textAlignLeft selectFileButton">파일 선택</button>
-					<label class="subContentLabel width-one-fifth">파일명</label>
-					<input style="width:0;" type="file" name="file_1" data-validation="required" data-validation-error-msg-required="첨부파일은 필수입니다." value="파일명"/>
-				</div>
-				<div class="flex flexGrow rightR">
-					<input class="button-red width-one-tenth centerH height-one-tenth" type="button" name="organizationDel" id="organizationDel1" onclick="" value="삭제">
-				</div> -->
+				<c:forEach var="list" items="${mgrCert}" varStatus="listCnt">
+					<div id="certOrgRow${listCnt.index}">
+						<span class="flex centerH contentLabel width-thirty height-one-tenth">발급기관</span>
+						<div class="flex flexGrow">
+							<select class="flexGrow height-one-tenth contentLabel" name="certOrg" id="certOrg${listCnt.index}">
+								<option value="${list.orgNm}">${list.orgNm}</option>
+							</select>
+						</div>
+						<span class="flex centerH contentLabel width-thirty height-one-tenth">자격명</span>
+						<div class="flex flexGrow bottomPadding">
+							<select class="flexGrow height-one-tenth contentLabel" name="certName" id="certName${listCnt.index}">
+								<option value="${list.certNm}">${list.certNm}</option>
+							</select>	
+						</div>
+						<div class="flex selectGroupTwo">
+							<select class="flexGrow height-one-tenth contentLabel" id="certGrade${listCnt.index}" name="certGrade">
+								<option value="${list.grade}">${list.grade}</option>
+							</select>
+							<select class="flexGrow height-one-tenth contentLabel" id="certYear${listCnt.index}" name="certYear">
+								<option value="${list.certYear}">${list.certYear}</option>
+							</select>
+						</div>
+						<span class="flex centerH subContentLabel width-thirty height-one-tenth">사본첨부</span>
+						<div class="flex flexGrow height-one-tenth ">
+							<button class="button-blue width-one-fifth textAlignLeft" onclick="fileDownLoad('${list.filePath}', '${list.fileNm}')">다운 로드</button>
+							<label class="subContentLabel flexGrow">${list.fileNm}</label>
+							<input type="hidden" id="fileName${listCnt.index}" name="fileName" value="${list.fileNm}"/>
+							<input type="hidden" id="filePath${listCnt.index}" name="filePath" value="${list.filePath}"/>
+							<!-- <input style="width:0;" type="file" name="file_1" data-validation="required" data-validation-error-msg-required="첨부파일은 필수입니다." value="파일명"/> -->
+						</div>
+						<div class="flex flexGrow rightR">
+							<input class="button-red width-one-tenth centerH height-one-tenth" name="certDel" id="certDel${listCnt.index}" type="button" onclick="certTblRowDel(${listCnt.index});" value="삭제">
+						</div>
+					</div>
+				</c:forEach>
+				
 			</div>
 		</div>
 		<div class="underline flex flexColumn">
@@ -1065,32 +1328,36 @@
 				<input class="button-blue width-one-tenth centerH" type="button" id="add-row-book" value="추가">
 			</div>
 			<div class="flex flexColumn" id="tbl_organization_body_book">
-				<!-- <div class="flex flexGrow">
-					<input class="content-input flexGrow height-one-tenth" type="text" id="organizationName1" name="organizationName" placeholder="논문제목/책제목">
-				</div>
-				<div class="flex flexGrow">
-					<input class="content-input flexGrow height-one-tenth" type="text" id="organizationName1" name="organizationName" placeholder="게재학술지명/출판사명">
-				</div>
-				<div class="flex flexGrow">
-					<input class="content-input flexGrow height-one-tenth" type="text" id="organizationName1" name="organizationName" placeholder="연구자/저사명">
-				</div>
-				<div class="flex flexGrow bottomPadding">
-					<select class="flexGrow height-one-tenth contentLabel">
-						<option value="1">2010</option>
-						<option value="2">2010</option>
-						<option value="3">2010</option>
-					</select>	
-				</div>
-				<div class="flex flexGrow rightR">
-					<input class="button-red width-one-tenth centerH height-one-tenth" type="button" name="organizationDel" id="organizationDel1" onclick="" value="삭제">
-				</div> -->
+				<c:forEach var="list" items="${mgrBook}" varStatus="listCnt">
+					<div class="flex flexColumn" id="mgrBookRow${listCnt.index}">
+						<div class="flex flexGrow">
+							<input class="content-input flexGrow height-one-tenth" type="text" id="bookTitle${listCnt.index}" name="bookTitle" value="${list.bookTitle}" placeholder="논문제목/책제목">
+						</div>
+						<div class="flex flexGrow">
+							<input class="content-input flexGrow height-one-tenth" type="text" id="bookOrg${listCnt.index}" name="bookOrg" value="${list.bookOrg}" placeholder="게재학술지명/출판사명">
+						</div>
+						<div class="flex flexGrow">
+							<input class="content-input flexGrow height-one-tenth" type="text" id="author${listCnt.index}" name="author" value="${list.author}" placeholder="연구자/저사명">
+						</div>
+						<div class="flex flexGrow bottomPadding">
+							<select class="flexGrow height-one-tenth contentLabel" id="bookYear${listCnt.index}" name="bookYear">
+								<c:forEach var="i" begin = "0" end="60" step="1" >
+									<option value=<c:out value = "${currentYear-i}"/>><c:out value = "${currentYear-i}"/></option>
+								</c:forEach>
+							</select>	
+						</div>
+						<div class="flex flexGrow rightR">
+							<input class="button-red width-one-tenth centerH height-one-tenth" type="button" name="bookDel" id="bookDel${listCnt.index}" onclick="bookTblRowDel(${listCnt.index});" value="삭제">
+						</div>
+					</div>
+				</c:forEach>
 			</div>
 		</div>
 		<div class="underline flex flexColumn bottomPadding">
 			<div class="flex height-one-tenth">
 				<span class="flex centerH label flexGrow">한줄소개</span>
 			</div>
-			<input class="content-input flexGrow subContentLabel" type="text" name="memo" data-validation="required" data-validation-error-msg-required="한줄소개를 확인 해주세요.">
+			<input class="content-input flexGrow subContentLabel" type="text" name="memo" value="${mgr.memo}" data-validation="required" data-validation-error-msg-required="한줄소개를 확인 해주세요.">
 		</div>
 		<div class="underline flex flexColumn bottomPadding">
 			<div class="flex height-one-tenth">
@@ -1098,7 +1365,7 @@
 			</div>
 			<div class="flex flexGrow height-one-tenth centerH">
 				<button class="button-blue width-one-fifth textAlignLeft" id="picAddButton">파일 선택</button>
-				<label class="subContentLabel width-one-fifth flexGrow" id="picFileName">파일명</label>
+				<label class="subContentLabel width-one-fifth flexGrow" id="picFileName"><a href="javascript:fileDownLoad('${mgr.filePath}', '${mgr.fileNm}');">${mgr.fileNm }</a></label>
 				<input type="file" name="picAdd" id="picAdd" />
 				<input style="display:none" class="button-red width-one-tenth centerH height-one-tenth" type="button" id="picDeleteBtn" value="삭제">
 			</div>
@@ -1108,11 +1375,11 @@
 				<span class="flex centerH label flexGrow">접속권한</span>
 			</div>
 			<div class="flex flexGrow">
-				<span class="flex centerH subContentLabel width-one-fifth"><input type="radio" name="authCd" value="ROLE_PARTNER_SANGDAM" data-validation="required"
-					data-validation-error-msg-required="접속권한을 확인해주세요.">상담</span>
-				<span class="flex centerH subContentLabel width-one-fifth"><input type="radio" name="authCd" value="ROLE_PARTNER_SEND">파견</span>
-				<span class="flex centerH subContentLabel width-one-fifth"><input type="radio" name="authCd" value="ROLE_PARTNER_GROUP">진단</span>
-				<span class="flex centerH subContentLabel width-one-fifth"><input type="radio" name="authCd" value="ROLE_PARTNER_TEACHER">강사</span>
+				<span class="flex centerH subContentLabel width-one-fifth"><input type="radio" name="authCd" value="ROLE_PARTNER_SANGDAM" 
+					${mgr.authCd == 'ROLE_PARTNER_SANGDAM'  ? 'checked':''} <c:if test="${mgr.authCd ne 'ROLE_PARTNER_CENTER' }">data-validation="required" data-validation-error-msg-required="접속권한을 확인해주세요." </c:if>>상담</span>
+				<span class="flex centerH subContentLabel width-one-fifth"><input type="radio" name="authCd" value="ROLE_PARTNER_SEND" ${mgr.authCd == 'ROLE_PARTNER_SEND'  ? 'checked':''}>파견</span>
+				<span class="flex centerH subContentLabel width-one-fifth"><input type="radio" name="authCd" value="ROLE_PARTNER_GROUP" ${mgr.authCd == 'ROLE_PARTNER_GROUP'  ? 'checked':''}>진단</span>
+				<span class="flex centerH subContentLabel width-one-fifth"><input type="radio" name="authCd" value="ROLE_PARTNER_TEACHER" ${mgr.authCd == 'ROLE_PARTNER_TEACHER'  ? 'checked':''}>강사</span>
 			</div>
 		</div>
 		<div class="underline flex flexColumn bottomPadding">
@@ -1120,9 +1387,40 @@
 				<span class="flex centerH label flexGrow">근무형태</span>
 			</div>
 			<div class="flex flexGrow">
-				<span class="flex centerH subContentLabel width-thirty"><input type="radio" name="workType" value="S" data-validation="required"
-					data-validation-error-msg-required="근무형태를 확인해주세요.">상주</span>
-				<span class="flex centerH subContentLabel width-thirty"><input type="radio" name="workType" value="P">파트타임</span>
+				<span class="flex centerH subContentLabel width-thirty"><input type="radio" name="workType" value="S" ${mgr.workType == 'S'  ? 'checked':''}>상주</span>
+				<span class="flex centerH subContentLabel width-thirty"><input type="radio" name="workType" value="P" ${mgr.workType == 'P'  ? 'checked':''}>파트타임</span>
+			</div>
+		</div>
+		<div class="underline flex flexColumn bottomPadding">
+			<div class="flex height-one-tenth">
+				<span class="flex centerH label flexGrow">등록일</span>
+			</div>
+			<div class="flex flexGrow">
+				<span class="content-input flexGrow">${mgr.regDt}</span>
+			</div>
+		</div>
+		<div class="underline flex flexColumn bottomPadding">
+			<div class="flex height-one-tenth">
+				<span class="flex centerH label flexGrow">정보변경일</span>
+			</div>
+			<div class="flex flexGrow">
+				<span class="content-input flexGrow">${mgr.modiDt}</span>
+			</div>
+		</div>
+		<div class="underline flex flexColumn bottomPadding">
+			<div class="flex height-one-tenth">
+				<span class="flex centerH label flexGrow">정보변경 ID</span>
+			</div>
+			<div class="flex flexGrow">
+				<span class="content-input flexGrow">${mgr.modiId}</span>
+			</div>
+		</div>
+		<div class="underline flex flexColumn bottomPadding">
+			<div class="flex height-one-tenth">
+				<span class="flex centerH label flexGrow">대표여부</span>
+			</div>
+			<div class="flex flexGrow">
+				<span class="flex centerH subContentLabel width-one-fifth"><input type="checkbox" name="centerOwnerYn" id="centerOwnerYn" value="Y" ${mgr.centerOwnerYn == 'Y'  ? 'checked':''} />지정</span>
 			</div>
 		</div>
 		<div class="underline flex flexColumn bottomPadding">
@@ -1170,7 +1468,7 @@
 			</div>
 			<div class="flex flexGrow height-one-tenth bottomPadding">
 				<span class="flex centerH subContentLabel width-one-fifth"><input type="checkbox" class="mentalDiv" name="mentalDiv" value="100011">기타</span>
-				<input class="content-input flexGrow" type="text" name="mentalDivEtc" id="mentalDivEtc" placeholder="기타 내용 입력">
+				<input class="content-input flexGrow" type="text" name="mentalDivEtc" id="mentalDivEtc" value="${mgr.mentalDivEtc }" placeholder="기타 내용 입력">
 			</div>
 		</div>
 		<div class="psyGroup underline flex flexColumn" style="display: none;">
@@ -1312,7 +1610,7 @@
 				<span class="flex centerH subContentLabel"><input type="checkbox" class="specialType" name="specialType" value="101090">수면상담(CBTI)</span>
 				<span class="flex centerH subContentLabel"><input type="checkbox" class="specialType" name="specialType" value="101091">심리적응급처치(위기개입)</span>
 			</div>
-			<input class="flex flexGrow content-input height-one-tenth subContentLabel" type="text" name="specialHearing" id="specialHearing" placeholder="기타 특수주제">
+			<input class="flex flexGrow content-input height-one-tenth subContentLabel" type="text" name="specialHearing" id="specialHearing" placeholder="기타 특수주제" value="${mgr.specialHeal }">
 		</div>
 		<div class="flex flexColumn underline">
 			<span class="flex subject height-one-tenth centerH">주요주제</span>
@@ -1529,12 +1827,36 @@
 			<div class="flex height-one-tenth">
 				<span class="flex centerH label flexGrow">주요 강점 및 핵심역량</span>
 			</div>
-			<input class="content-input flexGrow subContentLabel" type="text" name="coreVal" placeholder="한줄소개를 입력해주세요.">
+			<input class="content-input flexGrow subContentLabel" type="text" name="coreVal" value="${mgr.coreVal}" placeholder="한줄소개를 입력해주세요.">
+		</div>
+		<div>
+			<div class="flex flexColumn" id="etcExamExtra">
+				<div class="flex height-one-tenth">
+					<span class="flex centerH subject flexGrow">상담 외 프로그램(집단, 특강 등)</span>
+					<input class="button-blue width-one-tenth centerH" type="button" onclick="addRowExam();" value="추가">
+				</div>
+				<c:forEach var="list" items="${extraExamInfo}" varStatus="listCnt">
+					<div class="flex flexGrow centerH">
+						<span>프로그램명 : </span><input class="content-input flexGrow height-one-tenth" type="text" name="extraExamInfo1" value="${list.extraNm }" placeholder="프로그램명">
+					</div>
+					<div class="flex flexGrow centerH">
+						<span>대상 : </span><input class="content-input flexGrow height-one-tenth" type="text" name="extraExamInfo2" value="${list.extraTarget }" placeholder="대상">
+					</div>
+					<div class="flex flexGrow centerH">
+						<span>센터 내 시행비용(해석상담 포함가) : </span><input class="content-input flexGrow height-one-tenth" type="text" name="extraExamInfo3" value="${list.extraCost }" placeholder="센터 내 시행비용(해석상담 포함가)">
+					</div>
+					<c:if test="${mgr.modiYn eq 'Y' }">
+						<div class="flex flexGrow rightR">
+							<input class="button-red width-one-tenth centerH height-one-tenth" type="button" onclick="delExtraRow('${list.extraIdx }');" value="삭제">
+						</div>
+					</c:if>
+				</c:forEach>
+			</div>
 		</div>
 		
 	</div>
 	<div class="flex flexGrow">
-		<input class="flex flexGrow button-gray center height-one-tenth" type="button" id="addBtn" value="등록">
+		<input class="flex flexGrow button-gray center height-one-tenth" type="button" id="updateBtn" value="수정">
 	</div>
 </form>
 </body>

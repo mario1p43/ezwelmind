@@ -115,4 +115,6 @@ public interface BBSMapper {
 	public BBSData getPartnerMainRecruit(BBSAddDto bbsAddDto);
 	
 	public BBSData getSangdamCount(BBSAddDto bbsAddDto);
+	
+	public BBSData getCenterCount(BBSAddDto bbsAddDto);
 }

@@ -1,6 +1,6 @@
 @charset "utf-8";
 
-body,table,input,select,textarea,button{color: #666; font-family:dotum, 돋움, NanumGothic, 나눔고딕, "Malgun Gothic", "맑은 고딕", Tahoma, Geneva, sans-serif;font-size:12px}
+body,table,input,select,textarea,button,span,td,p,div,li,ul,a{color: #666; font-family:NanumGothic, 나눔고딕, "Malgun Gothic", "맑은 고딕", Tahoma, Geneva, sans-serif;font-size:12px}
 th { background-color: #F5F5F5; height: 20px}
 
 .tabledesc {color:#2268AC;font-size:9pt;line-height:16px;}
