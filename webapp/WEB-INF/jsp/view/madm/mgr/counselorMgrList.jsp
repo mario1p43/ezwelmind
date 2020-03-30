@@ -418,6 +418,10 @@ j$(document).ready(function(){
 				//중지 -> 대기
 				}else if(previous == 'N' && newval == 'S'){
 					$("#mgrStatus6").click();
+				//중지 -> 승인
+				}else if(previous == 'N' && newval == 'Y'){
+					alert("대기로 변경 후 승인으로 변경 가능합니다.");
+					window.location.reload();
 				//승인 -> 중지
 				}else if(previous == 'Y' && newval == 'N'){
 					alert("대기로 변경 후 중지로 변경 가능합니다.");
