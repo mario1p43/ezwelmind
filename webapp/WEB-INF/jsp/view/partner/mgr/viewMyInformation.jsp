@@ -1,17 +1,268 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/jsp/layout/inc/tags.jspf"%>
+<jsp:useBean id="now" class="java.util.Date" />
+<fmt:formatDate var="currentYear" value="${now}" pattern="yyyy" />
 <html>
 <head>
-<title>상담사 정보관리 수정</title>
-
+<title>개인 정보관리 수정</title>
+<link href="${url:resource('/resources/js/plugin/jquery-ui-1.8.9.custom-datepicker.css')}" rel="stylesheet" type="text/css" />
 
 <script type="text/javascript">
 	var num = 0;
 	var de ="";
 	var count = 0;
 	var delCnt = 1;
-	j$(document).ready(function(){
+	
+	var tbl_cnt = 1;
+	var tbl_cnt_cert = 1;
+	var tbl_cnt_book = 1;
 
+	<c:if test="${! empty(mgrCert)}">
+		var tbl_cnt_cert = ${mgrCert.size()};
+	</c:if>
+
+	<c:if test="${! empty(mgrBook)}">
+		var tbl_cnt_book = ${mgrBook.size()};
+	</c:if>
+	
+	function selectCert(sel, count){
+		$('#certNameTd'+count).children().remove();
+		$('#certGradeTd'+count).children().remove();
+		if(sel.value === '한국상담심리학회'){
+			var markup = '<select id="certName'+count+'" name="certName'+count+'" onchange="selectGrade(this, '+count+')" style="width:95%;">';
+			markup += '<option value="상담심리사">상담심리사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade'+count+'" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '<option value="2급">2급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '한국임상심리학회'){
+			var markup = '<select id="certName'+count+'" name="certName'+count+'" onchange="selectGrade(this, '+count+')" style="width:95%;">';
+			markup += '<option value="임상심리사">임상심리사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade'+count+'" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '한국상담학회'){
+			var markup = '<select id="certName'+count+'" name="certName'+count+'" onchange="selectGrade(this, '+count+')" style="width:95%;">';
+			markup += '<option value="전문상담사">전문상담사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade'+count+'" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '<option value="2급">2급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '기타한국심리학회'){
+			var markup = '<select id="certName'+count+'" name="certName'+count+'" onchange="selectGrade(this, '+count+')" style="width:95%;">';
+			markup += '<option value="중독심리전문가">중독심리전문가</option>';
+			markup += '<option value="발달심리사">발달심리사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade'+count+'" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '보건복지부'){
+			var markup = '<select id="certName'+count+'" name="certName'+count+'" onchange="selectGrade(this, '+count+')" style="width:95%;">';
+			markup += '<option value="정신보건임상심리사">정신보건임상심리사</option>';
+			markup += '<option value="언어재활사">언어재활사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade'+count+'" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '<option value="2급">2급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '산업인력공단'){
+			var markup = '<select id="certName'+count+'" name="certName'+count+'" onchange="selectGrade(this, '+count+')" style="width:95%;">';
+			markup += '<option value="임상심리사">임상심리사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade'+count+'" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '<option value="2급">2급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '고용노동부'){
+			var markup = '<select id="certName'+count+'" name="certName'+count+'" onchange="selectGrade(this, '+count+')" style="width:95%;">';
+			markup += '<option value="직업상담사">직업상담사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade'+count+'" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '<option value="2급">2급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '여성가족부'){
+			var markup = '<select id="certName'+count+'" name=id="certName'+count+'" onchange="selectGrade(this, '+count+')" style="width:95%;">';
+			markup += '<option value="청소년상담사">청소년상담사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade'+count+'" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '<option value="2급">2급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '한국놀이치료학회'){
+			var markup = '<select id="certName'+count+'" name="certName'+count+'" onchange="selectGrade(this, '+count+')" style="width:95%;">';
+			markup += '<option value="놀이심리상담사">놀이심리상담사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade'+count+'" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '<option value="2급">2급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '기타'){
+			$('#certNameTd'+count).append('<input type="text" id="certName'+count+'" name="certName'+count+'" style="width:95%;">');
+			$('#certGradeTd'+count).append('<input type="text" id="certGrade'+count+'" name="certGrade'+count+'" style="width:95%;">');
+		}
+		
+	}
+	
+	function selectGrade(sel, count){
+		$('#certGrade'+count).children().remove();
+		var markup = '<option value="1급">1급</option>';
+		markup += '<option value="2급">2급</option>';
+		$('#certGrade'+count).append(markup);
+	}
+	
+	j$(document).ready(function(){
+        
+        $(".add-row-cert").click(function(){
+        	var markup = '<tr id="certOrgRow'+tbl_cnt_cert+'">';
+        	markup += '<td align="center">';
+        	markup += '<select id="certOrg'+tbl_cnt_cert+'" name="certOrg'+tbl_cnt_cert+'" onchange="selectCert(this, '+tbl_cnt_cert+')" style="width:95%;">';
+        	markup += '<option value="한국상담심리학회">한국상담심리학회</option>';
+        	markup += '<option value="한국임상심리학회">한국임상심리학회</option>';
+        	markup += '<option value="한국상담학회">한국상담학회</option>';
+        	markup += '<option value="기타한국심리학회">기타한국심리학회</option>';
+        	markup += '<option value="보건복지부">보건복지부</option>';
+        	markup += '<option value="산업인력공단">산업인력공단</option>';
+        	markup += '<option value="고용노동부">고용노동부</option>';
+        	markup += '<option value="여성가족부">여성가족부</option>';
+        	markup += '<option value="한국놀이치료학회">한국놀이치료학회</option>';
+        	markup += '<option value="기타">기타</option>';
+        	markup += '</select>';
+        	markup += '</td>';
+        	markup += '<td id="certNameTd'+tbl_cnt_cert+'" align="center">';
+        	markup += '<select id="certName'+tbl_cnt_cert+'" name="certName'+tbl_cnt_cert+'" onchange="selectGrade(this, '+tbl_cnt_cert+')" style="width:95%;">';
+        	markup += '<option value="상담심리사">상담심리사</option>';
+        	markup += '</select>';
+        	markup += '</td>';
+        	markup += '<td id="certGradeTd'+tbl_cnt_cert+'" align="center">';
+        	markup += '<select id="certGrade'+tbl_cnt_cert+'" name="certGrade'+tbl_cnt_cert+'" style="width:95%;">';
+        	markup += '<option value="1급">1급</option>';
+        	markup += '<option value="2급">2급</option>';
+        	markup += '</select>';
+        	markup += '</td>';
+        	markup += '<td align="center">';
+        	markup += '<select id="certYear'+tbl_cnt_cert+'" name="certYear'+tbl_cnt_cert+'" style="width:95%;"></select>';
+        	markup += '</td>';
+        	markup += '<td>';
+        	markup += '<input type="file" name="file_'+tbl_cnt_cert+'" data-validation="required" data-validation-error-msg-required="첨부파일은 필수입니다." style="width:95%;"/>';
+        	markup += '</td>';
+        	markup += '<td align="center">';
+        	markup += '<input type="button" name="certDel" id="certDel'+tbl_cnt+'" onclick="certTblRowDel('+tbl_cnt_cert+');" value="삭제" style="width:95%;"/>';
+        	markup += '</td>';
+        	markup += '</tr>';
+        	$("#tbl_organization_body_cert").append(markup);
+    		
+    		for (i = new Date().getFullYear(); i > 1959; i--){
+    		    $('#certYear'+tbl_cnt_cert).append($('<option />').val(i).html(i));
+    		}
+
+    		$('#certYear'+tbl_cnt_cert+' option[value=2010]').attr('selected', 'selected');        	
+        	
+        	tbl_cnt_cert = tbl_cnt_cert+1;
+        });
+        
+		$( ".startDt, .endDt").datepicker({
+			showOn: "both",
+			buttonImageOnly: true,
+			buttonImage: "//img.ezwelmind.co.kr/sangdam4u/images/comunity/ico_calendar.gif",
+			buttonText: "달력보기",
+			changeMonth: true, 
+			changeYear: true,
+			nextText: '다음 달',
+			prevText: '이전 달',
+			closeText: '닫기',
+			monthNamesShort: [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" ],
+			dayNamesMin: [ "일", "월", "화", "수", "목", "금", "토" ],
+			yearRange: "-40:+0",
+			beforeShow: function (){},
+			dateFormat: "yy-mm-dd",
+			onSelect: function (dateText){
+				var pollSeq = j$(this).parent().parent().attr("id");
+				var name = j$(this).attr("name");
+				updateDateAndTime(pollSeq, name, dateText.replace(/-/gi,""), 'date');
+			}
+		});
+		
+        $(".add-row").click(function(){
+        	tbl_cnt = tbl_cnt+1;
+        	var markup = '<tr id="organizationRow'+tbl_cnt+'">';
+        	markup += '<td align="center">';
+        	markup += '<input type="text" style="width:95%;" id="organizationName'+tbl_cnt+'" name="organizationName" />';
+        	markup += '</td>';
+        	markup += '<td align="center">';
+        	markup += '<input type="text" style="width:95%;" id="role'+tbl_cnt+'" name="role" />';
+        	markup += '</td><td align="center">';
+        	markup += '<input type="text" name="roleStartDate"  id="roleStartDate'+tbl_cnt+'" class="startDt cal_box" datetimeonly="true" style="width:93px;" />';
+        	markup += '~<input type="text" name="roleEndDate"  id="roleEndDate'+tbl_cnt+'" class="endDt cal_box" datetimeonly="true" style="width:93px;" />';
+        	markup += '<td align="center">';
+        	markup += '<input type="button" name="organizationDel" id="organizationDel'+tbl_cnt+'" onclick="tblRowDel('+tbl_cnt+');" value="삭제" style="width:95%;"/></td>';
+        	markup += '</tr>';		
+        	$("#tbl_organization_body").append(markup);
+    		
+    		$( ".startDt, .endDt").datepicker({
+    			showOn: "both",
+    			buttonImageOnly: true,
+    			buttonImage: "//img.ezwelmind.co.kr/sangdam4u/images/comunity/ico_calendar.gif",
+    			buttonText: "달력보기",
+    			changeMonth: true, 
+    			changeYear: true,
+    			nextText: '다음 달',
+    			prevText: '이전 달',
+    			closeText: '닫기',
+    			monthNamesShort: [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" ],
+    			dayNamesMin: [ "일", "월", "화", "수", "목", "금", "토" ],
+    			yearRange: "-40:+0",
+    			beforeShow: function (){},
+    			dateFormat: "yy-mm-dd",
+    			onSelect: function (dateText){
+    				var pollSeq = j$(this).parent().parent().attr("id");
+    				var name = j$(this).attr("name");
+    				updateDateAndTime(pollSeq, name, dateText.replace(/-/gi,""), 'date');
+    			}
+    		});
+    		
+        });
+        
+        $(".add-row-book").click(function(){
+        	var markup = '<tr id="mgrBookRow'+tbl_cnt_book+'">';
+        	markup += '<td align="center"><input type="text" style="width:95%;" id="bookTitle'+tbl_cnt_book+'" name="bookTitle"/></td>';
+        	markup += '<td align="center"><input type="text" style="width:95%;" id="bookOrg'+tbl_cnt_book+'" name="bookOrg"/></td>';
+        	markup += '<td align="center"><input type="text" style="width:95%;" id="author'+tbl_cnt_book+'" name="author"/></td>';
+        	markup += '<td align="center"><select id="bookYear'+tbl_cnt_book+'" name="bookYear" style="width:95%;"></select></td>';
+        	markup += '<td align="center"><input type="button" name="bookDel" id="bookDel'+tbl_cnt_book+'" onclick="bookTblRowDel('+tbl_cnt_book+');" value="삭제" style="width:95%;"/></td>';
+        	markup += '</tr>';		
+        	$("#tbl_organization_body_book").append(markup);
+        	
+    		for (i = new Date().getFullYear(); i > 1959; i--){
+    		    $('#bookYear'+tbl_cnt_book).append($('<option />').val(i).html(i));
+    		}
+
+    		$('#bookYear'+tbl_cnt_book+' option[value=2010]').attr('selected', 'selected');  
+        	
+        	tbl_cnt_book = tbl_cnt_book+1;
+        });
+		
 		<c:if test='${not empty mgr.channelType}'>
 		var chkValue = '${mgr.channelType}';
 		var chkArr = chkValue.split(',');
@@ -268,71 +519,74 @@
 		
 		// 상담사가 상태가 승인이면, 상담유형을 변경할 수 없도록
 		j$("#counselTypeInfo").find('input').click(function(){
-			if('${mgr.mgrStatus}' == 'Y'){
+/* 			if('${mgr.mgrStatus}' == 'Y'){
 				alert('승인된 상담사의 상담유형정보는 변경할 수 없습니다.');
 				return false;
-			}
+			} */
 			
-			var check = $(this).val();
-
-		    if($(this).is(":checked")){
-			    if(check == 100001){
-			    	$(".psyGroup").show();
-			    	$("#mentalAges").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담대상을 선택해주세요");
-			    	$("#mentalDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
-			    	$("#mentalType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
-			    }else if(check == 100002){
-			    	$(".lawGroup").show();
-			    	$("#lawDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
-			    	$("#lawType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
-			    }else if(check == 100003){
-			    	$(".finGroup").show();
-			    	$("#financeDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
-			    	$("#financeType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
-			    }else if(check == 100004){
-			    	$(".psyTestGroup").show();
-			    	$("#diagnosisAges").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담대상을 선택해주세요");
-			    	$("#diagnosisDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
-			    	$("#diagnosisType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
-			    }
-			}else{
-				if(check == 100001){
-			    	$(".psyGroup").attr("style","display: none");
-			    	$(".mentalAges").attr("checked", false);
-			    	$(".mentalDiv").attr("checked", false);
-			    	$(".mentalType").attr("checked", false);
-			    	$("#mentalDivEtc").val("");
-			    	$("#mentalAges").removeAttr("data-validation");
-			    	$("#mentalDiv").removeAttr("data-validation");
-			    	$("#mentalType").removeAttr("data-validation");
-			    }else if(check == 100002){
-			    	$(".lawGroup").attr("style","display: none");
-			    	$(".lawDiv").attr("checked", false);
-			    	$(".lawType").attr("checked", false);
-			    	$("#lawDiv").removeAttr("data-validation");
-			    	$("#lawType").removeAttr("data-validation");
-			    }else if(check == 100003){
-			    	$(".finGroup").attr("style","display: none");
-			    	$(".financeDiv").attr("checked", false);
-			    	$(".financeType").attr("checked", false);
-			    	$("#financeDiv").removeAttr("data-validation");
-			    	$("#financeType").removeAttr("data-validation");
-			    }else if(check == 100004){
-			    	$(".psyTestGroup").attr("style","display: none");
-			    	$(".diagnosisAges").attr("checked", false);
-			    	$(".diagnosisDiv").attr("checked", false);
-			    	$(".diagnosisType").attr("checked", false);
-			    	$("#diagnosisDivEtc").val("");
-			    	$("#diagnosisAges").removeAttr("data-validation");
-			    	$("#diagnosisDiv").removeAttr("data-validation");
-			    	$("#diagnosisType").removeAttr("data-validation");
-			    }else if(check == 100011){
-			    	$("#mentalDivEtc").val("");
-			    }else if(check == 100024){
-			    	$("#diagnosisDivEtc").val("");
-			    }
-				
-			}
+					
+				var check = $(this).val();
+	
+			    if($(this).is(":checked")){
+				    if(check == 100001){
+				    	$(".psyGroup").show();
+				    	$("#mentalAges").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담대상을 선택해주세요");
+				    	$("#mentalDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
+				    	$("#mentalType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
+				    }else if(check == 100002){
+				    	$(".lawGroup").show();
+				    	$("#lawDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
+				    	$("#lawType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
+				    }else if(check == 100003){
+				    	$(".finGroup").show();
+				    	$("#financeDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
+				    	$("#financeType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
+				    }else if(check == 100004){
+				    	$(".psyTestGroup").show();
+				    	$("#diagnosisAges").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담대상을 선택해주세요");
+				    	$("#diagnosisDiv").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담분야을 선택해주세요");
+				    	$("#diagnosisType").attr("data-validation","checkbox_group").attr("data-validation-qty","min1").attr("data-validation-error-msg","상담방법을 선택해주세요");
+				    }
+				}else{
+					if(check == 100001){
+				    	$(".psyGroup").attr("style","display: none");
+				    	$(".mentalAges").attr("checked", false);
+				    	$(".mentalDiv").attr("checked", false);
+				    	$(".mentalType").attr("checked", false);
+				    	$("#mentalDivEtc").val("");
+				    	$("#mentalAges").removeAttr("data-validation");
+				    	$("#mentalDiv").removeAttr("data-validation");
+				    	$("#mentalType").removeAttr("data-validation");
+				    }else if(check == 100002){
+				    	$(".lawGroup").attr("style","display: none");
+				    	$(".lawDiv").attr("checked", false);
+				    	$(".lawType").attr("checked", false);
+				    	$("#lawDiv").removeAttr("data-validation");
+				    	$("#lawType").removeAttr("data-validation");
+				    }else if(check == 100003){
+				    	$(".finGroup").attr("style","display: none");
+				    	$(".financeDiv").attr("checked", false);
+				    	$(".financeType").attr("checked", false);
+				    	$("#financeDiv").removeAttr("data-validation");
+				    	$("#financeType").removeAttr("data-validation");
+				    }else if(check == 100004){
+				    	$(".psyTestGroup").attr("style","display: none");
+				    	$(".diagnosisAges").attr("checked", false);
+				    	$(".diagnosisDiv").attr("checked", false);
+				    	$(".diagnosisType").attr("checked", false);
+				    	$("#diagnosisDivEtc").val("");
+				    	$("#diagnosisAges").removeAttr("data-validation");
+				    	$("#diagnosisDiv").removeAttr("data-validation");
+				    	$("#diagnosisType").removeAttr("data-validation");
+				    }else if(check == 100011){
+				    	$("#mentalDivEtc").val("");
+				    }else if(check == 100024){
+				    	$("#diagnosisDivEtc").val("");
+				    }
+					
+				}
+			    
+			
 		});
 
 		j$("#delPhotoBtn").click(function(){
@@ -346,13 +600,6 @@
 			j$("#updateCounselorInfoMgr").submit();
 			return false;
 		});
-		
-	
-		j$("input:checkbox").on("click",function() {
-		    
-		    
-		    
-		});
 
 		
 		//밸리데이션 체크
@@ -362,38 +609,107 @@
 			validateOnAlert : true,
 			onSuccess : function(){
 				$('[name=mobile]').val($('#mobile1').val() + "-" + $('#mobile2').val() + "-" + $('#mobile3').val()); 
+				$('[name=mobileSms]').val($('#mobilesms1').val() + "-" + $('#mobilesms2').val() + "-" + $('#mobilesms3').val()); 
 			}
 		});
 
 		
 		j$('#updateBtn').click(function() {
-
-			if(j$("#centerOwnerYn").is(":checked")){
-				j$("#ownerYn").val("Y");
-				if('${loginId}' == '${mgr.userId}'){
-					j$("#num").val(num);
-					j$("#count").val(count);
-					j$("#updateCounselorInfoMgr").submit();
-				}else{
-					j$.alert('이미 등록된 대표 센터장을 교체하시겠습니까?',function(){
+			if(confirm("승인된 상담사의 상담유형정보는 즉시 변경할 수 없습니다. 수정요청 후 이지웰니스 승인을 받아 최종 수정됩니다.")){
+				updateExtraExam();
+				if(j$("#centerOwnerYn").is(":checked")){
+					j$("#ownerYn").val("Y");
+					if('${loginId}' == '${mgr.userId}'){
+					
 						j$("#num").val(num);
 						j$("#count").val(count);
 						j$("#updateCounselorInfoMgr").submit();
-					 },function(){
-					 	return false;
-					 }
-					);
-				}
-			}else{
-				j$("#ownerYn").val("N");
-				j$("#num").val(num);
-				j$("#count").val(count);
-				j$("#updateCounselorInfoMgr").submit();
-			}	
+					}else{
+						j$.alert('이미 등록된 대표 센터장을 교체하시겠습니까?',function(){
+							j$("#num").val(num);
+							j$("#count").val(count);
+							j$("#updateCounselorInfoMgr").submit();
+						 },function(){
+						 	return false;
+						 }
+						);
+					}
+				}else{
+					
+					j$("#ownerYn").val("N");
+					j$("#num").val(num);
+					j$("#count").val(count);
+					j$("#updateCounselorInfoMgr").submit();
+				}	
+			
+			
+			}
+			
 			return false;
-		});	
-	});
+		});
+		
+		for (i = new Date().getFullYear(); i > 1959; i--){
+		    $('#eduYear').append($('<option />').val(i).html(i));
+		    $('#eduYear2').append($('<option />').val(i).html(i));
+		    $('#eduYear3').append($('<option />').val(i).html(i));
+		}
 
+		$('#eduYear option[value=2010]').attr('selected', 'selected');
+		$('#eduYear2 option[value=2010]').attr('selected', 'selected');
+		$('#eduYear3 option[value=2010]').attr('selected', 'selected');
+
+		<c:if test='${not empty mgr.eduYear}'>
+			$("#eduYear option[value='${mgr.eduYear}']").attr('selected', 'selected');
+		</c:if>
+		<c:if test='${not empty mgr.eduYear2}'>
+			$("#eduYear2 option[value='${mgr.eduYear2}']").attr('selected', 'selected');
+		</c:if>
+		<c:if test='${not empty mgr.eduYear3}'>
+			$("#eduYear3 option[value='${mgr.eduYear3}']").attr('selected', 'selected');
+		</c:if>
+
+		<c:if test='${not empty mgr.eduStatus}'>
+			$("#eduStatus option[value='${mgr.eduStatus}']").attr('selected', 'selected');
+		</c:if>
+
+		<c:if test='${not empty mgr.eduStatus2}'>
+			$("#eduStatus2 option[value='${mgr.eduStatus2}']").attr('selected', 'selected');
+		</c:if>
+
+		<c:if test='${not empty mgr.eduStatus3}'>
+			$("#eduStatus3 option[value='${mgr.eduStatus3}']").attr('selected', 'selected');
+		</c:if>
+
+		<c:if test='${not empty mgr.education}'>
+			$("#education option[value='${mgr.education}']").attr('selected', 'selected');
+		</c:if>
+
+		<c:if test='${not empty mgr.education2}'>
+			$("#education2 option[value='${mgr.education2}']").attr('selected', 'selected');
+		</c:if>
+
+		<c:if test='${not empty mgr.education3}'>
+			$("#education3 option[value='${mgr.education3}']").attr('selected', 'selected');
+		</c:if>
+
+		<c:forEach var="list" items="${mgrBook}" varStatus="listCnt">
+			$("#bookYear${listCnt.index} option[value='${list.bookYear}']").attr('selected', 'selected');
+		</c:forEach>
+		
+	});
+	
+	function tblRowDel(rownum){
+		$('#organizationRow'+rownum).remove();
+	}
+	
+	function certTblRowDel(rownum){
+		$('#certOrgRow'+rownum).remove();
+	}
+	
+	function bookTblRowDel(rownum){
+		$('#mgrBookRow'+rownum).remove();
+	}
+		
 	function delCertRow(e,h){
 		var certCnt = '${mgrCertCnt}';
 		if(certCnt == delCnt){
@@ -407,47 +723,7 @@
 		delCnt++
 		document.getElementById(h).style.display = "none";
 	}
-
-
-	function addRow(e){
-		var params = {};
-		var strData = "";
-		if(num == (10-'${mgrCertCnt}')){
-			alert("10개까지 등록 가능합니다.");
-			return false;
-		}
-		num++;
-		var oRow = e.insertRow(num);
-		var oCel = oRow.insertCell();
-		
-		//oCel.innerHTML = "<comm:select name='certCd"+num+"'  code='100275' /><input type='text' name='etc"+num+"' id='certEtc"+num+"' /><input type='file' name='file"+num+"' data-validation='required' data-validation-error-msg-required='첨부파일은 필수입니다.' />";
-		j$.ajax({
-			url: '/partner/mgr/ajaxCert',
-			data: params,
-			dataType: 'json',
-			type: 'GET',
-			cache:true,
-			success: function(data, textStatus){
-				strData =	"<select class='certClass' name='certCd"+num+"' id='certCd"+num+"' onChange='changeCert("+num+")' data-validation='required'>";
-				strData +=	"<option value=''>선택</option>";
-				j$.each(data.serviceList, function(i, serviceList){
-					strData += "   <option value='"+serviceList.commCd+"'>"+serviceList.commNm+"</option>";
-				});
-				strData +=	"</select>";	
-				strData +=	"<input type='text' name='etc"+num+"' id='certEtc"+num+"' style='width: 210px'/><input type='file' name='file_"+num+"' data-validation='required' data-validation-error-msg-required='첨부파일은 필수입니다.' />";
-				oCel.innerHTML = strData;
-				
-			}
-		});
-		}
-
-	function delRow(e){
-		if(num == 0){
-			return false;
-		}
-		var oTr = e.deleteRow(num);
-		num--;
-	}
+	
 	function changeCert(num){
 		var fm =  document.updateCounselorInfoMgr;
 		switch(num){
@@ -546,32 +822,138 @@
 		}
 	}
 
+	
+
+	function updateExtraExam(){
+		console.log("updateExtraExam 타고 있음");
+		var extraExamIdxAll = document.getElementsByName("extraExamIdx");
+		var extraExamInfoAll1 = document.getElementsByName("extraExamInfo1");
+		var extraExamInfoAll2 = document.getElementsByName("extraExamInfo2");
+		var extraExamInfoAll3 = document.getElementsByName("extraExamInfo3");
+
+		for(var i=0; i<extraExamIdxAll.length;i++){
+			
+			var extraExamIdx = extraExamIdxAll[i].value;
+			var extraExamInfo1 = extraExamInfoAll1[i].value;
+			var extraExamInfo2 = extraExamInfoAll2[i].value;
+			var extraExamInfo3 = extraExamInfoAll3[i].value;	
+			var params = {};
+			
+			if(extraExamIdx != '9999999'){
+				params.extraIdx = extraExamIdx;
+			}
+			
+			params.extraNm = extraExamInfo1;
+			params.extraTarget  = extraExamInfo2;
+			params.extraCost  = extraExamInfo3;
+			params.highCommCd = '102015';
+			params.userId ='${mgr.userId}';
+			console.log(params);
+			j$.ajax({
+				url: '/partner/centerInfo/updateExtraExam',
+				data: params,
+				dataType: 'json',
+				type: 'GET',
+				cache:true,
+				success: function(data, textStatus){
+					//window.location.reload();
+				}
+			});  
+				
+		} 
+		
+		return false;
+		
+	}
+	
+	var numExtra = 0;
+	var numExam = 0;
+	var de ="";
+	var count = 0;
+	var delCnt = 1;
+	
+	
+	//상담 외 프로그램(집단, 특강 등) db삭제
+	function delExtraRow(idx,high_cd){
+		if(confirm("정말 삭제 하시겠습니까?")){
+			var params = {};
+			params.extraIdx = idx;
+			params.highCommCd = high_cd;
+			j$.ajax({
+				url: '/partner/centerInfo/deleteExtraExam',
+				data: params,
+				dataType: 'json',
+				type: 'GET',
+				cache:true,
+				success: function(data, textStatus){
+					window.location.reload();
+				}
+			});  
+		}
+		
+	}
+	
+	//상담 외 프로그램(집단, 특강 등) 추가
+	function addRowExam(){
+ 		if(numExam >= 10){
+			alert("10개 이상 등록할 수 없습니다.");
+			return false;
+		} 
+		
+		numExam++;
+		var strData = "";
+		strData += "<div id='examSub"+numExam+"'>";
+		strData += " <input type='hidden' name='extraExamIdx' value='9999999' />";
+		strData += " 프로그램명 : <input type='text' name='extraExamInfo1' value=''	 /> ";
+		strData += " 대상 : <input type='text'	name='extraExamInfo2' value=''	 /> ";
+		strData += " 센터 내 시행비용(인당) :<input type='text' name='extraExamInfo3' value=''	 />";
+		strData += " <input type='button' class='deleteExtra' value='삭제' onclick='deleteRowExam("+numExam+");'> ";
+		strData += "<br/>";
+		strData += "</div>";
+		$( '#etcExamExtra' ).append(strData);
+	}
+	
+	//상담 외 프로그램(집단, 특강 등) 삭제
+	function delRowExam(){
+		if(numExam == 0){
+			alert("최소1개 이상 등록 하셔야 합니다.");
+			return false;
+		}
+		$("#examSub"+numExam).remove();
+		numExam--;
+	}
+	
+	function deleteRowExam(numExamEtc){
+		$("#examSub"+numExamEtc).remove();
+	}
+	
+	
 </script>
 </head>
 <body>
-<form id="updateCounselorInfoMgr" name="updateCounselorInfoMgr" action="/partner/mgr/updateCounselorInfoMgr" method="POST" enctype="multipart/form-data">
+<form id="updateCounselorInfoMgr" name="updateCounselorInfoMgr" action="/partner/mgr/updateCounselorInfoMgrImsi" method="POST" enctype="multipart/form-data">
 <input type="hidden" name="num" id="num">
 <input type="hidden" name="count" id="count">
 <input type="hidden" name="delPhoto" id="delPhoto">
 <input type="hidden" name="ownerYn" id="ownerYn">
 <input type="hidden" name="mgrCertCnt" id="mgrCertCnt" value="${mgrCertCnt}">
 <input type="hidden" name="mgrStatus" id="mgrStatus" value="${mgr.mgrStatus}">
-
+<input type="hidden" name="centerSeq" value="${mgr.centerSeq}"/>
 <table cellpadding="5" cellspacing="0" border="0" width="95%" style="border-bottom: 1px solid silver;">
 	<tr>
 		<td height="10px"></td>
 	</tr>
 	<tr>
-		<td align="left" class="subtitle">상담사 정보관리</td>
+		<td align="left" class="subtitle">개인 정보관리</td>
 	</tr>
 </table>
-<br/>
-
+<br>
+ㆍ개인정보
 <table cellpadding="0" cellspacing="0" border="0" width="95%" height="100%">
 <tr>
 	<td valign="top" align="left">
 		<table  cellspacing="0" border="1" width="100%" style="border-collapse:collapse;">
-			<tr align="left" height="30px">ㆍ개인정보
+			<tr align="left" height="30px">
 				<th class="line" height="30" align="left" bgcolor="#F5F5F5" width="10%" na>&nbsp;&nbsp;성명(아이디)</th>
 				<td width="40%">
 					<input type="hidden" name="userNm" value="${mgr.userNm}"/>${mgr.userNm}
@@ -592,9 +974,9 @@
 			<tr align="left" height="30px">
 				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 연락처</th>
 				<td class="line" colspan="1" >
-				    <input type="number" maxlength="3" id="mobile1" value="${mgr.mobile1 }" style="width: 10%;" data-validation="length number" data-validation-length="2-3"  data-validation-error-msg="연락처를 확인 해주세요."/>-
-		    		<input type="number" maxlength="4" id="mobile2" value="${mgr.mobile2 }" style="width: 10%;" data-validation="length number" data-validation-length="3-4"  data-validation-error-msg="연락처를 확인 해주세요." />-
-		    		<input type="number" maxlength="4" id="mobile3" value="${mgr.mobile3 }" style="width: 10%;" data-validation="length number" data-validation-length="4-4"  data-validation-error-msg="연락처를 확인 해주세요." />
+				    <input type="text" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"  maxlength="3" id="mobile1" value="${mgr.mobile1 }" style="width: 10%;" data-validation="length number" data-validation-length="2-3"  data-validation-error-msg="연락처를 확인 해주세요."/>-
+		    		<input type="text" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"  maxlength="4" id="mobile2" value="${mgr.mobile2 }" style="width: 10%;" data-validation="length number" data-validation-length="3-4"  data-validation-error-msg="연락처를 확인 해주세요." />-
+		    		<input type="text" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"  maxlength="4" id="mobile3" value="${mgr.mobile3 }" style="width: 10%;" data-validation="length number" data-validation-length="4-4"  data-validation-error-msg="연락처를 확인 해주세요." />
 		    		<input type="hidden" name="mobile">
 				</td>
 				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 이메일</th>
@@ -603,40 +985,212 @@
 				</td>
 			</tr>
 			<tr align="left" height="30px">
-				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 학력</th>
-				<td class="line" colspan="3">
-					<input type="radio" name="education" value="M" ${mgr.education == 'M' ? 'checked':''} /> 석사
-					<input type="radio" name="education" value="D" ${mgr.education == 'D' ? 'checked':''} /> 박사
-					<input type="text" name="university" style="width:80px;" value="${mgr.university}" data-validation="required"  data-validation-error-msg-required="대학원을 확인 해주세요."/> 대학원
-					<input type="text" name="department" style="width:80px;" value="${mgr.department}" data-validation="required"  data-validation-error-msg-required="학과를 확인 해주세요."/> 학과
+				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* SMS 인증용 연락처</th>
+				<td class="line" colspan="1" >
+				    <input type="text" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"  maxlength="3" id="mobilesms1" value="${mgr.mobilesms1 }" style="width: 10%;" data-validation="length number" data-validation-length="2-3"  data-validation-error-msg="연락처를 확인 해주세요."/>-
+		    		<input type="text" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"  maxlength="4" id="mobilesms2" value="${mgr.mobilesms2 }" style="width: 10%;" data-validation="length number" data-validation-length="3-4"  data-validation-error-msg="연락처를 확인 해주세요." />-
+		    		<input type="text" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"  maxlength="4" id="mobilesms3" value="${mgr.mobilesms3 }" style="width: 10%;" data-validation="length number" data-validation-length="4-4"  data-validation-error-msg="연락처를 확인 해주세요." />
 				</td>
+				<input type="hidden" name="mobileSms">
 			</tr>
 			<tr align="left" height="30px">
-				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 경력</td>
+				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 학위취득사항</th>
 				<td class="line" colspan="3">
-					<span> * 업무를 수행하신 기간, 기관명, 담당업무를 기술해 주세요.</span><br />
-					<textarea rows="5" cols="80" maxlength="1500" name="career" style="width: 70%" data-validation="required"  data-validation-error-msg-required="경력을 확인 해주세요.">${mgr.career}</textarea>
-				</td>
-			</tr>
-			<tr align="left" height="30px">
-						<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 자격&nbsp;&nbsp; <input type="button" onclick="addRow(cert);" value="+" />&nbsp;<input type="button" onclick="delRow(cert);" value="-" /> </th>
-						<td class="line" colspan="3">
-						<table id="cert">
-							<tr align="left" >
-							<td class="line" >
-								<c:forEach var="list" items="${mgrCert}" varStatus="listCnt">
-								 <div id="${listCnt.index }" > 
-									<comm:commNmOut code="${list.certCd }" option="commCd"  />
-									<c:if test="${list.certCd eq 100747}">(${list.etc })</c:if>
-									 / ${list.fileNm }
-									 
-									  <input type="button" value="다운로드" onclick="fileDownLoad('${list.filePath}', '${list.fileNm}')" ><input type="button" value="삭제" onclick="delCertRow('${list.fileNm }','${listCnt.index }');"><input type="hidden" id="d"> <br></div>
-								</c:forEach>
+					<table cellspacing="0" border="0" width="100%">
+						<tr>
+							<th width="35%">학교명</th>							
+							<th width="35%">학과(전공)</th>
+							<th width="10%">학위명</th>							
+							<th width="10%">상태</th>							
+							<th width="10%">연도</th>					
+						</tr>
+						<tr>
+							<td align="center">
+								<input type="text" name="university" style="width:95%;" value="${mgr.university}"/>
 							</td>
+							<td align="center">
+								<input type="text" name="department" style="width:95%;" value="${mgr.department}"/>
+							</td>
+							<td align="center">
+								<select name="education" id="education" style="width:95%;">
+									<option value="M">학사</option>
+									<option value="D">석사</option>
+									<option value="S">박사</option>
+								</select>
+							</td>
+							<td align="center">
+								<select name="eduStatus" id="eduStatus" style="width:95%;">
+									<option value="졸업">졸업</option>
+									<option value="재학">재학</option>
+								</select>
+							</td>
+							<td align="center">
+								<select name="eduYear" id="eduYear" style="width:95%;"></select>
+							</td>
+						</tr>
+						<tr>
+							<td align="center">
+								<input type="text" name="university2" style="width:95%;" value="${mgr.university2}"/>
+							</td>
+							<td align="center">
+								<input type="text" name="department2" style="width:95%;" value="${mgr.department2}"/>
+							</td>
+							<td align="center">
+								<select name="education2" id="education2" style="width:95%;">
+									<option value="M">학사</option>
+									<option value="D">석사</option>
+									<option value="S">박사</option>
+								</select>
+							</td>
+							<td align="center">
+								<select name="eduStatus2" id="eduStatus2" style="width:95%;">
+									<option value="졸업">졸업</option>
+									<option value="재학">재학</option>
+								</select>
+							</td>
+							<td align="center">
+								<select name="eduYear2" id="eduYear2" style="width:95%;"></select>
+							</td>
+						</tr>
+						<tr>
+							<td align="center">
+								<input type="text" name="university3" style="width:95%;" value="${mgr.university3}"/>
+							</td>
+							<td align="center">
+								<input type="text" name="department3" style="width:95%;" value="${mgr.department3}"/>
+							</td>
+							<td align="center">
+								<select name="education3" id="education3" style="width:95%;">
+									<option value="M">학사</option>
+									<option value="D">석사</option>
+									<option value="S">박사</option>
+								</select>
+							</td>
+							<td align="center">
+								<select name="eduStatus3" id="eduStatus3" style="width:95%;">
+									<option value="졸업">졸업</option>
+									<option value="재학">재학</option>
+								</select>
+							</td>
+							<td align="center">
+								<select name="eduYear3" id="eduYear3" style="width:95%;"></select>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr align="left" height="30px">
+				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 주요경력</td>
+				<td class="line" colspan="3">
+					<table id="careerTable" cellspacing="0" border="0" width="100%">
+						<thead>
+							<tr>
+								<th width="32%">기관명</th>
+								<th width="32%">직위/역할</th>
+								<th width="31%">근무기간</th>
+								<th width="5%">삭제</th>
 							</tr>
-						</table>	
-						</td>
-					</tr>
+						</thead>
+						<tbody id="tbl_organization_body">
+							<c:if test="${mgrCareer.size() < 1}">
+							<tr id="organizationRow1">
+								<td align="center"><input type="text" style="width:95%;" id="organizationName1" name="organizationName" /></td>
+								<td align="center"><input type="text" style="width:95%;" id="role1" name="role" /></td>
+								<td align="center">
+									<input type="text" id="roleStartDate1" name="roleStartDate" class="startDt cal_box" datetimeonly="true" style="width:93px;" />~
+									<input type="text" id="roleEndDate1" name="roleEndDate"  class="endDt cal_box" datetimeonly="true" style="width:93px;" />
+								<td align="center"><input type="button" id="organizationDel1" name="organizationDel" onclick="tblRowDel(1);" value="삭제"/></td>
+							</tr>		
+							</c:if>
+							<c:forEach var="list" items="${mgrCareer}" varStatus="listCnt">
+								<tr id="organizationRow${listCnt.index}">
+									<td align="center"><input type="text" style="width:95%;" id="organizationName${listCnt.index}" name="organizationName" value="${list.organizationName}"/></td>
+									<td align="center"><input type="text" style="width:95%;" id="role${listCnt.index}" name="role" value="${list.role}"/></td>
+									<td align="center">
+										<input type="text" id="roleStartDate${listCnt.index}" name="roleStartDate" class="startDt cal_box" datetimeonly="true" style="width:93px;" value="${list.roleStartDate}"/>~
+										<input type="text" id="roleEndDate${listCnt.index}" name="roleEndDate"  class="endDt cal_box" datetimeonly="true" style="width:93px;" value="${list.roleEndDate}"/>
+									<td align="center"><input type="button" id="organizationDel${listCnt.index}" name="organizationDel" onclick="tblRowDel(${listCnt.index});" value="삭제"/></td>
+								</tr>		
+							</c:forEach>
+						</tbody>
+						<tr>
+							<td colspan="4" align="center"><input type="button" class="add-row" value="추가"></td>
+						</tr>				
+					</table>
+				</td>
+			</tr>
+			<tr align="left" height="30px">
+				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 상담관련자격증</td>
+				<td class="line" colspan="3">
+					<table id="careerTable" cellspacing="0" border="0" width="100%">
+						<thead>
+							<tr>
+								<th width="20%">발급기관</th>
+								<th width="20%">자격명</th>
+								<th width="5%">급수</th>
+								<th width="10%">발급년도</th>
+								<th width="40%">사본첨부</th>
+								<th width="5%">삭제</th>
+							</tr>
+						</thead>
+						<tbody id="tbl_organization_body_cert">
+							<c:forEach var="list" items="${mgrCert}" varStatus="listCnt">
+        					<tr id="certOrgRow${listCnt.index}">
+        						<td align="center"><input type="hidden" id="certOrg${listCnt.index}" name="certOrg" value="${list.orgNm}"/>${list.orgNm}</td>
+        						<td align="center"><input type="hidden" id="certName${listCnt.index}" name="certName" value="${list.certNm}"/>${list.certNm}</td>
+        						<td align="center"><input type="hidden" id="certGrade${listCnt.index}" name="certGrade" value="${list.grade}"/>${list.grade}</td>
+        						<td align="center"><input type="hidden" id="certYear${listCnt.index}" name="certYear" value="${list.certYear}"/>${list.certYear}</td>
+        						<td align="left">
+        							<input type="button" value="다운로드" onclick="fileDownLoad('${list.filePath}', '${list.fileNm}')" >&nbsp;${list.fileNm}
+        							<input type="hidden" id="fileName${listCnt.index}" name="fileName" value="${list.fileNm}"/>
+        							<input type="hidden" id="filePath${listCnt.index}" name="filePath" value="${list.filePath}"/>
+        						</td>
+        						<td align="center"><input type="button" name="certDel" id="certDel${listCnt.index}" onclick="certTblRowDel(${listCnt.index});" value="삭제" style="width:95%;"/>
+							</tr>
+							</c:forEach>
+						</tbody>
+						<tr>
+							<td colspan="6" align="center"><input type="button" class="add-row-cert" value="추가"></td>
+						</tr>				
+					</table>
+				</td>
+			</tr>
+			<tr align="left" height="30px">
+				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 논문 및 저서</td>
+				<td class="line" colspan="3">
+					<table id="careerTable" cellspacing="0" border="0" width="100%">
+						<thead>
+							<tr>
+								<th width="35%">논문제목/책제목</th>
+								<th width="35%">게재학술지명/출판사명</th>
+								<th width="15%">연구자/저자명</th>
+								<th width="10%">연도</th>
+								<th width="5%">삭제</th>
+							</tr>
+						</thead>
+						<tbody id="tbl_organization_body_book">
+							<c:forEach var="list" items="${mgrBook}" varStatus="listCnt">
+        					<tr id="mgrBookRow${listCnt.index}">
+								<td align="center"><input type="text" style="width:95%;" id="bookTitle${listCnt.index}" name="bookTitle" value="${list.bookTitle}" /></td>
+								<td align="center"><input type="text" style="width:95%;" id="bookOrg${listCnt.index}" name="bookOrg" value="${list.bookOrg}" /></td>
+								<td align="center"><input type="text" style="width:95%;" id="author${listCnt.index}" name="author" value="${list.author}" /></td>
+								<td align="center">
+									<select id="bookYear${listCnt.index}" name="bookYear" style="width:95%;">
+									<c:forEach var="i" begin = "0" end="60" step="1" >
+										<option value=<c:out value = "${currentYear-i}"/>><c:out value = "${currentYear-i}"/></option>
+									</c:forEach>
+									</select>
+								</td>
+        						<td align="center"><input type="button" name="bookDel" id="bookDel${listCnt.index}" onclick="bookTblRowDel(${listCnt.index});" value="삭제" style="width:95%;"/></td>
+							</tr>
+							</c:forEach>
+						</tbody>
+						<tr>
+							<td colspan="5" align="center"><input type="button" class="add-row-book" value="추가"></td>
+						</tr>				
+					</table>
+				</td>
+			</tr>
 			<tr align="left" height="30px">
 				<th class="line" height="30" align="left" bgcolor="#F5F5F5">* 한줄소개</th>
 				<td class="line" colspan="3">
@@ -686,8 +1240,13 @@
 			</tr>
 			</sec:authorize>
 		</table>
-		
+	</td>
+</tr>
+</table>
 <br/>ㆍ상담유형
+<table width="95%">
+<tr>
+	<td>
 		<table id="counselTypeInfo" cellpadding="5" cellspacing="0" border="1" width="100%" style="border-collapse:collapse;">
 			<tr>
 				<td colspan="2" class="line" height="30" align="left" bgcolor="#F5F5F5" width="10%">* 유형선택</td>
@@ -780,7 +1339,7 @@
 			
 			<!-- 심리검사 -->
 			<tr class="psyTestGroup" style="display: none;">
-			<td class="line" height="30" align="left" bgcolor="#F5F5F5" rowspan="3">&nbsp;심리<br />&nbsp;감사</td>
+			<td class="line" height="30" align="left" bgcolor="#F5F5F5" rowspan="3">&nbsp;심리<br />&nbsp;검사</td>
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 상담대상</td>
 				<td >
 					<input type="checkbox" class="diagnosisAges" name="diagnosisAges"  value="100447" id="diagnosisAges" /> 유아동
@@ -812,14 +1371,17 @@
 					<input type="checkbox" class="diagnosisType" name="diagnosisType"  value="100438"  /> 강의
 				</td>
 			</tr>
-		</table>
-		
-		<br/>ㆍCapability
-		<table cellpadding="5" cellspacing="0" border="1" width="100%" style="border-collapse:collapse;">
-			
-			
+		</table>	
+	</td>
+</tr>
+</table>
+<br/>ㆍCapability
+<table width="95%">
+<tr>
+	<td>
+		<table cellpadding="5" cellspacing="0" border="1" width="100%" style="border-collapse:collapse;">	
 			<!-- 심리 -->
-			<tr class="psyGroup">
+			<tr class="capability">
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5" rowspan="2">Capability</td>
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 외국어 상담</td>
 				<td >		
@@ -832,7 +1394,7 @@
 				</td>
 			</tr>
 			
-			<tr class="psyGroup">
+			<tr class="capability">
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 특수주제</td>
 				<td>
 					<input type="checkbox" class="specialType" name="specialType"  value="101082"  /> 성피해상담
@@ -845,12 +1407,12 @@
 					<input type="checkbox" class="specialType" name="specialType"  value="101089"  /> 내마음보고서 해석상담
 					<input type="checkbox" class="specialType" name="specialType"  value="101090"  /> 수면상담(CBTI)
 					<input type="checkbox" class="specialType" name="specialType"  value="101091"  /> 심리적응급처치(위기개입)
-					<input type="text" name="mentalDivEtc" id="mentalDivEtc" style="width:500px;" >  
+					<input type="text" name="specialHearing" id="specialHearing" value="${mgr.specialHeal }" style="width:500px;" >  
 				</td>
 			</tr>
 			
 			<!-- 직장관련 -->
-			<tr class="psyGroup">
+			<tr class="capability">
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5" rowspan="7">주요주제</td>
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 직장관련</td>
 				<td>
@@ -870,7 +1432,7 @@
 			</tr>
 
 			<!-- 개인관련 -->
-			<tr class="psyGroup">
+			<tr class="capability">
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 개인관련</td>
 				<td>
 					<input type="checkbox" class="personalType" name="personalType"  value="101105"  /> 자기탐색 및 이해
@@ -899,7 +1461,7 @@
 				
 						
 			<!-- 가족관련 -->
-			<tr class="psyGroup">
+			<tr class="capability">
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 가족관련</td>
 				<td>
 					<input type="checkbox" class="familyType" name="familyType"  value="101123"  /> 가족이해
@@ -924,7 +1486,7 @@
 			</tr>
 			
 			<!-- 충격/트라우마 -->
-			<tr class="psyGroup">
+			<tr class="capability">
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 충격/트라우마</td>
 				<td>
 					<input type="checkbox" class="traumaType" name="traumaType"  value="101140"  /> 범죄피해자
@@ -939,7 +1501,7 @@
 			</tr>
 	
 			<!-- 대상별 -->
-			<tr class="psyGroup">
+			<tr class="capability">
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 대상별</td>
 				<td>
 					<input type="checkbox" class="targetType" name="targetType"  value="101149" id="mentalType" /> 임원급
@@ -951,7 +1513,7 @@
 			</tr>
 
 			<!-- 법률 -->
-			<tr class="psyGroup">
+			<tr class="capability">
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 법률</td>
 				<td>
 					<input type="checkbox" class="lawCounselType" name="lawCounselType"  value="101155" id="mentalType" /> 가정사 – 이혼, 상속, 유언 등
@@ -964,7 +1526,7 @@
 			</tr>
 
 			<!-- 재무 -->
-			<tr class="psyGroup">
+			<tr class="capability">
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 재무</td>
 				<td>
 					<input type="checkbox" class="financeCounselType" name="financeCounselType"  value="101162" id="mentalType" /> 신입사원 재무설계
@@ -976,7 +1538,7 @@
 			
 			<!-- 상담선호 -->
 			<!-- 단회기상담  -->
-			<tr class="psyGroup">
+			<tr class="capability">
 			<td class="line" height="30" align="left" bgcolor="#F5F5F5" rowspan="2">상담선호</td>
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 단회기상담</td>
 				<td>
@@ -984,7 +1546,7 @@
 				</td>
 			</tr>
 			<!-- 선호접근 -->
-			<tr class="psyGroup">
+			<tr class="capability">
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5">* 선호접근</td>
 				<td>
 					<input type="checkbox" class="preferredType" name="preferredType"  value="101168"	 /> 인지행동접근
@@ -995,7 +1557,7 @@
 				</td>
 			</tr>
 			<!-- 상담성향 -->
-			<tr class="psyGroup">
+			<tr class="capability">
 				<td class="line" height="30" align="left" bgcolor="#F5F5F5" colspan="2">상담성향</td>
 				<td>
 					<input type="checkbox" class="tendencyType" name="tendencyType"  value="101173"  /> 공감적인
@@ -1069,13 +1631,58 @@
 
 				</td>
 			</tr>
-		
-		
+		</table>	
+	</td>
+</tr>
+</table>
+<table width="95%">
+<tr>
+	<td>
+		<table>
+			<tr>
+				<th class="line" width="20%" align="left" bgcolor="#F5F5F5"  colspan="2">
+					주요 강점 및 핵심역량</th>
+				<td class="line" colspan="5">
+					<input type="text"	name="coreVal" value="${mgr.coreVal}" style="width: 700px;" />
+				</td>
+			</tr>					
+			<tr>
+				<th class="line" align="left" bgcolor="#F5F5F5" colspan="2">상담	외 프로그램
+				
+				<br>(집단, 특강 등)
+				</th>
+				<td class="line" colspan="4">
+					<div id="etcExamExtra">
+							<c:forEach var="list" items="${extraExamInfo}" varStatus="listCnt">
+								<input type="hidden" name="extraExamIdx" value="${list.extraIdx }" />
+							프로그램명 : <input type="text" name="extraExamInfo1" value="${list.extraNm }"	 />
+							대상 : <input type="text"	name="extraExamInfo2" value="${list.extraTarget }"	 />
+							센터 내 시행비용(인당) :<input type="text" name="extraExamInfo3" value="${list.extraCost }"	 />
+							<c:if test="${mgr.modiYn eq 'Y' }">
+								<input type="button" class="deleteExtra" value="삭제" onclick="delExtraRow('${list.extraIdx }','102005');">
+							</c:if>
+							<br/>
+						</c:forEach> 
+					</div>
+					<div>
+						<input type="button" class="plus" onclick="addRowExam();" value="추가" style="margin: 5px 350px;">
+					</div>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+</table>
+<table width="95%">
+<tr>
+	<td>
 		<!-- 버튼 영역 시작 -->
-		<table cellpadding="5" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
+		<table cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
 			<tr align="center" height="50px">
 				<td class="" colspan="2" align="center">
+				<c:if test="${mgr.modiYn eq 'Y' }">
 					<input type="button" id="updateBtn" value="수정" style="height:30px; width:100px;">
+				</c:if>
 					<span style="margin-left: 20px;"></span>
 					<input type="button" id="cancleBtn" onclick="history.back()" value="취소" style="height:30px; width:100px;">
 				</td>
@@ -1084,7 +1691,6 @@
 		<!-- 버튼 영역 종료 -->
 	</td>
 </tr>
-
 </table>
 </form>
 

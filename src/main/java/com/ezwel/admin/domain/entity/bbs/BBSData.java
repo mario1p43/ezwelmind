@@ -596,13 +596,10 @@ public class BBSData extends PagingVo {
 	@Getter @Setter
 	private String extenCsCnt;
 	
-	// 숫자
+	//승인 대기 숫자
 	@Getter @Setter
 	private String waitCsCnt;
 	
-	//승인 대기 숫자
-	@Getter @Setter
-	private String waitAppCnt;
 	
 	// 접속권한
 	@Getter @Setter

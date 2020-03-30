@@ -39,8 +39,7 @@
 
 <script type="text/javascript">
 j$(document).ready(function(){
-	$('.mobile_nav ul li a').eq(2).addClass('active');
-	$('.mobile_nav ul li a img').eq(2).attr('src', '/resources/img/home_icon_active.png');
+	
 	/**
 	 * 상담사 및 일정 변경 팝업
 	 */
@@ -703,7 +702,7 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 			</div>
 		</c:forEach>
 		</div>
-		<div class="content-wrapper" style="margin-bottom:5vw">
+		<div class="content-wrapper">
 			<table width="100%" style="border-collapse:collapse;">
 				<tr>
 					<td align="center">

@@ -62,7 +62,7 @@ j$(document).ready(function(){
 					<td>${(paging.totalCount - ((paging.currentPage-1) * paging.pageSize)) - status.index}</td>
 					<td width="20%">서류 및 양식</td>
 					<td><a href="#" class="noticeDetail" value="${list.dataSeq}">${list.subject}</a></td>
-					<td width="20%">${fn:replace(fn:substring(list.regDt, 2, 10), '-', '.')}</td>
+					<td width="20%">${list.regDt}</td>
 				</tr>
 			</c:forEach>
 			</table>

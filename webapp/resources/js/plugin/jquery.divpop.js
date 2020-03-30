@@ -134,9 +134,7 @@
 			var templeteHtml = "";
 			templeteHtml += '<div class="divpopuplayer">';
 			templeteHtml += '	<div class="divpopupLayerbg"></div>';
-			templeteHtml += '	<div class="divpopupContentWrapper">';
-			templeteHtml += '		<div id="'+id+'" class="divPopupContentLayer-mo">';
-			templeteHtml += '		</div>';
+			templeteHtml += '	<div id="'+id+'" class="divPopupContentLayer-mo">';
 			templeteHtml += '	</div>';
 			templeteHtml += '</div>';
 			jQuery('body').append(templeteHtml);
@@ -144,14 +142,8 @@
 		var layerEl = jQuery('#' + id);
 		layerEl.append(popupHtml);
 		
-		var rootLayer = layerEl.parents('.divpopuplayer');
+		var rootLayer = layerEl.parent();
 		rootLayer.fadeIn();
-		
-		if (layerEl.outerHeight() > $(window).height()) {
-			layerEl.css('margin', '5vw auto').css('transform', 'translateX(-50%)');
-		} else {
-			layerEl.css('top', '50%').css('transform', 'translate(-50%, -50%)');
-		}
 		
 		if( options.focusId == "" ){
 			jQuery("#" +id + " input[type='text']").each(function(){

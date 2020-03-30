@@ -10,14 +10,9 @@
 	var de ="";
 	var count = 0;
 	var delCnt = 1;
-	
-	
 	j$(document).ready(function(){
-		$("input").attr("readonly",true);
-		$("input[type=checkbox]").attr("disabled",true);
-		$("input[type=radio]").attr("disabled",true);
-		$("select").attr("disabled",true);
-		
+
+		//$("input").attr('disabled', true);
 		
 		<c:if test='${not empty mgr.channelType}'>
 		var chkValue = '${mgr.channelType}';
@@ -551,8 +546,6 @@
 			default :
 				break;
 		}
-		
-		
 	}
 
 </script>
@@ -601,239 +594,77 @@
 			<tr align="left" height="30px">
 				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 연락처</th>
 				<td class="line" colspan="1" >
-				    <input type="text" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"  maxlength="3" id="mobile1" value="${mgr.mobile1 }" style="width: 10%;" data-validation="length number" data-validation-length="2-3"  data-validation-error-msg="연락처를 확인 해주세요."/>-
-		    		<input type="text" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"  maxlength="4" id="mobile2" value="${mgr.mobile2 }" style="width: 10%;" data-validation="length number" data-validation-length="3-4"  data-validation-error-msg="연락처를 확인 해주세요." />-
-		    		<input type="text" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"  maxlength="4" id="mobile3" value="${mgr.mobile3 }" style="width: 10%;" data-validation="length number" data-validation-length="4-4"  data-validation-error-msg="연락처를 확인 해주세요." />
+				    ${mgr.mobile1 } -
+		    		${mgr.mobile2 } -
+		    		${mgr.mobile3 }
 		    		<input type="hidden" name="mobile">
 				</td>
 				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 이메일</th>
 				<td>
-					<input type="text" name="email" style="width:150px;" value="${mgr.email}" data-validation="email" data-validation-error-msg-email="이메일을 확인 해주세요." /> 
+					${mgr.email} 
 				</td>
 			</tr>
 			<tr align="left" height="30px">
-				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* SMS 인증용 연락처</th>
-				<td class="line" colspan="1" >
-				    <input type="text" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"  maxlength="3" id="mobilesms1" value="${mgr.mobilesms1 }" style="width: 10%;" data-validation="length number" data-validation-length="2-3"  data-validation-error-msg="연락처를 확인 해주세요."/>-
-		    		<input type="text" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"  maxlength="4" id="mobilesms2" value="${mgr.mobilesms2 }" style="width: 10%;" data-validation="length number" data-validation-length="3-4"  data-validation-error-msg="연락처를 확인 해주세요." />-
-		    		<input type="text" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"  maxlength="4" id="mobilesms3" value="${mgr.mobilesms3 }" style="width: 10%;" data-validation="length number" data-validation-length="4-4"  data-validation-error-msg="연락처를 확인 해주세요." />
-				</td>
-				<input type="hidden" name="mobileSms">
-			</tr>
-			<tr align="left" height="30px">
-				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 학위취득사항</th>
+				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 학력</th>
 				<td class="line" colspan="3">
-					<table cellspacing="0" border="0" width="100%">
-						<tr>
-							<th width="35%">학교명</th>							
-							<th width="35%">학과(전공)</th>
-							<th width="10%">학위명</th>							
-							<th width="10%">상태</th>							
-							<th width="10%">연도</th>					
-						</tr>
-						<tr>
-							<td align="center">
-								<input type="text" name="university" style="width:95%;" value="${mgr.university}"/>
-							</td>
-							<td align="center">
-								<input type="text" name="department" style="width:95%;" value="${mgr.department}"/>
-							</td>
-							<td align="center">
-								<select name="education" id="education" style="width:95%;">
-									<option value="M">학사</option>
-									<option value="D">석사</option>
-									<option value="S">박사</option>
-								</select>
-							</td>
-							<td align="center">
-								<select name="eduStatus" id="eduStatus" style="width:95%;">
-									<option value="졸업">졸업</option>
-									<option value="재학">재학</option>
-								</select>
-							</td>
-							<td align="center">
-								<select name="eduYear" id="eduYear" style="width:95%;"></select>
-							</td>
-						</tr>
-						<tr>
-							<td align="center">
-								<input type="text" name="university2" style="width:95%;" value="${mgr.university2}"/>
-							</td>
-							<td align="center">
-								<input type="text" name="department2" style="width:95%;" value="${mgr.department2}"/>
-							</td>
-							<td align="center">
-								<select name="education2" id="education2" style="width:95%;">
-									<option value="M">학사</option>
-									<option value="D">석사</option>
-									<option value="S">박사</option>
-								</select>
-							</td>
-							<td align="center">
-								<select name="eduStatus2" id="eduStatus2" style="width:95%;">
-									<option value="졸업">졸업</option>
-									<option value="재학">재학</option>
-								</select>
-							</td>
-							<td align="center">
-								<select name="eduYear2" id="eduYear2" style="width:95%;"></select>
-							</td>
-						</tr>
-						<tr>
-							<td align="center">
-								<input type="text" name="university3" style="width:95%;" value="${mgr.university3}"/>
-							</td>
-							<td align="center">
-								<input type="text" name="department3" style="width:95%;" value="${mgr.department3}"/>
-							</td>
-							<td align="center">
-								<select name="education3" id="education3" style="width:95%;">
-									<option value="M">학사</option>
-									<option value="D">석사</option>
-									<option value="S">박사</option>
-								</select>
-							</td>
-							<td align="center">
-								<select name="eduStatus3" id="eduStatus3" style="width:95%;">
-									<option value="졸업">졸업</option>
-									<option value="재학">재학</option>
-								</select>
-							</td>
-							<td align="center">
-								<select name="eduYear3" id="eduYear3" style="width:95%;"></select>
-							</td>
-						</tr>
-					</table>
+					<input type="radio" name="education" onclick="return false;" value="M" ${mgr.education == 'M' ? 'checked':''} /> 석사
+					<input type="radio" name="education" onclick="return false;" value="D" ${mgr.education == 'D' ? 'checked':''} /> 박사
+					${mgr.university} 대학원
+					${mgr.department} 학과
 				</td>
 			</tr>
 			<tr align="left" height="30px">
-				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 주요경력</td>
+				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 경력</td>
 				<td class="line" colspan="3">
-					<table id="careerTable" cellspacing="0" border="0" width="100%">
-						<thead>
-							<tr>
-								<th width="32%">기관명</th>
-								<th width="32%">직위/역할</th>
-								<th width="31%">근무기간</th>
-							</tr>
-						</thead>
-						<tbody id="tbl_organization_body">
-							<c:if test="${mgrCareer.size() < 1}">
-							<tr id="organizationRow1">
-								<td align="center"><input type="text" style="width:95%;" id="organizationName1" name="organizationName" /></td>
-								<td align="center"><input type="text" style="width:95%;" id="role1" name="role" /></td>
-								<td align="center">
-									<input type="text" id="roleStartDate1" name="roleStartDate" class="startDt cal_box" datetimeonly="true" style="width:93px;" />~
-									<input type="text" id="roleEndDate1" name="roleEndDate"  class="endDt cal_box" datetimeonly="true" style="width:93px;" />
-								
-							</tr>		
-							</c:if>
-							<c:forEach var="list" items="${mgrCareer}" varStatus="listCnt">
-								<tr id="organizationRow${listCnt.index}">
-									<td align="center"><input type="text" style="width:95%;" id="organizationName${listCnt.index}" name="organizationName" value="${list.organizationName}"/></td>
-									<td align="center"><input type="text" style="width:95%;" id="role${listCnt.index}" name="role" value="${list.role}"/></td>
-									<td align="center">
-										<input type="text" id="roleStartDate${listCnt.index}" name="roleStartDate" class="startDt cal_box" datetimeonly="true" style="width:93px;" value="${list.roleStartDate}"/>~
-										<input type="text" id="roleEndDate${listCnt.index}" name="roleEndDate"  class="endDt cal_box" datetimeonly="true" style="width:93px;" value="${list.roleEndDate}"/>
-									
-								</tr>		
-							</c:forEach>
-						</tbody>
-										
-					</table>
+					<span> * 업무를 수행하신 기간, 기관명, 담당업무를 기술해 주세요.</span><br />
+					${mgr.career}
 				</td>
 			</tr>
 			<tr align="left" height="30px">
-				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 상담관련자격증</td>
-				<td class="line" colspan="3">
-					<table id="careerTable" cellspacing="0" border="0" width="100%">
-						<thead>
-							<tr>
-								<th width="20%">발급기관</th>
-								<th width="20%">자격명</th>
-								<th width="5%">급수</th>
-								<th width="10%">발급년도</th>
-								<th width="40%">사본첨부</th>
+						<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 자격&nbsp;&nbsp; <input type="button" onclick="addRow(cert);" value="+" />&nbsp;<input type="button" onclick="delRow(cert);" value="-" /> </th>
+						<td class="line" colspan="3">
+						<table id="cert">
+							<tr align="left" >
+							<td class="line" >
+								<c:forEach var="list" items="${mgrCert}" varStatus="listCnt">
+								 <div id="${listCnt.index }" > 
+									<comm:commNmOut code="${list.certCd }" option="commCd"  />
+									<c:if test="${list.certCd eq 100747}">(${list.etc })</c:if>
+									 / ${list.fileNm }
+									 
+									  <input type="button" value="다운로드" onclick="fileDownLoad('${list.filePath}', '${list.fileNm}')" ><input type="hidden" id="d"> <br></div>
+								</c:forEach>
+							</td>
 							</tr>
-						</thead>
-						<tbody id="tbl_organization_body_cert">
-							<c:forEach var="list" items="${mgrCert}" varStatus="listCnt">
-        					<tr id="certOrgRow${listCnt.index}">
-        						<td align="center"><input type="hidden" id="certOrg${listCnt.index}" name="certOrg" value="${list.orgNm}"/>${list.orgNm}</td>
-        						<td align="center"><input type="hidden" id="certName${listCnt.index}" name="certName" value="${list.certNm}"/>${list.certNm}</td>
-        						<td align="center"><input type="hidden" id="certGrade${listCnt.index}" name="certGrade" value="${list.grade}"/>${list.grade}</td>
-        						<td align="center"><input type="hidden" id="certYear${listCnt.index}" name="certYear" value="${list.certYear}"/>${list.certYear}</td>
-        						<td align="left">
-        							<input type="button" value="다운로드" onclick="fileDownLoad('${list.filePath}', '${list.fileNm}')" >&nbsp;${list.fileNm}
-        							<input type="hidden" id="fileName${listCnt.index}" name="fileName" value="${list.fileNm}"/>
-        							<input type="hidden" id="filePath${listCnt.index}" name="filePath" value="${list.filePath}"/>
-        						</td>
-							</tr>
-							</c:forEach>
-						</tbody>
-										
-					</table>
-				</td>
-			</tr>
-			<tr align="left" height="30px">
-				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 논문 및 저서</td>
-				<td class="line" colspan="3">
-					<table id="careerTable" cellspacing="0" border="0" width="100%">
-						<thead>
-							<tr>
-								<th width="35%">논문제목/책제목</th>
-								<th width="35%">게재학술지명/출판사명</th>
-								<th width="15%">연구자/저자명</th>
-								<th width="10%">연도</th>
-								<th width="5%">삭제</th>
-							</tr>
-						</thead>
-						<tbody id="tbl_organization_body_book">
-							<c:forEach var="list" items="${mgrBook}" varStatus="listCnt">
-        					<tr id="mgrBookRow${listCnt.index}">
-								<td align="center"><input type="text" style="width:95%;" id="bookTitle${listCnt.index}" name="bookTitle" value="${list.bookTitle}" /></td>
-								<td align="center"><input type="text" style="width:95%;" id="bookOrg${listCnt.index}" name="bookOrg" value="${list.bookOrg}" /></td>
-								<td align="center"><input type="text" style="width:95%;" id="author${listCnt.index}" name="author" value="${list.author}" /></td>
-								<td align="center">
-									<select id="bookYear${listCnt.index}" name="bookYear" style="width:95%;">
-									<c:forEach var="i" begin = "0" end="60" step="1" >
-										<option value=<c:out value = "${currentYear-i}"/>><c:out value = "${currentYear-i}"/></option>
-									</c:forEach>
-									</select>
-								</td>
-							</tr>
-							</c:forEach>
-						</tbody>
-									
-					</table>
-				</td>
-			</tr>
+						</table>	
+						</td>
+					</tr>
 			<tr align="left" height="30px">
 				<th class="line" height="30" align="left" bgcolor="#F5F5F5">* 한줄소개</th>
 				<td class="line" colspan="3">
-					<input type="text" name="memo" style="width:40%;" value="${mgr.memo}" data-validation="required"  data-validation-error-msg-required="한줄소개를 확인 해주세요."/>
+					${mgr.memo}
 				</td>
 			</tr>
 			<tr align="left" height="30px">
 				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">&nbsp;&nbsp;사진</th>
 		    	<td class="line" colspan="3" >
-		    		<a href="javascript:fileDownLoad('${mgr.filePath}', '${mgr.fileNm}');">
+		    		&nbsp;
 		    		${mgr.fileNm }
-		    		</a>
+		    		
 		    	</td>
 			</tr>
 			<tr align="left" height="30px">
 				<th width="10%" class="line" height="30" align="left" bgcolor="#F5F5F5"><c:if test="${mgr.authCd ne 'ROLE_PARTNER_CENTER' }">*</c:if>접속권한</th>
 				<td >
-					<input type="radio" name="authCd" value="ROLE_PARTNER_SANGDAM" ${mgr.authCd == 'ROLE_PARTNER_SANGDAM'  ? 'checked':''} <c:if test="${mgr.authCd ne 'ROLE_PARTNER_CENTER' }"> data-validation="required" data-validation-error-msg-required="접속권한을 확인해주세요." </c:if> /> 상담
-					<input type="radio" name="authCd" value="ROLE_PARTNER_SEND" ${mgr.authCd == 'ROLE_PARTNER_SEND'  ? 'checked':''} /> 파견
-					<input type="radio" name="authCd" value="ROLE_PARTNER_GROUP" ${mgr.authCd == 'ROLE_PARTNER_GROUP'  ? 'checked':''} /> 집단
-					<input type="radio" name="authCd" value="ROLE_PARTNER_TEACHER" ${mgr.authCd == 'ROLE_PARTNER_TEACHER'  ? 'checked':''} /> 강사
+					<input type="radio" name="authCd" onclick="return false;" value="ROLE_PARTNER_SANGDAM" ${mgr.authCd == 'ROLE_PARTNER_SANGDAM'  ? 'checked':''} <c:if test="${mgr.authCd ne 'ROLE_PARTNER_CENTER' }"> data-validation="required" data-validation-error-msg-required="접속권한을 확인해주세요." </c:if> /> 상담
+					<input type="radio" name="authCd"  onclick="return false;" value="ROLE_PARTNER_SEND" ${mgr.authCd == 'ROLE_PARTNER_SEND'  ? 'checked':''} /> 파견
+					<input type="radio" name="authCd" onclick="return false;" value="ROLE_PARTNER_GROUP" ${mgr.authCd == 'ROLE_PARTNER_GROUP'  ? 'checked':''} /> 집단
+					<input type="radio" name="authCd" onclick="return false;" value="ROLE_PARTNER_TEACHER" ${mgr.authCd == 'ROLE_PARTNER_TEACHER'  ? 'checked':''} /> 강사
 				</td>
 				<th class="line" height="30" align="left" bgcolor="#F5F5F5">* 근무형태</th>
 				<td>
-					<input type="radio" name="workType" value="S" ${mgr.workType == 'S'  ? 'checked':''} /> 상주
-					<input type="radio" name="workType" value="P" ${mgr.workType == 'P'  ? 'checked':''} /> 파트타임
+					<input type="radio" name="workType" onclick="return false;" value="S" ${mgr.workType == 'S'  ? 'checked':''} /> 상주
+					<input type="radio" name="workType" onclick="return false;" value="P" ${mgr.workType == 'P'  ? 'checked':''} /> 파트타임
 				</td>
 			</tr>
 			<tr align="left" height="30px">
@@ -850,7 +681,7 @@
 			<tr>
 				<th class="line" height="30" align="left" bgcolor="#F5F5F5">* 대표여부</th>
 				<td class="line" colspan="3">
-					<input type="checkbox" name="centerOwnerYn" id="centerOwnerYn" value="Y" ${mgr.centerOwnerYn == 'Y'  ? 'checked':''}/> 지정
+					<input type="checkbox" name="centerOwnerYn" onclick="return false;" id="centerOwnerYn" value="Y" ${mgr.centerOwnerYn == 'Y'  ? 'checked':''}/> 지정
 				</td>
 			</tr>
 			</sec:authorize>
@@ -1267,6 +1098,7 @@
 			</tr>
 	</td>
 </tr>
+
 </table>
 </form>
 

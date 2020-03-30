@@ -140,7 +140,7 @@ public class NoticeController extends commonController{
 		bbsAddDto.setBbsCd("notice");
 		bbsAddDto.setReqCd1("101232");
 		
-		model.addAttribute(bbsService.getBbsPartnerList(bbsAddDto));
+		model.addAttribute(bbsService.getBbsList(bbsAddDto));
 		model.addAttribute("alertMsg", bbsAddDto.getAlertMsg());
 		if(isDevice(request) == IS_PC) {
 			return "partner/bbs/bbsNotice2";
@@ -160,7 +160,7 @@ public class NoticeController extends commonController{
 		setMenu(model);
 		bbsAddDto.setBbsCd("notice");
 		bbsAddDto.setReqCd1("101230");
-		model.addAttribute(bbsService.getBbsPartnerList(bbsAddDto));
+		model.addAttribute(bbsService.getBbsList(bbsAddDto));
 		model.addAttribute("alertMsg", bbsAddDto.getAlertMsg());
 		if(isDevice(request) == IS_PC) {
 			return "partner/bbs/bbsDocument";	

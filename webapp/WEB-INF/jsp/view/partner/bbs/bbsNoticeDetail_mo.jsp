@@ -8,106 +8,145 @@
 <style>
 	table{border-spacing:0!important}
 	table td{background:none!important}
-	.flexColumn{display: flex;  flex-direction: column; display: -webkit-flex;  -webkit-flex-direction: column; }
-	.flex{display: flex; display: -webkit-flex;}
-	.flexGrow{-webkit-flex-grow: 1; flex-grow: 1; flex : 1 1 0;  -webkit-flex : 1 1 0;}
-	.center{-webkit-justify-content: center; justify-content: center; -webkit-align-items: center; align-items: center; }/* 가로세로중앙정렬 */
-	.centerH{-webkit-align-items: center; align-items: center; }/* 세로중앙정렬 */
-	.rightR{-webkit-justify-content: flex-end; justify-content: flex-end; }
-	.rightC{-webkit-align-items: flex-end; align-items: flex-end;}
-	
 	.notice-wrapper{padding:0 5vw}
-	.notice-wrapper .content-wrapper{padding:3vw 0}
-	.notice-wrapper .content-wrapper .notice-title{margin-right:2vw;font-size:16px}
-	.notice-wrapper .content-wrapper .notice-date{font-size:12px}
-	.notice-wrapper .content-wrapper .file-wrapper{display:flow-root}
-	.notice-wrapper .content-wrapper .file-name{display:inline-block;width:calc(100% - 16px);float:left}
-	.notice-wrapper .content-wrapper .file-name a{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:1;overflow:hidden;text-overflow:ellipsis;margin-right:2vw}
-	.notice-wrapper .content-wrapper .download-icon{display:flex;float:right}
-	.notice-wrapper .data-wrapper p:first-child{margin-top:0}
-	.notice-wrapper .data-wrapper p:last-child{margin-bottom:0}
+	.notice-wrapper .content-wrapper{display:flow-root;margin-top:5vw}
+	.notice-wrapper .content-wrapper
 	.notice-wrapper .border-bottom{border-bottom:1px solid #C4C4C4}
-	
-	.notice-wrapper .content-wrapper .bottom-btn{width:100%;height:11vw;font-weight:bold;font-size:16px;text-align:center;color:white;background-color:#006CBA;border:0}
 </style>
 
 </head>
 <body>
-	<script>
-		j$(function() {
-			$('.mobile_nav ul li a').eq(3).addClass('active');
-			$('.mobile_nav ul li a img').eq(3).attr('src', '/resources/img/home_icon_active.png');
-		});
-	</script>
 	<div class="notice-wrapper">
-		<div class="content-wrapper border-bottom flex">
-			<div class="notice-title flexGrow">${vo.subject}</div>
-			<div class="notice-date flex centerH">
-				<span>${fn:replace(fn:substring(vo.regDt, 0, 10), '-', '.')}</span>
-			</div>
+		<div class="content-wrapper border-bottom">
+			<div class="notice-title">${vo.subject}</div>
+			<div class="notice-date">${vo.regDt}</div>
 		</div>
-		<div class="content-wrapper border-bottom data-wrapper">
+		<div class="content-wrapper border-bottom">
 			${fn:replace(vo.content,newLineChar,'<br>')}
 		</div>
 		<div class="content-wrapper border-bottom">
 			<c:choose>
 				<c:when test="${not empty files1.filePath}">
-						<div class="file-wrapper">
-							<div class="file-name">
-								<a href="<spring:eval expression="@global['upload.http.img']" />${files1.filePath}" class="attach_file" target="_blank">${files1.fileNm}</a>
-							</div>
-							<div class="download-icon">
-								<img src="/resources/img/ic_download.png" style="width:16px;height:16px">
-							</div>
-						</div>
+						<a href="<spring:eval expression="@global['upload.http.img']" />${files1.filePath}" class="attach_file" target="_blank">${files1.fileNm}</a><br>
 					<c:if test="${not empty files2.filePath}">
-						<div class="file-wrapper">
-							<div class="file-name">
-								<a href="<spring:eval expression="@global['upload.http.img']" />${files2.filePath}" class="attach_file"  target="_blank">${files2.fileNm}</a>
-							</div>
-							<div class="download-icon">
-								<img src="/resources/img/ic_download.png" style="width:16px;height:16px">
-							</div>
-						</div>
+						<a href="<spring:eval expression="@global['upload.http.img']" />${files2.filePath}" class="attach_file"  target="_blank">${files2.fileNm}</a><br>
 					</c:if>
 					<c:if test="${not empty files3.filePath}">
-						<div class="file-wrapper">
-							<div class="file-name">
-								<a href="<spring:eval expression="@global['upload.http.img']" />${files3.filePath}" class="attach_file"  target="_blank">${files3.fileNm}</a><br>
-							</div>
-							<div class="download-icon">
-								<img src="/resources/img/ic_download.png" style="width:16px;height:16px">
-							</div>
-						</div>
+						<a href="<spring:eval expression="@global['upload.http.img']" />${files3.filePath}" class="attach_file"  target="_blank">${files3.fileNm}</a><br>
 					</c:if>
 					<c:if test="${not empty files4.filePath}">
-						<div class="file-wrapper">
-							<div class="file-name">
-								<a href="<spring:eval expression="@global['upload.http.img']" />${files4.filePath}" class="attach_file"  target="_blank">${files4.fileNm}</a><br>
-							</div>
-							<div class="download-icon">
-								<img src="/resources/img/ic_download.png" style="width:16px;height:16px">
-							</div>
-						</div>
+						<a href="<spring:eval expression="@global['upload.http.img']" />${files4.filePath}" class="attach_file"  target="_blank">${files4.fileNm}</a><br>
 					</c:if>
 					<c:if test="${not empty files5.filePath}">
-						<div class="file-wrapper">
-							<div class="file-name">
-								<a href="<spring:eval expression="@global['upload.http.img']" />${files5.filePath}" class="attach_file" target="_blank">${files5.fileNm}</a><br>
-							</div>
-							<div class="download-icon">
-								<img src="/resources/img/ic_download.png" style="width:16px;height:16px">
-							</div>
-						</div>
+						<a href="<spring:eval expression="@global['upload.http.img']" />${files5.filePath}" class="attach_file" target="_blank">${files5.fileNm}</a><br>
 					</c:if>
 				</c:when>
 				<c:otherwise>등록된 첨부 파일이 없습니다.</c:otherwise>
 			</c:choose>
 		</div>
 		<div class="content-wrapper">
-			<button id="modifyBtn" class="bottom-btn" onclick="history.back()" type="button">목록</button>
+			<button id="modifyBtn" style="height:30px; width:100px;" onclick="history.back()" type="button">목록</button>
 		</div>
 	</div>
+<%-- <table cellpadding="0" cellspacing="0" border="0" width="95%" height="100%">
+<tr><td height="20px"></td></tr>
+
+<tr>
+	<td valign="top" align="left">
+		<table cellpadding="5" cellspacing="0" border="0" width="100%" align="center" style="border-bottom: 1px solid silver;">
+			<tr>
+		    	<td align="left" class="subtitle">
+		    	<c:choose>
+	 		    	<c:when test="${code.noticeCd eq 3 }">
+			    	서류 및 양식 
+			    	</c:when>
+			    	<c:when test="${code.noticeCd eq 2 }">
+			    	모집공고
+			    	</c:when>
+			    	<c:otherwise>
+			    	공지사항
+			    	</c:otherwise>
+		    	
+		    	</c:choose>
+
+		    	</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+
+<tr><td height="20px"></td></tr>
+
+<tr>
+	<td>
+		<table cellspacing="0" border="1" width="100%" style="border-collapse:collapse;">
+	        <tr>
+	            <th class="line" width="10%" align="center" bgcolor="#F5F5F5" style="min-height: 50px;">제목</th>
+	            <td>
+	            	${vo.subject}
+	            </td>
+	        </tr>
+	        <tr>
+	            <th class="line" width="" align="center" bgcolor="#F5F5F5">내용</th>
+	            <td style="min-height: 200px;">
+	            	${fn:replace(vo.content,newLineChar,'<br>')}
+	            </td>
+	        </tr>
+	        <tr>
+	            <th class="line" width="" align="center" bgcolor="#F5F5F5" style="min-height: 50px;">등록일</th>
+	            <td>
+	            	${vo.regDt}
+	            </td>
+	        </tr>
+	        <tr>
+	            <th class="line" width="" align="center" bgcolor="#F5F5F5" style="min-height: 50px;">첨부파일</th>
+	            <td colspan="3">
+	            	<c:choose>
+	                    <c:when test="${not empty files1.filePath}">
+	                       		<a href="<spring:eval expression="@global['upload.http.img']" />${files1.filePath}" class="attach_file" target="_blank">${files1.fileNm}</a><br>
+		           			<c:if test="${not empty files2.filePath}">
+		                       	<a href="<spring:eval expression="@global['upload.http.img']" />${files2.filePath}" class="attach_file"  target="_blank">${files2.fileNm}</a><br>
+		           			</c:if>
+		           			<c:if test="${not empty files3.filePath}">
+		                       	<a href="<spring:eval expression="@global['upload.http.img']" />${files3.filePath}" class="attach_file"  target="_blank">${files3.fileNm}</a><br>
+		           			</c:if>
+		                    <c:if test="${not empty files4.filePath}">
+						        <a href="<spring:eval expression="@global['upload.http.img']" />${files4.filePath}" class="attach_file"  target="_blank">${files4.fileNm}</a><br>
+				            </c:if>
+				            <c:if test="${not empty files5.filePath}">
+						        <a href="<spring:eval expression="@global['upload.http.img']" />${files5.filePath}" class="attach_file" target="_blank">${files5.fileNm}</a><br>
+			                </c:if>
+		               	</c:when>
+	           			<c:otherwise>
+	           				등록된 첨부 파일이 없습니다. 
+	           			</c:otherwise>
+	           		</c:choose>
+	            </td>
+	        </tr>
+		</table>
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<!-- 버튼 영역 시작 -->
+		<table cellpadding="5" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;" bordercolor="#DDDDDD">
+			<tr>
+				<td align="center" colspan="4">
+					<table cellpadding="0" cellspacing="0" border="0">
+						<tr>
+				    		<button id="modifyBtn" style="height:30px; width:100px;" onclick="history.back()" type="button">목록</button>
+		    			</tr>
+		    		</table>
+		    	</td>
+			</tr>
+		</table>
+		<!-- 버튼 영역 종료 -->
+	</td>
+</tr>
+
+</table> --%>
+
 
 </body>
 </html>

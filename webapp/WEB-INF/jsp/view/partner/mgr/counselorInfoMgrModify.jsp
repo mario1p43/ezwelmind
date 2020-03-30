@@ -618,8 +618,7 @@
 			if(confirm("승인된 상담사의 상담유형정보는 즉시 변경할 수 없습니다. 수정요청 후 이지웰니스 승인을 받아 최종 수정됩니다.")){
 				updateExtraExam();
 				if(j$("#centerOwnerYn").is(":checked")){
-					j$("#ownerYn").val("Y");				
-					
+					j$("#ownerYn").val("Y");
 					if('${loginId}' == '${mgr.userId}'){
 					
 						j$("#num").val(num);

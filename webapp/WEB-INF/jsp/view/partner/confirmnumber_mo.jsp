@@ -17,9 +17,6 @@
     .centerH{-webkit-align-items: center; align-items: center; }/* 세로중앙정렬 */
     .rightR{-webkit-justify-content: flex-end; justify-content: flex-end; }
     .rightC{-webkit-align-items: flex-end; align-items: flex-end;}
-    a:focus {
-        border:none;
-    }
     .member_wrap{
         width: 100vw !important;
         height: 100vh;
@@ -163,7 +160,7 @@
         let loginBtn = j$('#confirmButton');
         let timerCount = j$('#timer_count');
         let timerInput = j$('#confirmNumber');
-        let timerValue = 180;
+        let timerValue = 10;
         let isTimeOver = false;
         let timer = setTimeout(function() {
             if(timerValue <= 0) {
