@@ -907,10 +907,10 @@ j$(function(){
 						    		</c:if>
 									<c:choose>
 										<c:when test="${record_detail.endType eq 'end'}">
-						    				<input type="radio" name="endType" id="end" value="end" checked/><label for="end">진행 및 종결 : 마지막 회기 진행 및 케이스 종결</label>
+						    				<input type="radio" name="endType" id="end" value="end" checked/><label for="end">종결 : 마지막 회기 진행 및 케이스 종결</label>
 										</c:when>
 										<c:otherwise>
-						    				<input type="radio" name="endType" id="end" value="end"/><label for="end">진행 및 종결 : 마지막 회기 진행 및 케이스 종결</label>
+						    				<input type="radio" name="endType" id="end" value="end"/><label for="end">종결 : 마지막 회기 진행 및 케이스 종결</label>
 										</c:otherwise>
 					    			</c:choose>
 		   						</td>
