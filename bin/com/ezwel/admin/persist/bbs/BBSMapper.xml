@@ -15,6 +15,9 @@
 			</if>
 			,SUBJECT
 			,CONTENT
+			<if test="isNotNull(mobileContent)">
+				,MOBILE_CONTENT
+			</if>
 			,REQ_CD1
 			<if test="isNotNull(reqCd2)">
 				,REQ_CD2
@@ -80,6 +83,9 @@
 			</if>
 			,#{subject}
 			,#{content}
+			<if test="isNotNull(mobileContent)">
+				,#{mobileContent}
+			</if>
 			,#{reqCd1}
 			<if test="isNotNull(reqCd2)">
 				,#{reqCd2}
@@ -211,6 +217,9 @@
 		UPDATE MIND_BBS_DATA
 		SET  SUBJECT = #{subject}
 		    ,CONTENT = #{content}
+		    <if test="isNotNull(mobileContent)">
+		    ,MOBILE_CONTENT = #{mobileContent} 
+		    </if>
 			,COLUMNIST_NM = #{columnistNm}
 			,COLUMNIST_DD = #{columnistDd}
 			,COLUMNIST_CAREER = #{columnistCareer}
@@ -603,6 +612,7 @@
 			,A.SERVICE_TYPE AS serviceType
 			,A.SUBJECT AS subject
 			,A.CONTENT AS content
+			,A.MOBILE_CONTENT AS mobileContent
 			,A.REQ_CD1 AS reqCd1
 			,A.REQ_CD2 AS reqCd2
 			,A.PAGE_KEY AS pageKey

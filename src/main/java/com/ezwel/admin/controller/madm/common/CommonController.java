@@ -52,6 +52,7 @@ import com.ezwel.admin.service.pCounselorMgr.dto.MindCounselIntakeDto;
 import com.ezwel.admin.service.popup.PopupService;
 import com.ezwel.admin.service.user.UserService;
 import com.ezwel.admin.service.usermanager.dto.UserManagerDto;
+import com.ezwel.common.commonController;
 import com.ezwel.core.support.util.Base64Utils;
 import com.ezwel.core.support.util.StringUtils;
 
@@ -60,7 +61,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
-public class CommonController {	
+public class CommonController extends commonController{	
  	
 	@Resource
 	private CommonService commonService;
@@ -240,8 +241,11 @@ public class CommonController {
 		model.addAttribute("ceiling", commonService.getClientCeiling(baseInfoDetail.getClientCd()));
 		// 20190426 사용자 제도정보, 잔여포인트정보 end --
 		
-		
-		return "madm/common/intakeDetailPopup";
+        if(isDevice(request) == IS_PC) {
+            return "madm/common/intakeDetailPopup";
+        } else {
+            return "madm/common/intakeDetailPopup_mo";
+        }
 	}
 	
 	@RequestMapping(value="/madm/common/getCommClientList", method=RequestMethod.GET)
