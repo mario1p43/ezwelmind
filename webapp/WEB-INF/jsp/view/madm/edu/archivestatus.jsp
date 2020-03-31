@@ -20,7 +20,7 @@ j$(document).ready(function(){
 		return false;
 	});
 	
-	j$("#detailInfo").click(function(){
+	j$(".detailInfo").click(function(){
 		var selectedTrHtml = $(this).parent("tr").html();
 		var eduId = j$('#eduId', selectedTrHtml).val();
 		location.href = "/madm/edu/detailviewpage?eduId="+eduId;
@@ -51,7 +51,7 @@ j$(document).ready(function(){
 </head>
 <body>
 <style>
-#detailInfo{
+.detailInfo{
 	cursor: pointer;
 }
 #sampleFile{
@@ -141,7 +141,7 @@ j$(document).ready(function(){
 							${(paging.totalCount - ((paging.currentPage-1) * paging.pageSize)) - status.index}
 						</td>
 						<td>${list.centerNm}</td>
-						<td><div id="detailInfo"> ${list.userNm}</div> </td>
+						<td><div class="detailInfo"> ${list.userNm}</div> </td>
 						<td>
 						<c:if test="${list.gender eq 'M'}">
 						남성

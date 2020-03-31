@@ -68,7 +68,7 @@ public class EducationInfoService {
 				map.put("eduType", "온라인"+i);
 				map.put("eduDiv", "필수"+i);
 				map.put("eduNm", "상담잘하는법"+i);
-				map.put("eduHour", i+"시간");
+				map.put("eduHour", i+"");
 				map.put("eduDtFm", "2017011"+i);
 				map.put("eduDtTo", "2018011"+i);
 				map.put("eduPlace", "장소");

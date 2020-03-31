@@ -140,7 +140,7 @@ public class NoticeController extends commonController{
 		bbsAddDto.setBbsCd("notice");
 		bbsAddDto.setReqCd1("101232");
 		
-		model.addAttribute(bbsService.getBbsList(bbsAddDto));
+		model.addAttribute(bbsService.getBbsPartnerList(bbsAddDto));
 		model.addAttribute("alertMsg", bbsAddDto.getAlertMsg());
 		if(isDevice(request) == IS_PC) {
 			return "partner/bbs/bbsNotice2";
@@ -158,9 +158,14 @@ public class NoticeController extends commonController{
 	@RequestMapping(value = "/documents")
 	public String documents(@ModelAttribute BBSAddDto bbsAddDto, Model model,HttpServletRequest request) {
 		setMenu(model);
+		Manager manager = UserDetailsHelper.getAuthenticatedUser();
+		bbsAddDto.setCenterSeq(manager.getCenterSeq());
+		bbsAddDto.setUserId(manager.getUserId());
+		
+		
 		bbsAddDto.setBbsCd("notice");
 		bbsAddDto.setReqCd1("101230");
-		model.addAttribute(bbsService.getBbsList(bbsAddDto));
+		model.addAttribute(bbsService.getBbsPartnerList(bbsAddDto));
 		model.addAttribute("alertMsg", bbsAddDto.getAlertMsg());
 		if(isDevice(request) == IS_PC) {
 			return "partner/bbs/bbsDocument";	

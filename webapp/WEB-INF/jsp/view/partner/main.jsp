@@ -468,14 +468,14 @@ if(iTMonth2<10){
 				    승인 대기
 				</text>
 				<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="">
-				    ${sangdamcnt.unWritenCsCnt}
+				    ${sangdamcnt.waitAppCnt}
 				</text>
 				</svg>
 			</a>
 		</div>
 		
 		<div class="float_left padding10">
-		<a href="/partner/mgr/counselorInfoMgrList">
+		<a href="/partner/mgr/counselorInfoMgrList?searchMgrStatus=Y">
 			<svg width="134" height="134" viewBox="0 0 134 134" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<circle cx="67" cy="67" r="64" stroke="url(#paint0_linear)" stroke-width="6"/>
 			<defs>
@@ -515,7 +515,7 @@ if(iTMonth2<10){
 			    내담자
 			</text>
 			<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="'Leckerli One', cursive">
-			    30
+			    ${sangdamcnt.processCsCnt}
 			</text>
 			</svg>
 		</a>

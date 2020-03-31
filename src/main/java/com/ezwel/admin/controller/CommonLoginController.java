@@ -38,7 +38,9 @@ public class CommonLoginController extends commonController {
 			 */
 			if (globalsProperties.getProperty("cp.site.code").equals(UrlUtil.getUrlClientCd(request))) {
 				String userMobile = commonService.getUserMobile();
-				commonService.setConfirmNumberIntoSession(request.getSession());
+		        
+				
+				commonService.setConfirmNumberIntoSession(request.getSession(),userMobile);
 				return "redirect:/partner/main/confirmnumberview";
 			} else {
 				return "redirect:/madm/main/index";

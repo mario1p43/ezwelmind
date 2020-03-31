@@ -290,6 +290,7 @@
 			, COUNSEL_FAVOR 
 			, COUNSEL_PATTERN
 			, COUNSEL_SPECIAL_HEAL 
+			, CORE_ABILITY
 		) VALUES (
 			 #{userId}
 			,#{gender}
@@ -338,6 +339,7 @@
 			,#{preferredType}
 			,#{tendencyType}
 			,#{specialHearing}
+			,#{coreVal}
 		)
 	</insert>
 	
@@ -503,6 +505,20 @@
 	</update>
 	
 	
+	<!-- 비디앱스 임시 추가 2020.01.01  -->
+	<update id="updateCounselorInfoMgrImg" parameterType="com.ezwel.admin.service.mgr.dto.MgrSubDto">
+		UPDATE MIND_MGR_SUB
+		SET
+		<if test="isNotNull(fileNm)">
+			FILE_NM	= #{fileNm},
+		</if>
+		<if test="isNotNull(filePath)">
+			FILE_PATH = #{filePath}
+		</if>
+		WHERE USER_ID = #{userId}
+		
+	</update>
+		
 	
 	<!-- 비디앱스 임시 추가 2020.01.01  -->
 	<update id="updateCounselorInfoMgrImsi" parameterType="com.ezwel.admin.service.mgr.dto.MgrSubDto">
@@ -661,6 +677,7 @@
 	<update id="updateCounselorInfoMgrModiN" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
 	UPDATE MIND_MGR
 		SET
+		MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'),
 		MODI_YN = 'N'
 		WHERE USER_ID = #{userId}
 	</update>
@@ -668,6 +685,7 @@
 	<update id="updateCounselorInfoMgrModiY" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
 	UPDATE MIND_MGR
 		SET
+		MODI_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'),
 		MODI_YN = 'Y'
 		WHERE USER_ID = #{userId}
 	</update>
@@ -775,7 +793,7 @@
 			, B.MGR_STATUS			AS	mgrStatus
 			, A.CORE_ABILITY			AS	coreVal
 			, A.COUNSEL_SPECIAL_HEAL			AS	specialHeal
-			, (select AUTH_CD from acl_user_auth where USER_AUTH_KEY = CONCAT(#{userId},'3001')) as authCd
+			, (select AUTH_CD from acl_user_auth where USER_AUTH_KEY = CONCAT(#{userId},(SELECT user_type FROM mind_mgr where user_id =#{userId}))) as authCd
 		FROM MIND_MGR_SUB A, MIND_MGR B, MIND_CENTER C
 		WHERE 1=1
 			AND B.CENTER_SEQ = C.CENTER_SEQ
@@ -854,7 +872,7 @@
 			, B.MGR_STATUS			AS	mgrStatus
 			, A.CORE_ABILITY			AS	coreVal
 			, A.COUNSEL_SPECIAL_HEAL			AS	specialHeal
-			, (select AUTH_CD from acl_user_auth where USER_AUTH_KEY = CONCAT(#{userId},'3001')) as authCd
+			, (select AUTH_CD from acl_user_auth where USER_AUTH_KEY = CONCAT(#{userId},(SELECT user_type FROM mind_mgr where user_id =#{userId}))) as authCd
 		FROM EXTRA_MIND_MGR_SUB A, EXTRA_MIND_MGR B, MIND_CENTER C
 		WHERE 1=1
 			AND B.CENTER_SEQ = C.CENTER_SEQ
@@ -906,7 +924,7 @@
 			, B.PRICE					AS price
 			, B.MGR_STATUS			AS mgrStatus					
 			
-			, (select AUTH_CD from acl_user_auth where USER_AUTH_KEY = CONCAT(#{userId},'3001')) as authCd
+			, (select AUTH_CD from acl_user_auth where USER_AUTH_KEY = CONCAT(#{userId},(SELECT user_type FROM ez_mind.mind_mgr where user_id =#{userId}))) as authCd
 		FROM MIND_MGR_SUB A, MIND_MGR B, MIND_CENTER C
 		WHERE 1=1
 			AND B.CENTER_SEQ = C.CENTER_SEQ
@@ -934,7 +952,7 @@
 			  FROM
 				(
 		</if>
-				SELECT
+				SELECT DISTINCT
 					B.USER_NM			AS	userNm
 					, B.USER_ID			AS	userId
 					, (CASE WHEN SUBSTRING(B.RRN,8,1) &lt;= 2 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('19', SUBSTRING(B.RRN,1,2))+1)
@@ -978,7 +996,11 @@
 					, C.ADDR2				AS  addr2
 					, A.CORE_ABILITY			AS	coreVal
 					, A.COUNSEL_SPECIAL_HEAL			AS	specialHeal
+					, C.CENTER_SEQ AS centerSeq
 				FROM MIND_MGR_SUB A , MIND_MGR B, MIND_CENTER C , ACL_USER_AUTH D
+				<if test="isNotNull(qualify)">
+					,MIND_MGR_CERT F
+				</if>
 				WHERE 1=1
 					AND B.USER_TYPE = '3001'
 					<!-- AND B.USE_YN = 'Y' -->
@@ -1070,7 +1092,13 @@
 				<if test="isNotNull(ages)">
 					AND (CASE WHEN SUBSTRING(B.RRN,8,1) &lt;= 2 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('19', SUBSTRING(B.RRN,1,2))+1)
 							WHEN 2 &lt; SUBSTRING(B.RRN,8,1) &lt;= 4 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('20', SUBSTRING(B.RRN,1,2))+1) END) REGEXP #{ages}
-				</if> 
+				</if>
+				<if test="isNotNull(qualify)">
+					AND A.USER_ID = F.USER_ID
+					AND F.GRADE =#{qualify}
+				</if>
+				
+				 
 				<!-- <if test="isNotNull(ages)">
 					AND (CASE WHEN SUBSTRING(B.RRN,8,1) &lt;= 2 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('19', SUBSTRING(B.RRN,1,2))+1)
 							WHEN 2 &lt; SUBSTRING(B.RRN,8,1) &lt;= 4 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('20', SUBSTRING(B.RRN,1,2))+1) END) REGEXP #{ages}  LIKE CONCAT(#{ages}, '%')
@@ -1134,6 +1162,52 @@
 					, C.AREA2				AS	area2
 					, C.ADDR1				AS  addr1
 					, C.ADDR2				AS  addr2
+					, B.EMAIL				AS	email
+					, A.EDUCATION			AS	education
+					, A.UNIVERSITY			AS	university
+					, A.DEPARTMENT			AS	department
+					, A.EDUCATION2			AS	education2
+					, A.UNIVERSITY2			AS	university2
+					, A.DEPARTMENT2			AS	department2
+					, A.EDUCATION3			AS	education3
+					, A.UNIVERSITY3			AS	university3
+					, A.DEPARTMENT3			AS	department3
+					, A.EDU_YEAR1			AS	eduYear
+					, A.EDU_YEAR2			AS	eduYear2
+					, A.EDU_YEAR3			AS	eduYear3
+					, A.EDU_STATUS1			AS	eduStatus
+					, A.EDU_STATUS2			AS	eduStatus2
+					, A.EDU_STATUS3			AS	eduStatus3
+					, A.MEMO				AS	memo
+					, A.CAREER				AS	career
+					, A.WORK_TYPE			AS	workType
+					, B.CENTER_OWNER_YN		AS	centerOwnerYn
+					, A.CHANNEL_TYPE		AS	channelType
+					, A.MENTAL_AGES			AS	mentalAges
+					, A.MENTAL_DIV			AS	mentalDiv
+					, A.MENTAL_DIV_ETC		AS	mentalDivEtc
+					, A.MENTAL_TYPE			AS	mentalType
+					, A.LAW_DIV				AS	lawDiv
+					, A.LAW_TYPE			AS	lawType
+					, A.FINANCE_DIV			AS	financeDiv
+					, A.FINANCE_TYPE		AS	financeType
+					, A.DIAGNOSIS_AGES		AS	diagnosisAges
+					, A.DIAGNOSIS_DIV		AS	diagnosisDiv
+					, A.DIAGNOSIS_DIV_ETC	AS	diagnosisDivEtc
+					, A.DIAGNOSIS_TYPE		AS	diagnosisType
+					, A.COUNSEL_LANGUAGE	AS languageType
+					, A.COUNSEL_SPECIAL	AS	specialType
+					, A.COUNSEL_JOB	AS	jobType 
+					, A.COUNSEL_PERSONAL	AS	personalType 
+					, A.COUNSEL_FAMILY	AS	familyType 
+					, A.COUNSEL_TRAUMA	AS	traumaType 
+					, A.COUNSEL_TARGET	AS	targetType 
+					, A.COUNSEL_LAW	AS	lawCounselType 
+					, A.COUNSEL_FINANCE	AS	financeCounselType  
+					, A.COUNSEL_FAVOR	AS preferredType
+					, A.COUNSEL_PATTERN	AS tendencyType 
+					, A.CORE_ABILITY			AS	coreVal
+					, A.COUNSEL_SPECIAL_HEAL			AS	specialHeal
 				FROM MIND_MGR_SUB A , MIND_MGR B, MIND_CENTER C , ACL_USER_AUTH D
 				WHERE 1=1
 					AND B.USER_TYPE = '3001'
@@ -1316,7 +1390,7 @@
 	<update id="updateAclUserAuth" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
 	UPDATE	ACL_USER_AUTH
 	   SET	AUTH_CD = #{authCd}
-	 WHERE	USER_AUTH_KEY = CONCAT(#{userId},'3001')
+	 WHERE	USER_AUTH_KEY = CONCAT(#{userId},(SELECT user_type FROM mind_mgr where user_id =#{userId}))
 	</update>
 	
 	
@@ -1555,6 +1629,9 @@
 		)
 	</insert>
 	
+	
+	
+	
 	<insert id="insertMgrInfo2" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
 		INSERT INTO MIND_MGR(
 			  USER_NM
@@ -1608,7 +1685,7 @@
 			, REG_DT
 		)
 		VALUES (
-			CONCAT(#{userId},'3001')
+			CONCAT(#{userId},(SELECT user_type FROM mind_mgr where user_id =#{userId}))
 			, #{authCd}
 			, date_format(now(), '%Y%m%d%h%i%s')
 		)
@@ -1790,6 +1867,10 @@
 			, #{bookYear}
 		)
 	</insert>	
-	
+	<update id="updateMgrPwd" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
+		UPDATE	MIND_MGR
+		SET	USER_PWD = #{userPwd}
+		WHERE	USER_ID = #{userId}
+	</update>
 
 </mapper>

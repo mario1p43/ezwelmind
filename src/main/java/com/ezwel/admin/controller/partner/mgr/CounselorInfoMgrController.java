@@ -285,8 +285,8 @@ public class CounselorInfoMgrController extends commonController {
 	}
 	
 	//개인정보 관리
-	@RequestMapping(value="/viewMyInformation")
-	public String myImformation(@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, @ModelAttribute MgrCertDto mgrCertDto, Model model){
+	@RequestMapping(value="/getModifyMyInformation")
+	public String getModifyMyInformation(@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, @ModelAttribute MgrCertDto mgrCertDto, Model model){
 		if (logger.isDebugEnabled()){
 			logger.debug("=====수정 상세 디버깅=====");
 		}
@@ -315,7 +315,7 @@ public class CounselorInfoMgrController extends commonController {
 		model.addAttribute("mgrBook", mgrCounselService.getMgrBook(counselorInfoMgrDto.getUserId()));
 		
 		
-		return "/partner/mgr/viewMyInformation";
+		return "/partner/mgr/modifyMyInformation";
 	}
 	
 	
