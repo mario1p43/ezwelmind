@@ -132,12 +132,7 @@ public class CounselController extends commonController{
 		//model.addAttribute("clientList", ecrmService.getClientList(ecrmTaskDto));
 
 		setMenu(model);
-		if(isDevice(request) == IS_PC) {
-			return "partner/pCounselorMgr/counselFixList";
-		}else {
-			return "partner/pCounselorMgr/counselFixList_mo";
-		}
-		
+		return "partner/pCounselorMgr/counselFixList";
 	}
 
 

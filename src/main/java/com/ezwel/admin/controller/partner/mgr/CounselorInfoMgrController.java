@@ -32,14 +32,13 @@ import com.ezwel.admin.service.pCounselorMgr.CounselReservationService;
 import com.ezwel.admin.service.pCounselorMgr.CounselorCalendarService;
 import com.ezwel.admin.service.pCounselorMgr.dto.CounselReservationDto;
 import com.ezwel.admin.service.security.UserDetailsHelper;
-import com.ezwel.common.commonController;
 import com.ezwel.core.support.util.Base64Utils;
 import com.ezwel.core.support.util.DateUtils;
 import com.ezwel.core.support.util.StringUtils;
 
 @Controller
 @RequestMapping("/partner/mgr")
-public class CounselorInfoMgrController extends commonController{
+public class CounselorInfoMgrController {
 
 	@Resource
 	private MgrService mgrService;
@@ -113,12 +112,8 @@ public class CounselorInfoMgrController extends commonController{
 		
 
 		model.addAttribute(counselorInfoMgrService.counselorInfoMgrList(counselorInfoMgrDto));
-		if(isDevice(request) == IS_PC) {
-			return "partner/mgr/counselorInfoMgrList";
-		}else {
-			return "partner/mgr/counselorInfoMgrList_mo";
-		}
-		
+
+		return "partner/mgr/counselorInfoMgrList";
 	}
 
 	//승인/중지
@@ -175,7 +170,7 @@ public class CounselorInfoMgrController extends commonController{
 	
 	
 	@RequestMapping(value="/counselorInfoMgrAdd")
-	public String counselorInfoMgrAdd(@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, Model model,HttpServletRequest request){
+	public String counselorInfoMgrAdd(@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, Model model){
 		if (logger.isDebugEnabled()){
 			logger.debug("======추가 화면단=====");
 		}
@@ -183,13 +178,7 @@ public class CounselorInfoMgrController extends commonController{
 		CommonDto commonDto = new CommonDto();
 		commonDto.setHighCommCd("100732");
 		model.addAttribute("certList", commonService.getTypeList(commonDto) );
-		
-		if(isDevice(request) == IS_PC) {
-			return "partner/mgr/counselorInfoMgrAdd";
-		}else {
-			return "partner/mgr/counselorInfoMgrAdd_mo";
-		}
-		
+		return "partner/mgr/counselorInfoMgrAdd";
 	}
 
 	
@@ -256,7 +245,7 @@ public class CounselorInfoMgrController extends commonController{
 	
 	//상담사 정보 관리
 	@RequestMapping(value="/getCounselorInfoMgrDetail")
-	public String getCounselorInfoMgrDetail(@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, @ModelAttribute MgrCertDto mgrCertDto, Model model, HttpServletRequest request){
+	public String getCounselorInfoMgrDetail(@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, @ModelAttribute MgrCertDto mgrCertDto, Model model){
 		if (logger.isDebugEnabled()){
 			logger.debug("=====수정 상세 디버깅=====");
 		}
@@ -280,13 +269,8 @@ public class CounselorInfoMgrController extends commonController{
 		counselorInfoMgrDto.setHighCommCd("102015");
 		model.addAttribute("extraExamInfo", counselorInfoMgrService.getExtraList(counselorInfoMgrDto));
 		
-		if(isDevice(request) == IS_PC) {
-			return "/partner/mgr/counselorInfoMgrModify";
-		}else {	
-			return "/partner/mgr/counselorInfoMgrModify_mo";
-		}
 		
-		
+		return "/partner/mgr/counselorInfoMgrModify";
 	}
 	
 	//개인정보 관리
@@ -330,7 +314,7 @@ public class CounselorInfoMgrController extends commonController{
 	 * 작업자: 김재훈
 	 * */
 	@RequestMapping(value="/getCounselorInfoMgrDetailCheck")
-	public String getCounselorInfoMgrDetailCheck(@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, @ModelAttribute MgrCertDto mgrCertDto, Model model, HttpServletRequest request){
+	public String getCounselorInfoMgrDetailCheck(@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, @ModelAttribute MgrCertDto mgrCertDto, Model model){
 		if (logger.isDebugEnabled()){
 			logger.debug("=====수정 상세 디버깅=====");
 		}
@@ -352,13 +336,9 @@ public class CounselorInfoMgrController extends commonController{
 		counselorInfoMgrDto.setCenterSeq(manager.getCenterSeq());
 		counselorInfoMgrDto.setHighCommCd("102015");
 		model.addAttribute("extraExamInfo", counselorInfoMgrService.getExtraList(counselorInfoMgrDto));
-		if(isDevice(request) == IS_PC) {
-			return "/partner/mgr/counselorInfoMgrCheck";
-		}else {	
-			return "/partner/mgr/counselorInfoMgrCheck_mo";
-		}
 		
 		
+		return "/partner/mgr/counselorInfoMgrCheck";
 	}
 	
 	

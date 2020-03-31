@@ -98,12 +98,7 @@ public class PCounselorMgrController extends commonController {
 		}
 		setMenu(model);
 		model.addAttribute(pCounselorMgrService.pCounselorDateList(mindCounselIntakeDto));
-		if(isDevice(request) == IS_PC) {
-			return "partner/pCounselorMgr/pCounselorDateList";
-		}else {	
-			return "partner/pCounselorMgr/pCounselorDateList_mo";
-		}
-		
+		return "partner/pCounselorMgr/pCounselorDateList";
 
 	}
 

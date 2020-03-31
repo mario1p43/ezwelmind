@@ -48,7 +48,6 @@ import com.ezwel.admin.service.pCounselorMgr.dto.CounselReservationDto;
 import com.ezwel.admin.service.security.UserDetailsHelper;
 import com.ezwel.admin.service.user.UserService;
 import com.ezwel.admin.service.user.dto.UserAddDto;
-import com.ezwel.common.commonController;
 import com.ezwel.core.framework.web.GlobalsProperties;
 import com.ezwel.core.support.util.DateUtils;
 import com.ezwel.core.support.util.StringUtils;
@@ -56,7 +55,7 @@ import com.ezwel.core.support.util.StringUtils;
 
 @Controller
 @RequestMapping("/partner/payCheckMgr")
-public class PayCheckMgrController extends commonController {
+public class PayCheckMgrController {
 	
 	private static Logger log = LoggerFactory.getLogger(PayCheckMgrController.class);
 	
@@ -102,21 +101,14 @@ public class PayCheckMgrController extends commonController {
 	
 	// 상담비정산 상세보기 팝업
 	@RequestMapping(value="/showPayCheckPop", method=RequestMethod.GET)
-	public String payCheckPop(@ModelAttribute PayCheckAddDto payCheckAddDto, Model model,HttpServletRequest request) {
+	public String payCheckPop(@ModelAttribute PayCheckAddDto payCheckAddDto, Model model) {
 		model.addAttribute("searchValue", payCheckAddDto);
 		model.addAttribute("insertType", payCheckAddDto.getInsertType());
 		if ( payCheckAddDto.getInsertType().equals("U") ){
 			payCheckAddDto = payCheckService.getPayCheckPop(payCheckAddDto);
 			model.addAttribute("payCheck", payCheckAddDto);
 		}
-		
-		if(isDevice(request) == IS_PC) {
-			return "partner/payCheck/showPayCheckPop";
-		}else {	
-			return "partner/payCheck/showPayCheckPop_mo";
-		}
-		
-		
+		return "partner/payCheck/showPayCheckPop";
 	}
 	
 	// 상담비정산 insert

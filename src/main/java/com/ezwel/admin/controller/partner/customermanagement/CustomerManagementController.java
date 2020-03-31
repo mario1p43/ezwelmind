@@ -1,7 +1,6 @@
 package com.ezwel.admin.controller.partner.customermanagement;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,13 +13,12 @@ import com.ezwel.admin.domain.entity.customermanagement.CustomerManagementVo;
 import com.ezwel.admin.domain.entity.customermanagement.DefaultInformationVo;
 import com.ezwel.admin.service.customermanagement.CustomerManagementService;
 import com.ezwel.admin.service.security.UserDetailsHelper;
-import com.ezwel.common.commonController;
 import com.ezwel.core.support.util.FileUploadUtils;
 import com.ezwel.core.support.util.FileUtils;
 
 @Controller
 @RequestMapping("partner/customermanagement")
-public class CustomerManagementController extends commonController{
+public class CustomerManagementController {
 	
 	@Resource
 	private CustomerManagementService customerManagementService;
@@ -30,7 +28,7 @@ public class CustomerManagementController extends commonController{
 		model.addAttribute("menu", menuStr);
 	}
 	@RequestMapping(value="/mainmanage")
-    public String mainmanage(@ModelAttribute CustomerManagementVo customerManagementVo, @ModelAttribute DefaultInformationVo defaultInformationVo, Model model, HttpServletRequest request) {
+	public String mainmanage(@ModelAttribute CustomerManagementVo customerManagementVo, @ModelAttribute DefaultInformationVo defaultInformationVo, Model model) {
 		setMenu(model);
 		if(defaultInformationVo.getCounselCd() == null) {
 			customerManagementVo.setCounselCd("45892");
@@ -42,11 +40,7 @@ public class CustomerManagementController extends commonController{
 		customerManagementVo.setClientCd(clientCd);
 		intakeInfo(customerManagementVo, model);
 		defaultInfo(customerManagementVo, defaultInformationVo, model);
-        if(isDevice(request) == IS_PC) {
-            return "partner/customermanagement/mainmanage";
-        } else {
-            return "partner/customermanagement/mainmanage_mo";
-        }
+		return "partner/customermanagement/mainmanage";
 	}
 	private void defaultInfo(CustomerManagementVo customerManagementVo, DefaultInformationVo defaultInformationVo, Model model) {
 		String counselCd = customerManagementVo.getCounselCd();
