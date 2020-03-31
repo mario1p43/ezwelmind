@@ -247,6 +247,11 @@ $(document).ready(function(){
 			$("#endLine1").css("display","none");
 			$("#endLine2").css("display","none");
 			$("#endLine3").css("display","none");
+			var textSpaceHeight = 300; 
+			oEditors.getById["counselFeedBack"].exec("MSG_EDITING_AREA_RESIZE_STARTED", []); 
+			oEditors.getById["counselFeedBack"].exec("RESIZE_EDITING_AREA", [0, textSpaceHeight]); 
+			oEditors.getById["counselFeedBack"].exec("MSG_EDITING_AREA_RESIZE_ENDED", []); 
+			oEditors.getById["counselFeedBack"].exec("SE_FIT_IFRAME", []);
 		} else{
 			$("#sangdamcontents").css("display","");
 			$("#endLine1").css("display","");
@@ -257,6 +262,11 @@ $(document).ready(function(){
 			}else{
 				$("#endLine2").css("display","none");
 			}
+			var textSpaceHeight = 300; 
+			oEditors.getById["counselFeedBack"].exec("MSG_EDITING_AREA_RESIZE_STARTED", []); 
+			oEditors.getById["counselFeedBack"].exec("RESIZE_EDITING_AREA", [0, textSpaceHeight]); 
+			oEditors.getById["counselFeedBack"].exec("MSG_EDITING_AREA_RESIZE_ENDED", []); 
+			oEditors.getById["counselFeedBack"].exec("SE_FIT_IFRAME", []);
 		}
 	});
 	
@@ -402,7 +412,6 @@ j$(function(){
 	    htParams : {bUseToolbar : true,
             fOnBeforeUnload : function(){},
             fOnAppLoad : function(){}
-            //oEditors.getById["ir1"].exec("PASTE_HTML", ["로딩이 완료된 후에 본문에 삽입되는 text입니다."]);
   		 },
 	    fCreator: "createSEditor2"
 	});
@@ -1205,42 +1214,42 @@ j$(function(){
 						</tr>
 						<!-- 전화,법 상담 인 경우에만 노출 -->
 						<c:if test="${record_detail.counselType eq '100434' or record_detail.counselType eq '100002' }">
-							<tr>
-								<th>상담시간</th>
-								<td>
-									<select name="time1" id="time1">
-										<c:forEach var="time1" begin="00" end="05">
-											<option value="0${time1}" <c:if test="${time1 == record_detail.time.substring(0,2)}">selected="selected"</c:if> >0${time1}</option>
-										</c:forEach>
-									</select> 시간
-									<select name="time2" id="time2">
-										<option value="00" <c:if test="${record_detail.time.substring(2,4) eq 00}">selected="selected"</c:if> >00</option>
-										<option value="10" <c:if test="${record_detail.time.substring(2,4) eq 10}">selected="selected"</c:if> >10</option>
-										<option value="20" <c:if test="${record_detail.time.substring(2,4) eq 20}">selected="selected"</c:if> >20</option>
-										<option value="30" <c:if test="${record_detail.time.substring(2,4) eq 30}">selected="selected"</c:if> >30</option>
-										<option value="40" <c:if test="${record_detail.time.substring(2,4) eq 40}">selected="selected"</c:if> >40</option>
-										<option value="50" <c:if test="${record_detail.time.substring(2,4) eq 50}">selected="selected"</c:if> >50</option>
-									</select> 분
-								</td>
-							</tr>
+						<tr>
+							<th>상담시간</th>
+							<td>
+								<select name="time1" id="time1">
+									<c:forEach var="time1" begin="00" end="05">
+										<option value="0${time1}" <c:if test="${time1 == record_detail.time.substring(0,2)}">selected="selected"</c:if> >0${time1}</option>
+									</c:forEach>
+								</select> 시간
+								<select name="time2" id="time2">
+									<option value="00" <c:if test="${record_detail.time.substring(2,4) eq 00}">selected="selected"</c:if> >00</option>
+									<option value="10" <c:if test="${record_detail.time.substring(2,4) eq 10}">selected="selected"</c:if> >10</option>
+									<option value="20" <c:if test="${record_detail.time.substring(2,4) eq 20}">selected="selected"</c:if> >20</option>
+									<option value="30" <c:if test="${record_detail.time.substring(2,4) eq 30}">selected="selected"</c:if> >30</option>
+									<option value="40" <c:if test="${record_detail.time.substring(2,4) eq 40}">selected="selected"</c:if> >40</option>
+									<option value="50" <c:if test="${record_detail.time.substring(2,4) eq 50}">selected="selected"</c:if> >50</option>
+								</select> 분
+							</td>
+						</tr>
 						</c:if>
 						
-						<!-- 법률 상담 인 경우에만 노출 -->
+					<!-- 법률 상담 인 경우에만 노출 -->
 						<c:if test="${intake_detail.channelType eq '100002'}">
-							<tr>
-								<th rowspan="2">상담사가 내담자에게<br>전하는 메시지</th>
-								<th>
-									<span style="color:BLUE">작성한 내용은 저장 즉시 내담자에게 바로 전달되어,<br>'내담자페이지'나 SMS 및 이메일을 통해 열람 및 출력할 수 있습니다.<br>※ '종결하기'일 경우에만 발송됩니다.<br><br></span>
-									발송을 원하지 않으면 체크를 해지해주세요.<br> 
-									<label for="checkSms"> SMS <input type="checkbox" name="checkSms" id="checkSms" value="Y" checked="checked"/></label> 
-									<label for="checkEmail"> e-mail <input type="checkbox" name="checkEmail" id="checkEmail" value="Y" checked="checked"/></label>
-								</th>
-							</tr>
-							<tr>
-								<td>
-	            					<textarea rows="10" cols="30" id="counselFeedBack" name="counselFeedBack" style="width:100%; height:150px;">${counsel_feedback.content }</textarea>
-								</td>
-							</tr>
+						<tr>
+							<th rowspan="2">상담사가 내담자에게<br>전하는 메시지</th>
+							<th>
+								<span style="color:BLUE">작성한 내용은 저장 즉시 내담자에게 바로 전달되어,<br>'내담자페이지'나 SMS 및 이메일을 통해 열람 및 출력할 수 있습니다.<br>※ '종결하기'일 경우에만 발송됩니다.<br><br></span>
+								발송을 원하지 않으면 체크를 해지해주세요.<br> 
+								<label for="checkSms"> SMS <input type="checkbox" name="checkSms" id="checkSms" value="Y" checked="checked"/></label> 
+								<label for="checkEmail"> e-mail <input type="checkbox" name="checkEmail" id="checkEmail" value="Y" checked="checked"/></label>
+							</th>
+						</tr>
+						<tr>
+							<td>
+            					<textarea rows="10" cols="30" id="counselFeedBack" name="counselFeedBack" style="width:100%; height:350px;">${counsel_feedback.content }</textarea>
+							</td>
+						</tr>
 						</c:if>
 						<tr>
 							<th>파일첨부</th>
@@ -1263,6 +1272,7 @@ j$(function(){
 							</tr>
 							</c:if>
 						</c:if>
+						<c:if test="${intake_detail.channelType ne '100002'}">
 						<tr id="endLine1">
 							<th>종결유형</th>
 						    <td>
@@ -1283,6 +1293,7 @@ j$(function(){
 								<textarea rows="5" cols="50" style="width: 95%" id="endReport" name="endReport">${record_detail.endReport}</textarea>
 						    </td>
 						</tr>
+						</c:if>
 					</table>
 					</td>
 				</tr>

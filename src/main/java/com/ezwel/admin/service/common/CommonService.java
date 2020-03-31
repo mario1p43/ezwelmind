@@ -169,9 +169,14 @@ public class CommonService {
 		return commonMapper.getClientJedoPeriodEndDd(clientCd);
 	}
 
+
 	public String getUserMobile() {
 		Manager manager = UserDetailsHelper.getAuthenticatedUser();
 		String userId = manager.getUserId();
+		return commonMapper.getUserMobile(userId);
+	}
+	
+	public String getUserMobile(String userId) {
 		return commonMapper.getUserMobile(userId);
 	}
 
@@ -212,9 +217,17 @@ public class CommonService {
 		message.append("인증번호 : ");
 		message.append(authKey);
 		
-		//smsService.send(userMobile, "1644-4474", message.toString());
-		
+		//smsService.send(userMobile, "1644-4474", message.toString());		
         
 		session.setAttribute("ConfirmNumber", "123456");
+	}
+
+	public boolean checkId(String userId) {
+		int resultCount = commonMapper.isUser(userId);
+		if(resultCount > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

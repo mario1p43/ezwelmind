@@ -2,12 +2,14 @@ package com.ezwel.admin.controller;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.ws.RequestWrapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.ezwel.admin.service.common.CommonService;
 import com.ezwel.admin.service.security.UserDetailsHelper;
@@ -37,11 +39,7 @@ public class CommonLoginController extends commonController {
 			 * 그외에는 어드민 메인으로 
 			 */
 			if (globalsProperties.getProperty("cp.site.code").equals(UrlUtil.getUrlClientCd(request))) {
-				String userMobile = commonService.getUserMobile();
-		        
-				
-				commonService.setConfirmNumberIntoSession(request.getSession(),userMobile);
-				return "redirect:/partner/main/confirmnumberview";
+				return "redirect:/partner/main/index";
 			} else {
 				return "redirect:/madm/main/index";
 			}
@@ -79,6 +77,30 @@ public class CommonLoginController extends commonController {
 		
 	}
 	
+	@RequestMapping(value="/login/checkId")
+	public void checkId(Model model, HttpServletRequest request) {
+		String userId = request.getParameter("userId");
+		boolean isUser = commonService.checkId(userId);
+	
+		if(isUser) {
+			String userMobile = commonService.getUserMobile(userId);      
+			commonService.setConfirmNumberIntoSession(request.getSession(),userMobile);
+			model.addAttribute("isUser", "true");
+		} else {
+			model.addAttribute("isUser", "false");
+		}
+	}
+	
+	@RequestMapping(value="/login/confirmnumber")
+	public void confirmNumber(Model model, HttpServletRequest request) {
+		String originalConfirmNumber = (String)request.getSession().getAttribute("ConfirmNumber");
+		String targetConfirmNumber = request.getParameter("confirmNumber");
+		if(originalConfirmNumber.equals(targetConfirmNumber)) {
+			model.addAttribute("confirm", "true");
+		}else {
+			model.addAttribute("confirm", "false");
+		}
+	}
 
 	/**
 	 * 
@@ -112,5 +134,4 @@ public class CommonLoginController extends commonController {
 	public String test2(HttpServletRequest request, Model model) {
 		return "madm/login/loginForm";
 	}
-
 }

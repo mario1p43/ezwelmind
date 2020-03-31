@@ -11,6 +11,7 @@
 	<meta http-equiv="Content-Style-Type" content="text/css" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<script>
+		var interval;
 	      j$(document).ready(function(){
 
 	    		j$("#loginBtn").click(function(){
@@ -64,9 +65,57 @@
 	    			
 	    			j$("#id_mo").val("");
 	    	      	j$("#id_mo").val(j$("#userId_mo").val() + "3001");
+
+	    			var params = {};
+	    			params.confirmNumber = $("#confirmNumber").val();
 	    			
-	    			j$("#login_mo").submit();
+	    			j$.ajax({
+	    				url: '/login/confirmnumber',
+	    				async: false,
+	    				data: params,
+	    				dataType: 'json',
+	    				type: 'GET',
+	    				cache:true,
+	    				success: function(data, textStatus){
+	    					if(data.confirm === 'true'){
+	    		    			j$("#login_mo").submit();
+	    					}else{
+	    						j$('#confirmKeyDiv').css("display","none");
+	    						j$('#loginBtn_mo').css("display","none");
+	    						j$('#btn_check_id').css("display","");
+	    						clearInterval(interval);
+	    						j$('#timerDiv').css("display","none");
+	    					}
+	    				}
+	    			})
+	    	      	
 	    			return false;
+	    		});
+	    		
+	    		j$("#btn_check_id").click(function(e){
+				    e.preventDefault();
+	    			var params = {};
+	    			params.userId = $("#userId_mo").val();
+	    			j$.ajax({
+	    				url: '/login/checkId',
+	    				async: false,
+	    				data: params,
+	    				dataType: 'json',
+	    				type: 'GET',
+	    				cache:true,
+	    				success: function(data, textStatus){
+	    					if(data.isUser === 'true'){
+	    						j$('#confirmKeyDiv').css("display","");
+	    						j$('#loginBtn_mo').css("display","");
+	    						j$('#btn_check_id').css("display","none");
+	    						timer();
+	    					}else{
+	    						j$('#confirmKeyDiv').css("display","none");
+	    						j$('#loginBtn_mo').css("display","none");
+	    						j$('#btn_check_id').css("display","");
+	    					}
+	    				}
+	    			})
 	    		});
 	    		
 	    		setUserId();
@@ -83,6 +132,29 @@
 				$("#id_save").prop('checked',true);
 				$("#id_save_mo").prop('checked',true);
 			}
+		}
+		
+		function timer(){
+			var time = 90;
+			var min = "";
+			var sec = "";
+			
+			interval = setInterval(function(){
+				j$('#timerDiv').css("display","");
+				min = parseInt(time/60);
+				sec = time%60;
+				
+				$("#timerDiv").text(min + "분" + sec + "초");
+				time --;
+				
+				if(time < 0){
+					clearInterval(interval);
+					j$('#confirmKeyDiv').css("display","none");
+					j$('#loginBtn_mo').css("display","none");
+					j$('#btn_check_id').css("display","");
+					j$('#timerDiv').css("display","none");
+				}
+			}, 1000);
 		}
 	</script>
 </head>
@@ -101,11 +173,10 @@
 			</div>
 			<div class="login_contents">
 				<div class="cont_bn">
-					<div class="partner"></div>
-					<!-- <img alt="이지웰니스상담포유 관리자시스템 이지웰니스는 사람이 행복한 하루, 그 하루로 행복해지는 세상을 만들어 갑니다." /> src="//img.ezwelmind.co.kr/sangdam4u/images/member/img_login_bn04.jpg" -->
+					<img src="//img.ezwelmind.co.kr/sangdam4u/images/member/img_login_bn04.jpg" alt="이지웰니스상담포유 관리자시스템 이지웰니스는 사람이 행복한 하루, 그 하루로 행복해지는 세상을 만들어 갑니다." />
 				</div>
 				<fieldset class="field_pd02">
-					<h2><div class="partner_login"></div></h2> <!-- <img src="//img.ezwelmind.co.kr/sangdam4u/images/member/tit_login.gif" alt="LOGIN" /> -->
+					<h2><img src="//img.ezwelmind.co.kr/sangdam4u/images/member/tit_login.gif" alt="LOGIN" /></h2>
 					<p>관리시스템은 지정된 관리자만 로그인이 가능합니다.</p>
 					<div class="write_wrap">
 						<div class="input_area">
@@ -121,7 +192,7 @@
 			</div>
 			<div class="login_footer">
 				<ul>
-					<li>아이디 분실 시, 이지웰니스로 문의바랍니다. <span style="color:brown;">이지웰니스 상담센터 담당(02-6909-4405)</span></li>
+					<li>아이디, 비밀번호를 분실하신 경우 상담센터 혹은 소속 기업의 담당자에게 문의바랍니다.</li>
 				</ul>
 			</div>
 			
@@ -153,6 +224,53 @@
 
 
 
+</div>
+
+
+<div class="mobile">
+<form id="login_mo" action="<spring:eval expression="@global['page.login.url']" />" method="post" >
+		<input type="hidden" name="userId" id="id_mo" value="" />
+			<div class="mobile_member_header">
+				<h1><img src="//img.ezwelmind.co.kr/sangdam4u/images/common/img_logo_clientcd.png" alt="상담포유" /></h1>
+				<ul class="login_sort">
+					<li></li>
+				</ul>
+			</div>
+			<div class="login_contents">
+				
+				<fieldset class="padding10">
+					<h2><img src="//img.ezwelmind.co.kr/sangdam4u/images/member/tit_login.gif" alt="LOGIN" /></h2>
+					<p>관리시스템은 지정된 관리자만 로그인이 가능합니다.</p>
+					<div class="write_wrap">
+						<div class="input_area">
+							<input type="text" id="userId_mo" size="15" autofocus="autofocus" class="write_box" placeholder="사번/아이디" />
+						</div>
+						<div>
+							<input type="password" id="pwd_mo" name="userPwd" size="15" class="write_box" placeholder="인증번호" />
+						</div>
+						<div id="confirmKeyDiv" style="display:none">
+							<input type="text" id="confirmNumber" size="15" class="write_box" placeholder="확인번호" />
+						</div>
+						<div id="timerDiv"></div>
+						<button id="btn_check_id" class="btn_login denial">로그인</button>
+						<button id="loginBtn_mo" class="btn_login denial" style="display:none">로그인</button>
+					</div>
+					<input type="checkbox" name="id_save" id="id_save_mo" /> <label for="id_save" class="save_id">아이디저장</label>
+					<br>
+					<br>
+
+				</fieldset>
+				
+			</div>
+			<div class="mobile_login_footer padding10">
+					<ul>
+						<li>아이디, 비밀번호를 분실하신 경우<br> 상담센터 혹은 소속 기업의 담당자에게 문의바랍니다.</li>
+					</ul>
+			</div>
+			
+				
+			
+		</form>
 </div>
 
 

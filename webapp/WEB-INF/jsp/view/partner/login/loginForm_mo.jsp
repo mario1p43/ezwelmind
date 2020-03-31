@@ -10,23 +10,11 @@
 	<meta http-equiv="Content-Script-Type" content="text/javascript" />
 	<meta http-equiv="Content-Style-Type" content="text/css" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script>
+		var interval;
 	      j$(document).ready(function(){
-				var isLoginInfo = false;
-				//크롬 자동완성 때문에 아이디 입력값 로드 시 체크
-				isLoginInfo = (j$("#userId").val() != '' && j$("#pwd").val() != "");
-				if(isLoginInfo === true) {
-					j$('#loginBtn').addClass('active');
-				} else {
-					j$('#loginBtn').removeClass('active');
-				}
-				////////////////////////////////////////////
 
 	    		j$("#loginBtn").click(function(){
-					if(isLoginInfo === false) {
-						return;
-					}
 	    			if ( j$("#userId").val() == "" ){
 	    				alert("ID를 입력해주세요.");
 	    				j$("#userId").focus();
@@ -55,10 +43,6 @@
 	    		});
 	    		
 	    		j$("#loginBtn_mo").click(function(){
-					if(isLoginInfo === false) {
-						return;
-					}
-
 	    			if ( j$("#userId_mo").val() == "" ){
 	    				alert("ID를 입력해주세요.");
 	    				j$("#userId_mo").focus();
@@ -81,19 +65,58 @@
 	    			
 	    			j$("#id_mo").val("");
 	    	      	j$("#id_mo").val(j$("#userId_mo").val() + "3001");
+
+	    			var params = {};
+	    			params.confirmNumber = $("#confirmNumber").val();
 	    			
-	    			j$("#login_mo").submit();
+	    			j$.ajax({
+	    				url: '/login/confirmnumber',
+	    				async: false,
+	    				data: params,
+	    				dataType: 'json',
+	    				type: 'GET',
+	    				cache:true,
+	    				success: function(data, textStatus){
+	    					if(data.confirm === 'true'){
+	    		    			j$("#login_mo").submit();
+	    					}else{
+	    						j$('#confirmKeyDiv').css("display","none");
+	    						j$('#loginBtn_mo').css("display","none");
+	    						j$('#btn_check_id').css("display","");
+	    						clearInterval(interval);
+	    						j$('#timerDiv').css("display","none");
+	    					}
+	    				}
+	    			})
+	    	      	
 	    			return false;
-				});
-				
-				j$("#userId, #pwd").on('keyup', function(e) {
-					isLoginInfo = (j$("#userId").val() != '' && j$("#pwd").val() != "");
-					if(isLoginInfo === true) {
-						j$('#loginBtn').addClass('active');
-					} else {
-						j$('#loginBtn').removeClass('active');
-					}
-				});
+	    		});
+	    		
+	    		j$("#btn_check_id").click(function(e){
+				    e.preventDefault();
+	    			var params = {};
+	    			params.userId = $("#userId_mo").val();
+	    			j$.ajax({
+	    				url: '/login/checkId',
+	    				async: false,
+	    				data: params,
+	    				dataType: 'json',
+	    				type: 'GET',
+	    				cache:true,
+	    				success: function(data, textStatus){
+	    					if(data.isUser === 'true'){
+	    						j$('#confirmKeyDiv').css("display","");
+	    						j$('#loginBtn_mo').css("display","");
+	    						j$('#btn_check_id').css("display","none");
+	    						timer();
+	    					}else{
+	    						j$('#confirmKeyDiv').css("display","none");
+	    						j$('#loginBtn_mo').css("display","none");
+	    						j$('#btn_check_id').css("display","");
+	    					}
+	    				}
+	    			})
+	    		});
 	    		
 	    		setUserId();
 	      });
@@ -110,148 +133,146 @@
 				$("#id_save_mo").prop('checked',true);
 			}
 		}
+		
+		function timer(){
+			var time = 90;
+			var min = "";
+			var sec = "";
+			
+			interval = setInterval(function(){
+				j$('#timerDiv').css("display","");
+				min = parseInt(time/60);
+				sec = time%60;
+				
+				$("#timerDiv").text(min + "분" + sec + "초");
+				time --;
+				
+				if(time < 0){
+					clearInterval(interval);
+					j$('#confirmKeyDiv').css("display","none");
+					j$('#loginBtn_mo').css("display","none");
+					j$('#btn_check_id').css("display","");
+					j$('#timerDiv').css("display","none");
+				}
+			}, 1000);
+		}
 	</script>
-	<style>
-		.flexColumn{display: flex;  flex-direction: column; display: -webkit-flex;  -webkit-flex-direction: column; }
-		.flex{display: flex; display: -webkit-flex;}
-		.flexGrow{-webkit-flex-grow: 1; flex-grow: 1; flex : 1 1 0;  -webkit-flex : 1 1 0;}
-		.center{-webkit-justify-content: center; justify-content: center; -webkit-align-items: center; align-items: center; }/* 가로세로중앙정렬 */
-		.centerH{-webkit-align-items: center; align-items: center; }/* 세로중앙정렬 */
-		.rightR{-webkit-justify-content: flex-end; justify-content: flex-end; }
-		.rightC{-webkit-align-items: flex-end; align-items: flex-end;}
-		.member_wrap{
-			width: 100vw !important;
-			height: 100vh;
-			display: flex; display: -webkit-flex;
-			-webkit-justify-content: center; justify-content: center; -webkit-align-items: center; align-items: center;
-		}
-		body {
-			background: url(${url:resource('/resources/img/login_background.png')}) no-repeat 50% 50% fixed; 
-			-webkit-background-size: cover; 
-			-moz-background-size: cover; 
-			-o-background-size: cover; 
-			background-size: cover; 
-		}
-
-		form {
-			width: 100vw;
-		}
-	
-		.login_form_wrapper {
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			padding: 0 7.6389vw;
-		}
-
-		.login_image_wrapper {
-			display: flex; display: -webkit-flex;
-			-webkit-justify-content: center; justify-content: center; -webkit-align-items: center; align-items: center;
-		}
-
-		.login_image_wrapper img {
-			width: 65.8333vw;
-			margin-bottom: 9.1667vw;
-		}
-		
-		.login_form_wrapper div input {
-			height: 13.3333vw;
-			font-size: 5.5556vw;
-			padding-left: 4.4444vw;
-			width: -webkit-fill-available;
-			border-radius: 1.1111vw;
-			border: 1px solid #828282;
-			background-color: #ffffff;
-			color: black;
-		}
-		.login_form_wrapper div input:focus {
-			background-color: white;
-			color:black;
-		}
-		.login_form_wrapper div input::placeholder {
-			font-size: 5.5556vw;
-			color: #828282;
-		}
-		.login_form_wrapper div button {
-			border-radius: 1.1111vw;
-			background-color: #bdbdbd;
-			font-weight: bold;
-			color: #e0e0e0;
-			width: 100%;
-			height: 13.3333vw;
-			font-size: 5.5556vw;
-		}
-		.login_form_wrapper div button.active {
-			color:white;
-			background-color: #004B85;
-			box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-		}
-		.login_form_wrapper div {
-			margin-top: 2.2222vw;
-		}
-		
-		.m_login_footer{
-			display: flex;
-			position: absolute;
-			bottom: 4.4444vw;
-			flex-direction: column;
-		}
-		.m_login_footer span {
-			font-size: 2.7778vw;
-			color: #003B74;
-			text-align: center;
-		}
-
-	</style>
 </head>
 <body bgcolor="#FFFFFF" topmargin="0" leftmargin="0">
-	<form id="login" action="<spring:eval expression="@global['page.login.url']" />" method="post">
-	<input type="hidden" name="userId" id="id" value="" />
-	<div class="login_form_wrapper">
-		<div class="login_image_wrapper">
-			<img src="${url:resource('/resources/img/login_logo.png')}"/>
-		</div>
-		<div>
-			<input type="text" id="userId" size="15" autofocus="autofocus" class="write_box" placeholder="아이디" />
-		</div>
-		<div>
-			<input type="password" id="pwd" name="userPwd" size="15" class="write_box" placeholder="비밀번호" />
-		</div>
-		<div>
-			<button type="submit" id="loginBtn" class="btn_login denial">로그인</button>
-		</div>
-	</div>
-	
-	
-		
-	
-	<c:if test="${today < 20180826}">
-	
-	<!-- <div id="popupDispYn" style="display: none;">
-		<div id="pop_cont" style="position: fixed; left: 42%; top: 17%; z-index: 99; background: white; padding: 15px 15px 15px 15px;  border: 1px solid gray;" >
-			<div>
-				<div align="right" style="margin-bottom: 5px;">
-					<img  class="btn_close" alt="닫기" src="http://img.ezwelmind.co.kr/sangdam4u/images/btn/btn_close_18x18.png">
+
+<div class="web">
+
+
+		<form id="login" action="<spring:eval expression="@global['page.login.url']" />" method="post">
+		<input type="hidden" name="userId" id="id" value="" />
+			<div class="member_header">
+				<h1><img src="//img.ezwelmind.co.kr/sangdam4u/images/common/img_logo_clientcd.png" alt="상담포유" /></h1>
+				<ul class="login_sort">
+					<li></li>
+				</ul>
+			</div>
+			<div class="login_contents">
+				<div class="cont_bn">
+					<img src="//img.ezwelmind.co.kr/sangdam4u/images/member/img_login_bn04.jpg" alt="이지웰니스상담포유 관리자시스템 이지웰니스는 사람이 행복한 하루, 그 하루로 행복해지는 세상을 만들어 갑니다." />
 				</div>
-				<img alt="서비스 점검안내" src="//img.ezwelmind.co.kr//sangdam4u/images/popup/180821_partner_popup.jpg">
-				<div class="today_close">
-					<input id="today_c" type="checkbox" value="7"><label for="today_c" style="font-size: smaller; ">&nbsp;오늘 하루 보지 않기</label>
-					<img align="right" class="btn_close" alt="닫기" src="http://img.ezwelmind.co.kr/sangdam4u/images/btn/btn_close_18x18.png">
+				<fieldset class="field_pd02">
+					<h2><img src="//img.ezwelmind.co.kr/sangdam4u/images/member/tit_login.gif" alt="LOGIN" /></h2>
+					<p>관리시스템은 지정된 관리자만 로그인이 가능합니다.</p>
+					<div class="write_wrap">
+						<div class="input_area">
+							<input type="text" id="userId" size="15" autofocus="autofocus" class="write_box" placeholder="사번/아이디" />
+						</div>
+						<div>
+							<input type="password" id="pwd" name="userPwd" size="15" class="write_box" placeholder="비밀번호" />
+						</div>
+						<button type="submit" id="loginBtn" class="btn_login denial">로그인</button>
+					</div>
+					<input type="checkbox" name="id_save" id="id_save" /> <label for="id_save" class="save_id">아이디저장</label>
+				</fieldset>
+			</div>
+			<div class="login_footer">
+				<ul>
+					<li>아이디, 비밀번호를 분실하신 경우 상담센터 혹은 소속 기업의 담당자에게 문의바랍니다.</li>
+				</ul>
+			</div>
+			
+		
+		<c:if test="${today < 20180826}">
+		
+		
+		
+		<div id="popupDispYn" style="display: none;">
+			<div id="pop_cont" style="position: fixed; left: 42%; top: 17%; z-index: 99; background: white; padding: 15px 15px 15px 15px;  border: 1px solid gray;" >
+				<div>
+					<div align="right" style="margin-bottom: 5px;">
+						<img  class="btn_close" alt="닫기" src="http://img.ezwelmind.co.kr/sangdam4u/images/btn/btn_close_18x18.png">
+					</div>
+					<img alt="서비스 점검안내" src="//img.ezwelmind.co.kr//sangdam4u/images/popup/180821_partner_popup.jpg">
+					<div class="today_close">
+						<input id="today_c" type="checkbox" value="7"><label for="today_c" style="font-size: smaller; ">&nbsp;오늘 하루 보지 않기</label>
+						<img align="right" class="btn_close" alt="닫기" src="http://img.ezwelmind.co.kr/sangdam4u/images/btn/btn_close_18x18.png">
+					</div>
 				</div>
 			</div>
 		</div>
-	</div> -->
-	
-	</c:if>
-	
 		
-	</form>
-	
+		</c:if>
+		
+			
+		</form>
 
-	<div class="m_login_footer">
-		<span>아이디 비밀번호 분실 시 이지웰니스로 문의바랍니다.</span>
-		<span>이지웰니스 상담센터 담당 (02-6909-441)</span>
-	</div>
+
+
+
+</div>
+
+
+<div class="mobile">
+<form id="login_mo" action="<spring:eval expression="@global['page.login.url']" />" method="post" >
+		<input type="hidden" name="userId" id="id_mo" value="" />
+			<div class="mobile_member_header">
+				<h1><img src="//img.ezwelmind.co.kr/sangdam4u/images/common/img_logo_clientcd.png" alt="상담포유" /></h1>
+				<ul class="login_sort">
+					<li></li>
+				</ul>
+			</div>
+			<div class="login_contents">
+				
+				<fieldset class="padding10">
+					<h2><img src="//img.ezwelmind.co.kr/sangdam4u/images/member/tit_login.gif" alt="LOGIN" /></h2>
+					<p>관리시스템은 지정된 관리자만 로그인이 가능합니다.</p>
+					<div class="write_wrap">
+						<div class="input_area">
+							<input type="text" id="userId_mo" size="15" autofocus="autofocus" class="write_box" placeholder="사번/아이디" />
+						</div>
+						<div>
+							<input type="password" id="pwd_mo" name="userPwd" size="15" class="write_box" placeholder="인증번호" />
+						</div>
+						<div id="confirmKeyDiv" style="display:none">
+							<input type="text" id="confirmNumber" size="15" class="write_box" placeholder="확인번호" />
+						</div>
+						<div id="timerDiv"></div>
+						<button id="btn_check_id" class="btn_login denial">로그인</button>
+						<button id="loginBtn_mo" class="btn_login denial" style="display:none">로그인</button>
+					</div>
+					<input type="checkbox" name="id_save" id="id_save_mo" /> <label for="id_save" class="save_id">아이디저장</label>
+					<br>
+					<br>
+
+				</fieldset>
+				
+			</div>
+			<div class="mobile_login_footer padding10">
+					<ul>
+						<li>아이디, 비밀번호를 분실하신 경우<br> 상담센터 혹은 소속 기업의 담당자에게 문의바랍니다.</li>
+					</ul>
+			</div>
+			
+				
+			
+		</form>
+</div>
+
 
 
 
