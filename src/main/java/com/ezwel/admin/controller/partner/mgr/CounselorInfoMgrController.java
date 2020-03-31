@@ -39,7 +39,7 @@ import com.ezwel.core.support.util.StringUtils;
 
 @Controller
 @RequestMapping("/partner/mgr")
-public class CounselorInfoMgrController extends commonController {
+public class CounselorInfoMgrController extends commonController{
 
 	@Resource
 	private MgrService mgrService;
@@ -113,10 +113,9 @@ public class CounselorInfoMgrController extends commonController {
 		
 
 		model.addAttribute(counselorInfoMgrService.counselorInfoMgrList(counselorInfoMgrDto));
-
 		if(isDevice(request) == IS_PC) {
 			return "partner/mgr/counselorInfoMgrList";
-		}else {	
+		}else {
 			return "partner/mgr/counselorInfoMgrList_mo";
 		}
 		
@@ -176,7 +175,7 @@ public class CounselorInfoMgrController extends commonController {
 	
 	
 	@RequestMapping(value="/counselorInfoMgrAdd")
-	public String counselorInfoMgrAdd(@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, Model model, HttpServletRequest request){
+	public String counselorInfoMgrAdd(@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, Model model,HttpServletRequest request){
 		if (logger.isDebugEnabled()){
 			logger.debug("======추가 화면단=====");
 		}
@@ -187,9 +186,10 @@ public class CounselorInfoMgrController extends commonController {
 		
 		if(isDevice(request) == IS_PC) {
 			return "partner/mgr/counselorInfoMgrAdd";
-		}else {	
+		}else {
 			return "partner/mgr/counselorInfoMgrAdd_mo";
 		}
+		
 	}
 
 	
@@ -279,12 +279,14 @@ public class CounselorInfoMgrController extends commonController {
 		counselorInfoMgrDto.setCenterSeq(manager.getCenterSeq());
 		counselorInfoMgrDto.setHighCommCd("102015");
 		model.addAttribute("extraExamInfo", counselorInfoMgrService.getExtraList(counselorInfoMgrDto));
-
+		
 		if(isDevice(request) == IS_PC) {
 			return "/partner/mgr/counselorInfoMgrModify";
 		}else {	
 			return "/partner/mgr/counselorInfoMgrModify_mo";
 		}
+		
+		
 	}
 	
 	//개인정보 관리
@@ -350,12 +352,13 @@ public class CounselorInfoMgrController extends commonController {
 		counselorInfoMgrDto.setCenterSeq(manager.getCenterSeq());
 		counselorInfoMgrDto.setHighCommCd("102015");
 		model.addAttribute("extraExamInfo", counselorInfoMgrService.getExtraList(counselorInfoMgrDto));
-		
 		if(isDevice(request) == IS_PC) {
 			return "/partner/mgr/counselorInfoMgrCheck";
 		}else {	
 			return "/partner/mgr/counselorInfoMgrCheck_mo";
 		}
+		
+		
 	}
 	
 	

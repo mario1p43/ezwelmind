@@ -57,7 +57,7 @@
 								<a href="<spring:eval expression="@global['upload.http.img']" />${files1.filePath}" class="attach_file" target="_blank">${files1.fileNm}</a>
 							</div>
 							<div class="download-icon">
-								<img src="/resources/img/ic_download.png" style="width:16px;height:16px">
+								<img src="${url:resource('/resources/img/ic_download.png')}" style="width:16px;height:16px">
 							</div>
 						</div>
 					<c:if test="${not empty files2.filePath}">
@@ -66,7 +66,7 @@
 								<a href="<spring:eval expression="@global['upload.http.img']" />${files2.filePath}" class="attach_file"  target="_blank">${files2.fileNm}</a>
 							</div>
 							<div class="download-icon">
-								<img src="/resources/img/ic_download.png" style="width:16px;height:16px">
+								<img src="${url:resource('/resources/img/ic_download.png')}" style="width:16px;height:16px">
 							</div>
 						</div>
 					</c:if>
@@ -76,7 +76,7 @@
 								<a href="<spring:eval expression="@global['upload.http.img']" />${files3.filePath}" class="attach_file"  target="_blank">${files3.fileNm}</a><br>
 							</div>
 							<div class="download-icon">
-								<img src="/resources/img/ic_download.png" style="width:16px;height:16px">
+								<img src="${url:resource('/resources/img/ic_download.png')}" style="width:16px;height:16px">
 							</div>
 						</div>
 					</c:if>
@@ -86,7 +86,7 @@
 								<a href="<spring:eval expression="@global['upload.http.img']" />${files4.filePath}" class="attach_file"  target="_blank">${files4.fileNm}</a><br>
 							</div>
 							<div class="download-icon">
-								<img src="/resources/img/ic_download.png" style="width:16px;height:16px">
+								<img src="${url:resource('/resources/img/ic_download.png')}" style="width:16px;height:16px">
 							</div>
 						</div>
 					</c:if>
@@ -96,7 +96,7 @@
 								<a href="<spring:eval expression="@global['upload.http.img']" />${files5.filePath}" class="attach_file" target="_blank">${files5.fileNm}</a><br>
 							</div>
 							<div class="download-icon">
-								<img src="/resources/img/ic_download.png" style="width:16px;height:16px">
+								<img src="${url:resource('/resources/img/ic_download.png')}" style="width:16px;height:16px">
 							</div>
 						</div>
 					</c:if>

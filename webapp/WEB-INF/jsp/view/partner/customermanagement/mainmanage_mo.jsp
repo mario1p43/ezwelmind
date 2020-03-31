@@ -95,7 +95,7 @@
 <script type="text/javascript">
 j$(document).ready(function(){
 	$('.mobile_nav ul li a').eq(1).addClass('active');
-	$('.mobile_nav ul li a img').eq(1).attr('src', '/resources/img/home_icon_active.png');
+	$('.mobile_nav ul li a img').eq(1).attr('src', ${url:resource('/resources/img/home_icon_active.png')});
 	j$('.chooose_file_button').on('click', function() {
 		j$(this).siblings('input[type=file]').trigger('click');
 		return false;
@@ -516,7 +516,7 @@ j$(document).ready(function(){
 	<div class="box_title">연장 및 서류 요청</div>
 	<div class="box_description">연장 신청을 하시려면 아래의 파일을 다운로드 받아 업로드 후 승인요청 해주시기 바랍니다.</div>
 	<div class="doc_donwload_wrapper">
-		<img src="/resources/img/download.png"/>
+		<img src="${url:resource('/resources/img/download.png')}"/>
 		<div class="download_file_button"><a href="javascript:fileDownLoad('/extentiondocuments.zip', 'extentiondocuments.zip');">연장 신청서류 다운로드</a></div>
 	</div>
 	<div class="agreement_wrapper">

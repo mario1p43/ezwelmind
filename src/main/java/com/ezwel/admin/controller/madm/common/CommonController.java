@@ -61,7 +61,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
-public class CommonController extends commonController {	
+public class CommonController extends commonController{	
  	
 	@Resource
 	private CommonService commonService;
@@ -243,9 +243,10 @@ public class CommonController extends commonController {
 		
 		if(isDevice(request) == IS_PC) {
 			return "madm/common/intakeDetailPopup";
-		} else {
-			return "madm/common/intakeDetailPopup_mo";
-		}
+        } else {
+        	return "madm/common/intakeDetailPopup_mo";
+        }
+		
 	}
 	
 	@RequestMapping(value="/madm/common/getCommClientList", method=RequestMethod.GET)

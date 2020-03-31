@@ -126,7 +126,7 @@
 			-webkit-justify-content: center; justify-content: center; -webkit-align-items: center; align-items: center;
 		}
 		body {
-			background: url('/resources/img/login_background.png') no-repeat 50% 50% fixed; 
+			background: url(${url:resource('/resources/img/login_background.png')}) no-repeat 50% 50% fixed; 
 			-webkit-background-size: cover; 
 			-moz-background-size: cover; 
 			-o-background-size: cover; 
@@ -209,7 +209,7 @@
 	<input type="hidden" name="userId" id="id" value="" />
 	<div class="login_form_wrapper">
 		<div class="login_image_wrapper">
-			<img src="/resources/img/login_logo.png"/>
+			<img src="${url:resource('/resources/img/login_logo.png')}"/>
 		</div>
 		<div>
 			<input type="text" id="userId" size="15" autofocus="autofocus" class="write_box" placeholder="아이디" />

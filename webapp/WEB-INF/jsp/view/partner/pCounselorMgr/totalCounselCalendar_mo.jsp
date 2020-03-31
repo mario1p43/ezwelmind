@@ -199,7 +199,7 @@
 		}
 
 		.fc .fc-prev-button {
-			background-image: url('/resources/img/left_arrow.png');
+			background-image: url(${url:resource('/resources/img/left_arrow.png')});
 			background-repeat: no-repeat;
 			background-color: white;
 			background-blend-mode: multiply;
@@ -208,7 +208,7 @@
 		}
 
 		.fc .fc-next-button {
-			background-image: url('/resources/img/right_arrow.png');
+			background-image: url(${url:resource('/resources/img/right_arrow.png')});
 			background-repeat: no-repeat;
 			background-color: white;
 			background-blend-mode: multiply;
@@ -372,7 +372,7 @@
 
 		$(document).ready(function() {
 			$('.mobile_nav ul li a').eq(1).addClass('active');
-			$('.mobile_nav ul li a img').eq(1).attr('src', '/resources/img/home_icon_active.png');
+			$('.mobile_nav ul li a img').eq(1).attr('src', "${url:resource('/resources/img/consulting_icon_active.png')}");
 			window.userId = '${param.userId}';
 
 			for (const option of document.querySelectorAll(".custom-option")) {

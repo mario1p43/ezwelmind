@@ -129,22 +129,22 @@ if(iTMonth2<10){
 			color: white;
 		}
 		.today_consulting {
-			background-image: url('/resources/img/box1.png');
+			background-image: url(${url:resource('/resources/img/box1.png')});
 		}
 		.consulting {
-			background-image: url('/resources/img/box2.png');
+			background-image: url(${url:resource('/resources/img/box2.png')});
 		}
 		.counselor_count {
-			background-image: url('/resources/img/box3.png');
+			background-image: url(${url:resource('/resources/img/box3.png')});
 		}
 		.unwritten {
-			background-image: url('/resources/img/box4.png');
+			background-image: url(${url:resource('/resources/img/box4.png')});
 		}
 		.extension {
-			background-image: url('/resources/img/box5.png');
+			background-image: url(${url:resource('/resources/img/box5.png')});
 		}
 		.approval {
-			background-image: url('/resources/img/box6.png');
+			background-image: url(${url:resource('/resources/img/box6.png')});
 		}
 		.notice_subject a {
 			color:black;
@@ -171,7 +171,7 @@ if(iTMonth2<10){
 
 		$(document).ready(function() {
 			$('.mobile_nav ul li a').eq(0).addClass('active');
-			$('.mobile_nav ul li a img').eq(0).attr('src', '/resources/img/home_icon_active.png');
+			$('.mobile_nav ul li a img').eq(0).attr('src', "${url:resource('/resources/img/home_icon_active.png')}");
 			$(".tab_content").hide();
 			$(".tab_content:first").show();
 	

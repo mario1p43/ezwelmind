@@ -18,7 +18,7 @@
 	.popup-wrapper .popup-content-wrapper .content-data select{width:100%;border:0;font-size:14px;outline:none}
 	.popup-wrapper .popup-content-wrapper .content-data input{width:100%;border:0;font-size:14px;outline:none}
 	.popup-wrapper .popup-content-wrapper .select-sms-time{width:15.5vw;height:9vw;padding:0 2vw;font-size:14px;outline:none}
-	.popup-wrapper .popup-content-wrapper select{background:url('/resources/img/ic_select.png') no-repeat;background-size:12px 7px;background-position:right 6px top 50%;-webkit-appearance:none;-moz-appearance:none;appearance:none;}
+	.popup-wrapper .popup-content-wrapper select{background:${url:resource('/resources/img/ic_select.png')} no-repeat;background-size:12px 7px;background-position:right 6px top 50%;-webkit-appearance:none;-moz-appearance:none;appearance:none;}
 	
 	.popup-wrapper .popup-description-wrapper{display:flow-root;padding:2.6vw 4.5vw;font-size:14px;line-height:130%}
 	.popup-wrapper .popup-description-wrapper.border-top{border-top:1px solid #BDBDBD}
@@ -152,7 +152,7 @@
 <div class="popup-wrapper">
 	<div class="popup-title-wrapper">
 		<span class="popup-title">상담사/일정 변경</span>
-		<span class="popup-close btClose"><img src="/resources/img/close_btn.png"></span>
+		<span class="popup-close btClose"><img src="${url:resource('/resources/img/close_btn.png')}"></span>
 	</div>
 	<div class="popup-info-wrapper">
 		<div><strong>현재 상담사 : </strong><span id="info_counselor"></span></div>

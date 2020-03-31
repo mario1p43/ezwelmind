@@ -102,7 +102,7 @@ public class PayCheckMgrController extends commonController {
 	
 	// 상담비정산 상세보기 팝업
 	@RequestMapping(value="/showPayCheckPop", method=RequestMethod.GET)
-	public String payCheckPop(@ModelAttribute PayCheckAddDto payCheckAddDto, Model model, HttpServletRequest request) {
+	public String payCheckPop(@ModelAttribute PayCheckAddDto payCheckAddDto, Model model,HttpServletRequest request) {
 		model.addAttribute("searchValue", payCheckAddDto);
 		model.addAttribute("insertType", payCheckAddDto.getInsertType());
 		if ( payCheckAddDto.getInsertType().equals("U") ){
@@ -115,6 +115,7 @@ public class PayCheckMgrController extends commonController {
 		}else {	
 			return "partner/payCheck/showPayCheckPop_mo";
 		}
+		
 		
 	}
 	

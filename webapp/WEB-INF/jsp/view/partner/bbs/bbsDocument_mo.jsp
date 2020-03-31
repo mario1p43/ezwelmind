@@ -14,7 +14,7 @@
 	.notice-wrapper .data-list-wrapper table tr td{height:32px;padding:2vw 1vw;font-size:14px}
 	
 	.notice-wrapper .content-wrapper{display:flow-root;margin-top:5vw}
-	.notice-wrapper .content-wrapper .search-type-wrapper .search-type{float:left;width:30%;height:8vw;padding:0 2vw;font-size:14px;border:1px solid #828282;background:url('/resources/img/ic_select.png') no-repeat;background-size:12px 7px;background-position:right 6px top 50%;background-color:white;-webkit-appearance:none;-moz-appearance:none;appearance:none;outline:none;}
+	.notice-wrapper .content-wrapper .search-type-wrapper .search-type{float:left;width:30%;height:8vw;padding:0 2vw;font-size:14px;border:1px solid #828282;background:${url:resource('/resources/img/ic_select.png')} no-repeat;background-size:12px 7px;background-position:right 6px top 50%;background-color:white;-webkit-appearance:none;-moz-appearance:none;appearance:none;outline:none;}
 	.notice-wrapper .content-wrapper .search-keyword-wrapper{float:left;width:calc(70% - 4.5vw);height:8vw;line-height:8vw;margin-left:4.5vw;border-bottom:1px solid #828282}
 	.notice-wrapper .content-wrapper .search-keyword-wrapper .search-keyword{float:left;width:80%;height:100%;padding:0 2vw;font-size:14px;border:0;outline:none}
 	.notice-wrapper .content-wrapper .search-keyword-wrapper .btn-search{float:right}
@@ -78,7 +78,7 @@ j$(document).ready(function(){
 			</div>
 			<div class="search-keyword-wrapper">
 				<input type="text" id="searchNm" name="searchNm" class="search-keyword" data-validation="required" data-validation-error-msg-required="검색어를 입력 해주세요." placeholder="검색어를 입력 하세요."/>
-				<span class="btn-search"><img id="searchBtn" src="/resources/img/ic_search.png"></span>
+				<span class="btn-search"><img id="searchBtn" src="${url:resource('/resources/img/ic_search.png')}"></span>
 			</div>
 		</div>
 		<div class="content-wrapper">

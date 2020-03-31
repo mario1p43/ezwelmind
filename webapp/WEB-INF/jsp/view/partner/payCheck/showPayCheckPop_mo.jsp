@@ -200,7 +200,7 @@
 <div class="popup-wrapper">
 	<div class="popup-title-wrapper">
 		<span class="popup-title">상담비정산 상세정보</span>
-		<span class="popup-close btClose"><img src="/resources/img/close_btn.png"></span>
+		<span class="popup-close btClose"><img src="${url:resource('/resources/img/close_btn.png')}"></span>
 	</div>
 	<div class="popup-content-wrapper">
 		<div class="content-title">상담코드</div>

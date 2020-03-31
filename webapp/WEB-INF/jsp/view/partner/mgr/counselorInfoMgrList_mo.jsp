@@ -36,7 +36,7 @@
 	.counsel-wrapper .data-list-wrapper table tr td{height:44px;padding:0 2vw}
 	.counsel-wrapper .data-list-wrapper table tr:nth-child(odd){background-color:#E0E0E0}
 	.counsel-wrapper .data-list-wrapper table tr:nth-child(even){background-color:#F2F2F2}
-	.counsel-wrapper .data-list-wrapper select{width:20vw;height:8vw;padding:0 2vw;border:1px solid #828282;background:url('/resources/img/ic_select.png') no-repeat;background-size:12px 7px;background-position:right 6px top 50%;background-color:white;-webkit-appearance:none;-moz-appearance:none;appearance:none;}
+	.counsel-wrapper .data-list-wrapper select{width:20vw;height:8vw;padding:0 2vw;border:1px solid #828282;background:${url:resource('/resources/img/ic_select.png')} no-repeat;background-size:12px 7px;background-position:right 6px top 50%;background-color:white;-webkit-appearance:none;-moz-appearance:none;appearance:none;}
 </style>
 
 <script type="text/javascript">
