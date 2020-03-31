@@ -372,7 +372,7 @@
 
 		$(document).ready(function() {
 			$('.mobile_nav ul li a').eq(1).addClass('active');
-			$('.mobile_nav ul li a img').eq(1).attr('src', "${url:resource('/resources/img/home_icon_active.png')}");
+			$('.mobile_nav ul li a img').eq(1).attr('src', "${url:resource('/resources/img/consulting_icon_active.png')}");
 			window.userId = '${param.userId}';
 
 			for (const option of document.querySelectorAll(".custom-option")) {
