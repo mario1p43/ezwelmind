@@ -1,5 +1,6 @@
 package com.ezwel.admin.service.bbs.dto;
-import lombok.Getter;
+
+import lombok.Getter;
 import lombok.Setter;
 
 import com.ezwel.core.framework.web.vo.PagingVo;
@@ -22,6 +23,9 @@ public class BBSAddDto extends PagingVo {
 
 	@Getter @Setter
 	private String content;
+
+	@Getter @Setter
+	private String mobileContent; 
 
 	@Getter @Setter
 	private String reqCd1;

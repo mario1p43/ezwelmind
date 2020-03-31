@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.ezwel.admin.domain.entity.pCounselorMgr.CounselReservation;
 import com.ezwel.admin.persist.pCounselorMgr.CounselMgrMapper;
 import com.ezwel.admin.service.pCounselorMgr.dto.CounselReservationDto;
+import com.ezwel.admin.service.security.UserDetailsHelper;
 import com.ezwel.core.support.util.StringUtils;
 
 /**
@@ -37,6 +38,8 @@ public class CounselorCalendarService {
 		Map<String, String> counselorMap = new HashMap<String, String>();
 		
 		
+		String userId = UserDetailsHelper.getAuthenticatedUser().getUserId();
+		
 		counselReservationDto.setYmd(counselReservationDto.getYmd().replaceAll("-", ""));
 		
 		List<CounselReservation> dbData = counselMgrMapper.getTotalScheduleList(counselReservationDto);
@@ -44,9 +47,14 @@ public class CounselorCalendarService {
 		JSONArray jArr = new JSONArray();
 		for (int i = 0 ; i < dbData.size(); i++) {
 			CounselReservation  cr = dbData.get(i);
+			String value = "";
 			
-			String value = cr.getStTime() + "\n " + cr.getCounselNm() + "(" + cr.getMobile() + ")\n"
+			if("nexon_maum".equals(userId)) {
+				 value = cr.getStTime() + "\n " + cr.getCounselDivNm() + " " + cr.getClientCd() + "(" + cr.getClientNm() + ")" ;
+			} else {
+				 value = cr.getStTime() + "\n " + cr.getCounselNm() + "(" + cr.getMobile() + ")\n"
 					+ cr.getCounselDivNm() + " " + cr.getClientCd() + "(" + cr.getClientNm() + ")" ;
+			}
 			
 			JSONObject jsonObj = new JSONObject();
 			

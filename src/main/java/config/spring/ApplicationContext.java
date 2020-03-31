@@ -30,39 +30,35 @@ public class ApplicationContext {
 	@Bean
 	@Resource(name="jdbc/mariadb_ezwel_mind")
 	public DataSource dataSource() {
-		System.out.println("--- 1111");
 		DataSource dataSource = null;
 		
 		JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
 		dsLookup.setResourceRef(true);
 		try {
 			dataSource = dsLookup.getDataSource("java:comp/env/jdbc/mariadb_ezwel_mind");
-			System.out.println("dataSource: " + dataSource);
 		} catch(Exception e){
 			System.err.println("Create Bean dataSource: " + e);
 		}
 		
-		if (dataSource == null) {
-			System.err.println("========== DATASOURCE NULL ==========");
-		} else {
-			// Local 일 경우 Log4Jdbc 및 정렬 Result Table 보기(log4jdbcRemi) 설정
-			if (GlobalsProperties.LOCAL.equals(serverType) || GlobalsProperties.DEV.equals(serverType)) {
-				System.out.println("========== Log4Jdbc & log4jdbcRemi 설정 ==========");
-			    try {
-			    	Log4JdbcCustomFormatter log4JdbcCustomFormatter = new Log4JdbcCustomFormatter();
-			    	log4JdbcCustomFormatter.setLoggingType(LoggingType.MULTI_LINE);
-			    	log4JdbcCustomFormatter.setSqlPrefix("SQL     :\n\t\t");
-			    	
-			    	Log4jdbcProxyDataSource log4jdbcProxyDataSource = new Log4jdbcProxyDataSource(dataSource);
-			    	log4jdbcProxyDataSource.setLogFormatter(log4JdbcCustomFormatter);
-			    	
-			    	dataSource = log4jdbcProxyDataSource;
-			    } catch(Exception e){
-			    	System.err.println(e);
-			    }
-			}
-		}
-	    System.out.println("1: " + dataSource);
+		/*
+		 * if (dataSource == null) {
+		 * System.err.println("========== DATASOURCE NULL =========="); } else { //
+		 * Local 일 경우 Log4Jdbc 및 정렬 Result Table 보기(log4jdbcRemi) 설정 if
+		 * (GlobalsProperties.LOCAL.equals(serverType) ||
+		 * GlobalsProperties.DEV.equals(serverType)) {
+		 * System.out.println("========== Log4Jdbc & log4jdbcRemi 설정 =========="); try {
+		 * Log4JdbcCustomFormatter log4JdbcCustomFormatter = new
+		 * Log4JdbcCustomFormatter();
+		 * log4JdbcCustomFormatter.setLoggingType(LoggingType.MULTI_LINE);
+		 * log4JdbcCustomFormatter.setSqlPrefix("SQL     :\n\t\t");
+		 * Log4jdbcProxyDataSource log4jdbcProxyDataSource = new
+		 * Log4jdbcProxyDataSource(dataSource);
+		 * log4jdbcProxyDataSource.setLogFormatter(log4JdbcCustomFormatter);
+		 * 
+		 * dataSource = log4jdbcProxyDataSource; } catch(Exception e){
+		 * System.out.println("=================ERROR==============");
+		 * System.out.println(e); System.err.println(e); } } }
+		 */
 	    return dataSource;
 	}
 	
@@ -76,7 +72,6 @@ public class ApplicationContext {
 	 */
     @Bean
     public SqlSessionFactoryBean sqlSessionFactoryBean(DataSource dataSource, org.springframework.context.ApplicationContext applicationContext) throws IOException {
-    	System.out.println("2: " + dataSource);
         SqlSessionFactoryBean sqlSessionFactoryBean = null;
         
         if (GlobalsProperties.LOCAL.equals(serverType)) {

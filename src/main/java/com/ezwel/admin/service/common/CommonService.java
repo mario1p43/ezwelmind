@@ -212,7 +212,7 @@ public class CommonService {
 		message.append("인증번호 : ");
 		message.append(authKey);
 		
-		smsService.send(userMobile, "1644-4474", message.toString());
+		//smsService.send(userMobile, "1644-4474", message.toString());
 		
         
 		session.setAttribute("ConfirmNumber", "123456");

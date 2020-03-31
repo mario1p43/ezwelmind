@@ -48,6 +48,12 @@ public class BBSData extends PagingVo {
 	private String content;
 
 	/**
+	 * 글내용(모바일용)
+	 */
+	@Getter @Setter
+	private String mobileContent;
+
+	/**
 	 * 구분1
 	 */
 	@Getter @Setter

@@ -169,4 +169,6 @@ public class UserManager extends PagingVo {
 	/** 상담주제 분류 */
 	private String subjectItemCd3;
 	
+	/** 마인드프리즘 상태값 */
+	private String mindPrismStatus;
 }

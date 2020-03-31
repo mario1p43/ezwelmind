@@ -34,8 +34,12 @@ import com.ezwel.admin.service.security.UserDetailsHelper;
 import com.ezwel.admin.service.user.UserService;
 import com.ezwel.admin.service.usermanager.UserManagerService;
 import com.ezwel.admin.service.usermanager.dto.UserManagerDto;
+import com.ezwel.core.framework.web.vo.Paging;
 import com.ezwel.core.support.util.DateUtils;
 import com.ezwel.core.support.util.EzwelCode.BRANCH;
+import com.ezwel.admin.common.support.connect.MindPrismApiConnect;
+import com.ezwel.admin.common.support.connect.MindPrismApiException;
+import com.ezwel.admin.common.support.connect.MindPrismVO;
 import com.ezwel.core.support.util.StringUtils;
 
 @Controller
@@ -326,7 +330,33 @@ public class UserManagerController {
 		model.addAttribute("mgrList", clientService.getmgrList("2001", BRANCH.Ezwellness.code));
 		
 		if(!StringUtils.isEmpty(userManagerDto.getSearchYn())){
-			model.addAttribute("paging", userManagerService.getServiceUserListV2(userManagerDto));
+			Paging<UserManager> paging = userManagerService.getServiceUserListV2(userManagerDto);
+			
+			
+			if(paging != null) {
+				// 내마음보고서 API 연동
+				for(UserManager userManager : paging.getList()) {
+					
+					if("101047".equals(userManager.getCounselType())) {
+						MindPrismVO mindPrismVO = new MindPrismVO();
+						
+						mindPrismVO.setName(userManager.getCounselNm());
+						mindPrismVO.setTel(userManager.getMobile());
+						mindPrismVO.setEmail(userManager.getEmail());
+						
+						try {
+							String status = MindPrismApiConnect.getStatus(mindPrismVO);
+							
+							userManager.setMindPrismStatus(status);
+						} catch (MindPrismApiException e) {
+							userManager.setMindPrismStatus("통신오류");
+						}
+					}
+					
+				}
+			}
+			
+			model.addAttribute("paging", paging);
 		}
 		
 		return "madm/usermanager/serviceUserListV2";
@@ -336,7 +366,7 @@ public class UserManagerController {
 	public String getServiceUserDetail(@ModelAttribute UserManagerDto userManagerDto, Model model) {
 		setMenu(model);
 
-		model.addAttribute("detailList", userManagerService.getServiceUserDetail(userManagerDto));
+		List<UserManager> detailList = userManagerService.getServiceUserDetail(userManagerDto);
 		
 		EmployeeDto employeeDto = new EmployeeDto();
 		employeeDto.setUserKey(userManagerDto.getUserKey());
@@ -350,7 +380,31 @@ public class UserManagerController {
 		if(StringUtils.isNotNull(intake_detail.getMemo())) {
 			intake_detail.setMemo(intake_detail.getMemo().replaceAll("\r\n", "<br>"));
 		}
+		
+		// 마인드프리즘 상태 조회
+		if(detailList != null) {
+			for(UserManager userManager : detailList) {
+				if("101047".equals(intake_detail.getCounselType())) {
+					MindPrismVO mindPrismVO = new MindPrismVO();
+					
+					mindPrismVO.setName(intake_detail.getCounselNm());
+					mindPrismVO.setTel(intake_detail.getMobile());
+					mindPrismVO.setEmail(intake_detail.getEmail());
+					
+					try {
+						String status = MindPrismApiConnect.getStatus(mindPrismVO);
+						
+						userManager.setMindPrismStatus(status);
+					} catch (MindPrismApiException e) {
+						userManager.setMindPrismStatus("통신오류");
+					}
+				}
+			}
+		}
+		
 		model.addAttribute("intakeDetail", intake_detail);
+		model.addAttribute("detailList", detailList);
+		
 		
 		String userKey = userManagerDto.getUserKey();
 		User user = userService.getUserInfo(userKey);
