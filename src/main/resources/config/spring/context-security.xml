@@ -19,6 +19,8 @@
 		<intercept-url pattern="/error" 					access="permitAll" 		requires-channel="http"/>
 		<intercept-url pattern="/error/**" 					access="permitAll" 		requires-channel="http"/>
 		<intercept-url pattern="/accessDenied" 				access="permitAll" 		requires-channel="http"/>
+		<intercept-url pattern="/login/checkid" 			access="permitAll" 		requires-channel="http"/>
+		<intercept-url pattern="/login/confirmnumber" 			access="permitAll" 		requires-channel="http"/>
 		<intercept-url pattern="/authenticationFailure" 	access="permitAll" 		requires-channel="http"/>
 		
 		<intercept-url pattern="${page.login.success.url}" 	access="authenticated" 	requires-channel="http"/>

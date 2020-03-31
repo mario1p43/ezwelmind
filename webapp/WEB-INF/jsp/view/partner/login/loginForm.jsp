@@ -160,74 +160,6 @@
 </head>
 <body bgcolor="#FFFFFF" topmargin="0" leftmargin="0">
 
-<div class="web">
-
-
-		<form id="login" action="<spring:eval expression="@global['page.login.url']" />" method="post">
-		<input type="hidden" name="userId" id="id" value="" />
-			<div class="member_header">
-				<h1><img src="//img.ezwelmind.co.kr/sangdam4u/images/common/img_logo_clientcd.png" alt="상담포유" /></h1>
-				<ul class="login_sort">
-					<li></li>
-				</ul>
-			</div>
-			<div class="login_contents">
-				<div class="cont_bn">
-					<img src="//img.ezwelmind.co.kr/sangdam4u/images/member/img_login_bn04.jpg" alt="이지웰니스상담포유 관리자시스템 이지웰니스는 사람이 행복한 하루, 그 하루로 행복해지는 세상을 만들어 갑니다." />
-				</div>
-				<fieldset class="field_pd02">
-					<h2><img src="//img.ezwelmind.co.kr/sangdam4u/images/member/tit_login.gif" alt="LOGIN" /></h2>
-					<p>관리시스템은 지정된 관리자만 로그인이 가능합니다.</p>
-					<div class="write_wrap">
-						<div class="input_area">
-							<input type="text" id="userId" size="15" autofocus="autofocus" class="write_box" placeholder="사번/아이디" />
-						</div>
-						<div>
-							<input type="password" id="pwd" name="userPwd" size="15" class="write_box" placeholder="비밀번호" />
-						</div>
-						<button type="submit" id="loginBtn" class="btn_login denial">로그인</button>
-					</div>
-					<input type="checkbox" name="id_save" id="id_save" /> <label for="id_save" class="save_id">아이디저장</label>
-				</fieldset>
-			</div>
-			<div class="login_footer">
-				<ul>
-					<li>아이디, 비밀번호를 분실하신 경우 상담센터 혹은 소속 기업의 담당자에게 문의바랍니다.</li>
-				</ul>
-			</div>
-			
-		
-		<c:if test="${today < 20180826}">
-		
-		
-		
-		<div id="popupDispYn" style="display: none;">
-			<div id="pop_cont" style="position: fixed; left: 42%; top: 17%; z-index: 99; background: white; padding: 15px 15px 15px 15px;  border: 1px solid gray;" >
-				<div>
-					<div align="right" style="margin-bottom: 5px;">
-						<img  class="btn_close" alt="닫기" src="http://img.ezwelmind.co.kr/sangdam4u/images/btn/btn_close_18x18.png">
-					</div>
-					<img alt="서비스 점검안내" src="//img.ezwelmind.co.kr//sangdam4u/images/popup/180821_partner_popup.jpg">
-					<div class="today_close">
-						<input id="today_c" type="checkbox" value="7"><label for="today_c" style="font-size: smaller; ">&nbsp;오늘 하루 보지 않기</label>
-						<img align="right" class="btn_close" alt="닫기" src="http://img.ezwelmind.co.kr/sangdam4u/images/btn/btn_close_18x18.png">
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		</c:if>
-		
-			
-		</form>
-
-
-
-
-</div>
-
-
-<div class="mobile">
 <form id="login_mo" action="<spring:eval expression="@global['page.login.url']" />" method="post" >
 		<input type="hidden" name="userId" id="id_mo" value="" />
 			<div class="mobile_member_header">
@@ -240,7 +172,7 @@
 				
 				<fieldset class="padding10">
 					<h2><img src="//img.ezwelmind.co.kr/sangdam4u/images/member/tit_login.gif" alt="LOGIN" /></h2>
-					<p>관리시스템은 지정된 관리자만 로그인이 가능합니다.</p>
+					<p>관리시스템은 지정된 관리자만 로그인이 가능합니다.!!</p>
 					<div class="write_wrap">
 						<div class="input_area">
 							<input type="text" id="userId_mo" size="15" autofocus="autofocus" class="write_box" placeholder="사번/아이디" />
@@ -267,14 +199,7 @@
 						<li>아이디, 비밀번호를 분실하신 경우<br> 상담센터 혹은 소속 기업의 담당자에게 문의바랍니다.</li>
 					</ul>
 			</div>
-			
-				
-			
 		</form>
-</div>
-
-
-
 
 <script>	
 	$(document).ready(function() {
