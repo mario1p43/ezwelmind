@@ -159,7 +159,7 @@
 		}
 		
 		function timer(){
-			var time = 90;
+			var time = 180;
 			var min = "";
 			var sec = "";
 			
@@ -342,7 +342,7 @@
 			</div>
 			<div class="confirm_number_wrapper" id="confirmKeyDiv" style="display:none">
 				<span class="check_icon"><img src="${url:resource('/resources/img/check_icon.png')}" /></span>
-				<input type="text" id="confirmNumber" name="confirmNumber" size="8" autofocus="autofocus" class="write_box" placeholder="확인 번호" />
+				<input type="text" id="confirmNumber" name="confirmNumber" size="8" autofocus="autofocus" class="write_box" placeholder="인증 번호" />
 				<span class="check_timer"><p id="timer_count"></p></span>
 			</div>
 			<div>

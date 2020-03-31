@@ -135,7 +135,7 @@
 		}
 		
 		function timer(){
-			var time = 90;
+			var time = 180;
 			var min = "";
 			var sec = "";
 			
@@ -168,20 +168,27 @@
 					<li></li>
 				</ul>
 			</div>
+			
+					
 			<div class="login_contents">
-				
-				<fieldset class="padding10">
-					<h2><img src="//img.ezwelmind.co.kr/sangdam4u/images/member/tit_login.gif" alt="LOGIN" /></h2>
-					<p>관리시스템은 지정된 관리자만 로그인이 가능합니다.!!</p>
+				<div class="cont_bn">
+					<div class="partner"></div>
+					<!-- <img alt="이지웰니스상담포유 관리자시스템 이지웰니스는 사람이 행복한 하루, 그 하루로 행복해지는 세상을 만들어 갑니다." /> src="//img.ezwelmind.co.kr/sangdam4u/images/member/img_login_bn04.jpg" -->
+				</div>
+				<fieldset class="field_pd02">
+					<h2><div class="partner_login"></div></h2>
+					<p>관리시스템은 지정된 관리자만 로그인이 가능합니다.</p>
+					
+					
 					<div class="write_wrap">
 						<div class="input_area">
 							<input type="text" id="userId_mo" size="15" autofocus="autofocus" class="write_box" placeholder="사번/아이디" />
 						</div>
 						<div>
-							<input type="password" id="pwd_mo" name="userPwd" size="15" class="write_box" placeholder="인증번호" />
+							<input type="password" id="pwd_mo" name="userPwd" size="15" class="write_box" placeholder="비밀번호" />
 						</div>
-						<div id="confirmKeyDiv" style="display:none">
-							<input type="text" id="confirmNumber" size="15" class="write_box" placeholder="확인번호" />
+						<div id="confirmKeyDiv" style="display:none;">
+							<input type="text" id="confirmNumber" size="15" class="write_box" style="margin: 10px 0px;" placeholder="인증번호" />
 						</div>
 						<div id="timerDiv"></div>
 						<button id="btn_check_id" class="btn_login denial">로그인</button>
