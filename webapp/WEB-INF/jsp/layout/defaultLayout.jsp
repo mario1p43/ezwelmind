@@ -72,41 +72,41 @@ function closeBtnLogoutPop(){
 		
 	</div>
 	
-	<body onload='<decorator:getProperty property="body.onload" />' > <!--bgcolor="#FFFFFF" topmargin="0" leftmargin="0" rightmargin="0"-->
+	<body onload='<decorator:getProperty property="body.onload" />' bgcolor="#FFFFFF" topmargin="0" leftmargin="0" rightmargin="0">
 		<!-- Head 영역 START-->
 					
 		<jsp:include page="<%=MenuUtil.selectTopMenu(request) %>" />
 		<!-- Head 영역 START-->
 
-		<table class="main_section" width="100%" height="100%"> <!-- cellpadding="0" cellspacing="0" border="0" width="100%" height="100%" -->
-			<tr class="main_wrap"> <!-- valign="top" -->
+		<table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
+			<tr valign="top">
 			<c:choose>
 				<c:when test="${not empty menu}">
 
 				<jsp:include page="<%=MenuUtil.naverTalk(request) %>" />
 				
-					<td class="main_content"> <!--  width="99%" style="background:url(${url:img('/admin/common/bg03.jpg')}) repeat-x;" -->
+				<td width="99%" style="background:url(${url:img('/admin/common/bg03.jpg')}) repeat-x;">
 					<!-- 메인 영역 start -->
 					<table width="100%">
 						<tr>
 							<td><decorator:body /></td>
 						</tr>
 						<tr>
-							<td ></td><!-- height="30px" -->
+							<td height="30px"></td>
 						</tr>
 					</table>
 					<!-- 메인 영역 END-->
 				</td>
 				</c:when>
 				<c:otherwise>
-					<td class="main_droppage"> <!--  valign="top" style="padding-left:15px; min-height: 600px;" -->
+				<td valign="top" style="padding-left:15px; min-height: 600px;">
 					<!-- 메인 영역 start -->
 					<table width="100%">
 						<tr>
 							<td><decorator:body /></td>
 						</tr>
 						<tr>
-							<td></td> <!--  height="30px" -->
+							<td height="30px"></td>
 						</tr>
 					</table>
 					<!-- 메인 영역 END-->
@@ -115,7 +115,7 @@ function closeBtnLogoutPop(){
 			</c:choose>
 			</tr>
 		</table>
-		<div ></div><!-- class="clear_both h50" -->
+		<div class="clear_both h50"></div>
 		<%@ include file="/WEB-INF/jsp/layout/inc/staticAfter.jspf"%>
 	</body>
 	<footer>
