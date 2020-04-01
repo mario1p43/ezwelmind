@@ -166,6 +166,7 @@
 			, DOC_STS
 			, DOC_TYPE
 			, APPR_STATUS
+			, REG_DT
 		) values (
 			#{recordCd}
 			, #{counselCd}
@@ -177,6 +178,7 @@
 			, #{docSts}
 			, #{docType}
 			, '1'
+			, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
 		)
 	</insert>
 	

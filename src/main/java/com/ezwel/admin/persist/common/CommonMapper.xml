@@ -326,12 +326,4 @@
 			AND USER_ID = #{userId}
 	</select>
 	
-	<select id="isUser" resultType="int">
-		SELECT 
-			count(*)
-		FROM MIND_MGR
-		WHERE 1=1
-			AND USER_ID = #{userId}
-	</select>
-	
 </mapper>
