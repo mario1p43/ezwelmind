@@ -512,6 +512,7 @@
 			   , D.CONFIRM_CALL_YN 																as confirmCallYn
 			   , D.SURVEY_CALL_YN 																as surveyCallYn
 			   , D.COUNSEL_RESERV_CHK 															as counselReservChk
+			   , D.EMAIL 															as email
 			FROM MIND_ORDER A
 				 INNER JOIN MIND_USER B
 				      ON A.USER_KEY = B.USER_KEY
@@ -555,6 +556,9 @@
 					</if>
 					<if test="status == 100003">
 						100003, 100015
+					</if>
+					<if test="status == 100004">
+						100004, 100016
 					</if>
 				</foreach>
 		</if>
