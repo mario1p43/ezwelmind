@@ -609,11 +609,7 @@
 										<td rowspan="6" colspan="2"><input type="file"
 											name="file1" id="file1" value="찾아보기"
 											onchange="javascript:getRealPath(this);" /><br> <%-- <img alt="미리보기" src="<spring:eval expression="@global['upload.http.img']" />${centerInfo.filePath1}" style="width: 50%; height: 50%;"> --%>
-											<a
-											href="javascript:fileDownLoad('${centerInfo.filePath1}', '${centerInfo.fileNm1}');">
-											
 											<img src="<spring:eval expression="@global['upload.http.img']" />${centerInfo.filePath1}" style="width: 280px;height: 150px;">${centerInfo.fileNm1}
-											</a>
 											<span id="path1"></span> <input type="hidden" name="fileNm1"
 											value="${centerInfo.fileNm1 }" /> <input type="hidden"
 											name="filePath1" value="${centerInfo.filePath1}" /></td>
@@ -705,10 +701,8 @@
 										<th class="line" width="15%" align="left" bgcolor="#F5F5F5">*
 											통장사본등록</th>
 										<td class="line" colspan="5"><input type="file"
-											name="file2" size="50" /> <a
-											href="javascript:fileDownLoad('${centerInfo.filePath2}', '${centerInfo.fileNm2}');">
-											<img src="<spring:eval expression="@global['upload.http.img']" />${centerInfo.filePath2}" style="width: 280px;height: 150px;">
-											${centerInfo.fileNm2}</a>
+											name="file2" size="50" /> <img src="<spring:eval expression="@global['upload.http.img']" />${centerInfo.filePath2}" style="width: 280px;height: 150px;">
+											${centerInfo.fileNm2}
 											<input type="hidden" name="fileNm2"
 											value="${centerInfo.fileNm2 }" /> <input type="hidden"
 											name="filePath2" value="${centerInfo.filePath2}" /></td>
@@ -717,10 +711,8 @@
 										<th class="line" width="15%" align="left" bgcolor="#F5F5F5">*
 											사업자등록증</th>
 										<td class="line" colspan="5"><input type="file"
-											name="file3" size="50" /> <a
-											href="javascript:fileDownLoad('${centerInfo.filePath3}', '${centerInfo.fileNm3}');">
-											<img src="<spring:eval expression="@global['upload.http.img']" />${centerInfo.filePath3}" style="width: 280px;height: 150px;">
-											${centerInfo.fileNm3}</a>
+											name="file3" size="50" /> <img src="<spring:eval expression="@global['upload.http.img']" />${centerInfo.filePath3}" style="width: 280px;height: 150px;">
+											${centerInfo.fileNm3}
 											<input type="hidden" name="fileNm3"
 											value="${centerInfo.fileNm3 }" /> <input type="hidden"
 											name="filePath3" value="${url:img('centerInfo.filePath3')}" /></td>

@@ -608,7 +608,6 @@
 											name="file1" id="file1" value="찾아보기"
 											onchange="javascript:getRealPath(this);" /><br> 
 											<img src="<spring:eval expression="@global['upload.http.img']" />${centerInfo.filePath1}" style="width: 280px;height: 150px;">${centerInfo.fileNm1}
-											</a>
 											<span id="path1"></span> <input type="hidden" name="fileNm1"
 											value="${centerInfo.fileNm1 }" /> <input type="hidden"
 											name="filePath1" value="${centerInfo.filePath1}" /></td>

@@ -315,6 +315,13 @@ if(iTMonth2<10){
 						<td height="10px"></td>
 					</tr>
 		        </table>
+							<!-- 검색 영역 종료 -->
+						</td>
+					</tr>
+					<tr>
+						<td height="10px"></td>
+					</tr>
+		        </table>
         </div>
         <!-- #tab3 -->
     </div>

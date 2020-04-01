@@ -26,7 +26,6 @@ private static Logger log = LoggerFactory.getLogger(MenuUtil.class);
 	public static String selectTopMenu(HttpServletRequest request) {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		if(isDevice(httpRequest) == IS_PC) {
-			//return "<jsp:include page='/WEB-INF/jsp/layout/inc/defaultHeader.jsp' />";
 			return "/WEB-INF/jsp/layout/inc/defaultHeader.jsp";
 		}else {
 			return "/WEB-INF/jsp/layout/inc/defaultHeader_mo.jsp";
