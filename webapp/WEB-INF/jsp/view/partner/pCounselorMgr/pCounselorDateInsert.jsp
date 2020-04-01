@@ -916,10 +916,10 @@ j$(function(){
 						    		</c:if>
 									<c:choose>
 										<c:when test="${record_detail.endType eq 'end'}">
-						    				<input type="radio" name="endType" id="end" value="end" checked/><label for="end">진행 및 종결 : 마지막 회기 진행 및 케이스 종결</label>
+						    				<input type="radio" name="endType" id="end" value="end" checked/><label for="end">종결 : 마지막 회기 진행 및 케이스 종결</label>
 										</c:when>
 										<c:otherwise>
-						    				<input type="radio" name="endType" id="end" value="end"/><label for="end">진행 및 종결 : 마지막 회기 진행 및 케이스 종결</label>
+						    				<input type="radio" name="endType" id="end" value="end"/><label for="end">종결 : 마지막 회기 진행 및 케이스 종결</label>
 										</c:otherwise>
 					    			</c:choose>
 		   						</td>
@@ -954,7 +954,7 @@ j$(function(){
 							
 							<c:if test="${intake_detail.channelType ne '100002'}">
 							<tr class="plan">
-								<th width="13%"><span style="color:RED">* </span>전체 상담의 목표${intake_detail.channelType}
+								<th width="13%"><span style="color:RED">* </span>전체 상담의 목표
 								</th>
 								<td colspan="8"><textarea rows="5" cols="50" style="width: 97%" id="finalGoal" name="finalGoal" value="${record_detail.finalGoal}">${record_detail.finalGoal}</textarea></td>
 							</tr>

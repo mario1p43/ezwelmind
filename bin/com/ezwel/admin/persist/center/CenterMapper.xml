@@ -357,6 +357,9 @@
 					, A.PUBLIC_TRAFFIC AS publicTraffic
 					, A.MGR_MEMO AS mgrMemo
 					, DATE_FORMAT(A.REG_DT,'%Y-%m-%d %T') as REG_DT
+					, A.PARKING_YN AS parkingLotYn
+					, A.AROUND_INFO AS aroundInfo
+					, A.PSY_EXAM AS mentalPsy
 				FROM MIND_CENTER A
 				WHERE 1=1
 				<if test="isNotNull(centerNm)">

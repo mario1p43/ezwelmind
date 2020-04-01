@@ -33,6 +33,9 @@
 			                  <th rowspan="2" width="">인근 대중교통</th>
 			                  <th rowspan="2" width="">메모</th>
 			                  <th rowspan="2" width="">등록일</th>
+			                  <th rowspan="2" width="">주차장</th>
+			                  <th rowspan="2" width="">인근 정보</th>
+			                  <th rowspan="2" width="">심리 검사</th>
 			                </tr>
 			                <tr>
 			                 <th>상담</th><th>파견</th><th>집단</th><th>강의</th>
@@ -77,6 +80,9 @@
 								<td>${list.publicTraffic}</td>
 								<td>${list.mgrMemo}</td>
 								<td>${list.regDt}</td>
+								<td>${list.parkingLotYn}</td>
+								<td>${list.aroundInfo}</td>
+								<td>${list.mentalPsy}</td>
 							</tr>
 						</c:forEach>
 						</tbody>
