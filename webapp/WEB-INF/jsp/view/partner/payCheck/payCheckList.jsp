@@ -562,7 +562,7 @@ function updateCheckYnManager(){
 														<sec:authorize access="hasAnyRole('ROLE_PARTNER_ADMIN')">
 															<button id="updatePaycheckConfirmBtn" type="button" style="margin-left: 10px;"> 수정</button>
 														</sec:authorize>
-														
+													<button type="button" style="margin-left: 10px;" onclick="window.open('http://img.ezwelmind.co.kr/sangdam4u/files/partner_businesslicense.pdf', '_blank')"> 사업자등록증 다운로드 </button>
 													</td>
 													
 												</tr>

@@ -122,7 +122,7 @@ function wrapWindowByMask() {
 	<tr>
 		<td height="20px"></td>
 	</tr>
-	<%-- <tr>
+<%-- 	<tr>
 		<td><div>만족도조사(약식)&nbsp;평균 : ${itemAvg.itemAvg } / 최고점 : ${itemAvg.itemMax } / 최하점 : ${itemAvg.itemMin } / (1번 응답:N 미포함)</div></td>
 	</tr>
 	<tr>

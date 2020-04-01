@@ -9,18 +9,14 @@
 	src="https://ezutil.ezwel.com/resources/js/address/ez-addr.js"></script>
 <script type="text/javascript">
 	var fulPath = "";
-
 	
 	function getRealPath(obj) {
 		obj.select();
-
 		fulPath = document.selection.createRangeCollection()[0].text.toString();
 		var params = {};
 		var strData = "";
 		params.area1 = fulPath;
-
 		j$('#subPath').remove();
-
 		j$.ajax({
 			url : '/partner/centerInfo/ajaxPath',
 			data : params,
@@ -38,7 +34,6 @@
 			}
 		});
 	}
-
 	function showModify() {
 		$("td input").removeAttr("readonly");
 		$("td input").removeClass("border_zero");
@@ -49,7 +44,6 @@
 		$('td input:file').css("display", "block");
 		$('td button.addrPopUp').attr('disabled', false);
 	}
-
 	function closeModify() {
 		$("td input").attr("readonly", true);
 		$("td input").addClass("border_zero");
@@ -59,15 +53,11 @@
 		$('td input:radio').attr('disabled', true);
 		$('td input:file').css("display", "none");
 		$('td button.addrPopUp').attr('disabled', true);
-
 	}
-
 	
 	j$(document).ready(function() {
-
 						// 텍스트 박스 readonly 처리
 						closeModify();
-
 						$.validate({
 							form : '#modifyCenter',
 							validateOnBlur : false,
@@ -83,7 +73,6 @@
 												+ $('#faxNum3').val());
 							}
 						});
-
 						j$("#openModifyBtn").click(function() {
 							$("#modifyBtn").removeClass("display_none");
 							$("#cancelBtn").removeClass("display_none");
@@ -94,25 +83,20 @@
 							$(".deleteExtra").removeClass("display_none");
 							
 							showModify();
-
 							return false;
 						});
-
 						// 수정 완료
 						j$("#modifyBtn").click(function() {
 							updateExtra();
 							updateExtraExam();
 							j$("#modifyCenter").submit();
-
 							
 							return false;
 						});
-
 						j$("#cancelBtn").click(function() {
 							window.location.reload();
 							return false;
 						});
-
 						<c:if test='${not empty centerInfo.centerType}'>
 						var chkValue = '${centerInfo.centerType}';
 						var chkArr = chkValue.split(',');
@@ -132,8 +116,6 @@
 							}
 						}
 						</c:if>
-
-
 						<c:if test='${not empty centerInfo.post}'>
 						var setPost = '${centerInfo.post}';
 						var setArr = setPost.split('-');
@@ -141,13 +123,11 @@
 							$('[id=zip' + [ i + 1 ] + ']').val(setArr[i]);
 						}
 						</c:if>
-
 						$('.addrPopUp').click(function() {
 							var siteUrl = '<spring:eval expression="@global['site.url.partner']" />'+ '/resources/jsp/addrSubmit.jsp';
 							NEW2015_pZip(siteUrl);
 							return false;
 						});
-
 						j$('#area1').change(function() {
 							var params = {};
 							var strData = "";
@@ -194,9 +174,7 @@
 							}
 	
 							return false;
-
 						});
-
 	});
 	
 	
@@ -244,7 +222,6 @@
 				});   
 				
 			}
-
 		return false;
 		
 	}
@@ -292,7 +269,6 @@
 		return false;
 		
 	}
-
 	var numExtra = 0;
 	var numExam = 0;
 	var de ="";
@@ -356,7 +332,6 @@
 		numExtra--;
 	}
 	
-
 	//상담 외 프로그램(집단, 특강 등) 추가
 	function addRowExam(){
  		if(numExam >= 10){

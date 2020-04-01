@@ -1,6 +1,8 @@
+<%@page import="com.ezwel.admin.service.security.UserDetailsHelper"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ include file="/WEB-INF/jsp/layout/inc/tags.jspf"%>
 <%@ page  language="java" import="java.util.*,java.text.*"%>
+<% pageContext.setAttribute("loginUserId", UserDetailsHelper.getAuthenticatedUser().getUserId()); %>
 <%
 
  Calendar ca = new GregorianCalendar();
@@ -16,11 +18,15 @@ if(iTMonth2<10){
 <html>
 	<head>
 		<title>Main</title>
-		
+		<c:if test="${loginUserId eq 'nexon_maum'}">
+		<script type="text/javascript">
+			location.href="/partner/pCounselorMgr/totalSchedule";
+		</script>
+		</c:if>
 	</head>
 	<body>
 	<style>
-		/* ul.tabs {
+		ul.tabs {
 		    margin: 0;
 		    padding: 0;
 		    float: left;
@@ -63,7 +69,7 @@ if(iTMonth2<10){
 		    width:100%;
 		    font-size: 12px;
 		    display: none;
-		} */
+		}
 		.tab_container .tab_content ul {
 		    width:100%;
 		    margin:0px;
@@ -112,52 +118,102 @@ if(iTMonth2<10){
 		<sec:authorize access="isAuthenticated()">
 			<sec:authentication var="sesUser" property="principal.user" />
 		</sec:authorize>
-<div class="web2">
+<div class="web">
 
-	<ul class="main_aside">
-		<li class="user_info">
-			<ul>
-				<li class="main_aside_title">접속자 정보</li>
-				<li>
-					<ul>
-						<li><sec:authentication property="principal.user.userNm"/></li>
-						<li>(<sec:authentication property="principal.user.userId"/>)</li>
-					</ul>
-					<ul>
-						<li><sec:authentication property="principal.user.mobile"/></li>
-						<li><sec:authentication property="principal.user.email"/></li>
-					</ul>
-				</li>
-			</ul>
-		</li>
 
-		<li class="q_btn">
-			<ul>
-				<li class="main_aside_title">바로가기</li>
-				<li>
-					<a href="/partner/pCounselorMgr/totalSchedule">전체 일정 보기</a>
-					<a href="/partner/pCounselorMgr/counselFixList">예약확정현황</a>
-					<a href="/partner/pCounselorMgr/pCounselorDateList">상담일지 작성</a>
-				</li>
-			</ul>
-		</li>
-
-		<li class="naver">
-			<ul>
-				<li class="main_aside_title">네이버 톡톡 상담</li>
-				<li>
-					<div class="talk_banner_div" data-id="41666"></div>
-					<div class="talk_banner_div" data-id="34517"></div>
-				</li>
-			</ul>
-		</li>
 		
-	</ul>
-		
+	<table cellpadding="0" cellspacing="0" border="0" width="20%" style="display: inline-table">
+		<tr>
+			<td height="20px"></td>
+		</tr>
+		<tr>
+			<td align="left" class="profile_icon">접속자 정보</td>
+		</tr>
+		<tr>
+			<td height="10px"></td>
+		</tr>
+		<tr>
+			<td>
+				<!-- 검색 영역 시작 -->
+				<table cellpadding="5" cellspacing="0" border="1" width="250px" style="border-collapse:collapse;" bordercolor="#DDDDDD">
+					<tr align="center" height="30px">
+						<td width="100px" bgcolor="#F5F5F5" align="center"><strong>이 름</strong></td>
+				    	<td width="150px" >
+				    		<sec:authentication property="principal.user.userNm"/>
+				    	</td>
+					</tr>
+					<tr align="center" height="30px">
+						<td bgcolor="#F5F5F5" align="center"><strong>아이디</strong></td>
+				    	<td >
+				    		<sec:authentication property="principal.user.userId"/>
+				    	</td>
+					</tr>
+					<tr align="center" height="30px">
+						<td bgcolor="#F5F5F5" align="center"><strong>모바일</strong></td>
+				    	<td >
+				    		<sec:authentication property="principal.user.mobile"/>
+				    	</td>
+					</tr>
+					<tr align="center" height="30px">
+						<td bgcolor="#F5F5F5" align="center"><strong>이메일</strong></td>
+				    	<td >
+				    		<sec:authentication property="principal.user.email"/>
+				    	</td>
+					</tr>
+				</table>
+				<!-- 검색 영역 종료 -->
+			</td>
+		</tr>
+
+		<tr>
+			<td height="10px"></td>
+		</tr>
+	
+		<tr>
+			<td height="20px"></td>
+		</tr>
+		<tr>
+			<td align="left" class="shortcuts">바로가기</td>
+		</tr>
+		<tr>
+			<td height="10px"></td>
+		</tr>
+		<tr>
+			<td><a href="/partner/pCounselorMgr/totalSchedule"><div class="round_btn">전체 일정 보기</div></a></td>
+		</tr>
+		<tr>
+			<td><a href="/partner/pCounselorMgr/counselFixList"><div class="round_btn">예약확정현황</div></a></td>
+		</tr>
+		<tr>
+			<td><a href="/partner/pCounselorMgr/pCounselorDateList" ><div class="round_btn">상담일지 작성</div></a></td>
+		</tr>
+		<tr>
+			<td height="20px"></td>
+		</tr>
+		<tr>
+			<td align="left" class="naver_talk">네이버 톡톡 상담</td>
+		</tr>
+		<tr>
+			<td height="10px"></td>
+		</tr>
+		<tr>
+			<td style="width:100px;"><div class="talk_banner_div" data-id="41666"></div></td>
+		</tr>
+		<tr>
+			<td><div class="talk_banner_div" data-id="34517"></div></td>
+		</tr>
+		<tr>
+			<td height="10px"></td>
+		</tr>
+	
+	
+	</table>
+
+
 	<table cellpadding="0" cellspacing="0" border="0" width="70%" style="display: inline-table">
  
 		<tr>
-			<td height="32px"></td>
+			<td height="20px"></td>
 		</tr>
 		<tr>
 		<td>
@@ -237,7 +293,7 @@ if(iTMonth2<10){
         <div id="tab3" class="tab_content">
 	       <table>
 		        <tr>
-						<!-- <td height="20px"></td> -->
+						<td height="20px"></td>
 					</tr>
 					<tr>
 						<td align="left" class="subtitle">파트너어드민 가이드북 & 양식</td>
@@ -246,68 +302,75 @@ if(iTMonth2<10){
 						<td>
 							<!-- 검색 영역 시작 -->
 							<table cellpadding="5" cellspacing="0" border="1" width="250px" style="border-collapse:collapse;" bordercolor="#DDDDDD">
-								<tr align="center" height="30px">
-									<td style="width:290px;" bgcolor="#F5F5F5" align="center"><strong>가이드 북</strong></td>
-							    	<td style="width:47px;" id="btn02" >
-							    		<a href="http://img.ezwelmind.co.kr/sangdam4u/files/partner_GUIDEBOOK_v3.0.pdf" target="_blank" style="font-size: 10px"><span>보기</span></a>
-							    	</td>
-								</tr>
-								<tr align="left" height="30px">
-									<td bgcolor="#F5F5F5" align="center"><strong>개인정보수집 및 이용동의서</strong></td>
-							    	<td id="btn02" >
-							    		<a href="http://img.ezwelmind.co.kr/sangdam4u/files/partner_form_individual.pdf" target="_blank" style="font-size: 10px"><span>보기</span></a>
-							    	</td>
-								</tr>
-								<tr align="left" height="30px">
-									<td bgcolor="#F5F5F5" align="center"><strong>개인정보수집 및 이용동의서</strong><br/><span style="font-size: 11px; color:red">(<b>삼성계열사용</b> :  생명, 웰스토리, 증권)</span></td>
-							    	<td id="btn02" >
-							    		<a href="http://img.ezwelmind.co.kr/sangdam4u/files/partner_form_highrisk_hustory.pdf" target="_blank" style="font-size: 10px"><span>보기</span></a>
-							    	</td>
-								</tr>
-								<tr align="left" height="30px">
-									<td bgcolor="#F5F5F5" align="center"><strong>상담동의서</strong></td>
-							    	<td id="btn02" >
-							    		<a href="http://img.ezwelmind.co.kr/sangdam4u/files/partner_form_counsel.pdf" target="_blank" style="font-size: 10px"><span>보기</span></a>
-							    	</td>
-								</tr>
-								<tr align="left" height="30px">
-									<td bgcolor="#F5F5F5" align="center"><strong>생명존중(자살방지)서약서</strong></td>
-							    	<td id="btn02" >
-							    		<a href="http://img.ezwelmind.co.kr/sangdam4u/files/partner_form_suicide.pdf" target="_blank" style="font-size: 10px"><span>보기</span></a>
-							    	</td>
-								</tr>
-								<tr align="left" height="30px">
-									<td bgcolor="#F5F5F5" align="center"><strong>심리검사 동의서</strong></td>
-							    	<td id="btn02" >
-							    		<a href="http://img.ezwelmind.co.kr/sangdam4u/files/partner_form_testagreement.pdf" target="_blank" style="font-size: 10px"><span>보기</span></a>
-							    	</td>
-								</tr>
-								<tr align="left" height="30px">
-									<td bgcolor="#F5F5F5" align="center"><strong>심리검사 회기차감 테이블</strong></td>
-							    	<td id="btn02" >
-							    		<a href="http://img.ezwelmind.co.kr/sangdam4u/files/partner_form_testchargetable.pdf" target="_blank" style="font-size: 10px"><span>보기</span></a>
-							    	</td>
-								</tr>
-								<tr align="left" height="30px">
-									<td bgcolor="#F5F5F5" align="center"><strong>상담연장 신청서</strong><br/><span style="font-size: 11px">*연장접수:grace88@ezwel.com</span></td>
-							    	<td id="btn02" >
-							    		<!-- <a href="http://img.ezwelmind.co.kr/sangdam4u/files/partner_form_extentionapplication.pdf" target="_blank"><span>보기</span></a> -->
-							    		<a href="javascript:fileDownLoad('/download/partner_form_extentionapplication.hwp', 'partner_form_extentionapplication.hwp');" style="font-size: 10px"><span>보기</span></a>
-							    	</td>
-								</tr>
-								<tr align="left" height="30px">
-									<td bgcolor="#F5F5F5" align="center"><strong>고위험군 사례관리 안내</strong></td>
-							    	<td id="btn02" >
-							    		<a href="http://img.ezwelmind.co.kr/sangdam4u/files/partner_form_highrisk.pdf" target="_blank" style="font-size: 10px"><span>보기</span></a>
-							    	</td>
-								</tr>
-								<tr align="left" height="30px">
-									<td bgcolor="#F5F5F5" align="center"><strong>성범죄경력조회동의서(UST용)</strong><br/><span style="font-size: 11px">*접수:ezwelmind00@naver.com</span></td>
-							    	<td id="btn02" >
-							    		<a href="javascript:fileDownLoad2('http://img.ezwelmind.co.kr/sangdam4u/files/partner_form_criminalrecord_UST.hwp', 'partner_form_criminalrecord_UST.hwp');" style="font-size: 10px"><span>보기</span></a>
-							    	</td>
-								</tr>
-							</table>
+					<tr align="center" height="30px">
+						<td style="width:290px;" bgcolor="#F5F5F5" align="center"><strong>가이드 북</strong></td>
+				    	<td style="width:47px;" id="btn02" >
+				    		<a href="http://img.ezwelmind.co.kr/sangdam4u/files/partner_GUIDEBOOK_v3.0.pdf" target="_blank" style="font-size: 10px"><span>보기</span></a>
+				    	</td>
+					</tr>
+					<tr align="left" height="30px">
+						<td bgcolor="#F5F5F5" align="center"><strong>(일반용)개인정보수집 및 이용동의서</strong></td>
+				    	<td id="btn02" >
+				    		<a href="http://img.ezwelmind.co.kr/sangdam4u/files/partner_form_individual.pdf" target="_blank" style="font-size: 10px"><span>보기</span></a>
+				    	</td>
+					</tr>
+					
+					<tr align="left" height="30px">
+						<td bgcolor="#F5F5F5" align="center"><strong>개인정보수집 및 이용동의서</strong><br/><span style="font-size: 11px; color:red">(삼성생명, 삼성웰스토리, 삼성증권)</span></td>
+				    	<td id="btn02" >
+				    		<a href="http://img.ezwelmind.co.kr/sangdam4u/files/partner_form_highrisk_hustory.pdf" target="_blank" style="font-size: 10px"><span>보기</span></a>
+				    	</td>
+					</tr>
+					<tr align="left" height="30px">
+						<td bgcolor="#F5F5F5" align="center"><strong>개인정보수집 및 이용동의서 + 상담동의서</strong><br/><span style="font-size: 11px; color:red">(삼성생명서비스용)</span></td>
+				    	<td id="btn02" >
+				    		<a href="http://img.ezwelmind.co.kr/sangdam4u/files/partner_form_sls.pdf" target="_blank" style="font-size: 10px"><span>보기</span></a>
+				    	</td>
+					</tr>
+					<tr align="left" height="30px">
+						<td bgcolor="#F5F5F5" align="center"><strong>(일반용)상담동의서</strong></td>
+				    	<td id="btn02" >
+				    		<a href="http://img.ezwelmind.co.kr/sangdam4u/files/partner_form_counsel.pdf" target="_blank" style="font-size: 10px"><span>보기</span></a>
+				    	</td>
+					</tr>
+					<tr align="left" height="30px">
+						<td bgcolor="#F5F5F5" align="center"><strong>생명존중(자살방지)서약서</strong></td>
+				    	<td id="btn02" >
+				    		<a href="http://img.ezwelmind.co.kr/sangdam4u/files/partner_form_suicide.pdf" target="_blank" style="font-size: 10px"><span>보기</span></a>
+				    	</td>
+					</tr>
+					<tr align="left" height="30px">
+						<td bgcolor="#F5F5F5" align="center"><strong>심리검사 동의서</strong></td>
+				    	<td id="btn02" >
+				    		<a href="http://img.ezwelmind.co.kr/sangdam4u/files/partner_form_testagreement.pdf" target="_blank" style="font-size: 10px"><span>보기</span></a>
+				    	</td>
+					</tr>
+					<tr align="left" height="30px">
+						<td bgcolor="#F5F5F5" align="center"><strong>심리검사 회기차감 테이블</strong></td>
+				    	<td id="btn02" >
+				    		<a href="http://img.ezwelmind.co.kr/sangdam4u/files/partner_form_testchargetable.pdf" target="_blank" style="font-size: 10px"><span>보기</span></a>
+				    	</td>
+					</tr>
+					<tr align="left" height="30px">
+						<td bgcolor="#F5F5F5" align="center"><strong>상담연장 신청서</strong><br/><span style="font-size: 11px">*연장접수:grace88@ezwel.com</span></td>
+				    	<td id="btn02" >
+				    		<!-- <a href="http://img.ezwelmind.co.kr/sangdam4u/files/partner_form_extentionapplication.pdf" target="_blank"><span>보기</span></a> -->
+				    		<a href="javascript:fileDownLoad('/download/partner_form_extentionapplication.hwp', 'partner_form_extentionapplication.hwp');" style="font-size: 10px"><span>보기</span></a>
+				    	</td>
+					</tr>
+					<tr align="left" height="30px">
+						<td bgcolor="#F5F5F5" align="center"><strong>고위험군 사례관리 안내</strong></td>
+				    	<td id="btn02" >
+				    		<a href="http://img.ezwelmind.co.kr/sangdam4u/files/partner_form_highrisk.pdf" target="_blank" style="font-size: 10px"><span>보기</span></a>
+				    	</td>
+					</tr>
+					<!-- <tr align="left" height="30px">
+						<td bgcolor="#F5F5F5" align="center"><strong>성범죄경력조회동의서(UST용)</strong><br/><span style="font-size: 11px">*접수:ezwelmind00@naver.com</span></td>
+				    	<td id="btn02" >
+				    		<a href="javascript:fileDownLoad2('http://img.ezwelmind.co.kr/sangdam4u/files/partner_form_criminalrecord_UST.hwp', 'partner_form_criminalrecord_UST.hwp');" style="font-size: 10px"><span>보기</span></a>
+				    	</td>
+					</tr> -->
+				</table>
 							<!-- 검색 영역 종료 -->
 						</td>
 					</tr>
@@ -315,7 +378,6 @@ if(iTMonth2<10){
 						<td height="10px"></td>
 					</tr>
 		        </table>
-							
         </div>
         <!-- #tab3 -->
     </div>

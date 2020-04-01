@@ -6,6 +6,7 @@
 <script type="text/javascript" src="/resources/se2/js/HuskyEZCreator.js" charset="utf-8"></script>
 <script type="text/javascript">
 var oEditors = [];
+var mEditors = [];
 
 j$(document).ready(function(){
 
@@ -44,6 +45,7 @@ j$(document).ready(function(){
 
 	j$('#addBtn').click(function(){
 		oEditors[0].exec("UPDATE_CONTENTS_FIELD", []);   // 에디터의 내용이 textarea에 적용된다.
+		mEditors[0].exec("UPDATE_CONTENTS_FIELD", []);   // 에디터의 내용이 textarea에 적용된다.
 		if ( confirm('등록하시겠습니까?') ) {
 			j$("#addMental").submit();
 		}
@@ -53,7 +55,7 @@ j$(document).ready(function(){
 	j$('#updateBtn').click(function() {
 		j$("#addMental").attr("action","/madm/bbsMental/modifyMental");
 		oEditors[0].exec("UPDATE_CONTENTS_FIELD", []);   // 에디터의 내용이 textarea에 적용된다.
-
+		mEditors[0].exec("UPDATE_CONTENTS_FIELD", []);   // 에디터의 내용이 textarea에 적용된다.
 		if ( confirm('수정하시겠습니까?') ) {
 			j$("#addMental").submit();
 		}
@@ -104,6 +106,19 @@ j$(function(){
   		 },
 	    fCreator: "createSEditor2"
 	});
+	
+	nhn.husky.EZCreator.createInIFrame({
+	    oAppRef: mEditors,
+	    elPlaceHolder: "ir2",
+	    sSkinURI: "/resources/se2/SmartEditor2Skin.html",
+	    htParams : {bUseToolbar : true,
+            fOnBeforeUnload : function(){},
+            fOnAppLoad : function(){}
+            //oEditors.getById["ir1"].exec("PASTE_HTML", ["로딩이 완료된 후에 본문에 삽입되는 text입니다."]);
+  		 },
+	    fCreator: "createSEditor2"
+	});
+	
 });
 </script>
 </head>
@@ -197,9 +212,15 @@ j$(function(){
 	        </tr>
 	        </tr>
 	        <tr>
-	            <td class="line" width="" align="center" bgcolor="#F5F5F5">내용</td>
+	            <td class="line" width="" align="center" bgcolor="#F5F5F5">내용(PC용)</td>
 	            <td colspan="3">
 	            	<textarea rows="10" cols="30" id="ir1" name="content" style="width:100%; height:400px;">${vo.content}</textarea>
+	            </td>
+	        </tr>
+	        <tr>
+	            <td class="line" width="" align="center" bgcolor="#F5F5F5">내용(MOBILE용)</td>
+	            <td colspan="3">
+	            	<textarea rows="10" cols="30" id="ir2" name="mobileContent" style="width:100%; height:400px;">${vo.mobileContent}</textarea>
 	            </td>
 	        </tr>
 	        <tr>

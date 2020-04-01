@@ -5,7 +5,6 @@
 <meta charset="UTF-8">
 <title>연장신청</title>
 <script type="text/javascript">
-
 j$(document).ready(function(){
 	j$("#btnExtendApply").click(function(){
 		
@@ -63,7 +62,6 @@ j$(document).ready(function(){
 		$.divPop("givePointToUserPopUp", "포인트 부여하기", url);
 		return false;
 	});
-
 	$(".takePointToUser").click(function(){
 		var clientCd = $(this).attr("clientCd");
 		var userKey = $(this).attr("userKey");  
@@ -115,11 +113,9 @@ j$(document).ready(function(){
 	
 	
 })
-
 	function blind(){
 		$("#popupBox").css("display","none");
 	}
-
 function showDocument(counselCd ,intakeCd,counselNm,centerSeq,clientCd,apprStatus1,apprStatus2,apprStatus3,regId1,regId2,regId3,regDt1,regDt2,regDt3,fileSeq1,fileSeq2,fileSeq3){
 	$(".counselCd").val(counselCd);
 	$(".intakeCd").val(intakeCd);
@@ -177,9 +173,6 @@ function showDocument(counselCd ,intakeCd,counselNm,centerSeq,clientCd,apprStatu
 	
 	$("#popupBox").css("display","block");
 }
-
-
-
 </script>
 </head>
 <sec:authorize access="isAuthenticated()">
@@ -455,12 +448,10 @@ function showDocument(counselCd ,intakeCd,counselNm,centerSeq,clientCd,apprStatu
     text-align: center;
     font-size: 13px;
 }
-
 .popupBtnBox{
 	margin-left: 100px;
     margin-right: auto;
 }
-
 .popupBtn{
 	border:1px solid gray;
 	width: 50px;
@@ -619,7 +610,9 @@ button{
 					</td> 
 					<sec:authorize access="hasAnyRole('ROLE_ADMIN')">
 					<td><button class="givePointToUser" type="button" clientCd="${list.clientCd }" userKey="${list.userKey }">부여</button></td>
+
 					</sec:authorize>
+					
 					<td>
 					
 					

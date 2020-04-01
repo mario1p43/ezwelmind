@@ -52,7 +52,8 @@ j$(document).ready(function(){
 		
 		var userStatus = $(this).attr("userStatus");	// 고객 재직상태
 		var userUseYn = $(this).attr("userUseYn");		// 고객 사용유무
-		var channelType = $(this).attr("channelType");		// 고객 사용유무
+		var channelType = $(this).attr("channelType");	//상담종류
+		var counselType = $(this).attr("counselType");	// 상담코드
 		
 		var sameJedoYn = 'Y';
 		var clientCd = $(this).attr("clientCd");
@@ -77,12 +78,47 @@ j$(document).ready(function(){
 			sameJedoYn = checkCounselExtendsJedo(clientCd, counselDate, nowDate);	// 연장하려는 상담이 현재 제도와 동일한지 체크
 		}
 		
+		var sdate= new Date("2019/12/21 00:00:00"); // KNOC
+		var edate= new Date("2019/12/31 23:59:59"); // KNOC
+		var scheduleDt = $(this).attr("counselDate");
+		
+		var relation = $(this).attr("relation");
+		var userKey = $(this).attr("userKey");
+		var counselToChildrenCount = 0;
+		
+		if((clientCd == "samsunglife" || clientCd == "test") && relation == "100443") { // 자녀상담의 경우 연장신청을 위해 검증을 거침
+			j$.ajax({
+				method : 'get',
+				url : '/partner/pCounselorMgr/countByCounselToChildren',
+				data : {"clientCd" : clientCd, "userKey" : userKey},
+				dataType : 'json',
+				async : false,
+				success : function(data){
+					counselToChildrenCount = data.counselToChildrenCount;
+				}
+			});
+		
+			if(counselToChildrenCount >= 2) {
+				alert("삼성생명의 자녀상담은 2회기로 제한되어 있습니다.\n실제로 1회기만 진행하였으나,\n일정 연장등록이 안될경우 네이버 톡톡 or 전화 부탁드립니다.");			
+					
+				return false;
+			}
+		}
+		
+		if(clientCd == "corrections" && counselType == "100434") {
+			alert("※중요 공지※\n일반 유선상담이 아닌, 화상상담을 진행하신 경우 '일지작성시 반드시 화상상담 진행'을 기재해주셔야 합니다!!\n기타 문의사항은 네이버 톡톡으로 바랍니다.");
+		}
+		
 		if(userUseYn == 'N'){				// 사용불가 상태의 아이디
 			alert('사용불가 처리된 아이디입니다.');
 		}else if(userStatus == '100009'){	// 고객이 퇴직 상태이면
 			alert('퇴직처리된 아이디입니다.');
 		}else if (sameJedoYn == 'N'){		// 연장하려는 상담이 현재 제도와 동일하지않다면
 			alert('해당 고객사의 계약갱신으로 임직원의 신규상담 재신청이 필요합니다.\n아래의 번호로 임직원이 직접 신규상담을 재신청할 수 있도록 안내를 부탁드립니다.\n\n* 신규상담 신청번호 : 02-3439-9412\n* 문의사항 : 이지웰니스 02-6909-4414');
+		} else if((clientCd == "hustory") && scheduleDt <= "2019-12-31") {
+			alert("계약기간 및 이용한도 리뉴얼로,\n이전 연도에서 상담연장신청은 불가능 합니다.\n신규 상담신청 부탁드립니다. ")
+		} else if(clientCd == "corrections" && counselType == "100433") {
+			alert("코로나19 심각단계 격상으로 인하여, 2/28(금)부터 대면상담이 불가합니다.\n*2/27(목)에 안내드린 문자 참고요망. 법무부 지침이 풀릴때까지 지속.\n상담을 희망하시면,임직원과 상의 후 전화상담으로 전환하여 일정 잡아주시되, \n네이버 톡톡으로 반드시 일정 전달부탁드립니다.")
 		}else{
 			location.href = "/partner/pCounselorMgr/partnerCounselForm?userKey=" + $(this).attr("userKey") + "&counselCd=" + $(this).attr("counselCd");
 		}
@@ -734,7 +770,7 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 												</c:if>
 												<c:if test="${list.extensionStatus eq '100931' or empty list.extensionStatus}">
 													<input type="button" value="다음회기등록" class="btnExtend" userKey="${list.userKey}" counselCd="${list.counselCd}" 
-													clientCd="${list.clientCd}" userStatus="${list.userStatus}" userUseYn="${list.useYn}" counselDate="${list.ymd}" channelType="${list.channelType }">
+													clientCd="${list.clientCd}" userStatus="${list.userStatus}" userUseYn="${list.useYn}" counselDate="${list.ymd}" channelType="${list.channelType }" counselDate="${list.ymd}" relation="${list.relation }">
 												</c:if>
 											</td><!-- 다음회기등록 -->
 											<td>

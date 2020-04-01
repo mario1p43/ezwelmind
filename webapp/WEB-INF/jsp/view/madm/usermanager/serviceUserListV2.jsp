@@ -612,6 +612,7 @@
 		    		<input type="checkbox" name="searchStatus" id="status01" value="100001"/><label for="status01">심리</label>
 		    		<input type='checkbox'  name="searchStatus" id="status02" value='100003'/><label for="status02">재무</label>
 		    		<input type="checkbox" name="searchStatus" id="status03" value="100002"/><label for="status03">법률/세무</label>
+		    		<input type="checkbox" name="searchStatus" id="status09" value="100004"/><label for="status09">심리검사</label>
 		    	</td>
 				<td width="10%" bgcolor="#F5F5F5" align="center"><strong>주문채널</strong></td>
 		    	<td width="40%" align="left">
@@ -787,7 +788,16 @@
 									</a>
 								</td>
 								<td>${list.mobile }</td>
-								<td>${list.counselDiv } (${list.counselType})</td>
+								<td>
+									<c:choose>
+										<c:when test="${list.counselType eq '101047'}">
+											내마음보고서
+										</c:when>
+										<c:otherwise>
+											${list.counselDiv } (${list.counselType})		
+										</c:otherwise>
+									</c:choose>
+								</td>
 								<td>${list.centerNm }</td>
 								<td>
 									<c:set var="counselorNm" value="${fn:split(list.counselorNm,',')}" />
@@ -819,6 +829,9 @@
 											</c:otherwise>
 										</c:choose>
 									</c:forEach> 
+									<c:if test="${list.counselType eq '101047'}"> <!-- 마인드프리즘 상태 -->
+										(${list.mindPrismStatus })
+									</c:if>
 								</td>
 								<td>
 									<a href="#" class="modifyDisp" intakeCd="${list.intakeCd}" disp="${list.counselReservChk}" type="COUNSEL_RESERV_CHK" style="font-weight: bold; 

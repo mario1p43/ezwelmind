@@ -1,6 +1,9 @@
+<%@page import="com.ezwel.admin.service.security.UserDetailsHelper"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ include file="/WEB-INF/jsp/layout/inc/tags.jspf"%>
 <%@ page  language="java" import="java.util.*,java.text.*"%>
+
+<% pageContext.setAttribute("loginUserId", UserDetailsHelper.getAuthenticatedUser().getUserId()); %>
 
 <html>
 <head>
@@ -15,7 +18,14 @@
 	<script src="${url:resource('/resources/js/plugin/fullcalendar-2.5.0/fullcalendar.min.js')}" ></script>
 	<script src="${url:resource('/resources/js/plugin/fullcalendar-2.5.0/lang/ko.js')}" ></script>
 	<script src="${url:resource('/resources/js/plugin/qtip/jquery.qtip.min.js')}" ></script>
-
+	<c:if test="${loginUserId eq 'nexon_maum'}">
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("table:eq(4) tr td:eq(0)").remove();
+			$("table:eq(3)").remove();
+		});
+	</script> 
+	</c:if>
 	<style>
 		body {
 			padding: 0;

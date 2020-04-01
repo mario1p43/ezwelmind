@@ -487,7 +487,11 @@
 											<span style="color:blue; ">${list.orderStatus }</br>(${list.cancelDt })</span>
 											</c:when>
 											<c:otherwise>
-											<span>${list.orderStatus }</span>
+											<span>${list.orderStatus }
+											<c:if test="${intakeDetail.counselType eq '101047' }">
+												<br/>(${list.mindPrismStatus })
+											</c:if>
+											</span>
 											</c:otherwise>
 										</c:choose>
 									</td>

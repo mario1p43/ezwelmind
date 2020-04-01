@@ -6,22 +6,17 @@
 
 <script src="${url:resource('/resources/js/spin.js')}"></script>
 <script type="text/javascript">
-
 j$(document).ready(function(){
-
 	j$("#searchBtn").click(function(){
 		submitReady();		
 		$('#searchMgr').attr('action', "/madm/mgr/counselorMgrList").submit();
 		//j$("#searchMgr").submit();
 		return false;
 	});
-
-
 	j$("#insertBtn").click(function(){
 		location.href = "/madm/mgr/counselorMgrAdd";
  		return false;
 	});
-
 	j$("#excelBtn").click(function(){
 		
 		submitReady();		
@@ -71,11 +66,9 @@ j$(document).ready(function(){
 		},
 		timepicker:false
 	});
-
 	j$("#btstartDt").click(function(){
 		j$('.date_timepicker_start').datetimepicker('show');
 	});
-
 	j$('.date_timepicker_end').datetimepicker({
 		format:'Y/m/d',
 		onShow:function( ct ){
@@ -85,7 +78,6 @@ j$(document).ready(function(){
 		},
 		timepicker:false
 	});
-
 	j$("#btendDt").click(function(){
 		j$('.date_timepicker_end').datetimepicker('show');
 	});	
@@ -104,7 +96,6 @@ j$(document).ready(function(){
 			dayStart = '0'+dayStart;
 		}
 		time.setDate (time.getDate() - 30); 
-
 		var yearEnd = time.getFullYear();
 		var monthEnd = time.getMonth()+1;
 		if(monthEnd < 10){
@@ -196,12 +187,10 @@ j$(document).ready(function(){
 			day = '0'+day;
 		}
 		var start = year+"/"+month+"/"+day;
-
 		
 		$(".date_timepicker_start").val(start);
 		$(".date_timepicker_end").val(start);
 	});
-
 	<c:if test='${not empty param.sMgrStatus}'>
 	var chkValue = '${param.sMgrStatus}';
 	var chkArr = chkValue.split(',');
@@ -267,7 +256,6 @@ j$(document).ready(function(){
 		}
 	}
 	</c:if>
-
 	
 	<c:if test='${not empty param.sLawDiv}'>
 	var chkValue = '${param.sLawDiv}';
@@ -325,7 +313,6 @@ j$(document).ready(function(){
 		}
 	}
 	</c:if>
-
 	
 	<c:if test='${not empty param.sDiagnosisType}'>
 	var chkValue = '${param.sDiagnosisType}';
@@ -453,7 +440,6 @@ j$(document).ready(function(){
 			}else if(newval == 'N'){
 				statusNew="중지";
 			}
-
 			
 			var params = {};
 			
@@ -479,7 +465,6 @@ j$(document).ready(function(){
 		});
 	});
 	
-
 	
 	
 	function mgrStatusChange(){
@@ -521,7 +506,6 @@ j$(document).ready(function(){
 		}); 
 	}
 		
-
 	}
 	
 	
@@ -536,7 +520,6 @@ j$(document).ready(function(){
 		var frm = searchMgr;
 		var temp = "";
 		var cnt = 0;
-
 		//재직상태 checkbox 값 
 		if ( typeof frm.elements["check"].length == "undefined" ) {
 			// 체크박스가 다 disabled이고 하나만 있으면 배열이 먹지 않아서 undefind체크함
@@ -585,7 +568,6 @@ j$(document).ready(function(){
 		var frm = searchMgr;
 		var temp = "" ;
 		var cnt = 0;
-
 		//재직상태 checkbox 값 
 		if ( typeof frm.elements["check"].length == "undefined" ) {
 			// 체크박스가 다 disabled이고 하나만 있으면 배열이 먹지 않아서 undefind체크함
@@ -640,7 +622,6 @@ j$(document).ready(function(){
 				}
 			}); 
 		}
-
 		return false;
 	});
 	
@@ -655,7 +636,6 @@ j$(document).ready(function(){
 		var frm = searchMgr;
 		var temp = "" ;
 		var cnt = 0;
-
 		//재직상태 checkbox 값 
 		if ( typeof frm.elements["check"].length == "undefined" ) {
 			// 체크박스가 다 disabled이고 하나만 있으면 배열이 먹지 않아서 undefind체크함
@@ -710,7 +690,6 @@ j$(document).ready(function(){
 				}
 			}); 
 		}
-
 		return false;
 	});
 	
@@ -722,12 +701,10 @@ j$(document).ready(function(){
 			 j$.alert("선택된 값이 없습니다.");
 			 return;
 		}
-
 		
 		var frm = searchMgr;
 		var temp = "" ;
 		var cnt = 0;
-
 		//재직상태 checkbox 값 
 		if ( typeof frm.elements["check"].length == "undefined" ) {
 			// 체크박스가 다 disabled이고 하나만 있으면 배열이 먹지 않아서 undefind체크함
@@ -782,7 +759,6 @@ j$(document).ready(function(){
 				}
 			}); 
 		}
-
 		return false;
 	});
  	
@@ -797,7 +773,6 @@ j$(document).ready(function(){
 		var frm = searchMgr;
 		var temp = "" ;
 		var cnt = 0;
-
 		//재직상태 checkbox 값 
 		if ( typeof frm.elements["check"].length == "undefined" ) {
 			// 체크박스가 다 disabled이고 하나만 있으면 배열이 먹지 않아서 undefind체크함
@@ -852,7 +827,6 @@ j$(document).ready(function(){
 				}
 			}); 
 		}
-
 		return false;
 	});
  	//반려 -> 대기
@@ -866,7 +840,6 @@ j$(document).ready(function(){
 		var frm = searchMgr;
 		var temp = "" ;
 		var cnt = 0;
-
 		//재직상태 checkbox 값 
 		if ( typeof frm.elements["check"].length == "undefined" ) {
 			// 체크박스가 다 disabled이고 하나만 있으면 배열이 먹지 않아서 undefind체크함
@@ -921,7 +894,6 @@ j$(document).ready(function(){
 				}
 			}); 
 		}
-
 		return false;
 	});
 	
@@ -965,18 +937,15 @@ j$(document).ready(function(){
 				}
 			});
 		}
-
 		return false;
 		
 	}); 
 });
-
 //특정 문자열을 입력하지 않으면 회원가입을 하지 못하도록 - 현대카드 스튜디오 블랙 사용
 function sendChangeRPop(){
 	$.divPop('sendChangeR', "반려사유", $("#sendChangeRDiv"));
 	return false;
 }
-
 //대기 ->  반려
 function sendChangeR(){
 	
@@ -1005,10 +974,8 @@ function sendChangeR(){
 			}
 		}); 
 	}
-
 	return false;
 }
-
 function centerReload(type){
 	/* if(setType == "sel"){
 		var tempCenterNm = $("#centerNm").val();
@@ -1018,7 +985,6 @@ function centerReload(type){
 		<c:forEach var="list" items="${centerList}">
 		centerNmList.push("${list.centerNm}");
 		</c:forEach>
-
 		var tempCenterNm = $("#chkCenterNm").val();
 		for(var i=0 ; i < centerNmList.length ; i++){
 			if(centerNmList[i].indexOf(tempCenterNm) != -1) {
@@ -1068,7 +1034,6 @@ function submitReady(){
 	
 		 temp = "" ;
 	 cnt = 0;
-
 	// checkbox 값 
 	for(var i=0;i<frm.elements["channelType"].length;i++){
 		if(frm.elements["channelType"][i].checked > 0){
@@ -1085,7 +1050,6 @@ function submitReady(){
 	 
 	temp ="" ;
 	cnt = 0;
-
 	// checkbox 값 
 	for(var i=0;i<frm.elements["workType"].length;i++){
 		if(frm.elements["workType"][i].checked > 0){
@@ -1098,10 +1062,8 @@ function submitReady(){
 		    }
 	    }
 	 frm.elements["sWorkType"].value = temp;
-
 	temp = "" ;
 	cnt = 0;
-
 	// checkbox 값 
 	for(var i=0;i<frm.elements["sAuthCd"].length;i++){
 		if(frm.elements["sAuthCd"][i].checked > 0){
@@ -1118,7 +1080,6 @@ function submitReady(){
 	 
 	temp = "" ;
 	cnt = 0;
-
 	// checkbox 값 상담대상 - 심리
 	for(var i=0;i<frm.elements["mentalAges"].length;i++){
 		if(frm.elements["mentalAges"][i].checked > 0){
@@ -1206,7 +1167,6 @@ function submitReady(){
 	 frm.elements["sDiagnosisDiv"].value = temp; 
 	 temp = "" ;
 	 cnt = 0;
-
 	// checkbox 값 상담분야 - 상담방법(심리)
 	for(var i=0;i<frm.elements["mentalType"].length;i++){
 		if(frm.elements["mentalType"][i].checked > 0){
@@ -1222,7 +1182,6 @@ function submitReady(){
 	 frm.elements["sMentalType"].value = temp;  
 	 temp = "" ;
 	 cnt = 0;
-
 	// checkbox 값 상담분야 - 상담방법(법률)
 	/* for(var i=0;i<frm.elements["lawType"].length;i++){
 		if(frm.elements["lawType"][i].checked > 0){
@@ -1238,7 +1197,6 @@ function submitReady(){
 	 frm.elements["sLawType"].value = temp;  
 	 temp = "" ;
 	 cnt = 0;  */
-
 	// checkbox 값 상담분야 - 상담방법(재무)
 	/* for(var i=0;i<frm.elements["financeType"].length;i++){
 		if(frm.elements["financeType"][i].checked > 0){
@@ -1254,7 +1212,6 @@ function submitReady(){
 	 frm.elements["sFinanceType"].value = temp;   
 	 temp = "" ;
 	 cnt = 0; */
-
 	 
 	// checkbox 값 상담분야 - 외국어 상담
 	for(var i=0;i<frm.elements["languageType"].length;i++){
@@ -1320,8 +1277,6 @@ function submitReady(){
 	 
 	 frm.elements["centerNm"].value = null;
 }
-
-
 function showDetail(){
 	if($(".searchDetail").is(":visible")){
 		$(".updownBtn").text("▼");
@@ -1330,11 +1285,7 @@ function showDetail(){
 		$(".updownBtn").text("▲");
 		$(".searchDetail").css("display","");
 	}
-
 }
-
-
-
 </script>
 </head>
 <body>
@@ -1728,7 +1679,6 @@ function showDetail(){
 								<th width="" rowspan="2" style="width: 60px !important;">정보변경일</th>
 							</tr>
 <!-- 							<tr>
-
 								<th style="width: 100px !important;">심리</th>
 								<th style="width: 100px !important;">심리검사</th>
 								<th style="width: 100px !important;">심리</th>
@@ -1871,4 +1821,3 @@ function showDetail(){
 </form>
 </body>
 </html>
-

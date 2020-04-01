@@ -1011,7 +1011,8 @@ function delRowExam(){
 					<input type="checkbox" class="mentalDiv" name="mentalDiv"  value="100007"  /> 놀이치료
 					<input type="checkbox" class="mentalDiv" name="mentalDiv"  value="100008"  /> 미술치료
 					<input type="checkbox" class="mentalDiv" name="mentalDiv"  value="100009"  /> 언어치료
-					<input type="checkbox" class="mentalDiv" name="mentalDiv"  value="100010"  /> 특수재활치료 <br />
+					<input type="checkbox" class="mentalDiv" name="mentalDiv"  value="100010"  /> 특수재활치료
+					<input type="checkbox" class="mentalDiv" name="mentalDiv"  value="100022"  /> 내마음보고서 해석상담 <br />
 					<input type="checkbox" class="mentalDiv" name="mentalDiv"  value="100011"  /> 기타 
 					<input type="text" name="mentalDivEtc" id="mentalDivEtc" style="width:500px;" >  
 				</td>
