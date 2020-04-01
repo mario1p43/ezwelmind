@@ -38,6 +38,15 @@ ul, li {
 
 
 
+/* //종합 css 끝 */
+
+
+/* web css */
+@media(min-width:800px) {
+	.mobile {
+		 display:none 
+	}
+
 /* 웹 css변경 */
 
 .web2 {
@@ -48,6 +57,7 @@ ul, li {
 
 body {
 	min-width: 1550px;
+	padding-bottom:150px;
 }
 
 .member_wrap2 {
@@ -477,7 +487,7 @@ a.text_deco_none:hover{
 }
 /* //web css 끝 */
 
-@media(max-width:800px) { 
+@media(max-width:100px) { 
 	.web {
 		 display:none 
 	}
