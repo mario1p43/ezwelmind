@@ -36,7 +36,7 @@
 	<script>
 		j$(function() {
 			$('.mobile_nav ul li a').eq(3).addClass('active');
-			$('.mobile_nav ul li a img').eq(3).attr('src', '/resources/img/home_icon_active.png');
+			$('.mobile_nav ul li a img').eq(3).attr('src', "${url:resource('/resources/img/comunity_icon_active.png')}");
 		});
 	</script>
 	<div class="notice-wrapper">

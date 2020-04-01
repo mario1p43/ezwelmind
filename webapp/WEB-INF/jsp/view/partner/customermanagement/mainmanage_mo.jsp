@@ -95,7 +95,7 @@
 <script type="text/javascript">
 j$(document).ready(function(){
 	$('.mobile_nav ul li a').eq(1).addClass('active');
-	$('.mobile_nav ul li a img').eq(1).attr('src', ${url:resource('/resources/img/home_icon_active.png')});
+	$('.mobile_nav ul li a img').eq(1).attr('src', "${url:resource('/resources/img/consulting_icon_active.png')}");
 	j$('.chooose_file_button').on('click', function() {
 		j$(this).siblings('input[type=file]').trigger('click');
 		return false;

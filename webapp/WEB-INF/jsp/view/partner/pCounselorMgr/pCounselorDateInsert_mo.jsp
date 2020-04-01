@@ -37,7 +37,7 @@
 	.counsel-wrapper .content-wrapper .data-wrapper .bg-block:not(:first-child){margin-top:2.5vw}
 	.counsel-wrapper .content-wrapper .data-wrapper .risk-rank-wrapper{padding:2.2vw;text-align:center}
 	.counsel-wrapper .content-wrapper .data-wrapper .risk-rank-description{padding:2.2vw}
-	.counsel-wrapper .content-wrapper .data-wrapper .risk-dropdown{padding:2.2vw;text-align:center;background:${url:resource('/resources/img/arrow_bottom.png')} no-repeat;background-position:right 15px top 50%}
+	.counsel-wrapper .content-wrapper .data-wrapper .risk-dropdown{padding:2.2vw;text-align:center;background:"${url:resource('/resources/img/arrow_bottom.png')}" no-repeat;background-position:right 15px top 50%}
 	.counsel-wrapper .content-wrapper .data-wrapper .risk-detail {display:flow-root}
 	.counsel-wrapper .content-wrapper .data-wrapper .risk-detail .risk-detail-wrapper{display:flex}
 	.counsel-wrapper .content-wrapper .data-wrapper .risk-detail .risk-detail-wrapper:not(:first-child){margin-top:2.2vw}
@@ -50,7 +50,7 @@
 	.counsel-wrapper .content-wrapper .data-wrapper .risk-detail-block .risk-detail-data{padding:2.2vw}
 	.counsel-wrapper .content-wrapper .data-wrapper .data-block .counsel-write-description{margin-bottom:2.2vw}
 	.counsel-wrapper .content-wrapper .data-wrapper .data-block .counsel-subject-select{display:flow-root;width:100%}
-	.counsel-wrapper .content-wrapper .data-wrapper .data-block .counsel-subject-select select{float:left;width:calc(33% - 0.37vw)!important;height:9vw;padding:0 2.5vw;margin-right:1vw;font-size:14px;background:${url.resource('/resources/img/ic_select.png')} no-repeat;background-size:12px 7px;background-position:right 6px top 50%;-webkit-appearance:none;-moz-appearance:none;appearance:none;}
+	.counsel-wrapper .content-wrapper .data-wrapper .data-block .counsel-subject-select select{float:left;width:calc(33% - 0.37vw)!important;height:9vw;padding:0 2.5vw;margin-right:1vw;font-size:14px;background:"${url.resource('/resources/img/ic_select.png')}" no-repeat;background-size:12px 7px;background-position:right 6px top 50%;-webkit-appearance:none;-moz-appearance:none;appearance:none;}
 	.counsel-wrapper .content-wrapper .data-wrapper .data-block .counsel-subject-select select:last-child{margin-right:0}
 	.counsel-wrapper .content-wrapper .data-wrapper .check-data-label{margin-top:2.2vw}
 	.counsel-wrapper .content-wrapper .data-wrapper .check-data-block{padding:3vw 0}
@@ -96,6 +96,9 @@
 var oEditors = [];
 
 $(document).ready(function(){
+
+	$('.mobile_nav ul li a').eq(2).addClass('active');
+	$('.mobile_nav ul li a img').eq(2).attr('src', "${url:resource('/resources/img/re_list_icon_active.png')}");
 	
 	 if("${isNotSaveSubjectItem}" == "false") {
 		 $("#subjectItemCd1").attr("disabled", true);

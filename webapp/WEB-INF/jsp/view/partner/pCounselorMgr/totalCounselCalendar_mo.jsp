@@ -199,7 +199,7 @@
 		}
 
 		.fc .fc-prev-button {
-			background-image: url(${url:resource('/resources/img/left_arrow.png')});
+			background-image: url("${url:resource('/resources/img/left_arrow.png')}");
 			background-repeat: no-repeat;
 			background-color: white;
 			background-blend-mode: multiply;
@@ -208,7 +208,7 @@
 		}
 
 		.fc .fc-next-button {
-			background-image: url(${url:resource('/resources/img/right_arrow.png')});
+			background-image: url("${url:resource('/resources/img/right_arrow.png')}");
 			background-repeat: no-repeat;
 			background-color: white;
 			background-blend-mode: multiply;

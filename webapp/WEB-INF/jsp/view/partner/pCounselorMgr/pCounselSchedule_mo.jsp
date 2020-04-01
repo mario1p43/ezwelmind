@@ -70,7 +70,9 @@ padding: 5px 0px;
 <script>
 $(document).ready(function(){
 	
-
+	$('.mobile_nav ul li a').eq(2).addClass('active');
+	$('.mobile_nav ul li a img').eq(2).attr('src', "${url:resource('/resources/img/re_list_icon_active.png')}");
+	
 	$("#preMonth").click(function(){
 		var year = <%=iYear %>;
 		var month = <%=iMonth %>+1; 

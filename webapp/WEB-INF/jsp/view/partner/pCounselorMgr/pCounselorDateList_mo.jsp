@@ -38,6 +38,9 @@
 
 j$(document).ready(function(){
 
+	$('.mobile_nav ul li a').eq(2).addClass('active');
+	$('.mobile_nav ul li a img').eq(2).attr('src', "${url:resource('/resources/img/re_list_icon_active.png')}");
+
 	j$(".viewDetail").click(function(){
 		var counselCd = $(this).attr("val");
 		j$.divPop_mo("viewDetail", "상세보기 (신청코드 : " + counselCd + " )", "/madm/layerPopup/intakeDetail?counselCd="+counselCd);

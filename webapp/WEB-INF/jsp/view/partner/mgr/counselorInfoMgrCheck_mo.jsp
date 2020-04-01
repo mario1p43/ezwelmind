@@ -82,6 +82,8 @@
 		$("input[type=radio]").attr("disabled",true);
 		$("select").attr("disabled",true);
 		
+		$('.mobile_nav ul li a').eq(2).addClass('active');
+		$('.mobile_nav ul li a img').eq(2).attr('src', "${url:resource('/resources/img/re_list_icon_active.png')}");
 		
 		<c:if test='${not empty mgr.channelType}'>
 		var chkValue = '${mgr.channelType}';

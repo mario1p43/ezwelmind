@@ -15,7 +15,7 @@
 	.paycheck-wrapper .content-wrapper .input-block{display:flow-root;margin-top:2vw}
 	.paycheck-wrapper .content-wrapper .input-block.line-bottom input[type=text]{width:100%;float:left;padding:4px 0;font-size:16px;line-height:130%;border:none;outline:none}
 	.paycheck-wrapper .content-wrapper .input-block .checkbox-wrapper{float:left;margin-right:4vw;font-size:14px}
-	.paycheck-wrapper .content-wrapper .input-block select{width:100%;height:9vw;padding:0 2vw;font-size:14px;border:1px solid #BDBDBD;background:url('/resources/img/ic_select.png') no-repeat;background-size:12px 7px;background-position:right 6px top 50%;background-color:white;-webkit-appearance:none;-moz-appearance:none;appearance:none;outline:none}
+	.paycheck-wrapper .content-wrapper .input-block select{width:100%;height:9vw;padding:0 2vw;font-size:14px;border:1px solid #BDBDBD;background:"${url:resource('/resources/img/ic_select.png')}" no-repeat;background-size:12px 7px;background-position:right 6px top 50%;background-color:white;-webkit-appearance:none;-moz-appearance:none;appearance:none;outline:none}
 	.paycheck-wrapper .content-wrapper .line-bottom{border-bottom:1px solid #C4C4C4}
 	.paycheck-wrapper .content-wrapper .datetimepicker-block{display:flex}
 	.paycheck-wrapper .content-wrapper .datetimepicker-block span{display:inline-block;float:left;width:20px;text-align:center;line-height:36px}
@@ -54,7 +54,7 @@
 <script type="text/javascript">
 $(document).ready(function(){	
 	$('.mobile_nav ul li a').eq(4).addClass('active');
-	$('.mobile_nav ul li a img').eq(4).attr('src', '/resources/img/home_icon_active.png');
+	$('.mobile_nav ul li a img').eq(4).attr('src', "${url:resource('/resources/img/calculate_icon_active.png')}");
 	$('.checkboxAll').click(function() {
 		if($('.checkboxAll').is(':checked') == true){
 			$('.selectPayCheck').prop("checked", true);
@@ -525,7 +525,7 @@ function updateCheckYnManager(){
 					searchMgrNm="${payCheckAddDto.searchMgrNm}" 
 					searchCounselorNm="${payCheckAddDto.searchCounselorNm}"
 					searchCenterSeq="${payCheckAddDto.searchCenterSeq }">
-					엑셀 다운로드 <img src="/resources/img/ic_excel_down.png">
+					엑셀 다운로드 <img src="${url:resource('/resources/img/ic_excel_down.png')}">
 				</span>
 			</sec:authorize>
 			</div>

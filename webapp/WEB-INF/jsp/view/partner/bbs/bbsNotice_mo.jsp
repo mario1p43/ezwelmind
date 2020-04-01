@@ -14,7 +14,7 @@
 	.notice-wrapper .data-list-wrapper table tr td{height:32px;padding:2vw 1vw;font-size:14px}
 	
 	.notice-wrapper .content-wrapper{display:flow-root;margin-top:5vw}
-	.notice-wrapper .content-wrapper .search-type-wrapper .search-type{float:left;width:30%;height:8vw;padding:0 2vw;font-size:14px;border:1px solid #828282;background:${url:resource('/resources/img/ic_select.png')} no-repeat;background-size:12px 7px;background-position:right 6px top 50%;background-color:white;-webkit-appearance:none;-moz-appearance:none;appearance:none;outline:none;}
+	.notice-wrapper .content-wrapper .search-type-wrapper .search-type{float:left;width:30%;height:8vw;padding:0 2vw;font-size:14px;border:1px solid #828282;background:"${url:resource('/resources/img/ic_select.png')}" no-repeat;background-size:12px 7px;background-position:right 6px top 50%;background-color:white;-webkit-appearance:none;-moz-appearance:none;appearance:none;outline:none;}
 	.notice-wrapper .content-wrapper .search-keyword-wrapper{float:left;width:calc(70% - 4.5vw);height:8vw;line-height:8vw;margin-left:4.5vw;border-bottom:1px solid #828282}
 	.notice-wrapper .content-wrapper .search-keyword-wrapper .search-keyword{float:left;width:80%;height:100%;padding:0 2vw;font-size:14px;border:0;outline:none}
 	.notice-wrapper .content-wrapper .search-keyword-wrapper .btn-search{float:right}
@@ -24,7 +24,7 @@
 <script type="text/javascript">
 j$(document).ready(function(){
 	$('.mobile_nav ul li a').eq(3).addClass('active');
-	$('.mobile_nav ul li a img').eq(3).attr('src', '/resources/img/home_icon_active.png');
+	$('.mobile_nav ul li a img').eq(3).attr('src', "${url:resource('/resources/img/comunity_icon_active.png')}");
 	$.validate({
 		form : '#searchNotice',
 		validateOnBlur : false,

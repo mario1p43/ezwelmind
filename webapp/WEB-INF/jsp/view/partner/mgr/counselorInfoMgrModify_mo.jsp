@@ -75,6 +75,10 @@
 </style>
 
 <script type="text/javascript">
+
+	$('.mobile_nav ul li a').eq(2).addClass('active');
+	$('.mobile_nav ul li a img').eq(2).attr('src', "${url:resource('/resources/img/re_list_icon_active.png')}");
+	
 	var num = 0;
 	var de ="";
 	var count = 0;

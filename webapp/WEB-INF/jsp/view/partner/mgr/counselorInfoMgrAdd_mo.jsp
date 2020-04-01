@@ -86,6 +86,9 @@
 	var tbl_cnt_cert = 1;
 	var tbl_cnt_book = 1;
 
+	$('.mobile_nav ul li a').eq(2).addClass('active');
+	$('.mobile_nav ul li a img').eq(2).attr('src', "${url:resource('/resources/img/re_list_icon_active.png')}");
+
 	function tblRowDel(rownum){
 		$('#organizationRow'+rownum).remove();
 	}
