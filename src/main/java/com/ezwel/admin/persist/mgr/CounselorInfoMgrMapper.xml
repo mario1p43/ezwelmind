@@ -1133,11 +1133,12 @@
 							WHEN B.MGR_STATUS = 'R' THEN '반려' END) AS mgrStatus
 					, (CASE WHEN A.WORK_TYPE = 'S' THEN '상주'
 							WHEN A.WORK_TYPE = 'P' THEN '파트타임' END) AS workType
-					, A.CHANNEL_TYPE	AS	channelType
+					, FN_GET_CATEGORY_NM(A.CHANNEL_TYPE)	AS	channelType
 					, DATE_FORMAT(STR_TO_DATE(B.MODI_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')			AS	modiDt
 					, DATE_FORMAT(STR_TO_DATE(B.REG_DT, '%Y%m%d%H%i%s'),'%Y-%m-%d %H:%i:%s')			AS	regDt
 					, (CASE WHEN B.USE_YN = 'Y' THEN '사용함'
 							WHEN B.USE_YN = 'N' THEN '사용중지' END) AS useYn
+					, C.CENTER_SEQ	AS	centerSeq
 					, C.CENTER_NM	AS	centerNm
 					, (CASE 
 						WHEN D.AUTH_CD = 'ROLE_PARTNER_CENTER' THEN '센터장' 
@@ -1145,79 +1146,31 @@
 						WHEN D.AUTH_CD = 'ROLE_PARTNER_SEND' THEN '파견' 
 						WHEN D.AUTH_CD = 'ROLE_PARTNER_GROUP' THEN '집단' 
 						WHEN D.AUTH_CD = 'ROLE_PARTNER_TEACHER' THEN '강사'		END) AS authCd
+					, FN_GET_CATEGORY_NM(A.MENTAL_DIV) AS mentalDiv
+					, A.MENTAL_DIV_ETC AS mentalDivEtc
+					, FN_GET_COMM_NM(A.MENTAL_AGES) AS mentalAges
+					, FN_GET_COMM_NM(A.MENTAL_TYPE) AS mentalType
 					,B.MOBILE as mobile
-					, A.MENTAL_AGES			AS	mentalAges
-					, A.MENTAL_DIV			AS	mentalDiv
-					, A.MENTAL_DIV_ETC		AS	mentalDivEtc
-					, A.MENTAL_TYPE			AS	mentalType
-					, A.LAW_DIV				AS	lawDiv
-					, A.LAW_TYPE			AS	lawType
-					, A.FINANCE_DIV			AS	financeDiv
-					, A.FINANCE_TYPE		AS	financeType
-					, A.DIAGNOSIS_AGES		AS	diagnosisAges
-					, A.DIAGNOSIS_DIV		AS	diagnosisDiv
-					, A.DIAGNOSIS_DIV_ETC	AS	diagnosisDivEtc
-					, A.DIAGNOSIS_TYPE		AS	diagnosisType
-					, C.AREA1				AS	area1
-					, C.AREA2				AS	area2
+					,B.EMAIL
+			    	, FN_GET_COMM_NM(A.LAW_DIV)				AS	lawDiv
+					, FN_GET_COMM_NM(A.LAW_TYPE)			AS	lawType
+					, FN_GET_COMM_NM(A.FINANCE_DIV)			AS	financeDiv
+					, FN_GET_COMM_NM(A.FINANCE_TYPE)		AS	financeType
+					, FN_GET_COMM_NM(A.DIAGNOSIS_AGES)		AS	diagnosisAges
+					, FN_GET_CATEGORY_NM(A.DIAGNOSIS_DIV)		AS	diagnosisDiv
+					, FN_GET_COMM_NM(A.DIAGNOSIS_DIV_ETC)	AS	diagnosisDivEtc
+					, FN_GET_COMM_NM(A.DIAGNOSIS_TYPE)		AS	diagnosisType
+					, FN_GET_COMM_NM(C.AREA1)				AS	area1
+					, FN_GET_COMM_NM(C.AREA2)				AS	area2
 					, C.ADDR1				AS  addr1
 					, C.ADDR2				AS  addr2
-					, B.EMAIL				AS	email
-					, A.EDUCATION			AS	education
-					, A.UNIVERSITY			AS	university
-					, A.DEPARTMENT			AS	department
-					, A.EDUCATION2			AS	education2
-					, A.UNIVERSITY2			AS	university2
-					, A.DEPARTMENT2			AS	department2
-					, A.EDUCATION3			AS	education3
-					, A.UNIVERSITY3			AS	university3
-					, A.DEPARTMENT3			AS	department3
-					, A.EDU_YEAR1			AS	eduYear
-					, A.EDU_YEAR2			AS	eduYear2
-					, A.EDU_YEAR3			AS	eduYear3
-					, A.EDU_STATUS1			AS	eduStatus
-					, A.EDU_STATUS2			AS	eduStatus2
-					, A.EDU_STATUS3			AS	eduStatus3
-					, A.MEMO				AS	memo
-					, A.CAREER				AS	career
-					, A.WORK_TYPE			AS	workType
-					, B.CENTER_OWNER_YN		AS	centerOwnerYn
-					, A.CHANNEL_TYPE		AS	channelType
-					, A.MENTAL_AGES			AS	mentalAges
-					, A.MENTAL_DIV			AS	mentalDiv
-					, A.MENTAL_DIV_ETC		AS	mentalDivEtc
-					, A.MENTAL_TYPE			AS	mentalType
-					, A.LAW_DIV				AS	lawDiv
-					, A.LAW_TYPE			AS	lawType
-					, A.FINANCE_DIV			AS	financeDiv
-					, A.FINANCE_TYPE		AS	financeType
-					, A.DIAGNOSIS_AGES		AS	diagnosisAges
-					, A.DIAGNOSIS_DIV		AS	diagnosisDiv
-					, A.DIAGNOSIS_DIV_ETC	AS	diagnosisDivEtc
-					, A.DIAGNOSIS_TYPE		AS	diagnosisType
-					, A.COUNSEL_LANGUAGE	AS languageType
-					, A.COUNSEL_SPECIAL	AS	specialType
-					, A.COUNSEL_JOB	AS	jobType 
-					, A.COUNSEL_PERSONAL	AS	personalType 
-					, A.COUNSEL_FAMILY	AS	familyType 
-					, A.COUNSEL_TRAUMA	AS	traumaType 
-					, A.COUNSEL_TARGET	AS	targetType 
-					, A.COUNSEL_LAW	AS	lawCounselType 
-					, A.COUNSEL_FINANCE	AS	financeCounselType  
-					, A.COUNSEL_FAVOR	AS preferredType
-					, A.COUNSEL_PATTERN	AS tendencyType 
-					, A.CORE_ABILITY			AS	coreVal
-					, A.COUNSEL_SPECIAL_HEAL			AS	specialHeal
-				FROM MIND_MGR_SUB A , MIND_MGR B, MIND_CENTER C , ACL_USER_AUTH D
+				FROM MIND_MGR_SUB A , MIND_MGR B, MIND_CENTER C, ACL_USER_AUTH D
 				WHERE 1=1
 					AND B.USER_TYPE = '3001'
 					<!-- AND B.USE_YN = 'Y' -->
 					AND B.MGR_FLAG IS NULL
 					AND A.USER_ID = B.USER_ID
 					AND C.CENTER_SEQ = B.CENTER_SEQ
-				<if test="isNotNull(dispYn)">
-					AND C.DISP_YN = #{dispYn}
-				</if>
 					AND D.USER_AUTH_KEY = CONCAT(B.USER_ID,'3001')
 				<if test="isNotNull(userNm)">
 					AND B.USER_NM LIKE CONCAT('%', #{userNm},'%')
@@ -1282,29 +1235,12 @@
 				<if test="isNotNull(financeType)">
 					AND A.FINANCE_TYPE REGEXP #{financeType}
 				</if>
-				<if test="isNotNull(languageType)">
-					AND A.COUNSEL_LANGUAGE REGEXP #{languageType}
-				</if>
-				<if test="isNotNull(specialType)">
-					AND A.COUNSEL_SPECIAL REGEXP #{specialType}
-				</if>
 				<if test="isNotNull(area1)">
 					AND C.AREA1  = #{area1}
 				</if>
 				<if test="isNotNull(area2)">
 					AND C.AREA2  = #{area2}
 				</if>
-				<if test="isNotNull(gender)">
-					AND A.GENDER = #{gender}
-				</if>
-				<if test="isNotNull(ages)">
-					AND (CASE WHEN SUBSTRING(B.RRN,8,1) &lt;= 2 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('19', SUBSTRING(B.RRN,1,2))+1)
-							WHEN 2 &lt; SUBSTRING(B.RRN,8,1) &lt;= 4 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('20', SUBSTRING(B.RRN,1,2))+1) END) REGEXP #{ages}
-				</if> 
-				<!-- <if test="isNotNull(ages)">
-					AND (CASE WHEN SUBSTRING(B.RRN,8,1) &lt;= 2 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('19', SUBSTRING(B.RRN,1,2))+1)
-							WHEN 2 &lt; SUBSTRING(B.RRN,8,1) &lt;= 4 THEN (DATE_FORMAT(NOW(), '%Y') - CONCAT('20', SUBSTRING(B.RRN,1,2))+1) END) REGEXP #{ages}  LIKE CONCAT(#{ages}, '%')
-				</if> -->
 				ORDER BY B.REG_DT DESC
 				<choose>
 			<when test="pageCommonFlag == true">
