@@ -229,47 +229,58 @@ j$(document).ready(function(){
 		
 	}); 
 	
-	j$('#checkAreaAll').click(function() {
-		if($("#checkAreaAll").is(":checked")== true){
-			$('[name=area1][value=100007]').attr('checked',true);
-			$('[name=area1][value=100008]').attr('checked',true);
-			$('[name=area1][value=100009]').attr('checked',true);
-			$('[name=area1][value=100010]').attr('checked',true);
-			$('[name=area1][value=100011]').attr('checked',true);
-			$('[name=area1][value=100012]').attr('checked',true);
-			$('[name=area1][value=100013]').attr('checked',true);
-			$('[name=area1][value=100014]').attr('checked',true);
-			$('[name=area1][value=100015]').attr('checked',true);
-			$('[name=area1][value=100016]').attr('checked',true);
-			$('[name=area1][value=100017]').attr('checked',true);
-			$('[name=area1][value=100018]').attr('checked',true);
-			$('[name=area1][value=100019]').attr('checked',true);
-			$('[name=area1][value=100020]').attr('checked',true);
-			$('[name=area1][value=100021]').attr('checked',true);
-			$('[name=area1][value=100022]').attr('checked',true);
-			$('[name=area1][value=100023]').attr('checked',true);
+	$("#checkAreaAll").change(function(){
+        if($("#checkAreaAll").is(":checked")){
+			$('[name=area1][value=100007]').prop('checked',true);
+			$('[name=area1][value=100008]').prop('checked',true);
+			$('[name=area1][value=100009]').prop('checked',true);
+			$('[name=area1][value=100010]').prop('checked',true);
+			$('[name=area1][value=100011]').prop('checked',true);
+			$('[name=area1][value=100012]').prop('checked',true);
+			$('[name=area1][value=100013]').prop('checked',true);
+			$('[name=area1][value=100014]').prop('checked',true);
+			$('[name=area1][value=100015]').prop('checked',true);
+			$('[name=area1][value=100016]').prop('checked',true);
+			$('[name=area1][value=100017]').prop('checked',true);
+			$('[name=area1][value=100018]').prop('checked',true);
+			$('[name=area1][value=100019]').prop('checked',true);
+			$('[name=area1][value=100020]').prop('checked',true);
+			$('[name=area1][value=100021]').prop('checked',true);
+			$('[name=area1][value=100022]').prop('checked',true);
+			$('[name=area1][value=100023]').prop('checked',true);
+        }else{
+        	$('[name=area1][value=100007]').prop('checked',false);
+			$('[name=area1][value=100008]').prop('checked',false);
+			$('[name=area1][value=100009]').prop('checked',false);
+			$('[name=area1][value=100010]').prop('checked',false);
+			$('[name=area1][value=100011]').prop('checked',false);
+			$('[name=area1][value=100012]').prop('checked',false);
+			$('[name=area1][value=100013]').prop('checked',false);
+			$('[name=area1][value=100014]').prop('checked',false);
+			$('[name=area1][value=100015]').prop('checked',false);
+			$('[name=area1][value=100016]').prop('checked',false);
+			$('[name=area1][value=100017]').prop('checked',false);
+			$('[name=area1][value=100018]').prop('checked',false);
+			$('[name=area1][value=100019]').prop('checked',false);
+			$('[name=area1][value=100020]').prop('checked',false);
+			$('[name=area1][value=100021]').prop('checked',false);
+			$('[name=area1][value=100022]').prop('checked',false);
+			$('[name=area1][value=100023]').prop('checked',false);
+        }
+    });
+	
+	
+/* 	j$('#checkAreaAll').click(function() {
+		if($("#checkAreaAll").attr("checked") == true){
+			
+			$("#checkAreaAll").attr("checked")
+
 			
 		}else{
-			$('[name=area1][value=100007]').attr('checked',false);
-			$('[name=area1][value=100008]').attr('checked',false);
-			$('[name=area1][value=100009]').attr('checked',false);
-			$('[name=area1][value=100010]').attr('checked',false);
-			$('[name=area1][value=100011]').attr('checked',false);
-			$('[name=area1][value=100012]').attr('checked',false);
-			$('[name=area1][value=100013]').attr('checked',false);
-			$('[name=area1][value=100014]').attr('checked',false);
-			$('[name=area1][value=100015]').attr('checked',false);
-			$('[name=area1][value=100016]').attr('checked',false);
-			$('[name=area1][value=100017]').attr('checked',false);
-			$('[name=area1][value=100018]').attr('checked',false);
-			$('[name=area1][value=100019]').attr('checked',false);
-			$('[name=area1][value=100020]').attr('checked',false);
-			$('[name=area1][value=100021]').attr('checked',false);
-			$('[name=area1][value=100022]').attr('checked',false);
-			$('[name=area1][value=100023]').attr('checked',false);
+			
 		}
 		
-	});
+	}); */
 	
 	
 	
@@ -391,26 +402,26 @@ j$(function(){
 		        <tr align="left" height="30px">
 					<td align="center"  bgcolor="#F5F5F5">지역구분</td>
 			    	<td colspan="3" align="left">
-			    					<input type="checkbox" id="checkAreaAll" onclick="checkArea()" >전체
+			    					<input type="checkbox" id="checkAreaAll" onclick="checkArea()" checked="checked">전체
 			    					</br>
-					    			<input type="checkbox" name="area1" value="100007" >강원도
-					    			<input type="checkbox" name="area1" value="100008" >경기도
-					    			<input type="checkbox" name="area1" value="100009" >경상남도
-					    			<input type="checkbox" name="area1" value="100010" >경상북도
-					    			<input type="checkbox" name="area1" value="100011" >광주광역시
-					    			<input type="checkbox" name="area1" value="100012" >대구광역시
-					    			<input type="checkbox" name="area1" value="100013" >대전광역시
-					    			<input type="checkbox" name="area1" value="100014" >부산광역시
+					    			<input type="checkbox" name="area1" value="100007" checked="checked">강원도
+					    			<input type="checkbox" name="area1" value="100008" checked="checked">경기도
+					    			<input type="checkbox" name="area1" value="100009" checked="checked">경상남도
+					    			<input type="checkbox" name="area1" value="100010" checked="checked">경상북도
+					    			<input type="checkbox" name="area1" value="100011" checked="checked">광주광역시
+					    			<input type="checkbox" name="area1" value="100012" checked="checked">대구광역시
+					    			<input type="checkbox" name="area1" value="100013" checked="checked">대전광역시
+					    			<input type="checkbox" name="area1" value="100014" checked="checked">부산광역시
 					    			</br>
-					    			<input type="checkbox" name="area1" value="100015" >서울특별시
-					    			<input type="checkbox" name="area1" value="100016" >세종특별자치시
-					    			<input type="checkbox" name="area1" value="100017" >울산광역시
-					    			<input type="checkbox" name="area1" value="100018" >인천광역시
-					    			<input type="checkbox" name="area1" value="100019" >전라남도
-					    			<input type="checkbox" name="area1" value="100020" >전라북도
-					    			<input type="checkbox" name="area1" value="100021" >제주특별자치도
-					    			<input type="checkbox" name="area1" value="100022" >충청남도
-					    			<input type="checkbox" name="area1" value="100023" >충청북도
+					    			<input type="checkbox" name="area1" value="100015" checked="checked">서울특별시
+					    			<input type="checkbox" name="area1" value="100016" checked="checked">세종특별자치시
+					    			<input type="checkbox" name="area1" value="100017" checked="checked">울산광역시
+					    			<input type="checkbox" name="area1" value="100018" checked="checked">인천광역시
+					    			<input type="checkbox" name="area1" value="100019" checked="checked">전라남도
+					    			<input type="checkbox" name="area1" value="100020" checked="checked">전라북도
+					    			<input type="checkbox" name="area1" value="100021" checked="checked">제주특별자치도
+					    			<input type="checkbox" name="area1" value="100022" checked="checked">충청남도
+					    			<input type="checkbox" name="area1" value="100023" checked="checked">충청북도
 					    			</td>
 		   				
 	   			<tr>
