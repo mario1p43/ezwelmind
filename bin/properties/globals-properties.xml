@@ -41,7 +41,7 @@
 	<entry key="resource.imgEzwels">https://img.ezwelmind.co.kr</entry>
 	
 	<entry key="upload.dir">D:/temp/upload</entry>					<!-- 업로드 경로 -->
-	<entry key="upload.dir.img">D:/temp/img</entry> 				<!-- 이미지서버 업로드 경로 -->
+	<entry key="upload.dir.img">D:/temp/upload</entry> 				<!-- 이미지서버 업로드 경로 -->
 
 	<entry key="upload.http.img">D:/temp/img</entry>	<!-- 이미지서버 HTTP 접근 Domain -->
 

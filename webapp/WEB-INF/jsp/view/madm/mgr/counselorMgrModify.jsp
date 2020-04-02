@@ -1325,7 +1325,9 @@ function fileDownLoad(path,name){
 				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">&nbsp;&nbsp;사진</th>
 		    	<td class="line" colspan="3" >
 		    		<input type="file" name="picAdd" />&nbsp;
+		    		<a href="javascript:fileDownLoad('${mgr.filePath}', '${mgr.fileNm}');">
 		    		${mgr.fileNm }
+		    		</a>
 		    		<input type="button" value="삭제" id="delPhotoBtn"/>
 		    	</td>
 			</tr>

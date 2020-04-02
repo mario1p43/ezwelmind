@@ -1466,7 +1466,9 @@ function changeCert(num){
 				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">&nbsp;&nbsp;사진</th>
 		    	<td class="line" colspan="3" style="background:${mgrBefore.fileNm == mgr.fileNm ? '':'#f9ba7f'}">
 		    		<input type="file" name="picAdd" />&nbsp;
+		    		<a href="javascript:fileDownLoad('${mgr.filePath}', '${mgr.fileNm}');">
 		    		${mgr.fileNm }
+		    		</a>
 		    	</td>
 			</tr>
 			<tr align="left" height="30px">
