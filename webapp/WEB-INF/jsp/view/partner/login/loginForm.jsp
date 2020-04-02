@@ -13,7 +13,6 @@
 	<script>
 		var interval;
 	      j$(document).ready(function(){
-
 	    		j$("#loginBtn").click(function(){
 	    			if ( j$("#userId").val() == "" ){
 	    				alert("ID를 입력해주세요.");
@@ -65,7 +64,6 @@
 	    			
 	    			j$("#id_mo").val("");
 	    	      	j$("#id_mo").val(j$("#userId_mo").val() + "3001");
-
 	    			var params = {};
 	    			params.confirmNumber = $("#confirmNumber").val();
 	    			
@@ -81,10 +79,12 @@
 	    		    			j$("#login_mo").submit();
 	    					}else{
 	    						j$('#confirmKeyDiv').css("display","none");
-	    						j$('#loginBtn_mo').css("display","none");
+	    						j$("#loginBtn_mo").remove();
+	    						j$('#resendConfirmKey').css("display","none");
 	    						j$('#btn_check_id').css("display","");
 	    						clearInterval(interval);
 	    						j$('#timerDiv').css("display","none");
+	    						alert("인증번호 오류입니다.");
 	    					}
 	    				}
 	    			})
@@ -106,13 +106,48 @@
 	    				success: function(data, textStatus){
 	    					if(data.isUser === 'true'){
 	    						j$('#confirmKeyDiv').css("display","");
-	    						j$('#loginBtn_mo').css("display","");
+	    						j$("<button id='loginBtn_mo' onclick='login()' class='btn_login denial'>로그인</button>").insertAfter('#confirmKeyDiv');
+	    						j$('#resendConfirmKey').css("display","");
 	    						j$('#btn_check_id').css("display","none");
 	    						timer();
+	    						alert(data.userMobile+ " 번호로 인증번호가 발송되었습니다.");
 	    					}else{
 	    						j$('#confirmKeyDiv').css("display","none");
-	    						j$('#loginBtn_mo').css("display","none");
+	    						j$("#loginBtn_mo").remove();
+	    						j$('#resendConfirmKey').css("display","none");
 	    						j$('#btn_check_id').css("display","");
+	    						alert("존재하지 않는 계정입니다.");
+	    					}
+	    				}
+	    			})
+	    		});
+	    		
+	    		j$("#resendConfirmKey").click(function(e){
+				    e.preventDefault();
+	    			var params = {};
+	    			params.userId = $("#userId_mo").val();
+	    			j$.ajax({
+	    				url: '/login/checkId',
+	    				async: false,
+	    				data: params,
+	    				dataType: 'json',
+	    				type: 'GET',
+	    				cache:true,
+	    				success: function(data, textStatus){
+	    					if(data.isUser === 'true'){
+	    						j$('#confirmKeyDiv').css("display","");
+	    						j$('#loginBtn_mo').css("display","");
+	    						j$('#resendConfirmKey').css("display","");
+	    						j$('#btn_check_id').css("display","none");
+	    						clearInterval(interval);
+	    						timer();
+	    						alert(data.userMobile+ " 번호로 인증번호가 발송되었습니다.");
+	    					}else{
+	    						j$('#confirmKeyDiv').css("display","none");
+	    						j$("#loginBtn_mo").remove();
+	    						j$('#resendConfirmKey').css("display","none");
+	    						j$('#btn_check_id').css("display","");
+	    						alert("존재하지 않는 계정입니다.");
 	    					}
 	    				}
 	    			})
@@ -120,7 +155,6 @@
 	    		
 	    		setUserId();
 	      });
-
 		function setUserId(){
 			// 쿠키에 담긴 유저 아이디
 			var setUserId = $.cookie("SANGDAM4U_COOKIE_PARTNER_USER_ID");
@@ -151,10 +185,64 @@
 					clearInterval(interval);
 					j$('#confirmKeyDiv').css("display","none");
 					j$('#loginBtn_mo').css("display","none");
+					j$('#resendConfirmKey').css("display","none");
 					j$('#btn_check_id').css("display","");
 					j$('#timerDiv').css("display","none");
 				}
 			}, 1000);
+		}
+		
+		function login(){
+
+			if ( j$("#userId_mo").val() == "" ){
+				alert("ID를 입력해주세요.");
+				j$("#userId_mo").focus();
+				return false;
+			}
+			
+			if(j$("#pwd_mo").val() == "" ) {
+				alert("비밀번호를 입력해주세요.");
+				j$("#pwd_mo").focus();
+				return false;
+			} 
+			
+			if( $("#id_save_mo").prop("checked") ) {
+				/* 아이디 쿠키 저장 */
+	    		$.cookie("SANGDAM4U_COOKIE_PARTNER_USER_ID", j$("#userId_mo").val(),{path: '/'});
+    	 	}else{
+    	 		/* 아이디 쿠키 삭제 */
+    	 		$.removeCookie("SANGDAM4U_COOKIE_PARTNER_USER_ID", {path: '/'});
+    	 	}
+			
+			j$("#id_mo").val("");
+	      	j$("#id_mo").val(j$("#userId_mo").val() + "3001");
+			var params = {};
+			params.confirmNumber = $("#confirmNumber").val();
+			
+			j$.ajax({
+				url: '/login/confirmnumber',
+				async: false,
+				data: params,
+				dataType: 'json',
+				type: 'GET',
+				cache:true,
+				success: function(data, textStatus){
+					if(data.confirm === 'true'){
+		    			j$("#login_mo").submit();
+					}else{
+						j$('#confirmKeyDiv').css("display","none");
+						j$("#loginBtn_mo").remove();
+						j$('#resendConfirmKey').css("display","none");
+						j$('#btn_check_id').css("display","");
+						clearInterval(interval);
+						j$('#timerDiv').css("display","none");
+						alert("인증번호 오류입니다.");
+					    event.preventDefault();
+					}
+				}
+			})
+	      	
+			return false;
 		}
 	</script>
 </head>
@@ -190,9 +278,9 @@
 						<div id="confirmKeyDiv" style="display:none;">
 							<input type="text" id="confirmNumber" size="15" class="write_box" style="margin: 10px 0px;" placeholder="인증번호" />
 						</div>
-						<div id="timerDiv"></div>
 						<button id="btn_check_id" class="btn_login denial">로그인</button>
-						<button id="loginBtn_mo" class="btn_login denial" style="display:none">로그인</button>
+						<div id="timerDiv"></div>
+						<button id="resendConfirmKey" class="denial"  style="display:none;top:0; right:0; width:106px; height:96px; background:#3eb3c7; color:#fff; font-size:18px;">재전송</button>
 					</div>
 					<input type="checkbox" name="id_save" id="id_save_mo" /> <label for="id_save" class="save_id">아이디저장</label>
 					<br>
@@ -245,5 +333,3 @@
 </script>
 </body>
 </html>
-
-

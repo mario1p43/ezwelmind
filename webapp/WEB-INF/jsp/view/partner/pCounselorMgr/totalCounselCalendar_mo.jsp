@@ -358,6 +358,10 @@
 			color:#333333;
 			line-height: 1;
 		}
+		
+		.fc-title{
+			display:none;
+		}
 	</style>
 	<script>
 		
@@ -470,6 +474,7 @@
 			$(".fc-content").remove();
 			var date = $(".calendar").fullCalendar('getDate');
 			location.href = "/partner/pCounselorMgr/totalSchedule?ymd=" + date.format("YYYY-MM") + "&userId=" + userId;
+			
 		}
 		
 		
@@ -554,11 +559,15 @@
 							$('.counsel_name', item).text(v.clientNm);
 							item.on('click', function() {
 								$('body').css('overflow', 'hidden');
-								$.divPop_mo("viewDetail", "상세보기 (신청코드 : " + v.counselCd + " )", "/madm/layerPopup/intakeDetail?counselCd="+v.counselCd);
+
+								location.href = "/partner/customermanagement/mainmanage?counselCd=45810"+"&clientType=Y";
+								
+								//$.divPop_mo("viewDetail", "상세보기 (신청코드 : " + v.counselCd + " )", "/madm/layerPopup/intakeDetail?counselCd="+v.counselCd);
 							});
 							fragment.append(item);
 						});
 						wrapper.append(fragment);
+						
 					}
 				},
 				error:function(err) {

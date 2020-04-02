@@ -45,7 +45,13 @@ public class CustomerManagementController extends commonController{
         if(isDevice(request) == IS_PC) {
             return "partner/customermanagement/mainmanage";
         } else {
-            return "partner/customermanagement/mainmanage_mo";
+        	String mobileType = request.getParameter("clientType");
+        	if(mobileType.equals("Y")) {
+        		return "partner/customermanagement/clientmanage_mo";
+        	}else {
+        		return "partner/customermanagement/mainmanage_mo";	
+        	}
+            
         }
 	}
 	private void defaultInfo(CustomerManagementVo customerManagementVo, DefaultInformationVo defaultInformationVo, Model model) {

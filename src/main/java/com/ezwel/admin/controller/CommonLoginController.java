@@ -86,6 +86,7 @@ public class CommonLoginController extends commonController {
 			String userMobile = commonService.getUserMobile(userId);      
 			commonService.setConfirmNumberIntoSession(request.getSession(),userMobile);
 			model.addAttribute("isUser", "true");
+			model.addAttribute("userMobile", userMobile);
 		} else {
 			model.addAttribute("isUser", "false");
 		}
