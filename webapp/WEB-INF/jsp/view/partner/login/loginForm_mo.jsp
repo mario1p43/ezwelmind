@@ -209,7 +209,7 @@
 				if(time < 0){
 					clearInterval(interval);
 					j$('#confirmKeyDiv').css("display","none");
-					j$('#loginBtn_mo').css("display","none");
+					j$("#loginBtn_mo").remove();
 					j$('#resendConfirmKey').css("display","none");
 					j$('#btn_check_id').css("display","");
 					j$('#timer_count').css("display","none");
