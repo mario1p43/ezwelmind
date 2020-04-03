@@ -18,10 +18,11 @@
 	.popup-wrapper .popup-content-wrapper .content-data select{width:100%;border:0;font-size:14px;outline:none}
 	.popup-wrapper .popup-content-wrapper .content-data input{width:100%;border:0;font-size:14px;outline:none}
 	.popup-wrapper .popup-content-wrapper .select-sms-time{width:15.5vw;height:9vw;padding:0 2vw;font-size:14px;outline:none}
-	.popup-wrapper .popup-content-wrapper select{background:${url:resource('/resources/img/ic_select.png')} no-repeat;background-size:12px 7px;background-position:right 6px top 50%;-webkit-appearance:none;-moz-appearance:none;appearance:none;}
+	.popup-wrapper .popup-content-wrapper select{background:url("${url:resource('/resources/img/ic_select.png')}") no-repeat;background-size:12px 7px;background-position:right 6px top 50%;-webkit-appearance:none;-moz-appearance:none;appearance:none;}
 	
 	.popup-wrapper .popup-description-wrapper{display:flow-root;padding:2.6vw 4.5vw;font-size:14px;line-height:130%}
 	.popup-wrapper .popup-description-wrapper.border-top{border-top:1px solid #BDBDBD}
+	.popYmd {background:url("${url:resource('/resources/img/ic_select.png')}") no-repeat;background-size:12px 7px;background-position:right 6px top 50%;-webkit-appearance:none;-moz-appearance:none;appearance:none;}
 	
 	.popup-bottom-wrapper .bottom-btn{width:100%;height:11vw;font-weight:bold;font-size:16px;color:white;text-align:center;background-color:#006CBA;border:0;outline:none}
 </style>

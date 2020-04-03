@@ -4,20 +4,21 @@
 <html>
 <head>
 <title>내담자 관리</title>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 <style>
 	table{border-spacing:0!important}
 	table td{background:none!important; line-height: 1.5; font-size: 3.6111vw;}
-	.counsel_wrapper{background-color: white;padding:0 5.5556vw;}
+	.counsel_wrapper{background-color: white;padding:0 5.5556vw;padding-bottom:22.2222vw;}
 	.box_title{margin-top: 4.4444vw; font-size: 5.5556vw; color: #333;font-weight: bold;margin-bottom: 2.1111vw;}
 	.content_wrapper {width: 100%;}
 	.flex {display: flex; display: -webkit-flex;}
 	.info_label { display:flex; -webkit-justify-content: center; justify-content: center; -webkit-align-items: center; align-items: center; width: 28.8889vw; border: 1px solid #828282; background-color:#d2d2d2;height: 8.3333vw;color:#000000; font-size:3.6111vw;; font-weight: bold;border-top:none;}
 	.flex:first-child .info_label {border-top: 1px solid #828282;}
 	.info_content {display:flex; min-width: 0; width: 56.7778vw; padding-left: 2.2222vw; -webkit-align-items: center; align-items: center; height: 8.3333vw; border-bottom: 1px solid #828282; border-right: 1px solid #828282; background-color:#fff; color:#000000; font-size:3.6111vw;}
-	.info_content span {text-overflow: ellipsis;overflow: hidden;white-space: nowrap; margin: 0;}
+	.info_content span {color:black;line-height: 1.2;}
 	.flex:first-child .info_content {border-top: 1px solid #828282;}
-	.big_label {display:flex; width: 100%; -webkit-justify-content: center; justify-content: center; -webkit-align-items: center; align-items: center;color:#000000; font-size:3.6111vw; font-weight: bold;border-left: 1px solid #828282; border-right: 1px solid #828282; height: 8.3333vw; background-color: #D2D2D2;}
-	.text_content {color:#333333; font-size:3.6111vw; padding:1.9444vw; border: 1px solid #828282; background-color: #f2f2f2;}
+	.big_label {display:flex; width: 88vw; -webkit-justify-content: center; justify-content: center; -webkit-align-items: center; align-items: center;color:#000000; font-size:3.6111vw; font-weight: bold;border-left: 1px solid #828282; border-right: 1px solid #828282; height: 8.3333vw; background-color: #D2D2D2;}
+	.text_content {color:#333333;width: 84.2vw; font-size:3.6111vw; padding:1.9444vw; border: 1px solid #828282; background-color: #f2f2f2;}
 	.text_content span {display: block; color:#333333; font-size: 3.6111vw;}
 	.submit_btn {width: 100%; height: 11.1111vw; background-color: #006CBA; font-size: 4.4444vw; font-weight: bold; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); color:white;border: none; margin-top:4.4444vw;}
 	.counselDiagnosis {border: none; background-color: #F2F2F2; color:#2F80ED; font-size: 3.6111vw;}

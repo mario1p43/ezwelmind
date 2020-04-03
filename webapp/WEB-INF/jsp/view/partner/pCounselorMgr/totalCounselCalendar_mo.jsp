@@ -22,7 +22,6 @@
 			font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
 			font-size: 14px;
 		}
-
 		#calendar {
 			max-width: 500px;
 			margin-top: 20px;
@@ -291,22 +290,20 @@
 		.counsel_list_wrapper {
 			display: flex;
 			align-items: stretch;
-			-webkit-flex-grow: 1; 
-			flex-grow: 1; 
-			flex : 1 1 0;  
-			-webkit-flex : 1 1 0;
+			flex-direction: column;
 		}
 		.counsel_list_wrapper > div {
 			margin: 4.4444vw 5.5556vw 0 5.5556vw;
 			height: 13.3333vw;
 			border-left: 2px solid #2F80ED;
-			width: 100%;
 			background-color:#F2F2F2;
 			box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 		}
 		.counsel_date {
 			width: 15.2778vw;
+			display: flex;
 			align-items: center;
+			-webkit-justify-content: center; 
 			justify-content: center;
 		}
 		.counsel_time {
@@ -401,6 +398,7 @@
 				}
 			});
 			
+
 			window.addEventListener('click', function(e) {
 				const select = document.querySelector('.custom-select')
 				if (!select.contains(e.target)) {
@@ -437,6 +435,9 @@
 				events: ${totalScheduleList},
 			    eventRender: function(event, element, view) {
 					//element.qtip({ content: replaceAll(event.title, "\n", "<br>") });
+					console.log(event);
+					console.log(element);
+					console.log(view);
 					element.qtip({content : ''});
 				},
 				eventClick: function(event, e, el) {
@@ -534,7 +535,6 @@
 					// 	//console.log(data.totalScheduleList2[i].clientNm+":"+i);
 					// }
 					// $(".councelDetail").append(aa);
-					console.log(data);
 					let wrapper = $('.counsel_list_wrapper').empty();
 					if(data.totalScheduleList2.length != 0) {
 						let fragment = $(document.createDocumentFragment());
@@ -549,19 +549,17 @@
 									<div class="line"></div>
 									<div class="counsel_name"></div>
 									<div class="linked_icon"><i class="right"></i></div>
-								</div>
-								</br>
-								`
+								</div>`
 								);
 							let dateArr = date.split('-');
 							$('.month', item).text(dateArr[1] + '월');
 							$('.day', item).text(dateArr[2] + '일');
 							$('.counsel_time', item).text(v.stTime);
-							$('.counsel_name', item).text(v.counselNm);
+							$('.counsel_name', item).text(v.clientNm);
 							item.on('click', function() {
 								$('body').css('overflow', 'hidden');
 
-								location.href = "/partner/customermanagement/mainmanage?counselCd="+v.counselCd+"&clientType=Y";
+								location.href = "/partner/customermanagement/mainmanage?counselCd=45810"+"&clientType=Y";
 								
 								//$.divPop_mo("viewDetail", "상세보기 (신청코드 : " + v.counselCd + " )", "/madm/layerPopup/intakeDetail?counselCd="+v.counselCd);
 							});
