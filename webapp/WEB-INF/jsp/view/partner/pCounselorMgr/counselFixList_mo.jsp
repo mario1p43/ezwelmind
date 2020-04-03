@@ -8,7 +8,7 @@
 <style>
 	table{border-spacing:0!important}
 	table td{background:none!important}
-	.counsel-wrapper{padding:0 5vw}
+	.counsel-wrapper{padding:0 5vw; padding-bottom:22.2222vw;}
 	.counsel-wrapper .content-wrapper{display:flow-root;margin-top:5vw}
 	.counsel-wrapper .content-wrapper:first-child{margin-top:0vw}
 	.counsel-wrapper .content-wrapper .title-block{font-size:16px;font-weight:bold;line-height:130%}
@@ -24,7 +24,12 @@
 	.counsel-wrapper .content-wrapper .datetimepicker-btn-block input[type=button]:not(:last-child){margin-right:2vw}
 	.counsel-wrapper .content-wrapper .search-btn{height:40px;width:100%;color:white;font-weight:bold;font-size:16px;background-color:#006CBA;border:1px solid #004B85;border-radius:4px}
 	.counsel-wrapper .content-wrapper .result-info{color:#828282}
-	
+	.viewDetail a { border-radius: 5px; background-color: #2F80ED; color:white; padding:1.1111vw; text-decoration: none;}
+	.viewDetail a:hover { background-color: #004B85; }
+	.viewDetail a span {  color:white;}
+	.viewDetail2 a { border-radius: 5px; background-color: #2F80ED; color:white; padding:1.1111vw; text-decoration: none;}
+	.viewDetail2 a:hover { background-color: #004B85; }
+	.viewDetail2 a span {  color:white;}
 	.counsel-wrapper .data-list-wrapper{display:table;width:100%;table-layout:fixed;border-collapse:collapse}
 	.counsel-wrapper .data-list-wrapper .data-wrapper{margin-top:3vw;font-size:14px}
 	.counsel-wrapper .data-list-wrapper .data-select .selectUser{vertical-align:text-top;margin:0 1vw}
@@ -32,6 +37,7 @@
 	.counsel-wrapper .data-list-wrapper table tr{height:32px}
 	.counsel-wrapper .data-list-wrapper table tr th{width:35%;font-size:14px;background-color:#D2D2D2}
 	.counsel-wrapper .data-list-wrapper table tr td{font-size:14px;text-align:left;padding:0 2vw}
+	.counsel-wrapper .data-list-wrapper table tr td a strong {font-size:14px;}
 	
 	.bottom-btn-wrapper .bottom-fixed-btn{position:fixed;left:0;bottom:50px;width:100%;height:40px;color:#828282;font-weight:bold;font-size:16px;background-color:#E0E0E0}
 	.bottom-btn-wrapper .bottom-fixed-btn.active{color:white;background-color:#006CBA}
@@ -583,9 +589,9 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 		<div class="data-list-wrapper">
 		<c:forEach var="list" items="${paging.list}" varStatus="status">
 			<div class="data-wrapper">
-				<div class="data-select">
+				<!-- <div class="data-select">
 					<label>선택 <input type="radio" name="selectUser" class="selectUser"/></label>
-				</div>
+				</div> -->
 				<table border="1" style="width:100%;text-align:center;border-collapse:collapse;">
 					<tr>
 						<th>고객사</th>
@@ -599,7 +605,7 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 						<th>내담자명</th>
 						<td class="viewDetail" val="${list.counselCd }">
 							<a href="javascript:void(0);">
-								<span style="color:#2F80ED">${list.counselNm } &gt;</span>
+								<span style="color:#ffffff">${list.counselNm }</span>
 							</a>
 							<input type="hidden" class="userKey" value="${list.userKey}"/>
 							<input type="hidden" class="counselCd" value="${list.counselCd}"/>
@@ -617,7 +623,7 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 						<th>연락처</th>
 						<td>${list.mobile }</td>
 					</tr>
-					<tr>
+					<!-- <tr>
 						<th>상담사</th>
 						<td>
 							<a href="/partner/pCounselorMgr/pCounselSchedule?selectId=${list.counselorId}">${list.counselorNm }</a>
@@ -639,11 +645,11 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 					<tr>
 						<th>상담분야</th>
 						<td><comm:commNmOut code="${list.counselDiv }" option="category"/></td>
-					</tr>
+					</tr> 
 					<tr>
 						<th>첫 일정 확정</th>
 						<td>${list.counselReservChk }</td>
-					</tr>
+					</tr> -->
 					<tr>
 						<th>회기</th>
 						<td>${list.extensionNum }회차</td>
@@ -684,19 +690,19 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 					</tr>
 					<tr>
 						<th>다음회기등록</th>
-						<td>
+						<td class="viewDetail2">
 							<c:if test="${list.extensionStatus eq '100932'}">
 								연장완료
 							</c:if>
 							<c:if test="${list.extensionStatus eq '100931' or empty list.extensionStatus}">
-								<span class="btnExtend" style="color:#2F80ED" userKey="${list.userKey}" counselCd="${list.counselCd}" clientCd="${list.clientCd}" userStatus="${list.userStatus}" userUseYn="${list.useYn}" counselDate="${list.ymd}" channelType="${list.channelType }">다음회기등록 &gt;</span>
+								<a><span class="btnExtend" style="color:#ffffff" userKey="${list.userKey}" counselCd="${list.counselCd}" clientCd="${list.clientCd}" userStatus="${list.userStatus}" userUseYn="${list.useYn}" counselDate="${list.ymd}" channelType="${list.channelType }">다음회기등록</span></a>
 							</c:if>
 						</td>
 					</tr>
 					<tr>
 						<th>상담일정변경</th>
-						<td>
-							<span class="counselChange" style="color:#2F80ED" userKey="${list.userKey}" counselCd="${list.counselCd}" clientCd="${list.clientCd}" userStatus="${list.userStatus}" userUseYn="${list.useYn}" counselDate="${list.ymd}" channelType="${list.channelType }">상담일정변경 &gt;</span>
+						<td class="viewDetail2">
+							<a><span class="counselChange" style="color:#ffffff" userKey="${list.userKey}" counselCd="${list.counselCd}" clientCd="${list.clientCd}" userStatus="${list.userStatus}" userUseYn="${list.useYn}" counselDate="${list.ymd}" channelType="${list.channelType }">상담일정변경</span></a>
 						</td>
 					</tr>
 				</table>
@@ -717,9 +723,9 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 			</table>
 		</div>
 	</div>
-	<div class="bottom-btn-wrapper">
+	<!-- <div class="bottom-btn-wrapper">
 		<input type="button" class="bottom-fixed-btn" value="상담사/일정 변경" onclick="doCounselChange();"/>
-	</div>
+	</div> -->
 </form:form>
 <form action="/partner/pCounselorMgr/doExtension" id="doExtensionFrm" method="post"></form>
 </body>

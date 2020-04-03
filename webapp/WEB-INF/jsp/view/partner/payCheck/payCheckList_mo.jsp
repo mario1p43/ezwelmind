@@ -8,7 +8,7 @@
 <style>
 	table{border-spacing:0!important}
 	table td{background:none!important}
-	.paycheck-wrapper{padding:0 5vw}
+	.paycheck-wrapper{padding:0 5vw; padding-bottom:22.2222vw;}
 	.paycheck-wrapper .content-wrapper{display:flow-root;margin-top:5vw}
 	.paycheck-wrapper .content-wrapper:first-child{margin-top:0vw}
 	.paycheck-wrapper .content-wrapper .title-block{font-size:16px;font-weight:bold;line-height:130%}

@@ -40,10 +40,9 @@
 	<entry key="resource.imgEzwel">http://img.ezwelmind.co.kr</entry>
 	<entry key="resource.imgEzwels">https://img.ezwelmind.co.kr</entry>
 	
-	<entry key="upload.dir">D:/temp/upload</entry>					<!-- 업로드 경로 -->
-	<entry key="upload.dir.img">D:/temp/img</entry> 				<!-- 이미지서버 업로드 경로 -->
-
-	<entry key="upload.http.img">D:/temp/img</entry>	<!-- 이미지서버 HTTP 접근 Domain -->
+	<entry key="upload.dir">E:/temp/upload</entry>							<!-- 업로드 경로 -->
+	<entry key="upload.dir.img">E:/temp/img</entry>							<!-- 이미지서버 업로드 경로 -->
+	<entry key="upload.http.img">http://local-img.ezwelmind.co.kr</entry>	<!-- 이미지서버 HTTP 접근 Domain -->
 
 	<!-- <entry key="upload.file.dir">E:/temp/upload</entry> -->
 	<!-- =======================파일 업로드, 다운로드 관련=============================================== -->

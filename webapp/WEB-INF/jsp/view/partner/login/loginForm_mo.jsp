@@ -337,6 +337,23 @@
 			height: 13.3333vw;
 			font-size: 5.5556vw;
 		}
+
+		.login_form_wrapper button.active {
+			color:white;
+			background-color: #004B85;
+			box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+		}
+		.login_form_wrapper button {
+			margin-top: 2.2222vw;
+			border-radius: 1.1111vw;
+			background-color: #bdbdbd;
+			font-weight: bold;
+			color: #e0e0e0;
+			width: 100%;
+			height: 13.3333vw;
+			font-size: 5.5556vw;
+		}
+		
 		.login_form_wrapper div button.active {
 			color:white;
 			background-color: #004B85;
@@ -431,7 +448,7 @@
 			</div>
 			<div>
 				<button id="btn_check_id" class="btn_login denial">로그인</button>
-				<button id="resendConfirmKey" class="denial"  style="display:none;top:0; right:0; width:106px; height:96px; background:#3eb3c7; color:#fff; font-size:18px;">재전송</button>
+				<button id="resendConfirmKey" class="denial"  style=" background:#3eb3c7;">재전송</button>
 			</div>
 		</div>
 			<!-- <div class="mobile_member_header">

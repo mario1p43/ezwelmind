@@ -30,8 +30,13 @@
 	.counsel-wrapper .data-list-wrapper table tr{height:32px}
 	.counsel-wrapper .data-list-wrapper table tr th{width:35%;font-size:14px;background-color:#D2D2D2}
 	.counsel-wrapper .data-list-wrapper table tr td{font-size:14px;text-align:left;padding:0 2vw}
+	.border-box {
+		border-radius: 5px;
+		border: 1px solid #BDBDBD;
+		padding: 0.5556vw 1.3889vw;
+	}
 	
-	.bottom-btn-wrapper .bottom-fixed-btn{position:fixed;left:0;bottom:50px;width:100%;height:40px;color:white;font-weight:bold;font-size:16px;background-color:#006CBA}
+	.bottom-btn-wrapper .bottom-fixed-btn{position:fixed;left:0;bottom:14.7222vw;width:100%;height:40px;color:white;font-weight:bold;font-size:16px;background-color:#006CBA}
 	
 	.popup-wrapper{position:fixed;top:0;bottom:0;left:0;right:0;background-color:rgba(0, 0, 0, 0.6);z-index:10}
 	.popup-wrapper .popup-body{position:absolute;width:88vw;top:50%;left:50%;transform:translate(-50%, -50%);box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);}
@@ -273,14 +278,14 @@
 			</select>
 		</div>
 	</div>
-	<div class="description">
+	<div class="description border-box">
 		<div>[중요공지]</div>
 		<div><span style="color:#EB5757">상담신청은 서비스기간 내</span>에서만 일정등록이 가능합니다.</div>
 		<div>* 서비스 기간 : ${clientJedoPeriod.startDd} ~ ${clientJedoPeriod.endDd}</div>
 		<div>문의사항은 이지웰니스로 연락부탁드립니다.</div>
 		<div>(네이버톡톡:초록색배너 클릭)</div>
 	</div>
-	<div class="content-wrapper">
+	<div class="content-wrapper border-box">
 		<div class="title-block">
 			SMS전송여부
 			<div class="checkbox-wrapper">

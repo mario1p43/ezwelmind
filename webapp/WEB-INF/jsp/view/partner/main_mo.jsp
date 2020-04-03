@@ -23,6 +23,7 @@ if(iTMonth2<10){
 		ul.tabs {
 			padding: 0;
 			padding-right: 15px;
+			padding-left:15px;
 			display: flex;
 			-webkit-justify-content: center; 
 			justify-content: center; 
@@ -99,6 +100,7 @@ if(iTMonth2<10){
 		}
 		.box_row {
 			padding-right:15px;
+			padding-left:15px;
 			justify-content: space-between;
 		}
 		.box_row:last-child {

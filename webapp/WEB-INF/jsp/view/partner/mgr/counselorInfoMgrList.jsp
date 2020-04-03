@@ -466,32 +466,188 @@ function monthBtn() {
 			<tr>
 				<th align="center">상태값</th>
 					<td>
-						<input type="checkbox" name="mgrStatus" value="S"></input>중지
-						<input type="checkbox" name="mgrStatus" value="Y"></input>승인
-						<input type="checkbox" name="mgrStatus" value="N"></input>대기
-						<input type="checkbox" name="mgrStatus" value="R"></input>반려
+					<style>
+					.check11 {overflow:hidden;display:inline-block;position:relative;width:62px;height:32px;box-sizing:border-box;cursor:pointer;}
+					.check11 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
+					.check11 .ico {position:absolute;left:0px;top:0;width:62px;height:32px;background:${url:resource('/resource/img/gray/gray11.png')}) no-repeat 0 0;}
+					.check11 input:checked + .ico {background:${url:resource('/resource/img/blue/blue11.png')}) no-repeat 0 0;}
+					
+					.check12 {overflow:hidden;display:inline-block;position:relative;width:62px;height:32px;box-sizing:border-box;cursor:pointer;}
+					.check12 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
+					.check12 .ico {position:absolute;left:0px;top:0;width:62px;height:32px;background:${url:resource('/resource/img/gray/gray12.png')}) no-repeat 0 0;}
+					.check12 input:checked + .ico {background:${url:resource('/resource/img/blue/blue12.png')}) no-repeat 0 0;}
+					
+					.check13 {overflow:hidden;display:inline-block;position:relative;width:62px;height:32px;box-sizing:border-box;cursor:pointer;}
+					.check13 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
+					.check13 .ico {position:absolute;left:0px;top:0;width:62px;height:32px;background:${url:resource('/resource/img/gray/gray13.png')}) no-repeat 0 0;}
+					.check13 input:checked + .ico {background:${url:resource('/resource/img/blue/blue13.png')}) no-repeat 0 0;}
+					
+					.check14 {overflow:hidden;display:inline-block;position:relative;width:62px;height:32px;box-sizing:border-box;cursor:pointer;}
+					.check14 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
+					.check14 .ico {position:absolute;left:0px;top:0;width:62px;height:32px;background:${url:resource('/resource/img/gray/gray14.png')}) no-repeat 0 0;}
+					.check14 input:checked + .ico {background:${url:resource('/resource/img/blue/blue14.png')}) no-repeat 0 0;}
+					
+					.check21 {overflow:hidden;display:inline-block;position:relative;width:62px;height:32px;box-sizing:border-box;cursor:pointer;}
+					.check21 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
+					.check21 .ico {position:absolute;left:0px;top:0;width:62px;height:32px;background:${url:resource('/resource/img/gray/gray21.png')}) no-repeat 0 0;}
+					.check21 input:checked + .ico {background:${url:resource('/resource/img/blue/blue21.png')}) no-repeat 0 0;}
+					
+					.check22 {overflow:hidden;display:inline-block;position:relative;width:62px;height:32px;box-sizing:border-box;cursor:pointer;}
+					.check22 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
+					.check22 .ico {position:absolute;left:0px;top:0;width:62px;height:32px;background:${url:resource('/resource/img/gray/gray22.png')}) no-repeat 0 0;}
+					.check22 input:checked + .ico {background:${url:resource('/resource/img/blue/blue22.png')}) no-repeat 0 0;}
+					
+					.check23 {overflow:hidden;display:inline-block;position:relative;width:62px;height:32px;box-sizing:border-box;cursor:pointer;}
+					.check23 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
+					.check23 .ico {position:absolute;left:0px;top:0;width:62px;height:32px;background:${url:resource('/resource/img/gray/gray23.png')}) no-repeat 0 0;}
+					.check23 input:checked + .ico {background:${url:resource('/resource/img/blue/blue23.png')}) no-repeat 0 0;}
+					
+					.check24 {overflow:hidden;display:inline-block;position:relative;width:62px;height:32px;box-sizing:border-box;cursor:pointer;}
+					.check24 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
+					.check24 .ico {position:absolute;left:0px;top:0;width:62px;height:32px;background:${url:resource('/resource/img/gray/gray24.png')}) no-repeat 0 0;}
+					.check24 input:checked + .ico {background:${url:resource('/resource/img/blue/blue24.png')}) no-repeat 0 0;}
+					
+					.check31 {overflow:hidden;display:inline-block;position:relative;width:77px;height:32px;box-sizing:border-box;cursor:pointer;}
+					.check31 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
+					.check31 .ico {position:absolute;left:0px;top:0;width:77px;height:32px;background:${url:resource('/resource/img/gray/gray31.png')}) no-repeat 0 0;}
+					.check31 input:checked + .ico {background:${url:resource('/resource/img/blue/blue31.png')}) no-repeat 0 0;}
+					
+					.check32 {overflow:hidden;display:inline-block;position:relative;width:62px;height:32px;box-sizing:border-box;cursor:pointer;}
+					.check32 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
+					.check32 .ico {position:absolute;left:0px;top:0;width:62px;height:32px;background:${url:resource('/resource/img/gray/gray32.png')}) no-repeat 0 0;}
+					.check32 input:checked + .ico {background:${url:resource('/resource/img/blue/blue32.png')}) no-repeat 0 0;}
+					
+					.check33 {overflow:hidden;display:inline-block;position:relative;width:62px;height:32px;box-sizing:border-box;cursor:pointer;}
+					.check33 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
+					.check33 .ico {position:absolute;left:0px;top:0;width:62px;height:32px;background:${url:resource('/resource/img/gray/gray33.png')}) no-repeat 0 0;}
+					.check33 input:checked + .ico {background:${url:resource('/resource/img/blue/blue33.png')}) no-repeat 0 0;}
+					
+					.check34 {overflow:hidden;display:inline-block;position:relative;width:62px;height:32px;box-sizing:border-box;cursor:pointer;}
+					.check34 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
+					.check34 .ico {position:absolute;left:0px;top:0;width:62px;height:32px;background:${url:resource('/resource/img/gray/gray34.png')}) no-repeat 0 0;}
+					.check34 input:checked + .ico {background:${url:resource('/resource/img/blue/blue34.png')}) no-repeat 0 0;}
+					
+					.check35 {overflow:hidden;display:inline-block;position:relative;width:62px;height:32px;box-sizing:border-box;cursor:pointer;}
+					.check35 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
+					.check35 .ico {position:absolute;left:0px;top:0;width:62px;height:32px;background:${url:resource('/resource/img/gray/gray35.png')}) no-repeat 0 0;}
+					.check35 input:checked + .ico {background:${url:resource('/resource/img/blue/blue35.png')}) no-repeat 0 0;}
+					
+					.check41 {overflow:hidden;display:inline-block;position:relative;width:62px;height:32px;box-sizing:border-box;cursor:pointer;}
+					.check41 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
+					.check41 .ico {position:absolute;left:0px;top:0;width:62px;height:32px;background:${url:resource('/resource/img/gray/gray41.png')}) no-repeat 0 0;}
+					.check41 input:checked + .ico {background:${url:resource('/resource/img/blue/blue41.png')}) no-repeat 0 0;}
+					
+					.check42 {overflow:hidden;display:inline-block;position:relative;width:91px;height:32px;box-sizing:border-box;cursor:pointer;}
+					.check42 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
+					.check42 .ico {position:absolute;left:0px;top:0;width:91px;height:32px;background:${url:resource('/resource/img/gray/gray42.png')}) no-repeat 0 0;}
+					.check42 input:checked + .ico {background:${url:resource('/resource/img/blue/blue42.png')}) no-repeat 0 0;}
+					
+					.check51 {overflow:hidden;display:inline-block;position:relative;width:62px;height:32px;box-sizing:border-box;cursor:pointer;}
+					.check51 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
+					.check51 .ico {position:absolute;left:0px;top:0;width:62px;height:32px;background:${url:resource('/resource/img/gray/gray51.png')}) no-repeat 0 0;}
+					.check51 input:checked + .ico {background:${url:resource('/resource/img/blue/blue51.png')}) no-repeat 0 0;}
+					
+					.check52 {overflow:hidden;display:inline-block;position:relative;width:56px;height:32px;box-sizing:border-box;cursor:pointer;}
+					.check52 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
+					.check52 .ico {position:absolute;left:0px;top:0;width:56px;height:32px;background:${url:resource('/resource/img/gray/gray52.png')}) no-repeat 0 0;}
+					.check52 input:checked + .ico {background:${url:resource('/resource/img/blue/blue52.png')}) no-repeat 0 0;}
+					
+					.check53 {overflow:hidden;display:inline-block;position:relative;width:65px;height:32px;box-sizing:border-box;cursor:pointer;}
+					.check53 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
+					.check53 .ico {position:absolute;left:0px;top:0;width:65px;height:32px;background:${url:resource('/resource/img/gray/gray44.png')}) no-repeat 0 0;}
+					.check53 input:checked + .ico {background:${url:resource('/resource/img/blue/blue44.png')}) no-repeat 0 0;}
+					
+					.check54 {overflow:hidden;display:inline-block;position:relative;width:54px;height:32px;box-sizing:border-box;cursor:pointer;}
+					.check54 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
+					.check54 .ico {position:absolute;left:0px;top:0;width:54px;height:32px;background:${url:resource('/resource/img/gray/gray54.png')}) no-repeat 0 0;}
+					.check54 input:checked + .ico {background:${url:resource('/resource/img/blue/blue54.png')}) no-repeat 0 0;}
+					</style>
+					<label class="check11">
+						<input type="checkbox" name="mgrStatus" value="S"></input>
+					    <span class="ico"></span>
+					    <span class="txt">중지</span>
+					</label>
+					<label class="check12">
+						<input type="checkbox" name="mgrStatus" value="Y"></input>
+						<span class="ico"></span>
+					    <span class="txt">승인</span>
+					</label>
+					<label class="check13">
+						<input type="checkbox" name="mgrStatus" value="N"></input>
+						<span class="ico"></span>
+					    <span class="txt">대기</span>
+					</label>
+					<label class="check14">
+						<input type="checkbox" name="mgrStatus" value="R"></input>
+						<span class="ico"></span>
+					    <span class="txt">반려</span>
+					</label>
 					</td>
 				<th align="center" width="13%">상담유형</th>
 					<td width="40%">
-						<input type="checkbox" name="channelType" value="100001"></input>심리
-						<input type="checkbox" name="channelType" value="100002"></input>법률
-						<input type="checkbox" name="channelType" value="100003"></input>재무
-						<input type="checkbox" name="channelType" value="100004"></input>심리검사
+					<label class="check21">
+						<input type="checkbox" name="channelType" value="100001"></input>
+						<span class="ico"></span>
+					    <span class="txt">심리</span>
+					</label>
+					<label class="check22">
+						<input type="checkbox" name="channelType" value="100002"></input>
+						<span class="ico"></span>
+					    <span class="txt">법률</span>
+					</label>
+					<label class="check23">
+						<input type="checkbox" name="channelType" value="100003"></input>
+						<span class="ico"></span>
+					    <span class="txt">재무</span>
+					</label>
+					<label class="check24">
+						<input type="checkbox" name="channelType" value="100004"></input>
+						<span class="ico"></span>
+					    <span class="txt">심리검사</span>
+					</label>
 					</td>
 			</tr>
 			<tr>
 				<th align="center">접속권한</th>
 				<td align="left" width="40%">
-					<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_CENTER" />센터장
-					<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_SANGDAM" />상담
-					<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_SEND" />파견
-					<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_GROUP" />집단
-					<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_TEACHER" />강사
+					<label class="check31">
+						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_CENTER" />
+						<span class="ico"></span>
+					    <span class="txt">센터장</span>
+					</label>
+					<label class="check32">
+						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_SANGDAM" />
+						<span class="ico"></span>
+					    <span class="txt">상담</span>
+					</label>
+					<label class="check33">
+						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_SEND" />
+						<span class="ico"></span>
+					    <span class="txt">파견</span>
+					</label>
+					<label class="check34">
+						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_GROUP" />
+						<span class="ico"></span>
+					    <span class="txt">집단</span>
+					</label>
+					<label class="check35">
+						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_TEACHER" />
+						<span class="ico"></span>
+					    <span class="txt">강사</span>
+					</label>
 				</td>
 				<th align="center" width="10%">근무형태</th>
 					<td width="40%">
-						<input type="checkbox" name="workType"  value="S" ></input>상주
-						<input type="checkbox" name="workType"  value="P"></input>파트타임
+					<label class="check41">
+						<input type="checkbox" name="workType"  value="S" ></input>
+						<span class="ico"></span>
+					    <span class="txt">상주</span>
+					</label>
+					<label class="check42">
+						<input type="checkbox" name="workType"  value="P"></input>
+						<span class="ico"></span>
+					    <span class="txt">파트타임</span>
+					</label>
 					</td>
 
 			</tr>
@@ -503,10 +659,27 @@ function monthBtn() {
 					&nbsp;~&nbsp;
 					<input type="text" id="endDt" name="endDt" size="10" class="date_timepicker_end" value="${param.endDt}"/>
 					<img id="btendDt" src="${url:img('/images/icon02.jpg')}"border="0" />
-					<input onclick="todayBtn();" type="button" value="오늘" />
-					<input onclick="weekBtn();"	type="button" value="1주" />
-					<input onclick="fifteenBtn();" type="button" value="15일"/>
-					<input onclick="monthBtn();" type="button" value="1개월" />
+					<label class="check51">
+						<input onclick="todayBtn();" type="button" value="오늘" />
+						<span class="ico"></span>
+					    <span class="txt">파트타임</span>
+					</label>
+					
+					<label class="check52">
+						<input onclick="weekBtn();"	type="button" value="1주" />
+						<span class="ico"></span>
+					    <span class="txt">파트타임</span>
+					</label>
+					<label class="check53">
+						<input onclick="fifteenBtn();" type="button" value="15일"/>
+						<span class="ico"></span>
+					    <span class="txt">파트타임</span>
+					</label>
+					<label class="check54">
+						<input onclick="monthBtn();" type="button" value="1개월" />
+						<span class="ico"></span>
+					    <span class="txt">파트타임</span>
+					</label>
 				</td>
 			
 			</tr>

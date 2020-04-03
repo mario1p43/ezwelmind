@@ -12,7 +12,7 @@
 					<sec:authorize access="isAuthenticated()">
 						<sec:authentication var="sesUser" property="principal.user" />
 						<c:if test="${sesUser.userType eq '3001'}">
-							<div class="web" style="margin-left: 24px;">
+							<div class="web" style="margin-left: 12px;">
 								<div class="talk_banner_div" data-id="41666"></div>
 								<div class="talk_banner_div" data-id="34517"></div>
 							</div>
