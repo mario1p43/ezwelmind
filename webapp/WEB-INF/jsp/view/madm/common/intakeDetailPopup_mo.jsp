@@ -164,7 +164,7 @@
 			<div class="info_label">내담자명</div>
 			<div class="info_content">
 				<input type="hidden" name="counselNmSelect" value="${baseInfo_detail.counselNm}"/>
-				<a href="/partner/customermanagement/mainmanage?counselCd=${baseInfo_detail.counselCd}">${empty baseInfo_detail.counselNm ? '-' : baseInfo_detail.counselNm} ></a>
+				<a href="/partner/customermanagement/mainmanage?counselCd=${baseInfo_detail.counselCd}&clientType=N">${empty baseInfo_detail.counselNm ? '-' : baseInfo_detail.counselNm} ></a>
 			</div>
 		</div>
 		<div class="flex">

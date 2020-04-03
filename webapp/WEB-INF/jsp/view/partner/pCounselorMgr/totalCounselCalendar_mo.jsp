@@ -22,9 +22,7 @@
 			font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
 			font-size: 14px;
 		}
-		.flex{
-		
-		}
+
 		#calendar {
 			max-width: 500px;
 			margin-top: 20px;
