@@ -452,8 +452,9 @@ a.text_deco_none:hover{
 .main_wrap {
 	-webkit-box-pack: start; 
 	-ms-flex-pack: start;
-	display: -webkit-box; display: -ms-flexbox;
-
+	display: flex; 
+	display: -ms-flexbox;
+	
 }
 
 .main_wrap .main_content {

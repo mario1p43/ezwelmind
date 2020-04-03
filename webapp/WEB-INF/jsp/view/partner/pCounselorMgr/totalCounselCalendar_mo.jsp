@@ -22,6 +22,9 @@
 			font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
 			font-size: 14px;
 		}
+		.flex{
+		
+		}
 		#calendar {
 			max-width: 500px;
 			margin-top: 20px;
@@ -305,9 +308,7 @@
 		}
 		.counsel_date {
 			width: 15.2778vw;
-			display: flex;
 			align-items: center;
-			-webkit-justify-content: center; 
 			justify-content: center;
 		}
 		.counsel_time {
@@ -535,6 +536,7 @@
 					// 	//console.log(data.totalScheduleList2[i].clientNm+":"+i);
 					// }
 					// $(".councelDetail").append(aa);
+					console.log(data);
 					let wrapper = $('.counsel_list_wrapper').empty();
 					if(data.totalScheduleList2.length != 0) {
 						let fragment = $(document.createDocumentFragment());
@@ -549,17 +551,19 @@
 									<div class="line"></div>
 									<div class="counsel_name"></div>
 									<div class="linked_icon"><i class="right"></i></div>
-								</div>`
+								</div>
+								</br>
+								`
 								);
 							let dateArr = date.split('-');
 							$('.month', item).text(dateArr[1] + '월');
 							$('.day', item).text(dateArr[2] + '일');
 							$('.counsel_time', item).text(v.stTime);
-							$('.counsel_name', item).text(v.clientNm);
+							$('.counsel_name', item).text(v.counselNm);
 							item.on('click', function() {
 								$('body').css('overflow', 'hidden');
 
-								location.href = "/partner/customermanagement/mainmanage?counselCd=45810"+"&clientType=Y";
+								location.href = "/partner/customermanagement/mainmanage?counselCd="+v.counselCd+"&clientType=Y";
 								
 								//$.divPop_mo("viewDetail", "상세보기 (신청코드 : " + v.counselCd + " )", "/madm/layerPopup/intakeDetail?counselCd="+v.counselCd);
 							});

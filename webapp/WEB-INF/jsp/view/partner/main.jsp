@@ -118,7 +118,7 @@ if(iTMonth2<10){
 		<sec:authorize access="isAuthenticated()">
 			<sec:authentication var="sesUser" property="principal.user" />
 		</sec:authorize>
-<div class="web">
+<div class="web" style="display: flex;">
 
 
 		
