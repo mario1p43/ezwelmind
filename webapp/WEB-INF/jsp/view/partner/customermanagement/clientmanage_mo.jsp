@@ -15,11 +15,11 @@
 	.info_label { display:flex; -webkit-justify-content: center; justify-content: center; -webkit-align-items: center; align-items: center; width: 28.8889vw; border: 1px solid #828282; background-color:#d2d2d2;height: 8.3333vw;color:#000000; font-size:3.6111vw;; font-weight: bold;border-top:none;}
 	.flex:first-child .info_label {border-top: 1px solid #828282;}
 	.info_content {display:flex; min-width: 0; width: 56.7778vw; padding-left: 2.2222vw; -webkit-align-items: center; align-items: center; height: 8.3333vw; border-bottom: 1px solid #828282; border-right: 1px solid #828282; background-color:#fff; color:#000000; font-size:3.6111vw;}
-	.info_content span {color:black;line-height: 1.2;}
+	.info_content span {color:black;line-height: 1.2;font-size: 3.6111vw !important;}
 	.flex:first-child .info_content {border-top: 1px solid #828282;}
 	.big_label {display:flex; width: 88vw; -webkit-justify-content: center; justify-content: center; -webkit-align-items: center; align-items: center;color:#000000; font-size:3.6111vw; font-weight: bold;border-left: 1px solid #828282; border-right: 1px solid #828282; height: 8.3333vw; background-color: #D2D2D2;}
 	.text_content {color:#333333;width: 84.2vw; font-size:3.6111vw; padding:1.9444vw; border: 1px solid #828282; background-color: #f2f2f2;}
-	.text_content span {display: block; color:#333333; font-size: 3.6111vw;}
+	.text_content span {display: block; color:#333333; font-size: 3.6111vw !important;}
 	.submit_btn {width: 100%; height: 11.1111vw; background-color: #006CBA; font-size: 4.4444vw; font-weight: bold; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); color:white;border: none; margin-top:4.4444vw;}
 	.counselDiagnosis {border: none; background-color: #F2F2F2; color:#2F80ED; font-size: 3.6111vw;}
 	.info_content a { color: #2F80ED;}
