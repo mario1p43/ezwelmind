@@ -453,7 +453,6 @@ a.text_deco_none:hover{
 
 /* main content 정렬 */
 .main_wrap {
-	display: flex;
 	justify-content: center;
 }
 
