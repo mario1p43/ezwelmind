@@ -37,7 +37,7 @@ j$(document).ready(function(){
 <body>
 <div class="web">
 <form:form name="searchNotice" id="searchNotice" modelAttribute="bbsAddDto" action="/partner/bbsNotice/list" method="GET">
-<table cellpadding="0" cellspacing="0" border="0" width="95%">
+<table cellpadding="0" cellspacing="0" border="0" width="80%">
 <tr>
 	<td height="20px"></td>
 </tr>

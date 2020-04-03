@@ -371,6 +371,7 @@ a.text_deco_none:hover{
 	width: 166px;
 	margin: 16px 0 24px 24px;
 	padding: 0;
+	margin-right: 40px;
 }
 
 .aside > tbody {
@@ -453,12 +454,12 @@ a.text_deco_none:hover{
 
 /* main content 정렬 */
 .main_wrap {
-	justify-content: center;
+	display: flex;
+	-webkit-box-pack: justify;
 }
 
 .main_wrap .main_content {
-	width: 100%;
-	margin-left: 80px;
+	width: 1550px;
 }
 
 .main_wrap .main_droppage {

@@ -34,7 +34,7 @@ function wrapWindowByMask() {
 </script>
 </head>
 <body>
-<table cellpadding="0" cellspacing="0" border="0" width="80%">
+<table cellpadding="0" cellspacing="0" border="0" width="90%">
 	<tr>
 		<td height="20px"></td>
 	</tr>
