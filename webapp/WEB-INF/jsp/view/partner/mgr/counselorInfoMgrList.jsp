@@ -313,6 +313,12 @@ j$(document).ready(function(){
 });
 
 function todayBtn() {
+	if($(".check51").hasClass("on")){
+		$(".check51").removeClass("on")
+	}else{
+		$(".check51").addClass("on")
+	}
+	
 	var time = new Date();
 	var year = time.getFullYear();
 	var month = time.getMonth()+1;
@@ -330,6 +336,11 @@ function todayBtn() {
 	$(".date_timepicker_end").val(start);
 }
 function weekBtn() {
+	if($(".check52").hasClass("on")){
+		$(".check52").removeClass("on")
+	}else{
+		$(".check52").addClass("on")
+	}
 	var time = new Date();
 	
 	var yearStart = time.getFullYear();
@@ -360,6 +371,11 @@ function weekBtn() {
 	$(".date_timepicker_end").val(start);
 }
 function fifteenBtn() {
+	if($(".check53").hasClass("on")){
+		$(".check53").removeClass("on")
+	}else{
+		$(".check53").addClass("on")
+	}
 	var time = new Date();
 	
 	var yearStart = time.getFullYear();
@@ -390,6 +406,11 @@ function fifteenBtn() {
 	$(".date_timepicker_end").val(start);
 }
 function monthBtn() {
+	if($(".check54").hasClass("on")){
+		$(".check54").removeClass("on")
+	}else{
+		$(".check54").addClass("on")
+	}
 	var time = new Date();
 	var yearStart = time.getFullYear();
 	time
@@ -565,7 +586,7 @@ function monthBtn() {
 					&nbsp;~&nbsp;
 					<input type="text" id="endDt" name="endDt" size="10" class="date_timepicker_end" value="${param.endDt}"/>
 					<img id="btendDt" src="${url:img('/images/icon02.jpg')}"border="0" />
-					<label class="check51">
+					<label class="check51" >
 						<input onclick="todayBtn();" type="button" value="오늘" />
 						<span class="ico"></span>
 					    <span class="txt">파트타임</span>

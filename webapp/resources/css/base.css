@@ -798,20 +798,20 @@ a.text_deco_none:hover{
 .check51 {overflow:hidden;display:inline-block;position:relative;width:62px;height:32px;box-sizing:border-box;cursor:pointer;}
 .check51 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
 .check51 .ico {position:absolute;left:0px;top:0;width:62px;height:32px;background:url('../img/gray/gray51.png') no-repeat 0 0;}
-.check51 input:checked + .ico {background:url('../img/blue/blue51.png') no-repeat 0 0;}
+.check51.on .ico {background:url('../img/blue/blue51.png') no-repeat 0 0;}
 
 .check52 {overflow:hidden;display:inline-block;position:relative;width:56px;height:32px;box-sizing:border-box;cursor:pointer;}
 .check52 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
 .check52 .ico {position:absolute;left:0px;top:0;width:56px;height:32px;background:url('../img/gray/gray52.png') no-repeat 0 0;}
-.check52 input:checked + .ico {background:url('../img/blue/blue52.png') no-repeat 0 0;}
-
+.check52.on .ico {background:url('../img/blue/blue52.png') no-repeat 0 0;}
+ 
 .check53 {overflow:hidden;display:inline-block;position:relative;width:65px;height:32px;box-sizing:border-box;cursor:pointer;}
 .check53 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
 .check53 .ico {position:absolute;left:0px;top:0;width:65px;height:32px;background:url('../img/gray/gray53.png') no-repeat 0 0;}
-.check53 input:checked + .ico {background:url('../img/blue/blue53.png') no-repeat 0 0;}
+.check53.on .ico {background:url('../img/blue/blue53.png') no-repeat 0 0;}
 
 .check54 {overflow:hidden;display:inline-block;position:relative;width:71px;height:32px;box-sizing:border-box;cursor:pointer;}
 .check54 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
 .check54 .ico {position:absolute;left:0px;top:0;width:71px;height:32px;background:url('../img/gray/gray54.png') no-repeat 0 0;}
-.check54 input:checked + .ico {background:url('../img/blue/blue54.png') no-repeat 0 0;}
+.check54.on .ico {background:url('../img/blue/blue54.png') no-repeat 0 0;}
 					
