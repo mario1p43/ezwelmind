@@ -45,6 +45,22 @@
 								<th width="" rowspan="2" style="width: 50px !important;">상태값</th>
 								<th width="" rowspan="2" style="width: 60px !important;">최초등록일</th>
 								<th width="" rowspan="2" style="width: 60px !important;">정보변경일</th>
+								<th width="" rowspan="2" style="width: 60px !important;">학교명</th>
+								<th width="" rowspan="2" style="width: 60px !important;">학과(전공)</th>
+								<th width="" rowspan="2" style="width: 60px !important;">학위명</th>
+								<th width="" rowspan="2" style="width: 60px !important;">상태</th>
+								<th width="" rowspan="2" style="width: 60px !important;">연도</th>
+								<th width="" rowspan="2" style="width: 60px !important;">학교명</th>
+								<th width="" rowspan="2" style="width: 60px !important;">학과(전공)</th>
+								<th width="" rowspan="2" style="width: 60px !important;">학위명</th>
+								<th width="" rowspan="2" style="width: 60px !important;">상태</th>
+								<th width="" rowspan="2" style="width: 60px !important;">연도</th>
+								<th width="" rowspan="2" style="width: 60px !important;">학교명</th>
+								<th width="" rowspan="2" style="width: 60px !important;">학과(전공)</th>
+								<th width="" rowspan="2" style="width: 60px !important;">학위명</th>
+								<th width="" rowspan="2" style="width: 60px !important;">상태</th>
+								<th width="" rowspan="2" style="width: 60px !important;">연도</th>
+								
 							</tr>
 							<tr>
 
@@ -147,6 +163,33 @@
 								<td>${list.mgrStatus}</td>
 								<td>${list.regDt}</td>
 								<td>${list.modiDt}</td>
+								<td>${list.university}</td>
+								<td>${list.department}</td>
+								<td><c:choose>
+									<c:when test="${list.education eq 'M'}">학사</c:when>
+									<c:when test="${list.education eq 'D'}">석사</c:when>
+									<c:otherwise> 박사</c:otherwise>
+								</c:choose></td>
+								<td>${list.eduStatus}</td>
+								<td>${list.eduYear}</td>
+								<td>${list.university2}</td>
+								<td>${list.department2}</td>
+								<td><c:choose>
+									<c:when test="${list.education2 eq 'M'}">학사</c:when>
+									<c:when test="${list.education2 eq 'D'}">석사</c:when>
+									<c:otherwise> 박사</c:otherwise>
+								</c:choose></td>
+								<td>${list.eduStatus2}</td>
+								<td>${list.eduYear2}</td>
+								<td>${list.university3}</td>
+								<td>${list.department3}</td>
+								<td><c:choose>
+								<c:when test="${list.education3 eq 'M'}">학사</c:when>
+									<c:when test="${list.education3 eq 'D'}">석사</c:when>
+									<c:otherwise> 박사</c:otherwise>
+								</c:choose></td>
+								<td>${list.eduStatus3}</td>
+								<td>${list.eduYear3}</td>
 							</tr>
  						</c:forEach> 
  						

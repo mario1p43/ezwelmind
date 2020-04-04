@@ -82,7 +82,11 @@
 								<td>${list.regDt}</td>
 								<td>${list.parkingLotYn}</td>
 								<td>${list.aroundInfo}</td>
-								<td>${list.mentalPsy}</td>
+								<td>
+								<c:choose>
+									<c:when test="${list.mentalPsy eq null}"></c:when>
+									<c:otherwise><comm:commNmOut code="${list.mentalPsy }"  option="commCd"/></c:otherwise>
+								</c:choose></td>
 							</tr>
 						</c:forEach>
 						</tbody>
