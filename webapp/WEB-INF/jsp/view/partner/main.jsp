@@ -42,7 +42,7 @@ if(iTMonth2<10){
 		    float: left;
 		    text-align:center;
 		    cursor: pointer;
-		    width:30%;
+		    width:33.33%;
 		    height: 31px;
 		    line-height: 31px;
 		    border: 1px solid #eee;
@@ -65,6 +65,7 @@ if(iTMonth2<10){
 		    background: #FFFFFF;
 		}
 		.tab_content {
+		box-sizing: border-box;
 		    padding: 5px;
 		    width:100%;
 		    font-size: 12px;
@@ -118,11 +119,11 @@ if(iTMonth2<10){
 		<sec:authorize access="isAuthenticated()">
 			<sec:authentication var="sesUser" property="principal.user" />
 		</sec:authorize>
-<div class="web" style="display: flex;">
-
-
 		
-	<table cellpadding="0" cellspacing="0" border="0" width="20%" style="display: inline-table">
+<div class="web clearfix" style="display: block;">
+
+	<div style="width: 300px;float: left;">
+	<table cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
 		<tr>
 			<td height="20px"></td>
 		</tr>
@@ -208,9 +209,10 @@ if(iTMonth2<10){
 	
 	
 	</table>
+</div>
 
-
-	<table cellpadding="0" cellspacing="0" border="0" width="70%" style="display: inline-table">
+	<div style="float:left;width: calc(100% - 300px);">
+	<table cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
  
 		<tr>
 			<td height="20px"></td>
@@ -255,6 +257,11 @@ if(iTMonth2<10){
 								</tr>
 				        </table>
 						</c:if>
+						
+						<!-- 비어있을때 추가 -->
+		             <c:if test="${empty notice }">
+		             	<p> 공지사항이 없습니다. </p>
+					</c:if>
 		        </div>
         		<!-- #tab1 -->
 		        <div id="tab2" class="tab_content">
@@ -291,7 +298,7 @@ if(iTMonth2<10){
 		        </div>
         <!-- #tab2 -->
         <div id="tab3" class="tab_content">
-	       <table>
+	       <table style="width:100%;table-layout:fixed;">
 		        <tr>
 						<td height="20px"></td>
 					</tr>
@@ -301,7 +308,7 @@ if(iTMonth2<10){
 					<tr>
 						<td>
 							<!-- 검색 영역 시작 -->
-							<table cellpadding="5" cellspacing="0" border="1" width="250px" style="border-collapse:collapse;" bordercolor="#DDDDDD">
+							<table cellpadding="5" cellspacing="0" border="1" width="100%" style="border-collapse:collapse;" bordercolor="#DDDDDD">
 					<tr align="center" height="30px">
 						<td style="width:290px;" bgcolor="#F5F5F5" align="center"><strong>가이드 북</strong></td>
 				    	<td style="width:47px;" id="btn02" >
@@ -384,9 +391,10 @@ if(iTMonth2<10){
     <!-- .tab_container -->
 </div>
 <br>
+${sesUser.authCd}
 <div class="clear_both"></div>
 <div class="h20"></div>
-<c:if test="${sesUser.authCd eq 'ROLE_PARTNER_CENTER' || sesUser.authCd eq 'ROLE_PARTNER_ADMIN' }">
+<c:if test="${sesUser.authCd eq 'ROLE_PARTNER_CENTER' || sesUser.authCd eq 'ROLE_ADMIN' }">
 	<div class="wd100 ">
 		<div class="float_left padding10">
 			<a href="/partner/pCounselorMgr/counselFixList?startDt=<%=iTYear  %>%2F<%=iTMonth  %>%2F<%=iTDay  %>&endDt=<%=iTYear  %>%2F<%=iTMonth %>%2F<%=iTDay  %>">
@@ -510,7 +518,7 @@ if(iTMonth2<10){
 
 </c:if>
 
-<c:if test="${sesUser.authCd eq 'ROLE_PARTNER_SANGDAM'}">
+<c:if test="${sesUser.authCd eq 'ROLE_PARTNER_SANGDAM' }">
 	<div class="clear_both"></div>
 	<div class="h20"></div>
 <div class="wd100 c2">
@@ -649,7 +657,7 @@ if(iTMonth2<10){
 	</td>
 </tr>
 </table>
-
+</div>
 </div>
 
 	</body>

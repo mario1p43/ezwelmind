@@ -194,13 +194,13 @@ private static Logger log = LoggerFactory.getLogger(MenuUtil.class);
 				// 온마음 추가 - jerrykim
 				// 모바일관리 추가 - hundeok yoon
 				if("법인홈페이지".equals(menuVo.getMenuNm()) || "상담포유".equals(menuVo.getMenuNm()) || "온마음".equals(menuVo.getMenuNm()) || "휴센터".equals(menuVo.getMenuNm()) || "모바일관리".equals(menuVo.getMenuNm())){
-					sb.append("<tr class='menu'>");
-					sb.append("<td height='50px' align='center' style=\"background:url(//img.ezwelmind.co.kr/admin/common/bg02.jpg) repeat-x;\" class='white02'>");
+					sb.append("<tr class='menu title_tr'>");
+					sb.append("<td height='50px' align='center' class='white02'>");
 					sb.append("		<a href='javascript:void(0);'><strong style='color: white;'>"+menuVo.getMenuNm()+"</strong></a>");
 					sb.append("</td>");
 					sb.append("</tr>");
 					sb.append("<tr>");
-					sb.append("<td height='10px'></td>");
+					sb.append("<td height=''></td>");
 					sb.append("</tr>");
 					sb.append("<tr>");
 					sb.append("<td valign='top' style='padding-left:15px;'>");
@@ -217,10 +217,10 @@ private static Logger log = LoggerFactory.getLogger(MenuUtil.class);
 							for(int k=0; k < list4depth.size(); k++) {
 								menuVo = list4depth.get(k);
 								if(levelCd3.equals(menuVo.getHighLevelCd())) {
-									sb.append("<tr "+ ("Y".equals(menuVo.getDispYn()) ? "" : "style='display:none' ") +"><td class='submenu01_01'><a href='"+menuVo.getMenuUrl()+"' >"+menuVo.getMenuNm()+"</a></td></tr>");
+									sb.append("<tr "+ ("Y".equals(menuVo.getDispYn()) ? "" : "style='display:none' ") +"><td class='submenu01_01 submenu01_01--depth'><a href='"+menuVo.getMenuUrl()+"' >"+menuVo.getMenuNm()+"</a></td></tr>");
 								}
 							}
-							sb.append("<tr><td height='10px'><td></td></tr>");
+							sb.append("<tr><td height=''><td></td></tr>");
 						}
 					}
 					sb.append("<input type='hidden' name='left_menu_levelCd' id='left_menu_levelCd' value='"+levelCd+"'>");
@@ -231,14 +231,14 @@ private static Logger log = LoggerFactory.getLogger(MenuUtil.class);
 				}else{
 					// 기본형
 					if(i == 0){
-						sb.append("<tr class='menu'>");
-						sb.append("<td height='50px' align='center' style=\"background:url(//img.ezwelmind.co.kr/admin/common/bg02.jpg) repeat-x;\" class='white02'>");
-						sb.append("		<a href='javascript:void(0);'><strong style='color: white;'>"+title1depth+"</strong></a>");
+						sb.append("<tr class='menu title_tr'>");
+						sb.append("<td height='50px' align='center' class=''>");
+						sb.append("		<a href='javascript:void(0);'><strong'>"+title1depth+"</strong></a>");
 						sb.append("</td>");
 						sb.append("</tr>");
 						
 						sb.append("<tr>");
-						sb.append("<td height='10px'></td>");
+						sb.append("<td height=''></td>");
 						sb.append("</tr>");
 						
 						sb.append("<tr>");
@@ -253,10 +253,10 @@ private static Logger log = LoggerFactory.getLogger(MenuUtil.class);
 						for(int k=0; k < list3depth.size(); k++) {
 							menuVo = list3depth.get(k);
 							if(levelCd2.equals(menuVo.getHighLevelCd())) {
-								sb.append("<tr "+ ("Y".equals(menuVo.getDispYn()) ? "" : "style='display:none' ") +"><td class='submenu01_01'><a href='"+menuVo.getMenuUrl()+"' >"+menuVo.getMenuNm()+"</a></td></tr>");
+								sb.append("<tr "+ ("Y".equals(menuVo.getDispYn()) ? "" : "style='display:none' ") +"><td class='submenu01_01 submenu01_01--depth'><a href='"+menuVo.getMenuUrl()+"' >"+menuVo.getMenuNm()+"</a></td></tr>");
 							}
 						}
-						sb.append("<tr><td height='10px'><td></td></tr>");
+						sb.append("<tr><td height=''><td></td></tr>");
 					}
 					
 					if(i == list2depth.size()-1) {

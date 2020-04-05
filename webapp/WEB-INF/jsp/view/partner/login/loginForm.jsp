@@ -245,8 +245,13 @@
 			return false;
 		}
 	</script>
+	
+	<style>
+		#resendConfirmKey{}
+	</style>
 </head>
 <body bgcolor="#FFFFFF" topmargin="0" leftmargin="0">
+
 
 <form id="login_mo" action="<spring:eval expression="@global['page.login.url']" />" method="post" >
 		<input type="hidden" name="userId" id="id_mo" value="" />
@@ -274,13 +279,16 @@
 						</div>
 						<div>
 							<input type="password" id="pwd_mo" name="userPwd" size="15" class="write_box" placeholder="비밀번호" />
+							
 						</div>
 						<div id="confirmKeyDiv" style="display:none;">
 							<input type="text" id="confirmNumber" size="15" class="write_box" style="margin: 10px 0px;" placeholder="인증번호" />
 						</div>
+						
 						<button id="btn_check_id" class="btn_login denial">로그인</button>
-						<div id="timerDiv"></div>
-						<button id="resendConfirmKey" class="denial"  style="display:none;top:0; right:0; width:106px; height:96px; background:#3eb3c7; color:#fff; font-size:18px;">재전송</button>
+						<div id="timerDiv" style="position:absolute;right: 130px;bottom: 10px;line-height: 43px;z-index: 1;color:#f00;"></div>
+						<button id="resendConfirmKey" class="denial"  style="position:absolute;display:none;bottom:10px; right:0; width:106px; height:43px; background:#3eb3c7; color:#fff; font-size:18px;z-index:1;">재전송</button>
+						
 					</div>
 					<input type="checkbox" name="id_save" id="id_save_mo" /> <label for="id_save" class="save_id">아이디저장</label>
 					<br>

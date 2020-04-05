@@ -674,8 +674,10 @@ function updateCheckYnManager(){
 		</div>
 	</div>
 	<div class="bottom-btn-wrapper">
-		<sec:authorize access="hasAnyRole('ROLE_PARTNER_CENTER')">
+		<sec:authorize access="hasAnyRole('ROLE_PARTNER_SANGDAM')">
 			<button onclick="javascript:updateCheckYn();">정산 확인</button>
+		</sec:authorize>
+		<sec:authorize access="hasAnyRole('ROLE_PARTNER_CENTER')">
 			<button onclick="javascript:updateCheckYnOwner();">센터장 확인</button>
 		</sec:authorize>
 		<sec:authorize access="hasAnyRole('ROLE_PARTNER_ADMIN')">

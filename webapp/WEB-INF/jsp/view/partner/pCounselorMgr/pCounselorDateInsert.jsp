@@ -1255,6 +1255,8 @@ j$(function(){
 							<th>파일첨부</th>
 							<td colspan="7" >
 				    			<input type="file" name="file" id="file" />&nbsp;<a href="#" onclick="fileDownLoad('${record_detail.filePath}', '${record_detail.fileNm}')">${record_detail.fileNm}</a>
+				    			<br/>
+				    			<span style="color: RED;font-size: 11px;font-weight: bold;margin-top: 3px;">* 파일은 1개만 첨부됩니다. 여러 파일은 Zip으로 압축하여 업로드해주세요. </span>
 		    				</td>
 						</tr>
 

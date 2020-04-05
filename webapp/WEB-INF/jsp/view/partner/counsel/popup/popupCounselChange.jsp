@@ -170,7 +170,7 @@
 	</select>
 	<br>
 	<br>
-	<input id="smsYn" type="checkbox">SMS전송여부
+	<input id="smsYn" type="checkbox" checked>SMS전송여부
 	<br>
 	SMS발송용 상담시간
 	<br>

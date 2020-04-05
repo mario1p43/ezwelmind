@@ -61,6 +61,7 @@ body {
 	max-width: 1024px;
 	margin: 0 auto;
 }
+.clearfix:after{content:'';display: block;clear:both;}
 
 /* login */
 .cont_bn .partner{
@@ -391,29 +392,31 @@ a.text_deco_none:hover{
     color: #004B85 !important;
 }
 
-.aside > tbody > tr:nth-child(1) td strong{
+.aside > tbody > tr td strong{
 	color: #004B85 !important;
 }
 
+.aside > tbody > tr.title_tr td a,
 .aside > tbody > tr:nth-child(1) td a {
 	color: #004B85;
 	text-decoration: none;
 	font-weight: bold;
 	cursor: default;
+	font-size: 20px;
 }
 
 .aside > tbody > tr:nth-child(2) td {
 	height: 12px;
 }
 
-.aside > tbody > tr:nth-child(3) > td {
+.aside > tbody > tr:nth-child(3n) > td {
 	border-top: 4px solid #004B85;
 	border-bottom: 4px solid #004B85;
 	padding: 16px 0px 0 0px;
 }
 
 
-.aside > tbody > tr:nth-child(3) > td > table td {
+.aside > tbody > tr > td > table td {
 	width: 100%;
 	height: 16px;
 	line-height: 16px;
@@ -423,14 +426,15 @@ a.text_deco_none:hover{
 
 }
 
-.aside > tbody > tr:nth-child(3) > td > table td > a {
+.aside > tbody > tr > td > table td > a {
 	display:block;
 	font-weight: 500;
-	color: #828282;
+	color: #004B85;
 	text-decoration:none;
+	
 }
 
-.aside > tbody > tr:nth-child(3) > td > table td > a:hover {
+.aside > tbody > tr > td > table td > a:hover {
 	color: #006CBA;
 	padding-right: 16px;
 	background-image:url(../img/menu_arrow.svg);
@@ -439,7 +443,7 @@ a.text_deco_none:hover{
 	font-weight:bold;
 }
 
-.aside > tbody > tr:nth-child(3) > td > table td > a.active {
+.aside > tbody > tr > td > table td > a.active {
 	color: #006CBA;
 	padding-right: 16px;
 	background-image:url(../img/menu_arrow.svg);
@@ -814,4 +818,16 @@ a.text_deco_none:hover{
 .check54 input {overflow:hidden;display:none;width:0px;height:0px;border:0 none;font-size:0;line-height:0;clip:rect(0 0 0 0);opacity:0;}
 .check54 .ico {position:absolute;left:0px;top:0;width:71px;height:32px;background:url('../img/gray/gray54.png') no-repeat 0 0;}
 .check54.on .ico {background:url('../img/blue/blue54.png') no-repeat 0 0;}
+
+
+/* 추가 200405 */
+.fc-title{color:#fff !important;}
+#tbl_organization_body_cert td{border: 1px solid #bcbcbc;border-collapse: collapse}
+.aside > tbody > tr > td > table td.submenu01 > a{font-weight: 600;}
+.aside > tbody > tr > td > table td.submenu01_01 *{color:#666 !important;;}
+#btn01 span{color:#fff !important;}
+
+
+.main_content{padding-bottom: 50px !important;}
+.main_wrap > div{padding:0 !important;}
 					

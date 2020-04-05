@@ -656,7 +656,7 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 					</tr>
 					<tr>
 						<th>일지작성</th>
-						<td>
+						<td class="viewDetail2 ">
 							<c:set scope="page" var="userCounselDate">${list.ymd } ${list.stTime }</c:set>
 							<fmt:parseDate value="${userCounselDate }" pattern="yyyy-MM-dd HH:mm" var="userCounselDt" />
 							<fmt:formatDate value="${userCounselDt }" pattern="yyyyMMddHHmm" var="userCounselDtStr" />
@@ -671,17 +671,17 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 											<a href="#" class="pCounselorDateModify" value="${list.counselCd}&${list.userKey}&${list.counselType}&${list.intakeCd}" ><strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></a>
 										</c:when>
 										<c:otherwise>
-											<strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong>
+											<comm:commNmOut option="commCd" code="${list.recordStatus}"/>
 										</c:otherwise>
 								</c:choose>
 								</c:when>
 								<c:otherwise>
 									<c:choose>
 										<c:when test="${userCounselDtStr < nowDate }">
-											<a href="#" class="pCounselorDateModify" value="${list.counselCd}&${list.userKey}&${list.counselType}&${list.intakeCd}" ><strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></a>
+											<a href="#" class="pCounselorDateModify" value="${list.counselCd}&${list.userKey}&${list.counselType}&${list.intakeCd}" ><comm:commNmOut option="commCd" code="${list.recordStatus}"/></a>
 										</c:when>
 										<c:otherwise>
-											<a href="#none" onclick="alert('상담 완료 후 입력이 가능합니다.')" value="${list.counselCd}&${list.userKey}&${list.counselType}&${list.intakeCd}" ><strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></a>
+											<a href="#none" onclick="alert('상담 완료 후 입력이 가능합니다.')" value="${list.counselCd}&${list.userKey}&${list.counselType}&${list.intakeCd}" ><comm:commNmOut option="commCd" code="${list.recordStatus}"/></a>
 										</c:otherwise>
 									</c:choose>
 								</c:otherwise>

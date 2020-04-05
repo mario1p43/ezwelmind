@@ -78,14 +78,14 @@ function closeBtnLogoutPop(){
 		<jsp:include page="<%=MenuUtil.selectTopMenu(request) %>" />
 		<!-- Head 영역 START-->
 
-		<table class="main_section" width="100%" height="100%"> <!-- cellpadding="0" cellspacing="0" border="0" width="100%" height="100%" -->
-			<tr class="main_wrap"> <!-- valign="top" -->
+		<div class="main_section" width="100%" height="100%"> <!-- cellpadding="0" cellspacing="0" border="0" width="100%" height="100%" -->
+			<div class="main_wrap"> <!-- valign="top" -->
 			<c:choose>
 				<c:when test="${not empty menu}">
 
 				<jsp:include page="<%=MenuUtil.naverTalk(request) %>" />
 				
-					<td class="main_content"> <!--  width="99%" style="background:url(${url:img('/admin/common/bg03.jpg')}) repeat-x;" -->
+					<div class="main_content" style="width: 100%;padding:0 10px;"> <!--  width="99%" style="background:url(${url:img('/admin/common/bg03.jpg')}) repeat-x;" -->
 					<!-- 메인 영역 start -->
 					<table width="100%">
 						<tr>
@@ -96,10 +96,10 @@ function closeBtnLogoutPop(){
 						</tr>
 					</table>
 					<!-- 메인 영역 END-->
-				</td>
+				</div>
 				</c:when>
 				<c:otherwise>
-					<td class="main_droppage"> <!--  valign="top" style="padding-left:15px; min-height: 600px;" -->
+					<div class="" style="width: 100%;padding:0 10px;"> <!--  valign="top" style="padding-left:15px; min-height: 600px;" -->
 					<!-- 메인 영역 start -->
 					<table width="100%">
 						<tr>
@@ -110,11 +110,11 @@ function closeBtnLogoutPop(){
 						</tr>
 					</table>
 					<!-- 메인 영역 END-->
-				</td>
+				</div>
 				</c:otherwise>
 			</c:choose>
-			</tr>
-		</table>
+			</div>
+		</div>
 		<div ></div><!-- class="clear_both h50" -->
 		<%@ include file="/WEB-INF/jsp/layout/inc/staticAfter.jspf"%>
 	</body>

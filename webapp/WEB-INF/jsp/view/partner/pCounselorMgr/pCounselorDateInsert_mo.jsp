@@ -690,6 +690,7 @@ j$(function(){
 
 	<div class="counsel-wrapper">
 		<div class="title-wrapper">개인상담일지</div>
+		<!-- 
 		<div class="content-wrapper">
 			<div class="subject-block">인테이크</div>
 		</div>
@@ -780,6 +781,8 @@ j$(function(){
 				</div>
 			</div>
 		</div>
+		 -->
+		
 		<div class="content-wrapper">
 			<div class="subject-block">기본정보</div>
 		</div>
@@ -876,8 +879,9 @@ j$(function(){
 		</div>
 		<div class="content-wrapper">
 			<div class="data-wrapper border-bottom">
-				<div class="label-block-line">다음 중 본 사례에 해당하는 위험도를 체크해 주십시오.</div>
+				<div class="label-block-line">사례위험도 평가방법은 파트너어드민 웹사이트를 참고해주세요. </div>
 			</div>
+			<!-- 
 			<div class="data-wrapper border-bottom">
 				<div class="label-block-line">[사례위험도 평가방법]</div>
 				<div class="risk-description1">1. 다축적 평가개념으로, 내담자의 개인적 측면, 조직/업무적 측면, 정신건강의학적 측면에 대하여 아래의 내용을 참고하여 평가합니다.</div>
@@ -890,6 +894,7 @@ j$(function(){
 				<div class="risk-description2">4) 트라우마 경험에 노출되기 쉬운 직업 : 경찰, 군인, 소방관, 경호업체 등</div>
 				<div class="risk-description2">5) 고객접점의 업무수행 직업 : 콜센터, 승무원, 민원창구 등</div>
 			</div>
+			 -->
 			<div class="data-wrapper">
 				<div class="bg-block">
 					<div class="risk-rank-wrapper">
@@ -1133,12 +1138,14 @@ j$(function(){
 				<div class="data-wrapper border-bottom">
 					<div class="label-block-line">상담주제 분류</div>
 					<div class="data-block text">
+				
 						<div class="counsel-write-description">&lt;상담주제 작성법&gt;</div>
 						<div class="counsel-write-description">1. 상담의 첫 회기에만 입력이 가능합니다.</div>
 						<div class="counsel-write-description">2. 대분류 &gt; 중분류 &gt; 소분류 순으로 입력해주세요.</div>
 						<div class="counsel-write-description">3. "내담자"를 기준으로 작성해주세요.<br><span style="font-size:11px;line-height:0">Ex. 내담자 아동의 부모와의 갈등인 경우<br>(아동의) 가족 관련 주제 &gt; 가족관계 어려움 &gt; 부모자녀 관계갈등</span></div>
 						<div class="counsel-write-description">4. 1회기 진행 후, 내담자의 주호소문제를 바탕으로 대표적인 심리주제를 설정해주세요.</div>
 						<div class="counsel-write-description">5. 일부 고객사는 분류가 다를 수 있습니다.<br><span style="font-size:11px;line-height:0">Ex. 대법원은 소분류가 없습니다.</span></div>
+					
 						<div class="counsel-subject-select">
 							<commClient:select name="subjectItemCd1" id="subjectItemCd1" clientCd="${record_detail.clientCd }" code="${groupOfUserAges }" onchange="subjectItem1CdChange();" selectValue="${record_detail.subjectItemCd1 }" basicValue="대주제" />
 							<commClient:select name="subjectItemCd2" id="subjectItemCd2" clientCd="${record_detail.clientCd }" code="${record_detail.subjectItemCd1 }" onchange="subjectItem2CdChange();" selectValue="${record_detail.subjectItemCd2 }" basicValue="중주제" />

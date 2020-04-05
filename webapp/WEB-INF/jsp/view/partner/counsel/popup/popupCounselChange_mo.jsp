@@ -210,7 +210,7 @@
 		<div class="content-left content-title">SMS전송여부</div>
 		<div class="content-right">
 			<div class="checkbox-wrapper">
-				<input id="smsYn" type="checkbox"/>
+				<input id="smsYn" type="checkbox" checked/>
 				<label for="smsYn"></label>
 			</div>
 		</div>

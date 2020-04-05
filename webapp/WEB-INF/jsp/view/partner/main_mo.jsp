@@ -201,7 +201,7 @@ if(iTMonth2<10){
 
 	
 	<div id="container">
-		<c:if test="${sesUser.authCd eq 'ROLE_PARTNER_CENTER' || sesUser.authCd eq 'ROLE_PARTNER_ADMIN' }">
+		<c:if test="${sesUser.authCd eq 'ROLE_PARTNER_CENTER' || sesUser.authCd eq 'ROLE_ADMIN' }">
 		<div class="flex box_row">
 			<div class="consulting_container">
 				<div class="m_main_box flex center today_consulting">
@@ -279,7 +279,139 @@ if(iTMonth2<10){
 			</div>
 		</div>
 		</c:if>
+		<c:if test="${sesUser.authCd eq 'ROLE_PARTNER_SANGDAM' }">
+		<!-- 상담사  화면 -->
 		
+		<div class="flex box_row">
+			<div class="consulting_container">
+				<div class="m_main_box flex center today_consulting">
+					<a class="flex center" href="/partner/pCounselorMgr/counselFixList">	
+						<p>
+							${sangdamcnt.processCsCnt}
+						</p>
+					</a>
+				</div>
+				<div class="flex center">
+					<p class="consulting_count">내담자</p>
+				</div>
+			</div>
+			<div class="consulting_container">
+				<div class="m_main_box flex center consulting">
+					<a class="flex center" href="/partner/pCounselorMgr/counselFixList?startDt=<%=iTYear  %>%2F<%=iTMonth  %>%2F<%=iTDay  %>&endDt=<%=iTYear  %>%2F<%=iTMonth  %>%2F<%=iTDay  %>">	
+						<p>
+							${sangdamcnt.todayCsCnt}
+						</p>
+					</a>
+				</div>
+				<div class="flex center">
+					<p class="consulting_count">오늘 상담</p>
+				</div>
+			</div>
+			<div class="consulting_container">
+				<div class="m_main_box counselor_count">
+					<a class="flex center" href="/partner/pCounselorMgr/counselFixList">	
+						<p>
+							${sangdamcnt.extenCsCnt}
+						</p>
+					</a>
+				</div>
+				<div class="flex center">
+					<p class="consulting_count">연장 신청</p>
+				</div>
+			</div>
+		</div>
+		
+		<div class="flex box_row">
+			<div class="consulting_container">
+				<div class="m_main_box flex center unwritten">
+					<a class="flex center" href="/partner/pCounselorMgr/pCounselorDateList">	
+						<p>
+							${sangdamcnt.unWritenCsCnt}
+						</p>
+					</a>
+				</div>
+				<div class="flex center">
+					<p class="consulting_count">상담일지</p>
+				</div>
+			</div>
+		</div>
+		
+	
+		<!-- 상담사 화면 끝 -->
+	</c:if>
+<c:if test="${sesUser.authCd eq 'ROLE_PARTNER_SEND'}">
+
+<div class="flex box_row">
+			<div class="consulting_container">
+				<div class="m_main_box flex center unwritten">
+					<a class="flex center" href="/partner/pCounselorMgr/counselFixList">	
+						<p>
+							 ${sangdamcnt.processCsCnt}
+						</p>
+					</a>
+				</div>
+				<div class="flex center">
+					<p class="consulting_count">진행중 상담</p>
+				</div>
+			</div>
+			<div class="consulting_container">
+				<div class="m_main_box flex center unwritten">
+					<a class="flex center" href="/partner/pCounselorMgr/pCounselorDateList">	
+						<p>
+							${sangdamcnt.unWritenCsCnt}
+						</p>
+					</a>
+				</div>
+				<div class="flex center">
+					<p class="consulting_count">미작성 상담일지</p>
+				</div>
+			</div>
+		</div>
+<!-- 		
+	<div class="float_left padding15">
+			<a href="">
+				<svg width="134" height="134" viewBox="0 0 134 134" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<circle cx="67" cy="67" r="64" stroke="url(#paint0_linear)" stroke-width="6"/>
+				<defs>
+				<linearGradient id="paint0_linear" x1="21.5" y1="16.5" x2="118.5" y2="116" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#006DBA"/>
+				<stop offset="1" stop-color="#7EC041"/>
+				</linearGradient>
+				</defs>
+				<text text-anchor="middle"   x="50%" y="25%" fill="#191919" font-size="14" font-family="'Leckerli One', cursive">
+				    
+				</text>
+				<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="'Leckerli One', cursive">
+				   
+				</text>
+				</svg>
+			</a>
+		</div>
+		<div class="float_left padding15">
+			<a href="">
+				<svg width="134" height="134" viewBox="0 0 134 134" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<circle cx="67" cy="67" r="64" stroke="url(#paint0_linear)" stroke-width="6"/>
+				<defs>
+				<linearGradient id="paint0_linear" x1="21.5" y1="16.5" x2="118.5" y2="116" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#006DBA"/>
+				<stop offset="1" stop-color="#7EC041"/>
+				</linearGradient>
+				</defs>
+				<text text-anchor="middle"   x="50%" y="20%" fill="#191919" font-size="14" font-family="'Leckerli One', cursive">
+				    
+				</text>
+				<text text-anchor="middle"   x="50%" y="35%" fill="#191919" font-size="14" font-family="'Leckerli One', cursive">   
+				    상담일지
+				</text>
+				<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="'Leckerli One', cursive">
+				    
+				</text>
+				</svg>
+			</a>
+		</div>
+ -->
+	</div>
+</c:if>
 		<ul class="tabs">
 			<li class="flex center flexGrow active" rel="tab1"><span class="">공지사항</span></li>
 			<li class="flex center flexGrow" rel="tab2"><span>모집공고</span></li>

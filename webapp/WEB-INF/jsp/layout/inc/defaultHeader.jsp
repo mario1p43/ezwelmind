@@ -68,7 +68,7 @@ j$(document).ready(function(){
 					<div class="t_text">정보 권한 : ${sesUser.userTypeNm}</div>
 					<span style="position:relative; right:0;">
 						<c:if test="${sesUser.userType eq '2001'}">
-							<a href="/madm/mypage/modifyMyinfo" ><img src="${url:img('/admin/head/button03.jpg')}" /></a>
+							<a href="/madm/mypage/modifyMyinfo" class="b_text mr16 text_deco_none" style="color:#fff;">개인정보관리</a>
 						</c:if>
 						<c:if test="${sesUser.userType eq '3001'}">
 							<a href="/partner/mgr/modifyMyInformation" class="b_text mr16 text_deco_none" style="color:#fff;">개인정보관리</a>
