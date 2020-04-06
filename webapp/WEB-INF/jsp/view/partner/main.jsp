@@ -302,9 +302,9 @@ if(iTMonth2<10){
 		        <tr>
 						<td height="20px"></td>
 					</tr>
-					<tr>
+<!-- 					<tr>
 						<td align="left" class="subtitle">파트너어드민 가이드북 & 양식</td>
-					</tr>
+					</tr> -->
 					<tr>
 						<td>
 							<!-- 검색 영역 시작 -->

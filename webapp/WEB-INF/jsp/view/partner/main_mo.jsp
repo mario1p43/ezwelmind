@@ -201,7 +201,7 @@ if(iTMonth2<10){
 
 	
 	<div id="container">
-		<c:if test="${sesUser.authCd eq 'ROLE_PARTNER_CENTER' || sesUser.authCd eq 'ROLE_ADMIN' }">
+		<c:if test="${sesUser.authCd eq 'ROLE_PARTNER_CENTER' || sesUser.authCd eq 'ROLE_ADMIN'   || sesUser.authCd eq 'ROLE_PARTNER_ADMIN'  }">
 		<div class="flex box_row">
 			<div class="consulting_container">
 				<div class="m_main_box flex center today_consulting">
