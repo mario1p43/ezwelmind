@@ -160,6 +160,8 @@ if(iTMonth2<10){
 			white-space: normal;
 			word-wrap: break-word;
 		}
+		
+		.main_section{padding-bottom: 60px;}
 		</style>
 	<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
 	<script type="text/javascript">
@@ -205,11 +207,10 @@ if(iTMonth2<10){
 		<div class="flex box_row">
 			<div class="consulting_container">
 				<div class="m_main_box flex center today_consulting">
-					<a class="flex center" href="/partner/pCounselorMgr/counselFixList?startDt=<%=iTYear  %>%2F<%=iTMonth  %>%2F<%=iTDay  %>&endDt=<%=iTYear  %>%2F<%=iTMonth %>%2F<%=iTDay  %>">	
-						<p>
+					<p>
 							${sangdamcnt.todayCsCnt}
 						</p>
-					</a>
+					
 				</div>
 				<div class="flex center">
 					<p class="consulting_count">오늘 상담</p>
@@ -217,11 +218,11 @@ if(iTMonth2<10){
 			</div>
 			<div class="consulting_container">
 				<div class="m_main_box flex center consulting">
-					<a class="flex center" href="/partner/pCounselorMgr/counselFixList">	
+					
 						<p>
 							${sangdamcnt.processCsCnt}
 						</p>
-					</a>
+					
 				</div>
 				<div class="flex center">
 					<p class="consulting_count">진행 중 상담</p>
@@ -229,7 +230,7 @@ if(iTMonth2<10){
 			</div>
 			<div class="consulting_container">
 				<div class="m_main_box counselor_count">
-					<a class="flex center" href="/partner/mgr/counselorInfoMgrList">	
+					<a class="flex center" >	
 						<p>
 							${sangdamcnt.counselorCnt}
 						</p>
@@ -243,11 +244,11 @@ if(iTMonth2<10){
 		<div class="flex box_row">
 			<div class="consulting_container">
 				<div class="m_main_box flex center unwritten">
-					<a class="flex center" href="/partner/pCounselorMgr/pCounselorDateList">	
+						
 						<p>
 							${sangdamcnt.unWritenCsCnt}
 						</p>
-					</a>
+					
 				</div>
 				<div class="flex center">
 					<p class="consulting_count">미작성일지</p>
@@ -418,22 +419,32 @@ if(iTMonth2<10){
 		<div class="tab_container">
 			<div id="tab1" class="tab_content">
 				<c:if test="${!empty notice }">
-					<div class="notice_subject">
-						<a href="/partner/bbsNotice/noticeDetailForm?dataSeq=${notice.dataSeq}">${notice.subject }</a>
-					</div>
-					<div class="notice_content">
-						<a href="/partner/bbsNotice/noticeDetailForm?dataSeq=${notice.dataSeq}">${notice.content }</a>
-					</div>
+				<ul class="main__notice-list">
+					<li class="main__notice-item">
+						<a href="/partner/bbsNotice/noticeDetailForm?dataSeq=${notice.dataSeq}">
+							<h3 class="notice_subject">${notice.subject }</h3>
+							<div class="notice_content">${notice.content }</div>
+							<div class="notice_createdAt">${notice.regDt}</div>
+						</a>
+					</li>
+					
+				</ul>
 				</c:if>
 			</div>
+			
+			
 			<div id="tab2" class="tab_content">
 				<c:if test="${!empty recruit }">
-					<div class="notice_subject">
-						<a href="/partner/bbsNotice/noticeDetailForm?dataSeq=${recruit.dataSeq}">${recruit.subject }</a>
-					</div>
-					<div class="notice_content">
-						<a href="/partner/bbsNotice/noticeDetailForm?dataSeq=${recruit.dataSeq}">${recruit.content }</a>
-					</div>
+				<ul class="main__notice-list">
+					<li class="main__notice-item">
+						<a href="/partner/bbsNotice/noticeDetailForm?dataSeq=${recruit.dataSeq}">
+							<h3 class="notice_subject">${recruit.subject }</h3>
+							<div class="notice_content">${recruit.content }</div>
+							<div class="notice_createdAt">${recruit.regDt}</div>
+						</a>
+					</li>
+					
+				</ul>
 				</c:if>
 			</div>
 

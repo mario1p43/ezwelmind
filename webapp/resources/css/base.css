@@ -834,3 +834,11 @@ a.text_deco_none:hover{
 .notice-wrapper .data-list-wrapper td{border: 1px solid #ccc}
 .notice-wrapper .data-list-wrapper th{background:#d2d2d2}
 .notice-wrapper .data-list-wrapper table{table-layout: fixed;}
+/* 메인 공지사항 모집공고 */
+.main__notice-list{margin-top: 15px !important;padding:0 15px !important;box-sizing:border-box;}
+.main__notice-item{margin-bottom: 10px !important;padding: 10px !important; border: 1px solid rgba(0,0,0,0.4) !important;border-radius: 10px;}
+.main__notice-item:last-child{margin-bottom: 0px !important;}
+.main__notice-item .notice_subject{font-size: 16px;margin: 0 !important;}
+.main__notice-item .notice_content{margin-top: 5px;line-height:1.25em;}
+.main__notice-item .notice_content p{font-size: 14px;margin:0 !important;}
+.main__notice-item .notice_createdAt{font-size: 12px;text-align: right;margin-top: 5px;color:rgba(0,0,0,0.4);}
