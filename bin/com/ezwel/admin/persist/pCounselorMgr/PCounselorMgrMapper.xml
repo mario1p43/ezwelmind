@@ -143,16 +143,16 @@
 			, B.COUNSEL_CD		AS	counselCd
 			, A.INTAKE_NUM		AS	intakeNumber
 			, A.RELATION		AS	relation
-			,(select File_NM from MIND_COUNSEL_FILE where COUNSEL_CD = B.COUNSEL_CD and INTAKE_CD = B.INTAKE_CD and DOC_TYPE ='1' AND DOC_STS ='1') as filename1 
-            ,(select File_NM from MIND_COUNSEL_FILE where COUNSEL_CD = B.COUNSEL_CD and INTAKE_CD = B.INTAKE_CD and DOC_TYPE ='1' AND DOC_STS ='2') as filename2
-            ,(select File_NM from MIND_COUNSEL_FILE where COUNSEL_CD = B.COUNSEL_CD and INTAKE_CD = B.INTAKE_CD and DOC_TYPE ='1' AND DOC_STS ='3') as filename3
-            ,(select File_NM from MIND_COUNSEL_FILE where COUNSEL_CD = B.COUNSEL_CD and INTAKE_CD = B.INTAKE_CD and DOC_TYPE ='1' AND DOC_STS ='4') as filename4
-            ,(select File_NM from MIND_COUNSEL_FILE where COUNSEL_CD = B.COUNSEL_CD and INTAKE_CD = B.INTAKE_CD and DOC_TYPE ='1' AND DOC_STS ='5') as filename5
-            ,(select FILE_PATH from MIND_COUNSEL_FILE where COUNSEL_CD = B.COUNSEL_CD and INTAKE_CD = B.INTAKE_CD and DOC_TYPE ='1' AND DOC_STS ='1') as filefath1 
-            ,(select FILE_PATH from MIND_COUNSEL_FILE where COUNSEL_CD = B.COUNSEL_CD and INTAKE_CD = B.INTAKE_CD and DOC_TYPE ='1' AND DOC_STS ='2') as filefath2
-            ,(select FILE_PATH from MIND_COUNSEL_FILE where COUNSEL_CD = B.COUNSEL_CD and INTAKE_CD = B.INTAKE_CD and DOC_TYPE ='1' AND DOC_STS ='3') as filefath3
-            ,(select FILE_PATH from MIND_COUNSEL_FILE where COUNSEL_CD = B.COUNSEL_CD and INTAKE_CD = B.INTAKE_CD and DOC_TYPE ='1' AND DOC_STS ='4') as filefath4
-            ,(select FILE_PATH from MIND_COUNSEL_FILE where COUNSEL_CD = B.COUNSEL_CD and INTAKE_CD = B.INTAKE_CD and DOC_TYPE ='1' AND DOC_STS ='5') as filefath5
+			,(select File_NM from MIND_COUNSEL_FILE where INTAKE_CD = B.INTAKE_CD and DOC_TYPE ='1' AND DOC_STS ='1') as filename1 
+            ,(select File_NM from MIND_COUNSEL_FILE where INTAKE_CD = B.INTAKE_CD and DOC_TYPE ='1' AND DOC_STS ='2') as filename2
+            ,(select File_NM from MIND_COUNSEL_FILE where INTAKE_CD = B.INTAKE_CD and DOC_TYPE ='1' AND DOC_STS ='3') as filename3
+            ,(select File_NM from MIND_COUNSEL_FILE where INTAKE_CD = B.INTAKE_CD and DOC_TYPE ='1' AND DOC_STS ='4') as filename4
+            ,(select File_NM from MIND_COUNSEL_FILE where INTAKE_CD = B.INTAKE_CD and DOC_TYPE ='1' AND DOC_STS ='5') as filename5
+            ,(select FILE_PATH from MIND_COUNSEL_FILE where INTAKE_CD = B.INTAKE_CD and DOC_TYPE ='1' AND DOC_STS ='1') as filefath1 
+            ,(select FILE_PATH from MIND_COUNSEL_FILE where INTAKE_CD = B.INTAKE_CD and DOC_TYPE ='1' AND DOC_STS ='2') as filefath2
+            ,(select FILE_PATH from MIND_COUNSEL_FILE where INTAKE_CD = B.INTAKE_CD and DOC_TYPE ='1' AND DOC_STS ='3') as filefath3
+            ,(select FILE_PATH from MIND_COUNSEL_FILE where INTAKE_CD = B.INTAKE_CD and DOC_TYPE ='1' AND DOC_STS ='4') as filefath4
+            ,(select FILE_PATH from MIND_COUNSEL_FILE where INTAKE_CD = B.INTAKE_CD and DOC_TYPE ='1' AND DOC_STS ='5') as filefath5
 		FROM MIND_COUNSEL_INTAKE A LEFT OUTER JOIN MIND_COUNSEL B ON A.USER_KEY  = B.USER_KEY
 				AND A.CLIENT_CD = B.CLIENT_CD	AND A.INTAKE_CD = B.INTAKE_CD
 		WHERE 1=1

@@ -116,8 +116,9 @@ j$(document).ready(function(){
 	function blind(){
 		$("#popupBox").css("display","none");
 	}
-function showDocument(counselCd ,intakeCd,counselNm,centerSeq,clientCd,apprStatus1,apprStatus2,apprStatus3,regId1,regId2,regId3,regDt1,regDt2,regDt3,fileSeq1,fileSeq2,fileSeq3){
-	$(".counselCd").val(counselCd);
+function showDocument(intakeCd,counselNm,centerSeq,clientCd,apprStatus1,apprStatus2,apprStatus3,regId1,regId2,regId3,regDt1,regDt2,regDt3,fileSeq1,fileSeq2,fileSeq3){
+	//$(".counselCd").val(counselCd);
+
 	$(".intakeCd").val(intakeCd);
 	$(".counselNm").val(counselNm);
 	$(".centerSeq").val(centerSeq);
@@ -130,9 +131,9 @@ function showDocument(counselCd ,intakeCd,counselNm,centerSeq,clientCd,apprStatu
 	$(".chk_info2:radio[value='"+checkbox2Radio+"']").prop('checked', true); 
 	$(".chk_info3:radio[value='"+checkbox3Radio+"']").prop('checked', true);
 	
-	$("#fileSeq1").val(fileSeq1);
-	$("#fileSeq2").val(fileSeq2);
-	$("#fileSeq3").val(fileSeq3);
+	$(".fileSeq1").val(fileSeq1);
+	$(".fileSeq2").val(fileSeq2);
+	$(".fileSeq3").val(fileSeq3);
 	
 	
 	if(regId1 ==null || typeof regId1 == "undefined" || regId1 ==""){
@@ -210,12 +211,11 @@ function showDocument(counselCd ,intakeCd,counselNm,centerSeq,clientCd,apprStatu
 					</table>
 						<input type="hidden" name="centerSeq" class="centerSeq" value="">
 						<input type="hidden" name="intakeCd" class="intakeCd" value="">
-						<input type="hidden" name="counselCd" class="counselCd" value="">
 						<input type="hidden" name="counselNm" class="counselNm" value="">
 						<input type="hidden" name="clientCd" class="clientCd" value="">
 						<input type="hidden" name="docSts" class="docSts" value="2">
 						<input type="hidden" name="docType" class="docType" value="1">
-						<input id="fileSeq1" type="hidden" name="fileSeq" class="fileSeq" value="">
+						<input class="fileSeq1" type="hidden" name="fileSeq" class="fileSeq" value="">
 					</form>
 				</td>
 			</tr>
@@ -251,12 +251,12 @@ function showDocument(counselCd ,intakeCd,counselNm,centerSeq,clientCd,apprStatu
 						<input type="hidden" name="chkInfo" class="chkInfo1" value="9999">
 						<input type="hidden" name="recordCd" class="recordCd" value="">
 						<input type="hidden" name="intakeCd" class="intakeCd" value="">
-						<input type="hidden" name="counselCd" class="counselCd" value="">
 						<input type="hidden" name="counselNm" class="counselNm" value="">
 						<input type="hidden" name="centerSeq" class="centerSeq" value="">
 						<input type="hidden" name="clientCd" class="clientCd" value="">
 						<input type="hidden" name="docSts" class="docSts" value="2">
 						<input type="hidden" name="docType" class="docType" value="1">
+						<input class="fileSeq1" type="hidden" name="fileSeq" class="fileSeq" value="">
 						<div class="popupBtn" id="okBtn1">변경</div>
 					</form>
 				</td>
@@ -288,12 +288,11 @@ function showDocument(counselCd ,intakeCd,counselNm,centerSeq,clientCd,apprStatu
 					</table>
 						<input type="hidden" name="centerSeq" class="centerSeq" value="">
 						<input type="hidden" name="intakeCd" class="intakeCd" value="">
-						<input type="hidden" name="counselCd" class="counselCd" value="">
 						<input type="hidden" name="counselNm" class="counselNm" value="">
 						<input type="hidden" name="clientCd" class="clientCd" value="">
 						<input type="hidden" name="docSts" class="docSts" value="2">
 						<input type="hidden" name="docType" class="docType" value="2">
-						<input id="fileSeq2" type="hidden" name="fileSeq" class="fileSeq" value="">
+						<input class="fileSeq2" type="hidden" name="fileSeq" class="fileSeq" value="">
 					</form>
 				</td>
 			</tr>
@@ -329,12 +328,12 @@ function showDocument(counselCd ,intakeCd,counselNm,centerSeq,clientCd,apprStatu
 						<input type="hidden" name="chkInfo" class="chkInfo2" value="8888">
 						<input type="hidden" name="recordCd" class="recordCd" value="">
 						<input type="hidden" name="intakeCd" class="intakeCd" value="">
-						<input type="hidden" name="counselCd" class="counselCd" value="">
 						<input type="hidden" name="counselNm" class="counselNm" value="">
 						<input type="hidden" name="centerSeq" class="centerSeq" value="">
 						<input type="hidden" name="clientCd" class="clientCd" value="">
 						<input type="hidden" name="docSts" class="docSts" value="2">
 						<input type="hidden" name="docType" class="docType" value="2">
+						<input class="fileSeq2" type="hidden" name="fileSeq" class="fileSeq" value="">
 						<div class="popupBtn" id="okBtn2">변경</div>
 					</form>
 				</td>
@@ -367,12 +366,11 @@ function showDocument(counselCd ,intakeCd,counselNm,centerSeq,clientCd,apprStatu
 					</table>
 						<input type="hidden" name="centerSeq" class="centerSeq" value="">
 						<input type="hidden" name="intakeCd" class="intakeCd" value="">
-						<input type="hidden" name="counselCd" class="counselCd" value="">
 						<input type="hidden" name="counselNm" class="counselNm" value="">
 						<input type="hidden" name="clientCd" class="clientCd" value="">
 						<input type="hidden" name="docSts" class="docSts" value="2">
 						<input type="hidden" name="docType" class="docType" value="3">
-						<input id="fileSeq3" type="hidden" name="fileSeq" class="fileSeq" value="">
+						<input class="fileSeq3" type="hidden" name="fileSeq" class="fileSeq" value="">
 					</form>
 				</td>
 			</tr>
@@ -408,12 +406,12 @@ function showDocument(counselCd ,intakeCd,counselNm,centerSeq,clientCd,apprStatu
 						<input type="hidden" name="chkInfo" class="chkInfo3" value="8888">
 						<input type="hidden" name="recordCd" class="recordCd" value="">
 						<input type="hidden" name="intakeCd" class="intakeCd" value="">
-						<input type="hidden" name="counselCd" class="counselCd" value="">
 						<input type="hidden" name="counselNm" class="counselNm" value="">
 						<input type="hidden" name="centerSeq" class="centerSeq" value="">
 						<input type="hidden" name="clientCd" class="clientCd" value="">
 						<input type="hidden" name="docSts" class="docSts" value="2">
 						<input type="hidden" name="docType" class="docType" value="3">
+						<input class="fileSeq3" type="hidden" name="fileSeq" class="fileSeq" value="">
 						<div class="popupBtn" id="okBtn3">변경</div>
 					</form>
 				</td>
@@ -625,38 +623,8 @@ button{
 					<td>
 					
 					
-					<button onclick="showDocument(${list.counselCd },${list.intakeCd },'${list.counselNm }',${list.centerSeq },'${list.clientCd }','${list.apprStatus1}','${list.apprStatus2 }','${list.apprStatus3 }','${list.regId1 }','${list.regId2 }','${list.regId3 }','${list.regDt1 }','${list.regDt2 }','${list.regDt3 }' ,'${list.fileSeq1 }','${list.fileSeq2 }','${list.fileSeq3 }' )" >보기</button></td>
+					<button onclick="showDocument(${list.intakeCd },'${list.counselNm }',${list.centerSeq },'${list.clientCd }','${list.apprStatus1}','${list.apprStatus2 }','${list.apprStatus3 }','${list.regId1 }','${list.regId2 }','${list.regId3 }','${list.regDt1 }','${list.regDt2 }','${list.regDt3 }' ,'${list.fileSeq1 }','${list.fileSeq2 }','${list.fileSeq3 }' )" >보기</button></td>
 
-<%-- 					<td>
-						<c:if test="${list.extensionStatus eq '100930'}">
-							상담연장 신청상태
-						</c:if>
-		    			<c:if test="${list.extensionStatus eq '100931'}">
-							상담연장 승인
-						</c:if>
-						<c:if test="${list.extensionStatus eq '100932'}">
-							상담연장 완료
-						</c:if>
-					
-					</td> --%>
-						<%--<td>${list.regDt}</td>
-						<td>${list.clientNm}</td>
-						<td>${list.staffNm}</td>
-						<td>${list.counselNm}</td>
-			 			<c:choose>
-							<c:when test="${list.riskDegree ne null}">
-								<td>${list.riskDegree}단계</td>
-							</c:when>
-							<c:otherwise>
-								<td></td>
-							</c:otherwise>
-						</c:choose> 
-						<td>${list.centerNm}</td>
-						<td>${list.counselorNm}</td>
- 						<td>${list.recordCd}</td>
-						<td>${list.pointSeq}</td> 
-						<td>${sesUser.userNm}</td>
-						 <td>${list.extensionStatus}</td> --%>
 					</tr>
 				</c:forEach>
 				</tbody>

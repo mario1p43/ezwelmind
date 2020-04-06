@@ -11,32 +11,23 @@
 			  FROM
 				(
 		</if>
-		
-				SELECT	(SELECT CLIENT_NM FROM MIND_CLIENT WHERE CLIENT_CD = A.CLIENT_CD)	as	clientNm
-					,C.COUNSEL_NM 	as	counselNm
-					,CT.OWNER_NM as ownerNm					
-					,AES_DECRYPT(UNHEX(C.MOBILE),'1234')	as	mobile
-					,C.COUNSEL_DIV	as	counselDiv
-					,C.COUNSEL_TYPE	as	counselType
-					,C.CHANNEL_TYPE as channelType
-					,DATE_FORMAT(CONVERT(C.REG_DT, DATE), '%Y-%m-%d')	as	ymd
-					,D.USER_NM	as	counselorNm
-					,A.COUNSEL_CD	as	counselCd	
+				SELECT 		 		
+					(SELECT CLIENT_NM FROM MIND_CLIENT WHERE CLIENT_CD = A.CLIENT_CD)	as	clientNm
+					, (SELECT CENTER_NM FROM MIND_CENTER WHERE CENTER_SEQ = A.CENTER_SEQ) as centerNm
 					,A.COUNSELOR_ID	as	counselorId
 					,A.INTAKE_CD as intakeCd
 					,A.USER_KEY as userKey
 					,A.CENTER_SEQ as centerSeq
 					,A.CLIENT_CD as clientCd
-					, (SELECT CENTER_NM FROM MIND_CENTER WHERE CENTER_SEQ = A.CENTER_SEQ) as centerNm
-					, IF((SELECT ORDER_STATUS FROM MIND_ORDER WHERE COUNSEL_CD = A.COUNSEL_CD) = '100960', 'Y', 'N') as needPay
-					,A.RECORD_STATUS as recordStatus
-					,A.EXTENSION_STATUS   as extensionStatus
-					,E.USER_NM as counselMgrNm
-					,C.COUNSEL_RESERV_CHK
-					,'date' AS orderByNm
-					,'DESC' AS orderByType
+                    ,C.COUNSEL_NM 	as	counselNm			
+					,C.COUNSEL_DIV	as	counselDiv
+					,C.COUNSEL_TYPE	as	counselType
+					,C.CHANNEL_TYPE as channelType 
+                    ,C.COUNSEL_RESERV_CHK
+                    ,DATE_FORMAT(CONVERT(C.REG_DT, DATE), '%Y-%m-%d')	as	ymd
+					,D.USER_NM	as	counselorNm
 					,D.TEAM_CD AS teamCd
-					,F.COUNSEL_FILE_SEQ AS fileSeq1
+					,F.COUNSEL_FILE_SEQ AS fileSeq1 
                     ,F.File_NM AS filename1
                     ,F.FILE_PATH AS filefath1
                     ,F.APPR_STATUS AS apprStatus1
@@ -54,30 +45,27 @@
                     ,H.APPR_STATUS AS apprStatus3
                     ,H.REG_ID AS regId3
                     ,DATE_FORMAT(CONVERT(H.REG_DT, DATE), '%Y-%m-%d') AS regDt3
-                    ,(select risks from MIND_COUNSEL_RECORD where COUNSEL_CD = A.COUNSEL_CD and risks is not null ) as risk
-				FROM	MIND_COUNSEL A 
-				JOIN  MIND_COUNSEL_INTAKE C
-				ON		C.INTAKE_CD = A.INTAKE_CD
-				JOIN MIND_MGR D
-				ON		A.COUNSELOR_ID = D.USER_ID
-				JOIN MIND_CENTER CT
-				ON		A.CENTER_SEQ = CT.CENTER_SEQ
-				JOIN 
-				(SELECT COUNSEL_FILE_SEQ,File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD,INTAKE_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='1' AND DOC_STS ='2' ) F
-				                ON A.COUNSEL_CD = F.COUNSEL_CD
-				                AND A.INTAKE_CD = F.INTAKE_CD
-				LEFT JOIN 
-				(SELECT COUNSEL_FILE_SEQ,File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD,INTAKE_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='2' ) G
-				                ON A.COUNSEL_CD = G.COUNSEL_CD
-				                AND A.INTAKE_CD = G.INTAKE_CD
-				LEFT JOIN 
-				(SELECT COUNSEL_FILE_SEQ,File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD,INTAKE_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='3' AND DOC_STS ='2' ) H
-				                ON A.COUNSEL_CD = H.COUNSEL_CD
-				                AND A.INTAKE_CD = H.INTAKE_CD
-				LEFT JOIN (SELECT AA.USER_NM, BB.CLIENT_CD FROM MIND_MGR AA LEFT JOIN MIND_CLIENT BB ON AA.USER_ID = BB.COUNSEL_MGR_ID ) as E 
-                ON A.CLIENT_CD = E.CLIENT_CD
-				AND A.COUNSEL_CD != '91756'
-				ORDER BY regDt1 DESC
+                    ,CT.OWNER_NM as ownerNm
+                    ,(select risks from MIND_COUNSEL_RECORD
+					WHERE COUNSEL_CD =(select COUNSEL_CD
+                    FROM MIND_COUNSEL TT where COUNSEL_CD != '91756' AND  INTAKE_CD =A.INTAKE_CD AND REG_DT <![CDATA[<=]]> date(now())  order by COUNSEL_CD DESC limit 1)) AS risks
+                    FROM  MIND_COUNSEL_INTAKE C
+                    JOIN 
+					(SELECT COUNSEL_FILE_SEQ,File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD,INTAKE_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='1' ) F
+						ON C.INTAKE_CD = F.INTAKE_CD
+					LEFT JOIN 
+					(SELECT COUNSEL_FILE_SEQ,File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD,INTAKE_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='2' ) G
+						ON C.INTAKE_CD = G.INTAKE_CD
+					LEFT JOIN 
+					(SELECT COUNSEL_FILE_SEQ,File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD,INTAKE_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='3' ) H
+						ON C.INTAKE_CD = H.INTAKE_CD
+					JOIN (select DISTINCT COUNSELOR_ID,INTAKE_CD,USER_KEY,CENTER_SEQ,CLIENT_CD from MIND_COUNSEL WHERE COUNSEL_CD != '91756') A
+						ON		C.INTAKE_CD = A.INTAKE_CD
+	                JOIN MIND_CENTER CT
+						ON		A.CENTER_SEQ = CT.CENTER_SEQ
+	                JOIN MIND_MGR D
+						ON		A.COUNSELOR_ID = D.USER_ID
+					ORDER BY regDt1 DESC
 		<choose>
 		
 				<when test="pageCommonFlag == true">
