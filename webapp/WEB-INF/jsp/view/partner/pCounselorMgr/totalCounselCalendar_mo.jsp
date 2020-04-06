@@ -555,13 +555,11 @@
 							$('.month', item).text(dateArr[1] + '월');
 							$('.day', item).text(dateArr[2] + '일');
 							$('.counsel_time', item).text(v.stTime);
-							$('.counsel_name', item).text(v.clientNm);
+							$('.counsel_name', item).text(v.counselNm);
 							item.on('click', function() {
 								$('body').css('overflow', 'hidden');
 
-								location.href = "/partner/customermanagement/mainmanage?counselCd=45810"+"&clientType=Y";
-								
-								//$.divPop_mo("viewDetail", "상세보기 (신청코드 : " + v.counselCd + " )", "/madm/layerPopup/intakeDetail?counselCd="+v.counselCd);
+								location.href = "/partner/customermanagement/mainmanage?counselCd="+v.counselCd+"&clientType=Y";
 							});
 							fragment.append(item);
 						});
