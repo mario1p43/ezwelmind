@@ -511,6 +511,9 @@ button{
 					<sec:authorize access="hasAnyRole('ROLE_ADMIN')">
 						<th width="5%" >포인트부여</th>
 					</sec:authorize>
+					<sec:authorize access="hasAnyRole('ROLE_MADM_SADMIN')">
+						<th width="5%" >포인트부여</th>
+					</sec:authorize>
 					<th width="8%" >담당자 체크</th>				
 				</tr>
 				</thead>
@@ -612,6 +615,12 @@ button{
 					<td><button class="givePointToUser" type="button" clientCd="${list.clientCd }" userKey="${list.userKey }">부여</button></td>
 
 					</sec:authorize>
+					<sec:authorize access="hasAnyRole('ROLE_MADM_SADMIN')">
+					<td><button class="givePointToUser" type="button" clientCd="${list.clientCd }" userKey="${list.userKey }">부여</button></td>
+
+					</sec:authorize>
+					
+					
 					
 					<td>
 					
