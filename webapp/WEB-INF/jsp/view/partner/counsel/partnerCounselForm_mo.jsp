@@ -206,8 +206,10 @@
 					$("#counselOrderPrice").text(data.price);
 					$("#trOrder").show();
 					$("#btnCounselConfirm").hide();
+					location.href = "/partner/pCounselorMgr/counselFixList";
 				} else {
 					alert("포인트가 부족합니다.");
+					location.href = "/partner/pCounselorMgr/counselFixList";
 				}
 			}
 		});

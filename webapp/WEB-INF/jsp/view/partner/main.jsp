@@ -531,10 +531,10 @@ if(iTMonth2<10){
 			<stop offset="1" stop-color="#7EC041"/>
 			</linearGradient>
 			</defs>
-			<text text-anchor="middle"   x="50%" y="25%" fill="#191919" font-size="14" font-family="'Leckerli One', cursive">
+			<text text-anchor="middle"   x="50%" y="25%" fill="#191919" font-size="14" >
 			    내담자
 			</text>
-			<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="'Leckerli One', cursive">
+			<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  >
 			    ${sangdamcnt.processCsCnt}
 			</text>
 			</svg>
@@ -550,10 +550,10 @@ if(iTMonth2<10){
 			<stop offset="1" stop-color="#7EC041"/>
 			</linearGradient>
 			</defs>
-			<text text-anchor="middle"   x="50%" y="25%" fill="#191919" font-size="14" font-family="'Leckerli One', cursive">
+			<text text-anchor="middle"   x="50%" y="25%" fill="#191919" font-size="14" >
 			    오늘 상담
 			</text>
-			<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="'Leckerli One', cursive">
+			<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  >
 			    ${sangdamcnt.todayCsCnt}
 			</text>
 			</svg>
@@ -570,10 +570,10 @@ if(iTMonth2<10){
 			<stop offset="1" stop-color="#7EC041"/>
 			</linearGradient>
 			</defs>
-			<text text-anchor="middle"   x="50%" y="25%" fill="#191919" font-size="14" font-family="'Leckerli One', cursive">
+			<text text-anchor="middle"   x="50%" y="25%" fill="#191919" font-size="14">
 			    연장 신청
 			</text>
-			<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="'Leckerli One', cursive">
+			<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40">
 			    ${sangdamcnt.extenCsCnt}
 			</text>
 			</svg>
@@ -589,13 +589,13 @@ if(iTMonth2<10){
 			<stop offset="1" stop-color="#7EC041"/>
 			</linearGradient>
 			</defs>
-			<text text-anchor="middle"   x="50%" y="20%" fill="#191919" font-size="14" font-family="'Leckerli One', cursive">
+			<text text-anchor="middle"   x="50%" y="20%" fill="#191919" font-size="14">
 			    미작성
 			</text>
-			<text text-anchor="middle"   x="50%" y="35%" fill="#191919" font-size="14" font-family="'Leckerli One', cursive">   
+			<text text-anchor="middle"   x="50%" y="35%" fill="#191919" font-size="14">   
 			    상담일지
 			</text>
-			<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="'Leckerli One', cursive">
+			<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40">
 			    ${sangdamcnt.unWritenCsCnt}
 			</text>
 			</svg>
@@ -619,10 +619,10 @@ if(iTMonth2<10){
 				<stop offset="1" stop-color="#7EC041"/>
 				</linearGradient>
 				</defs>
-				<text text-anchor="middle"   x="50%" y="25%" fill="#191919" font-size="14" font-family="'Leckerli One', cursive">
+				<text text-anchor="middle"   x="50%" y="25%" fill="#191919" font-size="14">
 				    진행중 상담
 				</text>
-				<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="'Leckerli One', cursive">
+				<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40">
 				    ${sangdamcnt.processCsCnt}
 				</text>
 				</svg>
@@ -638,13 +638,13 @@ if(iTMonth2<10){
 				<stop offset="1" stop-color="#7EC041"/>
 				</linearGradient>
 				</defs>
-				<text text-anchor="middle"   x="50%" y="20%" fill="#191919" font-size="14" font-family="'Leckerli One', cursive">
+				<text text-anchor="middle"   x="50%" y="20%" fill="#191919" font-size="14">
 				    미작성
 				</text>
-				<text text-anchor="middle"   x="50%" y="35%" fill="#191919" font-size="14" font-family="'Leckerli One', cursive">   
+				<text text-anchor="middle"   x="50%" y="35%" fill="#191919" font-size="14">   
 				    상담일지
 				</text>
-				<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40"  font-family="'Leckerli One', cursive">
+				<text text-anchor="middle"   x="50%" y="70%" fill="#191919" font-size="40">
 				    ${sangdamcnt.unWritenCsCnt}
 				</text>
 				</svg>

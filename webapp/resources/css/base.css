@@ -828,6 +828,6 @@ a.text_deco_none:hover{
 #btn01 span{color:#fff !important;}
 
 
-.main_content{padding-bottom: 50px !important;}
 .main_wrap > div{padding:0 !important;}
+.main_wrap .main_content{padding-bottom: 50px !important;}
 					
