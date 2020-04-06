@@ -393,7 +393,7 @@ if(iTMonth2<10){
 <br>
 <div class="clear_both"></div>
 <div class="h20"></div>
-<c:if test="${sesUser.authCd eq 'ROLE_PARTNER_CENTER' || sesUser.authCd eq 'ROLE_ADMIN' }">
+<c:if test="${sesUser.authCd eq 'ROLE_PARTNER_CENTER' || sesUser.authCd eq 'ROLE_ADMIN'  || sesUser.authCd eq 'ROLE_PARTNER_ADMIN' }">
 	<div class="wd100 ">
 		<div class="float_left padding10">
 			<a href="/partner/pCounselorMgr/counselFixList?startDt=<%=iTYear  %>%2F<%=iTMonth  %>%2F<%=iTDay  %>&endDt=<%=iTYear  %>%2F<%=iTMonth %>%2F<%=iTDay  %>">
