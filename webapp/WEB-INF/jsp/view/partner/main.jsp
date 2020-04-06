@@ -391,7 +391,6 @@ if(iTMonth2<10){
     <!-- .tab_container -->
 </div>
 <br>
-${sesUser.authCd}
 <div class="clear_both"></div>
 <div class="h20"></div>
 <c:if test="${sesUser.authCd eq 'ROLE_PARTNER_CENTER' || sesUser.authCd eq 'ROLE_ADMIN' }">
