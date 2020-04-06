@@ -559,7 +559,7 @@
 							item.on('click', function() {
 								$('body').css('overflow', 'hidden');
 
-								location.href = "/partner/customermanagement/mainmanage?counselCd="+v.counselCd+"&clientType=Y";
+								location.href = "/partner/customermanagement/mainmanage?counselCd="+v.counselCd;
 							});
 							fragment.append(item);
 						});

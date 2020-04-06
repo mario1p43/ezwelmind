@@ -240,6 +240,8 @@ j$(document).ready(function(){
 
 	j$(".viewDetail").click(function(){
 		var counselCd = $(this).attr("val");
+		
+		/*이 부분 수정 **/
 		j$.divPop_mo("viewDetail", "상세보기 (신청코드 : " + counselCd + " )", "/madm/layerPopup/intakeDetail?counselCd="+counselCd);
 		return false;
 	});
@@ -604,7 +606,8 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 					<tr>
 						<th>내담자명</th>
 						<td class="viewDetail" val="${list.counselCd }">
-							<a href="javascript:void(0);">
+						
+							<a href="/partner/customermanagement/mainmanage?counselCd="+${list.counselCd }>
 								<span style="color:#ffffff">${list.counselNm }</span>
 							</a>
 							<input type="hidden" class="userKey" value="${list.userKey}"/>

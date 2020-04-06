@@ -228,7 +228,7 @@ j$(document).ready(function(){
 
 <body>
 <div class="counsel_wrapper">
-	<div class="box_title">내담자 상세정보</div>
+<div class="box_title">내담자 상세정보</div>
 	<div class="content_wrapper">
 		<div class="flex">
 			<div class="info_label">상담 받을 분</div>
@@ -279,18 +279,8 @@ j$(document).ready(function(){
 				${customerServiceInfo.email}
 			</div>
 		</div>
-		<div class="flex">
-			<div class="info_label">상담분야</div>
-			<div class="info_content">
-				${customerServiceInfo.counselDivNm}
-			</div>
-		</div>
-		<div class="flex">
-			<div class="info_label">상담방법</div>
-			<div class="info_content">
-				${customerServiceInfo.counselType}
-			</div>
-		</div>
+
+
 		<div class="flex">
 			<div class="info_label">상담 세부주제</div>
 			<div class="info_content">
@@ -344,12 +334,7 @@ j$(document).ready(function(){
 				${defaultInfo.counselCd}
 			</div>
 		</div>
-		<div class="flex">
-			<div class="info_label">상담사명</div>
-			<div class="info_content">
-				${defaultInfo.counselorNm}
-			</div>
-		</div>
+		
 		<div class="flex">
 			<div class="info_label">고객명</div>
 			<div class="info_content">
@@ -374,12 +359,7 @@ j$(document).ready(function(){
 				${customerServiceInfo.mobile}
 			</div>
 		</div>
-		<div class="flex">
-			<div class="info_label">사례위험도</div>
-			<div class="info_content">
-				${defaultInfo.risks}
-			</div>
-		</div>
+
 		<div class="flex">
 			<div class="info_label">회기정보</div>
 			<div class="info_content">
