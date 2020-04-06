@@ -242,7 +242,11 @@ j$(document).ready(function(){
 		var counselCd = $(this).attr("val");
 		
 		/*이 부분 수정 **/
-		j$.divPop_mo("viewDetail", "상세보기 (신청코드 : " + counselCd + " )", "/madm/layerPopup/intakeDetail?counselCd="+counselCd);
+		//j$.divPop_mo("viewDetail", "상세보기 (신청코드 : " + counselCd + " )", "/madm/layerPopup/intakeDetail?counselCd="+counselCd);
+		location.href = "/partner/customermanagement/mainmanage?counselCd=" + counselCd;
+		
+		
+		
 		return false;
 	});
 	
