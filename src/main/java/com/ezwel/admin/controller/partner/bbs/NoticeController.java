@@ -115,7 +115,9 @@ public class NoticeController extends commonController{
 		bbsAddDto.setUserId(manager.getUserId());
 		
 		bbsAddDto.setBbsCd("notice");
+		if(isDevice(request) == IS_PC) {
 		bbsAddDto.setReqCd1("101231");
+		}
 		model.addAttribute(bbsService.getBbsPartnerList(bbsAddDto));
 		model.addAttribute("alertMsg", bbsAddDto.getAlertMsg());
 		if(isDevice(request) == IS_PC) {
@@ -138,8 +140,9 @@ public class NoticeController extends commonController{
 		bbsAddDto.setUserId(manager.getUserId());
 		
 		bbsAddDto.setBbsCd("notice");
+		if(isDevice(request) == IS_PC) {
 		bbsAddDto.setReqCd1("101232");
-		
+		}
 		model.addAttribute(bbsService.getBbsPartnerList(bbsAddDto));
 		model.addAttribute("alertMsg", bbsAddDto.getAlertMsg());
 		if(isDevice(request) == IS_PC) {

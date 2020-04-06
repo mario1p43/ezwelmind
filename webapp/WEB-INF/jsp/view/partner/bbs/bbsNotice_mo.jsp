@@ -58,13 +58,28 @@ j$(document).ready(function(){
 <form:form name="searchNotice" id="searchNotice" modelAttribute="bbsAddDto" action="/partner/bbsNotice/list" method="GET">
 	<div class="notice-wrapper">
 		<div class="data-list-wrapper">
-			<table>
+			<table style="table-layout: fixed;">
+			<colgroup>
+				<col width="40"/>
+				<col width=""/>
+				<col width=""/>
+				<col width=""/>
+			</colgroup>
+			<thead>
+				<tr>
+				<th>No.</th>
+				<th>type</th>
+				<th>제목</th>
+				<th>작성일</th>
+				</tr>
+			</thead>
 			<c:forEach var="list" items="${paging.list}" varStatus="status">
 				<tr>
 					<td>${(paging.totalCount - ((paging.currentPage-1) * paging.pageSize)) - status.index}</td>
 					<td width="25%" class="notice-title">
 						<c:if test='${ list.reqCd1 eq "101231" }'>공지사항</c:if>
-						<c:if test='${ list.reqCd1 eq "101232" }'>모집공고</c:if>							
+						<c:if test='${ list.reqCd1 eq "101232" }'>모집공고</c:if>
+						<c:if test='${ list.reqCd1 eq "101230" }'>서류 및 양식</c:if>							
 					</td>
 					<td><a href="#" class="noticeDetail" value="${list.dataSeq}">${list.subject}</a></td>
 					<td width="20%">${fn:replace(fn:substring(list.regDt, 2, 10), '-', '.')}</td>

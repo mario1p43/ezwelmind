@@ -59,7 +59,21 @@ j$(document).ready(function(){
 <form:form name="searchNotice" id="searchNotice" modelAttribute="bbsAddDto" action="/partner/bbsNotice/list2" method="GET">
 	<div class="notice-wrapper">
 		<div class="data-list-wrapper">
-			<table>
+			<table style="table-layout: fixed;">
+			<colgroup>
+				<col width="40"/>
+				<col width=""/>
+				<col width=""/>
+				<col width=""/>
+			</colgroup>
+			<thead>
+				<tr>
+				<th>No.</th>
+				<th>type</th>
+				<th>제목</th>
+				<th>작성일</th>
+				</tr>
+			</thead>
 			<c:forEach var="list" items="${paging.list}" varStatus="status">
 				<tr>
 					<td>${(paging.totalCount - ((paging.currentPage-1) * paging.pageSize)) - status.index}</td>

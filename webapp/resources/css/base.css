@@ -830,4 +830,7 @@ a.text_deco_none:hover{
 
 .main_wrap > div{padding:0 !important;}
 .main_wrap .main_content{padding-bottom: 50px !important;}
-					
+.notice-wrapper .data-list-wrapper th,
+.notice-wrapper .data-list-wrapper td{border: 1px solid #ccc}
+.notice-wrapper .data-list-wrapper th{background:#d2d2d2}
+.notice-wrapper .data-list-wrapper table{table-layout: fixed;}

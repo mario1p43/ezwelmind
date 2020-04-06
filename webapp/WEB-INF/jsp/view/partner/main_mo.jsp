@@ -255,11 +255,11 @@ if(iTMonth2<10){
 			</div>
 			<div class="consulting_container">
 				<div class="m_main_box flex center extension">
-					<a class="flex center" href="/partner/pCounselorMgr/counselFixList">	
+					
 						<p>
 							${sangdamcnt.extenCsCnt}
 						</p>
-					</a>
+					
 				</div>
 				<div class="flex center">
 					<p class="consulting_count">연장신청</p>
@@ -267,11 +267,11 @@ if(iTMonth2<10){
 			</div>
 			<div class="consulting_container">
 				<div class="m_main_box flex center approval">
-					<a class="flex center" href="/partner/mgr/counselorInfoMgrList?searchMgrStatus=S">	
+						
 						<p>
 							${sangdamcnt.unWritenCsCnt}
 						</p>
-					</a>
+					
 				</div>
 				<div class="flex center">
 					<p class="consulting_count">승인대기</p>
@@ -285,11 +285,11 @@ if(iTMonth2<10){
 		<div class="flex box_row">
 			<div class="consulting_container">
 				<div class="m_main_box flex center today_consulting">
-					<a class="flex center" href="/partner/pCounselorMgr/counselFixList">	
+					
 						<p>
 							${sangdamcnt.processCsCnt}
 						</p>
-					</a>
+					
 				</div>
 				<div class="flex center">
 					<p class="consulting_count">내담자</p>
@@ -297,11 +297,10 @@ if(iTMonth2<10){
 			</div>
 			<div class="consulting_container">
 				<div class="m_main_box flex center consulting">
-					<a class="flex center" href="/partner/pCounselorMgr/counselFixList?startDt=<%=iTYear  %>%2F<%=iTMonth  %>%2F<%=iTDay  %>&endDt=<%=iTYear  %>%2F<%=iTMonth  %>%2F<%=iTDay  %>">	
-						<p>
+					<p>
 							${sangdamcnt.todayCsCnt}
 						</p>
-					</a>
+					
 				</div>
 				<div class="flex center">
 					<p class="consulting_count">오늘 상담</p>
@@ -309,11 +308,11 @@ if(iTMonth2<10){
 			</div>
 			<div class="consulting_container">
 				<div class="m_main_box counselor_count">
-					<a class="flex center" href="/partner/pCounselorMgr/counselFixList">	
+					
 						<p>
 							${sangdamcnt.extenCsCnt}
 						</p>
-					</a>
+					
 				</div>
 				<div class="flex center">
 					<p class="consulting_count">연장 신청</p>
@@ -324,11 +323,11 @@ if(iTMonth2<10){
 		<div class="flex box_row">
 			<div class="consulting_container">
 				<div class="m_main_box flex center unwritten">
-					<a class="flex center" href="/partner/pCounselorMgr/pCounselorDateList">	
+					
 						<p>
 							${sangdamcnt.unWritenCsCnt}
 						</p>
-					</a>
+					
 				</div>
 				<div class="flex center">
 					<p class="consulting_count">상담일지</p>
@@ -344,11 +343,11 @@ if(iTMonth2<10){
 <div class="flex box_row">
 			<div class="consulting_container">
 				<div class="m_main_box flex center unwritten">
-					<a class="flex center" href="/partner/pCounselorMgr/counselFixList">	
+					
 						<p>
 							 ${sangdamcnt.processCsCnt}
 						</p>
-					</a>
+					
 				</div>
 				<div class="flex center">
 					<p class="consulting_count">진행중 상담</p>
@@ -356,11 +355,11 @@ if(iTMonth2<10){
 			</div>
 			<div class="consulting_container">
 				<div class="m_main_box flex center unwritten">
-					<a class="flex center" href="/partner/pCounselorMgr/pCounselorDateList">	
+					
 						<p>
 							${sangdamcnt.unWritenCsCnt}
 						</p>
-					</a>
+					
 				</div>
 				<div class="flex center">
 					<p class="consulting_count">미작성 상담일지</p>
