@@ -1,5 +1,7 @@
 package com.ezwel.admin.controller.madm.userext;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
@@ -43,6 +45,15 @@ public class UserExtStatusController {
 		svcDefaultInformationVo.setTeamCd(customerManagementService.getTeamCd(manger.getUserId()));
 		model.addAttribute("userTeam",svcDefaultInformationVo);
 		model.addAttribute(userExtStatusService.getUserExtStatusList(userExtStatusDto));
+		boolean isAdmin = false;
+		List<String> list = UserDetailsHelper.getAuthorities();
+		if(list.contains("ROLE_MADM_SADMIN")) isAdmin = true;
+		String userId=UserDetailsHelper.getAuthenticatedUser().getUserId();
+		if(!isAdmin) {
+			if(userId.equals("test_admin") || userId.equals("grace88") || userId.equals("lina") || userId.equals("mj.kang")) isAdmin = true;
+		}
+		model.addAttribute("isAdmin", isAdmin);
+		
 		
 		return "madm/userext/userextstatus";
 	}

@@ -506,12 +506,9 @@ button{
 					<th width="5%" >상담소견서<br>승인상태</th>
 					<th width="8%" >상담확인증</th>
 					<th width="5%" >상담확인증<br>승인상태</th>
-					<sec:authorize access="hasAnyRole('ROLE_ADMIN')">
+					<c:if test="${isAdmin}">
 						<th width="5%" >포인트부여</th>
-					</sec:authorize>
-					<sec:authorize access="hasAnyRole('ROLE_MADM_SADMIN')">
-						<th width="5%" >포인트부여</th>
-					</sec:authorize>
+					</c:if>
 					<th width="8%" >담당자 체크</th>				
 				</tr>
 				</thead>
@@ -609,14 +606,10 @@ button{
 					</c:if>
 					
 					</td> 
-					<sec:authorize access="hasAnyRole('ROLE_ADMIN')">
+					<c:if test="${isAdmin}">
 					<td><button class="givePointToUser" type="button" clientCd="${list.clientCd }" userKey="${list.userKey }">부여</button></td>
 
-					</sec:authorize>
-					<sec:authorize access="hasAnyRole('ROLE_MADM_SADMIN')">
-					<td><button class="givePointToUser" type="button" clientCd="${list.clientCd }" userKey="${list.userKey }">부여</button></td>
-
-					</sec:authorize>
+					</c:if>
 					
 					
 					
