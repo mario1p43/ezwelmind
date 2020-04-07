@@ -407,7 +407,7 @@ j$(document).ready(function(){
 				<input type="hidden" name="docSts" class="docSts" value="1">
 				<input type="hidden" name="docType" class="docType" value="1">
 				<div class="file_chooser_wrapper">
-					<button class="chooose_file_button">파일 선택</button>
+					<button class="chooose_file_button">파일 업로드</button>
 					<a href="javascript:fileDownLoad('${customerServiceInfo.filefath2}','${customerServiceInfo.filename101}')">${customerServiceInfo.filename101}</a>
 					<input type="file" name="consultAgreement" />
 				</div>
@@ -427,7 +427,7 @@ j$(document).ready(function(){
 				<input type="hidden" name="docSts" class="docSts" value="2">
 				<input type="hidden" name="docType" class="docType" value="1">
 				<div class="file_chooser_wrapper">
-					<button class="chooose_file_button">파일 선택</button>
+					<button class="chooose_file_button">파일 업로드</button>
 					<a href="javascript:fileDownLoad('${customerServiceInfo.filefath102}','${customerServiceInfo.filename102}')">${customerServiceInfo.filename102}</a>
 					<input type="file" name="privateAgreement" />
 				</div>
@@ -447,7 +447,7 @@ j$(document).ready(function(){
 				<input type="hidden" name="docSts" class="docSts" value="3">
 				<input type="hidden" name="docType" class="docType" value="1">
 				<div class="file_chooser_wrapper">
-					<button class="chooose_file_button">파일 선택</button>
+					<button class="chooose_file_button">파일 업로드</button>
 					<a href="javascript:fileDownLoad('${customerServiceInfo.filefath103}','${customerServiceInfo.filename103}')">${customerServiceInfo.filename103}</a>
 					<input type="file" name="lifeAgreement" />
 				</div>
@@ -467,7 +467,7 @@ j$(document).ready(function(){
 				<input type="hidden" name="docSts" class="docSts" value="4">
 				<input type="hidden" name="docType" class="docType" value="1">
 				<div class="file_chooser_wrapper">
-					<button class="chooose_file_button">파일 선택</button>
+					<button class="chooose_file_button">파일 업로드</button>
 					<a href="javascript:fileDownLoad('${customerServiceInfo.filefath104}','${customerServiceInfo.filename104}')">${customerServiceInfo.filename104}</a>
 					<input type="file" name="mentalAgreement" />
 				</div>
@@ -487,7 +487,7 @@ j$(document).ready(function(){
 				<input type="hidden" name="docSts" class="docSts" value="5">
 				<input type="hidden" name="docType" class="docType" value="1">
 				<div class="file_chooser_wrapper">
-					<button class="chooose_file_button">파일 선택</button>
+					<button class="chooose_file_button">파일 업로드</button>
 					<a href="javascript:fileDownLoad('${customerServiceInfo.filefath105}','${customerServiceInfo.filename105}')">${customerServiceInfo.filename105}</a>
 					<input type="file" name="ReflectionAgreement" />
 				</div>
@@ -516,7 +516,7 @@ j$(document).ready(function(){
 				<input type="hidden" name="docSts" class="docSts" value="1">
 				<input type="hidden" name="docType" class="docType" value="2">
 				<div class="file_chooser_wrapper">
-					<button class="chooose_file_button">파일 선택</button>
+					<button class="chooose_file_button">파일 업로드</button>
 					<a href="javascript:fileDownLoad('${customerServiceInfo.filefath1}','${customerServiceInfo.filename1}')">${customerServiceInfo.filename1}</a>
 					<input type="file" name="ExtendApply" />
 				</div>
@@ -559,7 +559,7 @@ j$(document).ready(function(){
 				<input type="hidden" name="docSts" class="docSts" value="2">
 				<input type="hidden" name="docType" class="docType" value="2">
 				<div class="file_chooser_wrapper">
-					<button class="chooose_file_button">파일 선택</button>
+					<button class="chooose_file_button">파일 업로드</button>
 					<a href="javascript:fileDownLoad('${customerServiceInfo.filefath2}','${customerServiceInfo.filename2}')">${customerServiceInfo.filename2}</a>
 					<input type="file" name="ConsultOpinion" />
 				</div>
@@ -602,7 +602,7 @@ j$(document).ready(function(){
 				<input type="hidden" name="docSts" class="docSts" value="3">
 				<input type="hidden" name="docType" class="docType" value="2">
 				<div class="file_chooser_wrapper">
-					<button class="chooose_file_button">파일 선택</button>
+					<button class="chooose_file_button">파일 업로드</button>
 					<a href='javascript:fileDownLoad("${customerServiceInfo.filefath3}","${customerServiceInfo.filename3}")'>${customerServiceInfo.filename3}</a>
 					<input type="file" name="ConsultConfirm" />
 				</div>
