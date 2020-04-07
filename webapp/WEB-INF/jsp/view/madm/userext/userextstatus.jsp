@@ -213,8 +213,8 @@ function showDocument(intakeCd,counselNm,centerSeq,clientCd,apprStatus1,apprStat
 						<input type="hidden" name="intakeCd" class="intakeCd" value="">
 						<input type="hidden" name="counselNm" class="counselNm" value="">
 						<input type="hidden" name="clientCd" class="clientCd" value="">
-						<input type="hidden" name="docSts" class="docSts" value="2">
-						<input type="hidden" name="docType" class="docType" value="1">
+						<input type="hidden" name="docSts" class="docSts" value="1">
+						<input type="hidden" name="docType" class="docType" value="2">
 						<input class="fileSeq1" type="hidden" name="fileSeq" class="fileSeq" value="">
 					</form>
 				</td>
@@ -254,8 +254,8 @@ function showDocument(intakeCd,counselNm,centerSeq,clientCd,apprStatus1,apprStat
 						<input type="hidden" name="counselNm" class="counselNm" value="">
 						<input type="hidden" name="centerSeq" class="centerSeq" value="">
 						<input type="hidden" name="clientCd" class="clientCd" value="">
-						<input type="hidden" name="docSts" class="docSts" value="2">
-						<input type="hidden" name="docType" class="docType" value="1">
+						<input type="hidden" name="docSts" class="docSts" value="1">
+						<input type="hidden" name="docType" class="docType" value="2">
 						<input class="fileSeq1" type="hidden" name="fileSeq" class="fileSeq" value="">
 						<div class="popupBtn" id="okBtn1">변경</div>
 					</form>
@@ -368,8 +368,8 @@ function showDocument(intakeCd,counselNm,centerSeq,clientCd,apprStatus1,apprStat
 						<input type="hidden" name="intakeCd" class="intakeCd" value="">
 						<input type="hidden" name="counselNm" class="counselNm" value="">
 						<input type="hidden" name="clientCd" class="clientCd" value="">
-						<input type="hidden" name="docSts" class="docSts" value="2">
-						<input type="hidden" name="docType" class="docType" value="3">
+						<input type="hidden" name="docSts" class="docSts" value="3">
+						<input type="hidden" name="docType" class="docType" value="2">
 						<input class="fileSeq3" type="hidden" name="fileSeq" class="fileSeq" value="">
 					</form>
 				</td>
@@ -409,8 +409,8 @@ function showDocument(intakeCd,counselNm,centerSeq,clientCd,apprStatus1,apprStat
 						<input type="hidden" name="counselNm" class="counselNm" value="">
 						<input type="hidden" name="centerSeq" class="centerSeq" value="">
 						<input type="hidden" name="clientCd" class="clientCd" value="">
-						<input type="hidden" name="docSts" class="docSts" value="2">
-						<input type="hidden" name="docType" class="docType" value="3">
+						<input type="hidden" name="docSts" class="docSts" value="3">
+						<input type="hidden" name="docType" class="docType" value="2">
 						<input class="fileSeq3" type="hidden" name="fileSeq" class="fileSeq" value="">
 						<div class="popupBtn" id="okBtn3">변경</div>
 					</form>
