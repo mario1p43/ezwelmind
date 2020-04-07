@@ -580,7 +580,7 @@
 
 <div class="web">
 	<div class="counselor_wrapper">
-		<c:if test="${not empty counselorList }">
+		
 			<div class="custom-select-wrapper">
 				<div class="custom-select">
 					<div class="custom-select__trigger"><span>전체</span>
@@ -588,17 +588,19 @@
 					</div>
 					<div class="custom-options">
 						<span class="custom-option selected" data-value="">전체</span>
-						<c:forEach var="list" items="${counselorList }">
-							<span data-value="${list.userId }" class='custom-option <c:if test="${param.userId eq list.userId }"> selected </c:if>' >
-								${list.userNm }
-								<span class="item_border"></span>
-							</span>
-							
-						</c:forEach>
+						<c:if test="${not empty counselorList }">
+							<c:forEach var="list" items="${counselorList }">
+								<span data-value="${list.userId }" class='custom-option <c:if test="${param.userId eq list.userId }"> selected </c:if>' >
+									${list.userNm }
+									<span class="item_border"></span>
+								</span>
+								
+							</c:forEach>
+						</c:if>
 					</div>
 				</div>
 			</div>
-		</c:if>
+		
 	</div>
 	<div class="calendar_wrapper">
 		<div class='calendar'></div>
