@@ -63,6 +63,15 @@
 	
 	.counsel-wrapper #sangdamcontents{display:flow-root;width:100%;border-top:1px solid #BDBDBD}
 	
+	.submit_doc_button {
+	    height: 11.1111vw;
+	    width: 100%;
+	    background-color: #006CBA;
+	    color: white;
+	    font-size: 4.4444vw;
+	    font-weight: bold;
+	    margin-top: 5.5556vw;
+	}
 	/* file wrapper */
 	.file_wrapper {
 		font-size: 3.6111vw;
@@ -1363,7 +1372,7 @@ j$(function(){
 					<div class="data-block text">
 						<div class="file_wrapper">
 							<div class="file_chooser_wrapper">
-								<button class="chooose_file_button">파일 선택</button>
+								<button class="chooose_file_button">파일 업로드</button>
 								<input type="file" name="file" id="file" />
 								<a href="#" onclick="fileDownLoad('${record_detail.filePath}', '${record_detail.fileNm}')">${record_detail.fileNm}</a>
 							</div>
@@ -1373,6 +1382,7 @@ j$(function(){
 			</div>
 		</div>
 	</div>
+	
 <%-- <table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
 
 	<!-- 	일지 등록 -->
@@ -1572,6 +1582,13 @@ j$(function(){
 	</tr>
 	<!-- 버튼 영역 시작 -->
 </table> --%>
+
+
+
+<div>
+	<button type="submit" class="submit_doc_button" id="mokrokBtn">등록</button>
+</div>
+
 </form>
 </body>
 </html>

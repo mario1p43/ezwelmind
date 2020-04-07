@@ -126,7 +126,6 @@
 										alert("상담사 일정이 등록되었습니다.");
 										$("#scheduleSeq").val(data.scheduleSeq);
 										doPointCheck();
-										location.href = "/partner/pCounselorMgr/counselFixList";
 									} else {
 										alert("실패하였습니다. 관리자에게 문의주세요.");
 									}
