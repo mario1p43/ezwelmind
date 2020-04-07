@@ -7,7 +7,8 @@
 
 <style>
 	table{border-spacing:0!important}
-	table td{background:none!important}
+	table td{background:none!important;font-size: 11px !important;;}
+	table th{font-size: 14px;}
 	.notice-wrapper{padding:0 5vw}
 	.notice-wrapper .data-list-wrapper{display:flow-root;margin-top:5vw}
 	.notice-wrapper .data-list-wrapper table{width:100%;border:0;border-collapse:collapse}
@@ -20,6 +21,8 @@
 	.notice-wrapper .content-wrapper .search-keyword-wrapper .btn-search{float:right}
 	.notice-wrapper .content-wrapper .search-keyword-wrapper .btn-search img{vertical-align:middle}
 	
+	.text-center{text-align: center !important;}
+	.font14{font-size: 14px !important;}
 </style>
 
 <script type="text/javascript">
@@ -57,36 +60,6 @@ j$(document).ready(function(){
 <body>
 <form:form name="searchNotice" id="searchNotice" modelAttribute="bbsAddDto" action="/partner/bbsNotice/list" method="GET">
 	<div class="notice-wrapper">
-		<div class="data-list-wrapper">
-			<table style="table-layout: fixed;">
-			<colgroup>
-				<col width="40"/>
-				<col width=""/>
-				<col width=""/>
-				<col width=""/>
-			</colgroup>
-			<thead>
-				<tr>
-				<th>No.</th>
-				<th>type</th>
-				<th>제목</th>
-				<th>작성일</th>
-				</tr>
-			</thead>
-			<c:forEach var="list" items="${paging.list}" varStatus="status">
-				<tr>
-					<td>${(paging.totalCount - ((paging.currentPage-1) * paging.pageSize)) - status.index}</td>
-					<td width="25%" class="notice-title">
-						<c:if test='${ list.reqCd1 eq "101231" }'>공지사항</c:if>
-						<c:if test='${ list.reqCd1 eq "101232" }'>모집공고</c:if>
-						<c:if test='${ list.reqCd1 eq "101230" }'>서류 및 양식</c:if>							
-					</td>
-					<td><a href="#" class="noticeDetail" value="${list.dataSeq}">${list.subject}</a></td>
-					<td width="20%">${fn:replace(fn:substring(list.regDt, 2, 10), '-', '.')}</td>
-				</tr>
-			</c:forEach>
-			</table>
-		</div>
 		<div class="content-wrapper">
 			<div class="search-type-wrapper">
 				<select id="searchCo" name="searchCo" class="search-type" data-validation="required" data-validation-error-msg-required="검색조건을 선택 해주세요.">
@@ -101,6 +74,38 @@ j$(document).ready(function(){
 				<span class="btn-search"><img id="searchBtn" src="${url:resource('/resources/img/ic_search.png')}"></span>
 			</div>
 		</div>
+		
+		<div class="data-list-wrapper">
+			<table style="table-layout: fixed;">
+			<colgroup>
+				<col width="40"/>
+				<col width=""/>
+				<col width=""/>
+				<col width=""/>
+			</colgroup>
+			<thead>
+				<tr>
+				<th class="text-center">No.</th>
+				<th class="text-center">type</th>
+				<th class="text-center">제목</th>
+				<th class="text-center">작성일</th>
+				</tr>
+			</thead>
+			<c:forEach var="list" items="${paging.list}" varStatus="status">
+				<tr>
+					<td  class="text-center font12">${(paging.totalCount - ((paging.currentPage-1) * paging.pageSize)) - status.index}</td>
+					<td  class="text-center font12 notice-title" width="25%" >
+						<c:if test='${ list.reqCd1 eq "101231" }'>공지사항</c:if>
+						<c:if test='${ list.reqCd1 eq "101232" }'>모집공고</c:if>
+						<c:if test='${ list.reqCd1 eq "101230" }'>서류 및 양식</c:if>							
+					</td>
+					<td><a href="#" class="noticeDetail font14" value="${list.dataSeq}">${list.subject}</a></td>
+					<td width="20%" class="text-center font12 ">${fn:replace(fn:substring(list.regDt, 2, 10), '-', '.')}</td>
+				</tr>
+			</c:forEach>
+			</table>
+		</div>
+		
 		<div class="content-wrapper">
 			<table style="width:100%;border:0;border-collapse:collapse;">
 				<tr>

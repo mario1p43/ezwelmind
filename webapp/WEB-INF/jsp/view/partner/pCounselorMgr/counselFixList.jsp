@@ -812,10 +812,11 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 									<table cellpadding="2" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
 										<tr>
 											<td align="left">
-												<!-- <input type="button" onclick="doCounselChange();" value="상담사/일정 변경" style="font-size:18px;"/> -->
+												<!-- <input type="button" onclick="doCounselChange();" value="상담사/일정 변경" style="font-size:18px;"/>
 												<br/><br/>
 												<span style="font-weight: bold; color: red">[상담사/일정 변경방법]
 												<br/>* 희망하는 내담자의 "선택버튼"을 누른 후 상담사/일정 변경버튼 클릭시 변경하실수있습니다.</span>
+												 -->
 											</td>
 											<td align="right">
 												<%-- 기능 삭제 -> 리스트내 연장신청 버튼 이용

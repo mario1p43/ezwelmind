@@ -489,22 +489,22 @@ function monthBtn() {
 					<td>
 					<style>
 					</style>
-					<label class="check11">
+					<label class="check11 checkicon">
 						<input type="checkbox" name="mgrStatus" value="S"></input>
 					    <span class="ico"></span>
 					    <span class="txt">중지</span>
 					</label>
-					<label class="check12">
+					<label class="check12 checkicon">
 						<input type="checkbox" name="mgrStatus" value="Y"></input>
 						<span class="ico"></span>
 					    <span class="txt">승인</span>
 					</label>
-					<label class="check13">
+					<label class="check13 checkicon">
 						<input type="checkbox" name="mgrStatus" value="N"></input>
 						<span class="ico"></span>
 					    <span class="txt">대기</span>
 					</label>
-					<label class="check14">
+					<label class="check14 checkicon">
 						<input type="checkbox" name="mgrStatus" value="R"></input>
 						<span class="ico"></span>
 					    <span class="txt">반려</span>
@@ -512,22 +512,22 @@ function monthBtn() {
 					</td>
 				<th align="center" width="13%">상담유형</th>
 					<td width="40%">
-					<label class="check21">
+					<label class="check21 checkicon">
 						<input type="checkbox" name="channelType" value="100001"></input>
 						<span class="ico"></span>
 					    <span class="txt">심리</span>
 					</label>
-					<label class="check22">
+					<label class="check22 checkicon">
 						<input type="checkbox" name="channelType" value="100002"></input>
 						<span class="ico"></span>
 					    <span class="txt">법률</span>
 					</label>
-					<label class="check23">
+					<label class="check23 checkicon">
 						<input type="checkbox" name="channelType" value="100003"></input>
 						<span class="ico"></span>
 					    <span class="txt">재무</span>
 					</label>
-					<label class="check24">
+					<label class="check24 checkicon checkicon--4">
 						<input type="checkbox" name="channelType" value="100004"></input>
 						<span class="ico"></span>
 					    <span class="txt">심리검사</span>
@@ -537,27 +537,27 @@ function monthBtn() {
 			<tr>
 				<th align="center">접속권한</th>
 				<td align="left" width="40%">
-					<label class="check31">
+					<label class="check31 checkicon checkicon--3">
 						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_CENTER" />
 						<span class="ico"></span>
 					    <span class="txt">센터장</span>
 					</label>
-					<label class="check32">
+					<label class="check32 checkicon">
 						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_SANGDAM" />
 						<span class="ico"></span>
 					    <span class="txt">상담</span>
 					</label>
-					<label class="check33">
+					<label class="check33 checkicon">
 						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_SEND" />
 						<span class="ico"></span>
 					    <span class="txt">파견</span>
 					</label>
-					<label class="check34">
+					<label class="check34 checkicon">
 						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_GROUP" />
 						<span class="ico"></span>
 					    <span class="txt">집단</span>
 					</label>
-					<label class="check35">
+					<label class="check35 checkicon">
 						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_TEACHER" />
 						<span class="ico"></span>
 					    <span class="txt">강사</span>
@@ -565,12 +565,12 @@ function monthBtn() {
 				</td>
 				<th align="center" width="10%">근무형태</th>
 					<td width="40%">
-					<label class="check41">
+					<label class="check41 checkicon">
 						<input type="checkbox" name="workType"  value="S" ></input>
 						<span class="ico"></span>
 					    <span class="txt">상주</span>
 					</label>
-					<label class="check42">
+					<label class="check42 checkicon checkicon--4">
 						<input type="checkbox" name="workType"  value="P"></input>
 						<span class="ico"></span>
 					    <span class="txt">파트타임</span>
@@ -586,26 +586,26 @@ function monthBtn() {
 					&nbsp;~&nbsp;
 					<input type="text" id="endDt" name="endDt" size="10" class="date_timepicker_end" value="${param.endDt}"/>
 					<img id="btendDt" src="${url:img('/images/icon02.jpg')}"border="0" />
-					<label class="check51" >
+					<label class="check51 checkicon" >
 						<input onclick="todayBtn();" type="button" value="오늘" />
 						<span class="ico"></span>
-					    <span class="txt">파트타임</span>
+					    <span class="txt">오늘</span>
 					</label>
 					
-					<label class="check52">
+					<label class="check52 checkicon">
 						<input onclick="weekBtn();"	type="button" value="1주" />
 						<span class="ico"></span>
-					    <span class="txt">파트타임</span>
+					    <span class="txt">1주</span>
 					</label>
-					<label class="check53">
+					<label class="check53 checkicon checkicon--2">
 						<input onclick="fifteenBtn();" type="button" value="15일"/>
 						<span class="ico"></span>
-					    <span class="txt">파트타임</span>
+					    <span class="txt">15일</span>
 					</label>
-					<label class="check54">
+					<label class="check54 checkicon checkicon--2">
 						<input onclick="monthBtn();" type="button" value="1개월" />
 						<span class="ico"></span>
-					    <span class="txt">파트타임</span>
+					    <span class="txt">1개월</span>
 					</label>
 				</td>
 			

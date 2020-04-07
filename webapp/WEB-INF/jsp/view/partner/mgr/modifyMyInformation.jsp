@@ -1665,30 +1665,41 @@
 <table width="95%">
 <tr>
 	<td>
-		<table>
+	<style>
+	.border-table{table-layout: fixed;border-collapse:collapse;width: 100%;}
+		.border-table th,
+		.border-table td{border: 1px solid #333;padding: 5px;}
+	</style>
+		<table class="border-table">
+			<colgroup>
+				<col width="" />
+				<col />
+			</colgroup>
 			<tr>
-				<th class="line" width="20%" align="left" bgcolor="#F5F5F5"  colspan="2">
+				<th class="line" width="128px" align="left" bgcolor="#F5F5F5">
 					주요 강점 및 핵심역량</th>
-				<td class="line" colspan="5">
+				<td class="line">
 					<input type="text"	name="coreVal" value="${mgr.coreVal}" style="width: 700px;" />
 				</td>
 			</tr>					
 			<tr>
-				<th class="line" align="left" bgcolor="#F5F5F5" colspan="2">상담	외 프로그램
+				<th class="line" align="left" bgcolor="#F5F5F5">상담	외 프로그램
 				
 				<br>(집단, 특강 등)
 				</th>
-				<td class="line" colspan="4">
+				<td class="line">
 					<div id="etcExamExtra">
 							<c:forEach var="list" items="${extraExamInfo}" varStatus="listCnt">
+							
+							<div style="margin-bottom: 5px;">
 								<input type="hidden" name="extraExamIdx" value="${list.extraIdx }" />
-							프로그램명 : <input type="text" name="extraExamInfo1" value="${list.extraNm }"	 />
-							대상 : <input type="text"	name="extraExamInfo2" value="${list.extraTarget }"	 />
-							센터 내 시행비용(인당) :<input type="text" name="extraExamInfo3" value="${list.extraCost }"	 />
-							<c:if test="${mgr.modiYn eq 'Y' }">
-								<input type="button" class="deleteExtra" value="삭제" onclick="delExtraRow('${list.extraIdx }','102005');">
-							</c:if>
-							<br/>
+								프로그램명 : <input type="text" name="extraExamInfo1" value="${list.extraNm }"	 />
+								대상 : <input type="text"	name="extraExamInfo2" value="${list.extraTarget }"	 />
+								센터 내 시행비용(인당) :<input type="text" name="extraExamInfo3" value="${list.extraCost }"	 />
+								<c:if test="${mgr.modiYn eq 'Y' }">
+									<input type="button" class="deleteExtra" value="삭제" onclick="delExtraRow('${list.extraIdx }','102005');">
+								</c:if>
+							</div>
 						</c:forEach> 
 					</div>
 					<div>

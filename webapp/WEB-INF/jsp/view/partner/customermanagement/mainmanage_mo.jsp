@@ -32,6 +32,8 @@
 		font-size: 3.6111vw;
 		display: flex;
 		margin-top:2.7778vw;
+		flex-wrap: wrap;
+		max-width: 100%;
 	}
 	.chooose_file_button {
 		font-size: 3.6111vw;
@@ -42,18 +44,19 @@
 		padding-left:0;
 	}
 	.submit_file_button { 
-		font-size: 3.6111vw;
-		color: #2F80ED;
-		background:white;
+		background:#2F80ED;color:#fff;
 		border: none;
-		width: 11.6667vw;
+		padding: 5px 10px;
+		border-radius: 3px;
+		flex: none;
 	}
 	.file_chooser_wrapper { 
-		display: flex;
+		
 		border-bottom: 1px solid #C4C4C4;
 		-webkit-flex-grow: 1; 
 		flex-grow: 1; 
 		flex : 1 1 0; 
+		max-width: calc(100% - 45px);
 		-webkit-flex : 1 1 0;
 		padding-bottom:0.8333vw;
 	}

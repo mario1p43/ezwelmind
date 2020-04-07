@@ -229,7 +229,7 @@ if(iTMonth2<10){
 				</div>
 			</div>
 			<div class="consulting_container">
-				<div class="m_main_box counselor_count">
+				<div class="m_main_box flex center counselor_count">
 					<a class="flex center" >	
 						<p>
 							${sangdamcnt.counselorCnt}
@@ -308,7 +308,7 @@ if(iTMonth2<10){
 				</div>
 			</div>
 			<div class="consulting_container">
-				<div class="m_main_box counselor_count">
+				<div class="m_main_box flex center counselor_count">
 					
 						<p>
 							${sangdamcnt.extenCsCnt}

@@ -58,6 +58,21 @@ j$(document).ready(function(){
 <body>
 <form:form name="searchNotice" id="searchNotice" modelAttribute="bbsAddDto" action="/partner/bbsNotice/list2" method="GET">
 	<div class="notice-wrapper">
+	<div class="content-wrapper">
+			<div class="search-type-wrapper">
+				<select id="searchCo" name="searchCo" class="search-type" data-validation="required" data-validation-error-msg-required="검색조건을 선택 해주세요.">
+					<option value="">선택</option>
+					<option value="제목">제목</option>
+					<option value="내용">내용</option>
+					<option value="전체">제목+내용</option>
+				</select>
+			</div>
+			<div class="search-keyword-wrapper">
+				<input type="text" id="searchNm" name="searchNm" class="search-keyword" data-validation="required" data-validation-error-msg-required="검색어를 입력 해주세요." placeholder="검색어를 입력 하세요."/>
+				<span class="btn-search"><img id="searchBtn" src="${url:resource('/resources/img/ic_search.png')}"></span>
+			</div>
+		</div>
+		
 		<div class="data-list-wrapper">
 			<table style="table-layout: fixed;">
 			<colgroup>
@@ -87,20 +102,7 @@ j$(document).ready(function(){
 			</c:forEach>
 			</table>
 		</div>
-		<div class="content-wrapper">
-			<div class="search-type-wrapper">
-				<select id="searchCo" name="searchCo" class="search-type" data-validation="required" data-validation-error-msg-required="검색조건을 선택 해주세요.">
-					<option value="">선택</option>
-					<option value="제목">제목</option>
-					<option value="내용">내용</option>
-					<option value="전체">제목+내용</option>
-				</select>
-			</div>
-			<div class="search-keyword-wrapper">
-				<input type="text" id="searchNm" name="searchNm" class="search-keyword" data-validation="required" data-validation-error-msg-required="검색어를 입력 해주세요." placeholder="검색어를 입력 하세요."/>
-				<span class="btn-search"><img id="searchBtn" src="${url:resource('/resources/img/ic_search.png')}"></span>
-			</div>
-		</div>
+		
 		<div class="content-wrapper">
 			<table style="width:100%;border:0;border-collapse:collapse;">
 				<tr>

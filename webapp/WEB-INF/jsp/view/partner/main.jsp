@@ -84,7 +84,7 @@ if(iTMonth2<10){
 		    width: 100%;
 		    margin: 0 auto;
 		}
-		
+		#tab3 #btn02_n{text-align: center;}		
 		#tab3 #btn02_n a{width: 40px;line-height: 20px;display:inline-block;border: 1px solid #cacaca;text-align: center;white-space:nowrap;border-radius: 3px;transition: all .3s;}
 		#tab3 #btn02_n a:hover{background:#cacaca;color:#fff;}
 		</style>
@@ -240,9 +240,8 @@ if(iTMonth2<10){
 										<div style="width: 550px; height: auto; overflow-y:auto">
 											<table cellpadding="5" cellspacing="0" border="0" style="border-collapse:collapse; width: 100%" bordercolor="#DDDDDD">
 												<tr height="30px">													
-											    	<td class="pt_size16">
-											    		
-											    		<a href="/partner/bbsNotice/noticeDetailForm?dataSeq=${notice.dataSeq}"><b>${notice.subject }</b></a>
+											    	<td class="">
+											    		<a href="/partner/bbsNotice/noticeDetailForm?dataSeq=${notice.dataSeq}" style="font-size: 20px;color:#004B85;"><b>${notice.subject }</b></a>
 											    	</td>
 												</tr>
 												<tr>
@@ -279,9 +278,9 @@ if(iTMonth2<10){
 										<div style="width: 550px; height: auto; overflow-y:auto">
 											<table cellpadding="5" cellspacing="0" border="0" style="border-collapse:collapse; width: 100%" bordercolor="#DDDDDD">
 												<tr height="30px">													
-											    	<td class="pt_size16">
+											    	<td class="">
 											    		
-											    		<a href="/partner/bbsNotice/noticeDetailForm?dataSeq=${recruit.dataSeq}"><b>${recruit.subject }</b></a>
+											    		<a href="/partner/bbsNotice/noticeDetailForm?dataSeq=${recruit.dataSeq}" style="font-size: 20px;color:#004B85;"><b>${recruit.subject }</b></a>
 											    	</td>
 												</tr>
 												<tr>
@@ -298,6 +297,12 @@ if(iTMonth2<10){
 								</tr>
 				        </table>
 						</c:if>
+						
+						<c:if test="${empty recruit }">
+				       	<p>모집공고가 없습니다.</p>
+						</c:if>
+		        
+	            
 		        </div>
         <!-- #tab2 -->
         <div id="tab3" class="tab_content">
@@ -313,15 +318,15 @@ if(iTMonth2<10){
 							<!-- 검색 영역 시작 -->
 							<table cellpadding="5" cellspacing="0" border="1" width="100%" style="border-collapse:collapse;" bordercolor="#DDDDDD" style="table-layout: fixed;">
 							<colgroup>
-							<col width="45%"/>
-							<col width="5%"/>
-							<col width="45%"/>
-							<col width="5%"/>
+							<col width="44%"/>
+							<col width="6%"/>
+							<col width="44%"/>
+							<col width="6%"/>
 							</colgroup>
 								<tbody>
 								<tr align="center" height="30px">
-						<td style="width:290px;" bgcolor="#F5F5F5" align="left"><strong>가이드 북</strong></td>
-				    	<td style="width:47px;" id="btn02_n" >
+						<td style="" bgcolor="#F5F5F5" align="left"><strong>가이드 북</strong></td>
+				    	<td id="btn02_n" >
 				    		<a href="http://img.ezwelmind.co.kr/sangdam4u/files/partner_GUIDEBOOK_v3.0.pdf" target="_blank" style="font-size: 10px"><span>보기</span></a>
 				    	</td>
 						<td bgcolor="#F5F5F5" align="left"><strong>(일반용)개인정보수집 및 이용동의서</strong></td>
@@ -332,7 +337,7 @@ if(iTMonth2<10){
 					
 					<tr align="left" height="30px">
 						<td bgcolor="#F5F5F5" align="left"><strong>개인정보수집 및 이용동의서</strong><br/><span style="font-size: 11px; color:red">(삼성생명, 삼성웰스토리, 삼성증권)</span></td>
-				    	<td id="btn02_n" >
+				    	<td id="btn02_n">
 				    		<a href="http://img.ezwelmind.co.kr/sangdam4u/files/partner_form_highrisk_hustory.pdf" target="_blank" style="font-size: 10px"><span>보기</span></a>
 				    	</td>
 						<td bgcolor="#F5F5F5" align="left"><strong>개인정보수집 및 이용동의서 + 상담동의서</strong><br/><span style="font-size: 11px; color:red">(삼성생명서비스용)</span></td>
