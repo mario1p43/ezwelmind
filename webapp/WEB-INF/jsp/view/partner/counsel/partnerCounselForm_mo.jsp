@@ -126,6 +126,7 @@
 										alert("상담사 일정이 등록되었습니다.");
 										$("#scheduleSeq").val(data.scheduleSeq);
 										doPointCheck();
+										location.href = "/partner/pCounselorMgr/counselFixList";
 									} else {
 										alert("실패하였습니다. 관리자에게 문의주세요.");
 									}
@@ -174,7 +175,7 @@
 				success: function(data) {
 					if (data.resultValue == "success") {
 						alert("주문이 완료되었습니다.");
-						location.href = "/partner/pCounselorMgr/counselFixList";
+						
 					} else {
 						alert("주문에 실패하였습니다.");
 					}
