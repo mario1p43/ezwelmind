@@ -10,7 +10,7 @@
 j$(document).ready(function(){
 	j$('.counselorListDetail').click(function(){
 		var userId = j$(this).attr("value");
-		location.href = "/madm/mgr/getCounselorMgrDetailApprove?userId="+userId;
+		location.href = "/madm/mgr/getCounselorMgrDetailApproveImsi?userId="+userId;
 		return false;
 	});
 })

@@ -6,21 +6,7 @@
 <head>
 <title>상담사관리 수정</title>
 <link href="${url:resource('/resources/js/plugin/jquery-ui-1.8.9.custom-datepicker.css')}" rel="stylesheet" type="text/css" />
-<script type="text/javascript">
-function fileDownLoad(path,name){
-    var f = document.downForm;
 
-	f.filepath.value = path;
-	f.filename.value = name;
-	f.action = "/resources/jsp/fileDownload.jsp";
-	f.submit();
-}
-</script>
-
-<form name="downForm" method="post">
-	<input type="hidden" name="filepath" value="">
-	<input type="hidden" name="filename" value="">
-</form>
 <script type="text/javascript">
 var num = 0;
 var de ="";
@@ -1309,7 +1295,42 @@ function changeCert(num){
 				</td>
 			</tr>
 			<tr align="left" height="30px">
-				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 주요경력</td>
+				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 주요경력 (변경전)</td>
+				<td class="line" colspan="3">
+					<table id="careerTable" cellspacing="0" border="0" width="100%">
+						<thead>
+							<tr>
+								<th width="32%">기관명</th>
+								<th width="32%">직위/역할</th>
+								<th width="31%">근무기간</th>
+							</tr>
+						</thead>
+						<tbody id="tbl_organization_body">
+							<c:if test="${mgrCareerBefore.size() < 1}">
+							<tr id="organizationRow1">
+								<td align="center"><input type="text" style="width:95%;" id="organizationName1Before" name="organizationNameBefore" /></td>
+								<td align="center"><input type="text" style="width:95%;" id="role1Before" name="roleBefore" /></td>
+								<td align="center">
+									<input type="text" id="roleStartDate1Before" name="roleStartDateBefore" class="startDt cal_box" datetimeonly="true" style="width:93px;" />~
+									<input type="text" id="roleEndDate1Before" name="roleEndDateBefore"  class="endDt cal_box" datetimeonly="true" style="width:93px;" />
+							</tr>		
+							</c:if>
+							<c:forEach var="list" items="${mgrCareerBefore}" varStatus="listCnt">
+								<tr id="organizationRow${listCnt.index}">
+									<td align="center"><input type="text" style="width:95%;" id="organizationName${listCnt.index}Before" name="organizationNameBefore" value="${list.organizationName}"/></td>
+									<td align="center"><input type="text" style="width:95%;" id="role${listCnt.index}Before" name="roleBefore" value="${list.role}"/></td>
+									<td align="center">
+										<input type="text" id="roleStartDate${listCnt.index}Before" name="roleStartDateBefore" class="startDt cal_box" datetimeonly="true" style="width:93px;" value="${list.roleStartDate}"/>~
+										<input type="text" id="roleEndDate${listCnt.index}Before" name="roleEndDateBefore"  class="endDt cal_box" datetimeonly="true" style="width:93px;" value="${list.roleEndDate}"/>
+								</tr>		
+							</c:forEach>
+						</tbody>
+		
+					</table>
+				</td>
+			</tr>
+			<tr align="left" height="30px">
+				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 주요경력 (변경후)</td>
 				<td class="line" colspan="3">
 					<table id="careerTable" cellspacing="0" border="0" width="100%">
 						<thead>
@@ -1344,7 +1365,39 @@ function changeCert(num){
 				</td>
 			</tr>
 			<tr align="left" height="30px">
-				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 상담관련자격증</td>
+				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 상담관련자격증 (변경전)</td>
+				<td class="line" colspan="3">
+					<table id="careerTable" cellspacing="0" border="0" width="100%">
+						<thead>
+							<tr>
+								<th width="20%">발급기관</th>
+								<th width="20%">자격명</th>
+								<th width="5%">급수</th>
+								<th width="10%">발급년도</th>
+								<th width="40%">사본첨부</th>
+							</tr>
+						</thead>
+						<tbody id="tbl_organization_body_cert">
+							<c:forEach var="list" items="${mgrCertBefore}" varStatus="listCnt">
+        					<tr id="certOrgRow${listCnt.index}">
+        						<td align="center"><input type="hidden" id="certOrg${listCnt.index}Before" name="certOrgBefore" value="${list.orgNm}"/>${list.orgNm}</td>
+        						<td align="center"><input type="hidden" id="certName${listCnt.index}Before" name="certNameBefore" value="${list.certNm}"/>${list.certNm}</td>
+        						<td align="center"><input type="hidden" id="certGrade${listCnt.index}Before" name="certGradeBefore" value="${list.grade}"/>${list.grade}</td>
+        						<td align="center"><input type="hidden" id="certYear${listCnt.index}Before" name="certYearBefore" value="${list.certYear}"/>${list.certYear}</td>
+        						<td align="left">
+        							<input type="button" value="다운로드" onclick="fileDownLoad('${list.filePath}', '${list.fileNm}')" >&nbsp;${list.fileNm}
+        							<input type="hidden" id="fileName${listCnt.index}Before" name="fileNameBefore" value="${list.fileNm}"/>
+        							<input type="hidden" id="filePath${listCnt.index}Before" name="filePathBefore" value="${list.filePath}"/>
+        						</td>
+							</tr>
+							</c:forEach>
+						</tbody>
+				
+					</table>
+				</td>
+			</tr>
+			<tr align="left" height="30px">
+				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 상담관련자격증 (변경후)</td>
 				<td class="line" colspan="3">
 					<table id="careerTable" cellspacing="0" border="0" width="100%">
 						<thead>
@@ -1376,7 +1429,39 @@ function changeCert(num){
 				</td>
 			</tr>
 			<tr align="left" height="30px">
-				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 논문 및 저서</td>
+				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 논문 및 저서 (변경전)</td>
+				<td class="line" colspan="3">
+					<table id="careerTable" cellspacing="0" border="0" width="100%">
+						<thead>
+							<tr>
+								<th width="35%">논문제목/책제목</th>
+								<th width="35%">게재학술지명/출판사명</th>
+								<th width="15%">연구자/저자명</th>
+								<th width="10%">연도</th>
+							</tr>
+						</thead>
+						<tbody id="tbl_organization_body_book">
+							<c:forEach var="list" items="${mgrBookBefore}" varStatus="listCnt">
+        					<tr id="mgrBookRow${listCnt.index}">
+								<td align="center"><input type="text" style="width:95%;" id="bookTitle${listCnt.index}Before" name="bookTitleBefore" value="${list.bookTitle}" /></td>
+								<td align="center"><input type="text" style="width:95%;" id="bookOrg${listCnt.index}Before" name="bookOrgBefore" value="${list.bookOrg}" /></td>
+								<td align="center"><input type="text" style="width:95%;" id="author${listCnt.index}Before" name="authorBefore" value="${list.author}" /></td>
+								<td align="center">
+									<select id="bookYear${listCnt.index}Before" name="bookYearBefore" style="width:95%;">
+									<c:forEach var="i" begin = "0" end="60" step="1" >
+										<option value=<c:out value = "${currentYear-i}"/>><c:out value = "${currentYear-i}"/></option>
+									</c:forEach>
+									</select>
+								</td>
+							</tr>
+							</c:forEach>
+						</tbody>
+			
+					</table>
+				</td>
+			</tr>
+			<tr align="left" height="30px">
+				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 논문 및 저서 (변경후)</td>
 				<td class="line" colspan="3">
 					<table id="careerTable" cellspacing="0" border="0" width="100%">
 						<thead>
@@ -1465,10 +1550,11 @@ function changeCert(num){
 			<tr align="left" height="30px">
 				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">&nbsp;&nbsp;사진</th>
 		    	<td class="line" colspan="3" style="background:${mgrBefore.fileNm == mgr.fileNm ? '':'#f9ba7f'}">
-		    		<input type="file" name="picAdd" />&nbsp;
 		    		<a href="javascript:fileDownLoad('${mgr.filePath}', '${mgr.fileNm}');">
 		    		${mgr.fileNm }
 		    		</a>
+		    		<input type="hidden" id="picFilePath" name="picFilePath" value="${mgr.filePath}">
+		    		<input type="hidden" id="picFileNm" name="picFileNm" value="${mgr.fileNm}">		    		
 		    	</td>
 			</tr>
 			<tr align="left" height="30px">

@@ -58,6 +58,11 @@ public class MgrCounselService {
 		return mgrMapper.getMgrCertList(mgrCertDto);
 	}
 	
+	
+	public List<MgrCert> getMgrCertListImsi(MgrCertDto mgrCertDto){
+		return mgrMapper.getMgrCertListImsi(mgrCertDto);
+	}
+	
 	//hue
 	public List<MgrCert> getMgrCertList2(MgrCertDto mgrCertDto){
 		return mgrMapper.getMgrCertList2(mgrCertDto);
@@ -285,11 +290,6 @@ public class MgrCounselService {
 					}
 				}
 			}
-			// 사진파일이 실제 등록되 있을때만 db에 값 매핑
-			if (mgrCertDto.getMultiMap().get("picAdd").getMulitMultipartFile().getSize() > 0) {
-				mgrSubDto.setFileNm(mgrCertDto.getMultiMap().get("picAdd").getFileNm());
-				mgrSubDto.setFilePath(mgrCertDto.getMultiMap().get("picAdd").getFileFullPath());			
-			}
 			
 			FileUtils.fileAddUpload(mgrCertDto, FileUploadUtils.UPLOAD_DIR_PROP);
 		}
@@ -305,6 +305,9 @@ public class MgrCounselService {
 		mgrDto.setModiYn("Y");
 		
 		counselorInfoMgrService.updateMgrInfo(mgrDto);
+		
+		mgrSubDto.setFileNm(mgrSubDto.getPicFileNm());
+		mgrSubDto.setFilePath(mgrSubDto.getPicFilePath());
 		counselorInfoMgrMapper.updateCounselorInfoMgr(mgrSubDto);
 		
 		//상담사가 정보를 수정할 수 있게 변경 
@@ -337,7 +340,7 @@ public class MgrCounselService {
 		
 		//기존에 있는 파일을 삭제하는 펑션
 		mgrCertDto.setUserId(mgrDto.getUserId());
-		mgrService.deleteMgrCert(mgrCertDto);
+		mgrService.deleteMgrCertImsi(mgrCertDto);
 		
 		String[] certOrgArray = request.getParameterValues("certOrg");
 		String[] certNameArray = request.getParameterValues("certName");
@@ -357,7 +360,7 @@ public class MgrCounselService {
 				beforMrgCertDto.setCertYear(certYearArray[i]);
 				beforMrgCertDto.setFileNm(fileNameArray[i]);
 				beforMrgCertDto.setFilePath(filePathArray[i]);
-				mgrService.insertMgrCert(beforMrgCertDto);
+				mgrService.insertMgrCertImsi(beforMrgCertDto);
 			}
 		}
 		
@@ -387,7 +390,7 @@ public class MgrCounselService {
 						mgrCertDto.setGrade(grade);
 						String certYear = request.getParameter("certYear" + cnt);
 						mgrCertDto.setCertYear(certYear);
-						mgrService.insertMgrCert(mgrCertDto);
+						mgrService.insertMgrCertImsi(mgrCertDto);
 					}
 				}
 			}
@@ -657,6 +660,10 @@ public List<MgrBook> getMgrBook(String userId) {
 	return mgrMapper.getMgrBookList(userId);
 }
 
+public List<MgrBook> getMgrBookImsi(String userId) {
+	return mgrMapper.getMgrBookListImsi(userId);
+}
+
 
 public void modifyCounselMgrBook(MgrDto mgrDto, MgrBookArray mgrBookArray) {
 	String userId = mgrDto.getUserId();
@@ -674,6 +681,28 @@ public void modifyCounselMgrBook(MgrDto mgrDto, MgrBookArray mgrBookArray) {
 				mgrBook.setBookYear(mgrBookArray.getBookYear()[cnt]);
 			}catch (Exception e) {}
 			counselorInfoMgrMapper.addCounselMgrBook(mgrBook);
+			cnt++;
+		}
+	}
+}
+
+
+public void modifyCounselMgrBookImsi(MgrDto mgrDto, MgrBookArray mgrBookArray) {
+	String userId = mgrDto.getUserId();
+	counselorInfoMgrMapper.delCounselMgrBookImsi(userId);
+	String[] bookTitles = mgrBookArray.getBookTitle();
+	int cnt = 0;
+	if(bookTitles != null) {
+		for(String bookTitle:bookTitles) {
+			MgrBook mgrBook = new MgrBook();
+			mgrBook.setUserId(userId);
+			mgrBook.setBookTitle(bookTitle);
+			try {
+				mgrBook.setBookOrg(mgrBookArray.getBookOrg()[cnt]);
+				mgrBook.setAuthor(mgrBookArray.getAuthor()[cnt]);
+				mgrBook.setBookYear(mgrBookArray.getBookYear()[cnt]);
+			}catch (Exception e) {}
+			counselorInfoMgrMapper.addCounselMgrBookImsi(mgrBook);
 			cnt++;
 		}
 	}

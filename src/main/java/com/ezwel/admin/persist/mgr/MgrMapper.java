@@ -27,14 +27,20 @@ public interface MgrMapper {
 	public MgrSub getMgrSubSelectOne(MgrSubDto mgrSubDto);
 	
 	public List<MgrCert> getMgrCertList(MgrCertDto mgrCertDto);
+
+	public List<MgrCert> getMgrCertListImsi(MgrCertDto mgrCertDto);
 	
 	public List<MgrCert> getMgrCertList2(MgrCertDto mgrCertDto);
 	
 	public void updateMgrSub(MgrSubDto mgrSubDto);
 	
 	public void insertMgrCert(MgrCertDto mgrCertDto);
+	
+	public void insertMgrCertImsi(MgrCertDto mgrCertDto);
 
 	public int deleteMgrCert(MgrCertDto mgrCertDto);
+
+	public int deleteMgrCertImsi(MgrCertDto mgrCertDto);
 	
 	public List<MgrData> selectMgrList(MgrDto mgrDto);
 	
@@ -61,4 +67,6 @@ public interface MgrMapper {
 	public List<MgrCareer> getMgrCareerExtraList(String userId);
 
 	public List<MgrBook> getMgrBookList(String userId);
+	
+	public List<MgrBook> getMgrBookListImsi(String userId);
 }

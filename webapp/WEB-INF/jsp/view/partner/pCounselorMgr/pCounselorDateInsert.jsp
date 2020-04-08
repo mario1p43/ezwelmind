@@ -256,7 +256,10 @@ $(document).ready(function(){
 			$("#sangdamcontents").css("display","");
 			$("#endLine1").css("display","");
 			$("#endLine3").css("display","");
-			var endResonTypeValue = $("#etc")[0].checked;
+			
+			if($("#etc")[0] != undefined && $("#etc")[0] != null){
+				var endResonTypeValue = $("#etc")[0].checked;
+			}
 			if(endResonTypeValue){
 				$("#endLine2").css("display","");
 			}else{
@@ -1245,13 +1248,12 @@ j$(function(){
 								<label for="checkEmail"> e-mail <input type="checkbox" name="checkEmail" id="checkEmail" value="Y" checked="checked"/></label>
 							</th>
 						</tr>
-						</c:if>
 						<tr>
 							<td>
             					<textarea rows="10" cols="30" id="counselFeedBack" name="counselFeedBack" style="width:100%; height:350px;">${counsel_feedback.content }</textarea>
 							</td>
 						</tr>
-						
+						</c:if>
 						<tr>
 							<th>파일첨부</th>
 							<td colspan="7" >

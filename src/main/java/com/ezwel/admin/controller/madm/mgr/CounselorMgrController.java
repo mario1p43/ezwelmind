@@ -299,6 +299,31 @@ public class CounselorMgrController {
 		return "/madm/mgr/counselorMgrModify";
 	}
 	
+	@RequestMapping(value="/getCounselorMgrDetailImsi")
+	public String getCounselorMgrDetailImsi(@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, @ModelAttribute MgrCertDto mgrCertDto, Model model){
+		if (logger.isDebugEnabled()){
+			logger.debug("=====수정 상세 디버깅=====");
+		}
+		
+		setMenu(model);
+		model.addAttribute("mgr", counselorInfoMgrService.getCounselorInfoMgrDetail(counselorInfoMgrDto));
+
+		mgrCertDto.setUserId(counselorInfoMgrDto.getUserId());
+		
+		model.addAttribute("mgrCert", mgrCounselService.getMgrCertListImsi(mgrCertDto));
+		model.addAttribute("mgrCertCnt", mgrCounselService.getMgrCertListImsi(mgrCertDto).size());
+		model.addAttribute("mgrCareer", mgrCounselService.getMgrCareer(counselorInfoMgrDto.getUserId()));
+		model.addAttribute("mgrBook", mgrCounselService.getMgrBook(counselorInfoMgrDto.getUserId()));
+		
+		counselorInfoMgrDto.setUserId(counselorInfoMgrDto.getUserId());
+		counselorInfoMgrDto.setHighCommCd("102015");
+		model.addAttribute("extraExamInfo", counselorInfoMgrService.getExtraList(counselorInfoMgrDto));
+		
+		
+		
+		return "/madm/mgr/counselorMgrModify";
+	}
+	
 	/*비디앱스 2020.01.01 
 	 * 나의정보 관리 / 상담사 정보 관리
 	 * 임시 상태값 승인 확인 페이지 */
@@ -330,6 +355,43 @@ public class CounselorMgrController {
 		
 		
 		
+		
+		/*다시 수정 가능하게 만듬*/
+		MgrDto mgrDto=new MgrDto();
+		mgrDto.setModiId(counselorInfoMgrDto.getUserId());
+		int result = mgrCounselService.userImsiModiRefuse(mgrDto);
+		
+		return "/madm/mgr/counselorMgrModifyApprove";
+	}
+	
+	/*비디앱스 2020.01.01 
+	 * 나의정보 관리 / 상담사 정보 관리
+	 * 임시 상태값 승인 확인 페이지 */
+	@RequestMapping(value="/getCounselorMgrDetailApproveImsi")
+	public String getCounselorMgrDetailApproveImsi(@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, @ModelAttribute MgrCertDto mgrCertDto, Model model){
+		if (logger.isDebugEnabled()){
+			logger.debug("=====수정 상세 디버깅=====");
+		}
+		
+		setMenu(model);
+		model.addAttribute("mgrBefore", counselorInfoMgrService.getCounselorInfoMgrDetail(counselorInfoMgrDto));
+		
+		model.addAttribute("mgr", counselorInfoMgrService.getCounselorInfoMgrDetailImsi(counselorInfoMgrDto));
+
+		mgrCertDto.setUserId(counselorInfoMgrDto.getUserId());
+		
+		model.addAttribute("mgrCert", mgrCounselService.getMgrCertListImsi(mgrCertDto));
+		model.addAttribute("mgrCertCnt", mgrCounselService.getMgrCertListImsi(mgrCertDto).size());
+		model.addAttribute("mgrCertBefore", mgrCounselService.getMgrCertList(mgrCertDto));
+		model.addAttribute("mgrCertCntBefore", mgrCounselService.getMgrCertList(mgrCertDto).size());
+		model.addAttribute("mgrCareer", mgrCounselService.getMgrCareerExtraList(counselorInfoMgrDto.getUserId()));
+		model.addAttribute("mgrCareerBefore", mgrCounselService.getMgrCareer(counselorInfoMgrDto.getUserId()));
+		model.addAttribute("mgrBook", mgrCounselService.getMgrBookImsi(counselorInfoMgrDto.getUserId()));
+		model.addAttribute("mgrBookBefore", mgrCounselService.getMgrBook(counselorInfoMgrDto.getUserId()));
+		
+		counselorInfoMgrDto.setUserId(counselorInfoMgrDto.getUserId());
+		counselorInfoMgrDto.setHighCommCd("102015");
+		model.addAttribute("extraExamInfo", counselorInfoMgrService.getExtraList(counselorInfoMgrDto));
 		
 		/*다시 수정 가능하게 만듬*/
 		MgrDto mgrDto=new MgrDto();

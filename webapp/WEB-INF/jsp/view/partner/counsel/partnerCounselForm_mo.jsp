@@ -48,179 +48,179 @@
 
 		$('.mobile_nav ul li a').eq(2).addClass('active');
 		$('.mobile_nav ul li a img').eq(2).attr('src', "${url:resource('/resources/img/re_list_icon_active.png')}");
-		
-		$('.counselYmd').datetimepicker({
-			format:'Y.m.d',
-			timepicker:false,
-			minDate:0,
-			maxDate:'${clientJedoPeriod.endDd}'
-		});
-		
-		$("#stTime").change(function (){
-			var str = $("#stTime").val();
-			var dd = str.substring( 0, 2);
-			
-			$("#smsTime").val(dd);
-		});
-		
-		
-		/** 상담사 일정 체크 */
-		$("#btnCounselConfirm").click(function () {
-			
-			$("#popupBox").css("display","none");
-			
-			var centerSeq = $("#centerList").val();
-			var userId = $("#counselorList").val();
-			var stTime = $("#stTime").val();
-			var smsTime = $("#smsTime").val()+$("#smsTime2").val();
-			if(smsTime==""){
-				smsTime=stTime;
-			}
-			console.log(smsTime);
-			var ymd = $("#counselYmd").val();
-			
-			if ($("#intakeCd").val() == "") {
-				alert("인테이크를 먼저 등록해주세요.");
-				return;
-			}
-			if (typeof userId == "undefined" || userId == null || userId == "") {
-				alert("상담사를 선택해주세요.");
-				return;
-			}
-			if (ymd == "") {
-				alert("상담날짜를 선택해주세요.");
-				return;
-			}
-			if (stTime == "") {
-				alert("상담시간을 선택해주세요.");
-				return;
-			}
-			if(smsTime == ""){
-				smsTime =stTime;
-			}
-			
-			var params = {};
-			params.userId = userId;
-			params.ymd = replaceAll(ymd, ".", "");
-			params.stTime = stTime;
-			params.centerSeq = centerSeq;
-			params.clientCd = $("#clientCd").val();
-			params.smsDt = smsTime;
-
-			
-			$.ajax({
-				url: '/partner/pCounselorMgr/counselScheduleConfrim',
-				data: params,
-				dataType: 'json',
-				type: 'get',
-				success: function(data) {
-					if (data.resultValue == "1001") {
-						if (confirm("※상담사가 등록한 스케줄은 없습니다.\n상담사 스케줄을 등록하시겠습니까?\n\n★★상담사 스케줄을 등록하고 주문을 하지 않아도 상담사 스케줄이 그대로 남습니다.")) {
-							$.ajax({
-								url: '/partner/pCounselorMgr/addSchedule',
-								data: params,
-								dataType: 'json',
-								type: 'get',
-								success: function(data) {
-									if (data.resultValue == "1") {
-										alert("상담사 일정이 등록되었습니다.");
-										$("#scheduleSeq").val(data.scheduleSeq);
-										doPointCheck();
-									} else {
-										alert("실패하였습니다. 관리자에게 문의주세요.");
-									}
-								}
-							});
-						}
-					} else if (data.resultValue == "1002") {
-						alert("상담이 가능한 시간입니다.");
-						$("#scheduleSeq").val(data.scheduleSeq);
-						doPointCheck();
-					} else if (data.resultValue == "1003") {
-						alert("상담사 스케줄이 이미 등록되어 있어서, \n주문이 불가능합니다.");
-					} else if (data.resultValue == "1004") {
-						alert("해당 일자는 계약기간이 지난 시점으로 주문이 불가능합니다.");
-					}
-				}
+				
+			$('.counselYmd').datetimepicker({
+				format:'Y.m.d',
+				timepicker:false,
+				minDate:0,
+				maxDate:'${clientJedoPeriod.endDd}'
 			});
-			 
 			
-		});
+			$("#stTime").change(function (){
+				var str = $("#stTime").val();
+				var dd = str.substring( 0, 2);
+				
+				$("#smsTime").val(dd);
+			});
+			
+			
+			/** 상담사 일정 체크 */
+			$("#btnCounselConfirm").click(function () {
+				
+				$("#popupBox").css("display","none");
+				
+				var centerSeq = $("#centerList").val();
+				var userId = $("#counselorList").val();
+				var stTime = $("#stTime").val();
+				var smsTime = $("#smsTime").val()+$("#smsTime2").val();
+				if(smsTime==""){
+					smsTime=stTime;
+				}
+				console.log(smsTime);
+				var ymd = $("#counselYmd").val();
+				
+				if ($("#intakeCd").val() == "") {
+					alert("인테이크를 먼저 등록해주세요.");
+					return;
+				}
+				if (typeof userId == "undefined" || userId == null || userId == "") {
+					alert("상담사를 선택해주세요.");
+					return;
+				}
+				if (ymd == "") {
+					alert("상담날짜를 선택해주세요.");
+					return;
+				}
+				if (stTime == "") {
+					alert("상담시간을 선택해주세요.");
+					return;
+				}
+				if(smsTime == ""){
+					smsTime =stTime;
+				}
+				/* if(stTime < smsTime){
+					alert("상담시간보다 sms문자시간이 늦을 수 없습니다.");
+					return;
+				}
+				 */
+				var params = {};
+				params.userId = userId;
+				params.ymd = replaceAll(ymd, ".", "");
+				params.stTime = stTime;
+				params.centerSeq = centerSeq;
+				params.clientCd = $("#clientCd").val();
+				params.smsDt = smsTime;
+
+				
+				$.ajax({
+					url: '/partner/pCounselorMgr/counselScheduleConfrim',
+					data: params,
+					dataType: 'json',
+					type: 'get',
+					success: function(data) {
+						if (data.resultValue == "1001") {
+							if (confirm("※상담사가 등록한 스케줄은 없습니다.\n상담사 스케줄을 등록하시겠습니까?\n\n★★상담사 스케줄을 등록하고 주문을 하지 않아도 상담사 스케줄이 그대로 남습니다.")) {
+								$.ajax({
+									url: '/partner/pCounselorMgr/addSchedule',
+									data: params,
+									dataType: 'json',
+									type: 'get',
+									success: function(data) {
+										if (data.resultValue == "1") {
+											alert("상담사 일정이 등록되었습니다.");
+											$("#scheduleSeq").val(data.scheduleSeq);
+											doPointCheck();
+										} else {
+											alert("실패하였습니다. 관리자에게 문의주세요.");
+										}
+									}
+								});
+							}
+						} else if (data.resultValue == "1002") {
+							alert("상담이 가능한 시간입니다.");
+							$("#scheduleSeq").val(data.scheduleSeq);
+							doPointCheck();
+						} else if (data.resultValue == "1003") {
+							alert("상담사 스케줄이 이미 등록되어 있어서, \n주문이 불가능합니다.");
+						} else if (data.resultValue == "1004") {
+							alert("해당 일자는 계약기간이 지난 시점으로 주문이 불가능합니다.");
+						}
+					}
+				});
+				 
+				
+			});
+			
+			
+		
+			
+			// 주문하기
+			$("#doOrder").click(function () {
+				$("#trOrder").hide();
+				var params = {};
+				params.userKey = $("#userKey").val();
+				params.clientCd = $("#clientCd").val();
+				params.intakeCd = $("#intakeCd").val();
+				params.scheduleSeq = $("#scheduleSeq").val();
+				params.ceilingCategoryCd = $("#ceilingCategoryCd").val();
+				
+				if ($("input:checkbox[id='smsYn']").is(":checked")) {
+					params.smsYn = "Y";
+				} else {
+					params.smsYn = "N";
+				}
+				
+				$.ajax({
+					url: '/partner/pCounselorMgr/doOrder',
+					data: params,
+					dataType: 'json',
+					type: 'post',
+					success: function(data) {
+						if (data.resultValue == "success") {
+							alert("주문이 완료되었습니다.");
+						} else {
+							alert("주문에 실패하였습니다.");
+						}
+					}
+				});
+			});
+			
+				
+		});  // end ready
 		
 		
-	
-		
-		// 주문하기
-		$("#doOrder").click(function () {
-			$("#trOrder").hide();
+		/** 
+		 * 상담 가격정보
+		 */ 
+		function doPointCheck() {
 			var params = {};
 			params.userKey = $("#userKey").val();
 			params.clientCd = $("#clientCd").val();
 			params.intakeCd = $("#intakeCd").val();
-			params.scheduleSeq = $("#scheduleSeq").val();
-			params.ceilingCategoryCd = $("#ceilingCategoryCd").val();
 			
-			if ($("input:checkbox[id='smsYn']").is(":checked")) {
-				params.smsYn = "Y";
-			} else {
-				params.smsYn = "N";
-			}
 			
 			$.ajax({
-				url: '/partner/pCounselorMgr/doOrder',
+				url: '/partner/pCounselorMgr/getOrderInfo',
 				data: params,
 				dataType: 'json',
-				type: 'post',
+				type: 'get',
 				success: function(data) {
 					if (data.resultValue == "success") {
-						alert("주문이 완료되었습니다.");
-						
+						$("#counselOrderPrice").text(data.price);
+						$("#trOrder").show();
+						$("#btnCounselConfirm").hide();
 					} else {
-						alert("주문에 실패하였습니다.");
+						alert("포인트가 부족합니다.");
 					}
 				}
 			});
-		});
+			///madm/counsel/getOrderInfo
+		}
 		
-			
-	});  // end ready
-	
-	
-	/** 
-	 * 상담 가격정보
-	 */ 
-	function doPointCheck() {
-		var params = {};
-		params.userKey = $("#userKey").val();
-		params.clientCd = $("#clientCd").val();
-		params.intakeCd = $("#intakeCd").val();
+		function popupBoxShow(){
+			$("#popupBox").css("display","block");
+		}
 		
-		
-		$.ajax({
-			url: '/partner/pCounselorMgr/getOrderInfo',
-			data: params,
-			dataType: 'json',
-			type: 'get',
-			success: function(data) {
-				if (data.resultValue == "success") {
-					$("#counselOrderPrice").text(data.price);
-					$("#trOrder").show();
-					$("#btnCounselConfirm").hide();
-					location.href = "/partner/pCounselorMgr/counselFixList";
-				} else {
-					alert("포인트가 부족합니다.");
-					location.href = "/partner/pCounselorMgr/counselFixList";
-				}
-			}
-		});
-		///madm/counsel/getOrderInfo
-	}
-	
-	function popupBoxShow(){
-		$("#popupBox").css("display","block");
-	}
-	
-
 </script>
 </head>
 <body>

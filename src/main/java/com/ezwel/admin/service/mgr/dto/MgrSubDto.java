@@ -70,6 +70,12 @@ public class MgrSubDto  extends FileMind {
 	//사진경로
 	private String filePath;
 	
+	//사진파일
+	private String picFileNm;
+	
+	//사진경로
+	private String picFilePath;
+	
 	//센터구분
 	private String centerType;
 	

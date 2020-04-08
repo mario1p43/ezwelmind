@@ -18,6 +18,10 @@
 	var tbl_cnt_book = 1;
 
 	<c:if test="${! empty(mgrCert)}">
+		var tbl_cnt = ${mgrCareer.size()};
+	</c:if>
+
+	<c:if test="${! empty(mgrCert)}">
 		var tbl_cnt_cert = ${mgrCert.size()};
 	</c:if>
 
@@ -205,7 +209,6 @@
 		});
 		
         $(".add-row").click(function(){
-        	tbl_cnt = tbl_cnt+1;
         	var markup = '<tr id="organizationRow'+tbl_cnt+'">';
         	markup += '<td align="center">';
         	markup += '<input type="text" style="width:95%;" id="organizationName'+tbl_cnt+'" name="organizationName" />';
@@ -1203,7 +1206,6 @@
 		    		<a href="javascript:fileDownLoad('${mgr.filePath}', '${mgr.fileNm}');">
 		    		${mgr.fileNm }
 		    		</a>
-		    		<input type="button" value="삭제" id="delPhotoBtn"/>
 		    	</td>
 			</tr>
 			<tr align="left" height="30px">

@@ -50,14 +50,8 @@
 	.counsel-wrapper .content-wrapper .data-wrapper .risk-detail-block .risk-detail-data{padding:2.2vw}
 	.counsel-wrapper .content-wrapper .data-wrapper .data-block .counsel-write-description{margin-bottom:2.2vw}
 	.counsel-wrapper .content-wrapper .data-wrapper .data-block .counsel-subject-select{display:flow-root;width:100%}
-	.counsel-wrapper .content-wrapper .data-wrapper .data-block .counsel-subject-select select{float:left;width:calc(33% - 0.37vw)!important;height:9vw;padding:0 2.5vw;margin-right:1vw;font-size:14px;background:"${url:resource('/resources/img/ic_select.png')}" no-repeat;background-size:12px 7px;background-position:right 6px top 50%;-webkit-appearance:none;-moz-appearance:none;appearance:none;}
+	.counsel-wrapper .content-wrapper .data-wrapper .data-block .counsel-subject-select select{float:left;width:calc(33% - 0.37vw)!important;height:9vw;padding:0 2.5vw;margin-right:1vw;font-size:14px;background:"${url.resource('/resources/img/ic_select.png')}" no-repeat;background-size:12px 7px;background-position:right 6px top 50%;-webkit-appearance:none;-moz-appearance:none;appearance:none;}
 	.counsel-wrapper .content-wrapper .data-wrapper .data-block .counsel-subject-select select:last-child{margin-right:0}
-
-	.counsel-wrapper .content-wrapper .data-wrapper .data-block .counsel-subject-select2{display:flow-root;width:100%}
-	.counsel-wrapper .content-wrapper .data-wrapper .data-block .counsel-subject-select2 span{float:left; line-height:9vw; margin-right:1vw;}
-	.counsel-wrapper .content-wrapper .data-wrapper .data-block .counsel-subject-select2 select{float:left;width:calc(44% - 0.37vw)!important;height:9vw;padding:0 2.5vw;margin-right:1vw;font-size:14px;background:"${url:resource('/resources/img/ic_select.png')}" no-repeat;background-size:12px 7px;background-position:right 6px top 50%;-webkit-appearance:none;-moz-appearance:none;appearance:none;}
-	.counsel-wrapper .content-wrapper .data-wrapper .data-block .counsel-subject-select2 select:last-child{margin-right:0}
-
 	.counsel-wrapper .content-wrapper .data-wrapper .check-data-label{margin-top:2.2vw}
 	.counsel-wrapper .content-wrapper .data-wrapper .check-data-block{padding:3vw 0}
 	.counsel-wrapper .content-wrapper .data-wrapper .check-data-block label{margin-right:3vw}
@@ -69,15 +63,6 @@
 	
 	.counsel-wrapper #sangdamcontents{display:flow-root;width:100%;border-top:1px solid #BDBDBD}
 	
-	.submit_doc_button {
-	    height: 11.1111vw;
-	    width: 100%;
-	    background-color: #006CBA;
-	    color: white;
-	    font-size: 4.4444vw;
-	    font-weight: bold;
-	    margin-top: 5.5556vw;
-	}
 	/* file wrapper */
 	.file_wrapper {
 		font-size: 3.6111vw;
@@ -216,8 +201,7 @@ $(document).ready(function(){
 			
 			}
 			
-			var endType = $(":input:radio[name=endType]:checked").val();
-			if("${isNotSaveSubjectItem}" == "true" && endType != "ns") {
+			if("${isNotSaveSubjectItem}" == "true") {
 				var subjectItemCd1 = $.trim($("#subjectItemCd1").val()); //상담 세부 분류
 				var subjectItemCd2 = $.trim($("#subjectItemCd2").val()); //상담 세부 분류
 				
@@ -234,7 +218,7 @@ $(document).ready(function(){
 					return false;
 				}
 			}
-			if(mainIssue.length == 0 && endType != "ns"){
+			if(mainIssue.length == 0){
 				alert("상담의 주제(회기 내 내담자의 주호소 문제 주제)를 입력하세요");
 				return false;
 			}
@@ -281,7 +265,7 @@ $(document).ready(function(){
 			}
 
 			
-			if(counselChannelType == '100002' && counselFeedBack.length <= 50 && endType != "ns"){
+			if(counselChannelType == '100002' && counselFeedBack.length <= 50){
 				alert("상담사가 내담자에게 전하는 메시지를 입력하세요.(최소 50자 이상)\n해당 내용은 내담자에게 SMS, e-mail이 전송되며 상담포유를 통해 확인 가능합니다.");
 				$("#counselFeedBack").focus();
 				return false;
@@ -344,26 +328,19 @@ $(document).ready(function(){
 			$("#endLine1").css("display","none");
 			$("#endLine2").css("display","none");
 			$("#endLine3").css("display","none");
-			var textSpaceHeight = 300; 
-			oEditors.getById["counselFeedBack"].exec("MSG_EDITING_AREA_RESIZE_STARTED", []); 
-			oEditors.getById["counselFeedBack"].exec("RESIZE_EDITING_AREA", [0, textSpaceHeight]); 
-			oEditors.getById["counselFeedBack"].exec("MSG_EDITING_AREA_RESIZE_ENDED", []); 
-			oEditors.getById["counselFeedBack"].exec("SE_FIT_IFRAME", []);
 		} else{
 			$("#sangdamcontents").css("display","");
 			$("#endLine1").css("display","");
 			$("#endLine3").css("display","");
-			var endResonTypeValue = $("#etc")[0].checked;
+
+			if($("#etc")[0] != undefined && $("#etc")[0] != null){
+				var endResonTypeValue = $("#etc")[0].checked;
+			}
 			if(endResonTypeValue){
 				$("#endLine2").css("display","");
 			}else{
 				$("#endLine2").css("display","none");
 			}
-			var textSpaceHeight = 300; 
-			oEditors.getById["counselFeedBack"].exec("MSG_EDITING_AREA_RESIZE_STARTED", []); 
-			oEditors.getById["counselFeedBack"].exec("RESIZE_EDITING_AREA", [0, textSpaceHeight]); 
-			oEditors.getById["counselFeedBack"].exec("MSG_EDITING_AREA_RESIZE_ENDED", []); 
-			oEditors.getById["counselFeedBack"].exec("SE_FIT_IFRAME", []);
 		}
 	});
 	
@@ -1131,7 +1108,7 @@ j$(function(){
 					</div>
 	    		</c:if>
    				<div class="data-block text">
-	   				<input type="radio" name="endType" id="end" value="end" <c:if test="${record_detail.endType eq 'end'}">checked</c:if>><label for="end">진행 및 종결 : 마지막 회기 진행 및 케이스 종결</label>
+	   				<input type="radio" name="endType" id="end" value="end" <c:if test="${record_detail.endType eq 'end'}">checked</c:if>><label for="end">종결 : 진행 및 케이스 종결</label>
 				</div>
 			</div>
 		</div>
@@ -1384,107 +1361,21 @@ j$(function(){
 						</div>
 					</div>
 				</div>
-
-				<!-- 전화,법 상담 인 경우에만 노출 -->
-				<c:if test="${record_detail.counselType eq '100434' or record_detail.counselType eq '100002' }">
-				<div class="data-wrapper border-bottom">
-					<div class="label-block-line">상담시간</div>
-					<div class="data-block text">
-						<div class="counsel-subject-select2">
-							<select name="time1" id="time1">
-								<c:forEach var="time1" begin="00" end="05">
-								<option value="0${time1}" <c:if test="${time1 == record_detail.time.substring(0,2)}">selected="selected"</c:if> >0${time1}</option>
-								</c:forEach>
-							</select>
-							<select name="time2" id="time2">
-								<option value="00" <c:if test="${record_detail.time.substring(2,4) eq 00}">selected="selected"</c:if> >00</option>
-								<option value="10" <c:if test="${record_detail.time.substring(2,4) eq 10}">selected="selected"</c:if> >10</option>
-								<option value="20" <c:if test="${record_detail.time.substring(2,4) eq 20}">selected="selected"</c:if> >20</option>
-								<option value="30" <c:if test="${record_detail.time.substring(2,4) eq 30}">selected="selected"</c:if> >30</option>
-								<option value="40" <c:if test="${record_detail.time.substring(2,4) eq 40}">selected="selected"</c:if> >40</option>
-								<option value="50" <c:if test="${record_detail.time.substring(2,4) eq 50}">selected="selected"</c:if> >50</option>
-							</select>
-						</div>
-					</div>
-				</div>
-				</c:if>
-				
-				<!-- 법률 상담 인 경우에만 노출 -->
-				<c:if test="${intake_detail.channelType eq '100002'}">
-				<div class="data-wrapper border-bottom">
-					<div class="label-block-line">상담사가 내담자에게 전하는 메시지</div>
-					<div class="data-block text">
-						작성한 내용은 저장 즉시 내담자에게 바로 전달되어, '내담자페이지'나 SMS 및 이메일을 통해 열람 및 출력할 수 있습니다. ※ '종결하기'일 경우에만 발송됩니다.</span>
-						<br>발송을 원하지 않으면 체크를 해지해주세요.
-					</div>
-					<div class="data-block text">
-						<label for="checkSms"> SMS <input type="checkbox" name="checkSms" id="checkSms" value="Y" checked="checked"/></label> 
-						<label for="checkEmail"> e-mail <input type="checkbox" name="checkEmail" id="checkEmail" value="Y" checked="checked"/></label>
-						<textarea id="counselFeedBack" name="counselFeedBack" value="${counsel_feedback.content }">${counsel_feedback.content }</textarea>
-					</div>
-				</div>
-				</c:if>
-
 				<div class="data-wrapper border-bottom">
 					<div class="label-block-line">파일첨부</div>
 					<div class="data-block text">
 						<div class="file_wrapper">
 							<div class="file_chooser_wrapper">
-								<button class="chooose_file_button">파일 업로드</button>
+								<button class="chooose_file_button">파일 선택</button>
 								<input type="file" name="file" id="file" />
 								<a href="#" onclick="fileDownLoad('${record_detail.filePath}', '${record_detail.fileNm}')">${record_detail.fileNm}</a>
 							</div>
 						</div>
 					</div>
 				</div>
-
-				<c:if test="${record_detail.recordStatus == 100694}">
-				<div class="data-wrapper border-bottom">
-					<div class="label-block-line">소명사유</div>
-					<div class="data-block text">
-						<textarea id="callingIssue" name="callingIssue" value="${record_detail.callingIssue }">${record_detail.callingIssue }</textarea>
-					</div>
-				</div>
-				</c:if>
-				<c:if test="${record_detail.recordStatus != 100694}">
-					<c:if test="${not empty record_detail.callingIssue}">
-					<div class="data-wrapper border-bottom">
-						<div class="label-block-line">소명사유</div>
-						<div class="data-block text">
-							<textarea id="callingIssue" name="callingIssue" value="${record_detail.callingIssue }">${record_detail.callingIssue }</textarea>
-						</div>
-					</div>
-					</c:if>
-				</c:if>
-				<c:if test="${intake_detail.channelType ne '100002'}">
-				<div class="data-wrapper border-bottom" id="endLine1">
-					<div class="label-block-line">종결유형</div>
-					<div class="data-block text">
-						<input type='radio'  name="endReasonType" id="noAgree" value='noAgree'><label for="endReasonType"></label>합의되지 않은 종결</label>
-						<input type='radio'  name="endReasonType" id="planned" value='planned'><label for="endReasonType">계획된 종결(회기소진 포함)</label>
-						<input type='radio'  name="endReasonType" id="etc" value='etc'><label for="endReasonType">기타</label>
-					</div>
-				</div>
-				<div class="data-wrapper border-bottom" id="endLine2">
-					<div class="label-block-line">기타 종결사유</div>
-					<div class="data-block text">
-						<textarea rows="1" cols="50" id="etcEndReason" name="etcEndReason">${record_detail.etcEndReason}</textarea>
-					</div>
-				</div>
-				<div class="data-wrapper border-bottom" id="endLine3">
-					<div class="label-block-line">종결보고 내담자 현 상태 및 상담사 소견</div>
-					<div class="data-block text">
-						<textarea rows="5" cols="50" id="endReport" name="endReport">${record_detail.endReport}</textarea>
-					</div>
-				</div>
-				</c:if>
-
-
-				
 			</div>
 		</div>
 	</div>
-	
 <%-- <table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
 
 	<!-- 	일지 등록 -->
@@ -1641,7 +1532,6 @@ j$(function(){
 							</tr>
 							</c:if>
 						</c:if>
-						<c:if test="${intake_detail.channelType ne '100002'}">
 						<tr id="endLine1">
 							<th>종결유형</th>
 						    <td>
@@ -1662,7 +1552,6 @@ j$(function(){
 								<textarea rows="5" cols="50" style="width: 95%" id="endReport" name="endReport">${record_detail.endReport}</textarea>
 						    </td>
 						</tr>
-						</c:if>
 					</table>
 					</td>
 				</tr>
@@ -1686,13 +1575,6 @@ j$(function(){
 	</tr>
 	<!-- 버튼 영역 시작 -->
 </table> --%>
-
-
-
-<div>
-	<button type="submit" class="submit_doc_button" id="mokrokBtn">등록</button>
-</div>
-
 </form>
 </body>
 </html>

@@ -97,12 +97,19 @@ public class MgrService {
 	public void insertMgrCert(MgrCertDto mgrCertDto){
 		
 			mgrMapper.insertMgrCert(mgrCertDto);
-			
-			//FileUtils.fileAddUpload(mgrCertDto, FileUploadUtils.UPLOAD_DIR_PROP);
+	}
+	
+	public void insertMgrCertImsi(MgrCertDto mgrCertDto){
+		
+			mgrMapper.insertMgrCertImsi(mgrCertDto);
 	}
 	
 	public int deleteMgrCert(MgrCertDto mgrCertDto){
 		return mgrMapper.deleteMgrCert(mgrCertDto);
+	}
+	
+	public int deleteMgrCertImsi(MgrCertDto mgrCertDto){
+		return mgrMapper.deleteMgrCertImsi(mgrCertDto);
 	}
 	
 	public List<MgrData> selectMgrList(MgrDto mgrDto){

@@ -1817,9 +1817,31 @@
 	<delete id="delCounselMgrBook" parameterType="String">
 		DELETE FROM MIND_MGR_PAPER WHERE USER_ID = #{userId}
 	</delete>
+	
+	<delete id="delCounselMgrBookImsi" parameterType="String">
+		DELETE FROM EXTRA_MIND_MGR_PAPER WHERE USER_ID = #{userId}
+	</delete>
 		
 	<insert id="addCounselMgrBook" parameterType="com.ezwel.admin.domain.entity.mgr.MgrBook">
 		INSERT INTO MIND_MGR_PAPER
+		(
+			USER_ID
+			, PAPER_TITLE
+			, PAPER_ORG
+			, AUTHOR
+			, YEAR
+		)
+		VALUES (
+			#{userId}
+			, #{bookTitle}
+			, #{bookOrg}
+			, #{author}
+			, #{bookYear}
+		)
+	</insert>	
+		
+	<insert id="addCounselMgrBookImsi" parameterType="com.ezwel.admin.domain.entity.mgr.MgrBook">
+		INSERT INTO EXTRA_MIND_MGR_PAPER
 		(
 			USER_ID
 			, PAPER_TITLE

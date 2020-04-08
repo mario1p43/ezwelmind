@@ -246,6 +246,26 @@
 		</if>
 	
 	</select>	
+	
+	<select id="getMgrCertListImsi" resultType="com.ezwel.admin.domain.entity.mgr.MgrCert">
+			SELECT
+			 USER_ID		AS	userId
+		 	,CERT_CD		AS	certCd
+		 	,ETC			AS	etc
+		 	,FILE_NM		AS	fileNm
+		 	,FILE_PATH		AS	filePath
+		 	,ORDER_NO		AS	orderNo
+		 	,ORGANIZATION_NM			AS	orgNm
+		 	,CERT_NM		AS	certNm
+		 	,GRADE			AS	grade
+		 	,CERT_YEAR		AS	certYear
+		FROM EXTRA_MIND_MGR_CERT
+		WHERE 1=1
+		<if test="isNotNull(userId)">
+			AND USER_ID = #{userId}
+		</if>
+	
+	</select>
 		<select id="getMgrCertList2" resultType="com.ezwel.admin.domain.entity.mgr.MgrCert">
 			SELECT
 			 USER_ID		AS	userId
@@ -305,9 +325,40 @@
 			,#{certYear}
 		)
 	</insert>
+	
+	<insert id="insertMgrCertImsi" parameterType="com.ezwel.admin.service.mgr.dto.MgrCertDto">
+		INSERT INTO EXTRA_MIND_MGR_CERT (
+			  USER_ID
+			, CERT_CD
+			, ETC
+			, FILE_NM
+			, FILE_PATH
+			, ORDER_NO
+			, ORGANIZATION_NM
+			, CERT_NM
+			, GRADE
+			, CERT_YEAR
+		) VALUES (
+			 #{userId}
+			,#{certCd}
+			,#{etc}
+			,#{fileNm}
+			,#{filePath}
+			,#{orderNo}
+			,#{orgNm}
+			,#{certNm}
+			,#{grade}
+			,#{certYear}
+		)
+	</insert>
 
 	<delete id="deleteMgrCert" parameterType="com.ezwel.admin.service.mgr.dto.MgrCertDto">
 		DELETE	FROM MIND_MGR_CERT
+		WHERE	USER_ID = #{userId}
+	</delete>
+
+	<delete id="deleteMgrCertImsi" parameterType="com.ezwel.admin.service.mgr.dto.MgrCertDto">
+		DELETE	FROM EXTRA_MIND_MGR_CERT
 		WHERE	USER_ID = #{userId}
 	</delete>
 
@@ -572,5 +623,16 @@
 		WHERE 1=1
 	 	  AND USER_ID = #{userId}	
 	</select>	
+	<select id="getMgrBookListImsi" parameterType="String" resultType="com.ezwel.admin.domain.entity.mgr.MgrBook">
+		SELECT
+			 USER_ID		AS	userId
+		 	,PAPER_TITLE AS	bookTitle
+		 	,PAPER_ORG			AS	bookOrg
+		 	,AUTHOR		AS	author
+		 	,YEAR		AS	bookYear
+		FROM EXTRA_MIND_MGR_PAPER
+		WHERE 1=1
+	 	  AND USER_ID = #{userId}	
+	</select>
 
 </mapper>

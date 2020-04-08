@@ -238,7 +238,7 @@ public class CounselorInfoMgrController extends commonController{
 		mgrCertDto.init(mhsq, true);
 		mgrCounselService.modifyCounselMgrImsi(mgrDto, mgrSubDto, mgrCertDto, request);
 		mgrCounselService.modifyCounselMgrCareerImsi(mgrDto, mgrCareerArray);
-		mgrCounselService.modifyCounselMgrBook(mgrDto, mgrBookArray);
+		mgrCounselService.modifyCounselMgrBookImsi(mgrDto, mgrBookArray);
 		
 		return "redirect:/partner/mgr/counselorInfoMgrList";
 	}

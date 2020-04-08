@@ -77,5 +77,7 @@ public interface CounselorInfoMgrMapper {
 	public void delCounselMgrCareer(String userId);
 	public void delCounselMgrCareerImsi(String userId);
 	public void delCounselMgrBook(String userId);
+	public void delCounselMgrBookImsi(String userId);
 	public void addCounselMgrBook(MgrBook mgrBook);
+	public void addCounselMgrBookImsi(MgrBook mgrBook);
 }
