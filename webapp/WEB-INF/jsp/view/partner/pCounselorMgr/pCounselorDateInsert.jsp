@@ -1245,12 +1245,13 @@ j$(function(){
 								<label for="checkEmail"> e-mail <input type="checkbox" name="checkEmail" id="checkEmail" value="Y" checked="checked"/></label>
 							</th>
 						</tr>
+						</c:if>
 						<tr>
 							<td>
             					<textarea rows="10" cols="30" id="counselFeedBack" name="counselFeedBack" style="width:100%; height:350px;">${counsel_feedback.content }</textarea>
 							</td>
 						</tr>
-						</c:if>
+						
 						<tr>
 							<th>파일첨부</th>
 							<td colspan="7" >
