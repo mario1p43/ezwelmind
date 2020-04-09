@@ -1548,7 +1548,17 @@ function changeCert(num){
 				</td>
 			</tr>
 			<tr align="left" height="30px">
-				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">&nbsp;&nbsp;사진</th>
+				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">&nbsp;&nbsp;사진 (변경전)</th>
+		    	<td class="line" colspan="3" style="background:${mgrBefore.fileNm == mgr.fileNm ? '':'#f9ba7f'}">
+		    		<a href="javascript:fileDownLoad('${mgrBefore.filePath}', '${mgrBefore.fileNm}');">
+		    		${mgrBefore.fileNm }
+		    		</a>
+		    		<input type="hidden" id="picFilePathBefore" name="picFilePathBefore" value="${mgrBefore.filePath}">
+		    		<input type="hidden" id="picFileNmBefore" name="picFileNmBefore" value="${mgrBefore.fileNm}">		    		
+		    	</td>
+			</tr>
+			<tr align="left" height="30px">
+				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">&nbsp;&nbsp;사진 (변경후)</th>
 		    	<td class="line" colspan="3" style="background:${mgrBefore.fileNm == mgr.fileNm ? '':'#f9ba7f'}">
 		    		<a href="javascript:fileDownLoad('${mgr.filePath}', '${mgr.fileNm}');">
 		    		${mgr.fileNm }
