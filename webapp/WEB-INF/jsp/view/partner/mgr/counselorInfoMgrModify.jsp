@@ -186,7 +186,7 @@
         	tbl_cnt_cert = tbl_cnt_cert+1;
         });
         
-		$( ".startDt, .endDt").datepicker({
+        $( ".startDt, .endDt").datepicker({
 			showOn: "both",
 			buttonImageOnly: true,
 			buttonImage: "//img.ezwelmind.co.kr/sangdam4u/images/comunity/ico_calendar.gif",
@@ -209,6 +209,7 @@
 		});
 		
         $(".add-row").click(function(){
+        	tbl_cnt = tbl_cnt+1;
         	var markup = '<tr id="organizationRow'+tbl_cnt+'">';
         	markup += '<td align="center">';
         	markup += '<input type="text" style="width:95%;" id="organizationName'+tbl_cnt+'" name="organizationName" />';
