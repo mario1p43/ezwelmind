@@ -239,14 +239,28 @@ function showDocument(intakeCd,counselNm,centerSeq,clientCd,apprStatus1,apprStat
 							<input type="radio" class="chk_info1" name="chk_info1" value="2">승인요청
 							<input type="radio" class="chk_info1" name="chk_info1" value="3">승인대기
 							<br>
+							<c:if test="${isAdmin}">
+							<input type="radio" class="chk_info1" name="chk_info1" value="4">고객사 승인완료
+							<input type="radio" class="chk_info1" name="chk_info1" value="5">고객사 승인불가
+							<br>
+							</c:if>
 							<input type="radio" class="chk_info1" name="chk_info1" value="6">승인
 							<input type="radio" class="chk_info1" name="chk_info1" value="7">승인불가
 						</c:if>
 						<c:if test="${userTeam.teamCd eq '101032'}">
 							<input type="radio" class="chk_info1" name="chk_info1" value="1">미확인
+							<c:if test="${isAdmin}">
+							<input type="radio" class="chk_info1" name="chk_info1" value="2">승인요청
+							<input type="radio" class="chk_info1" name="chk_info1" value="3">승인대기
+							</c:if>
 							<br>
 							<input type="radio" class="chk_info1" name="chk_info1" value="4">고객사 승인완료
 							<input type="radio" class="chk_info1" name="chk_info1" value="5">고객사 승인불가
+							<c:if test="${isAdmin}">
+							<br>
+							<input type="radio" class="chk_info1" name="chk_info1" value="6">승인
+							<input type="radio" class="chk_info1" name="chk_info1" value="7">승인불가
+							</c:if>
 						</c:if>
 						<input type="hidden" name="chkInfo" class="chkInfo1" value="9999">
 						<input type="hidden" name="recordCd" class="recordCd" value="">
@@ -315,15 +329,30 @@ function showDocument(intakeCd,counselNm,centerSeq,clientCd,apprStatus1,apprStat
 							<input type="radio" class="chk_info2" name="chk_info2" value="1">미확인
 							<input type="radio" class="chk_info2" name="chk_info2" value="2">승인요청
 							<input type="radio" class="chk_info2" name="chk_info2" value="3">승인대기
+							<c:if test="${isAdmin}">
+							<br>
+							<input type="radio" class="chk_info2" name="chk_info2" value="4">고객사 승인완료
+							<input type="radio" class="chk_info2" name="chk_info2" value="5">고객사 승인불가
+							</c:if>
 							<br>
 							<input type="radio" class="chk_info2" name="chk_info2" value="6">승인
 							<input type="radio" class="chk_info2" name="chk_info2" value="7">승인불가
 						</c:if>
 						<c:if test="${userTeam.teamCd eq '101032'}">
 							<input type="radio" class="chk_info2" name="chk_info2" value="1">미확인
+							<c:if test="${isAdmin}">
+							<input type="radio" class="chk_info2" name="chk_info2" value="2">승인요청
+							<input type="radio" class="chk_info2" name="chk_info2" value="3">승인대기
+							</c:if>
 							<br>
 							<input type="radio" class="chk_info2" name="chk_info2" value="4">고객사 승인완료
 							<input type="radio" class="chk_info2" name="chk_info2" value="5">고객사 승인불가
+							<c:if test="${isAdmin}">
+							<br>
+							<input type="radio" class="chk_info2" name="chk_info2" value="6">승인
+							<input type="radio" class="chk_info2" name="chk_info2" value="7">승인불가
+							</c:if>
+							
 						</c:if>
 						<input type="hidden" name="chkInfo" class="chkInfo2" value="8888">
 						<input type="hidden" name="recordCd" class="recordCd" value="">
@@ -394,14 +423,28 @@ function showDocument(intakeCd,counselNm,centerSeq,clientCd,apprStatus1,apprStat
 							<input type="radio" class="chk_info3" name="chk_info3" value="2">승인요청
 							<input type="radio" class="chk_info3" name="chk_info3" value="3">승인대기
 							<br>
+							<c:if test="${isAdmin}">
+							<input type="radio" class="chk_info3" name="chk_info3" value="4">고객사 승인완료
+							<input type="radio" class="chk_info3" name="chk_info3" value="5">고객사 승인불가
+							<br>
+							</c:if>
 							<input type="radio" class="chk_info3" name="chk_info3" value="6">승인
 							<input type="radio" class="chk_info3" name="chk_info3" value="7">승인불가
 						</c:if>
 						<c:if test="${userTeam.teamCd eq '101032'}">
 							<input type="radio" class="chk_info3" name="chk_info3" value="1">미확인
+							<c:if test="${isAdmin}">
+							<input type="radio" class="chk_info3" name="chk_info3" value="2">승인요청
+							<input type="radio" class="chk_info3" name="chk_info3" value="3">승인대기
+							</c:if>
 							<br>
 							<input type="radio" class="chk_info3" name="chk_info3" value="4">고객사 승인완료
 							<input type="radio" class="chk_info3" name="chk_info3" value="5">고객사 승인불가
+							<c:if test="${isAdmin}">
+							<br>
+							<input type="radio" class="chk_info3" name="chk_info3" value="6">승인
+							<input type="radio" class="chk_info3" name="chk_info3" value="7">승인불가
+							</c:if>
 						</c:if>
 						<input type="hidden" name="chkInfo" class="chkInfo3" value="8888">
 						<input type="hidden" name="recordCd" class="recordCd" value="">
