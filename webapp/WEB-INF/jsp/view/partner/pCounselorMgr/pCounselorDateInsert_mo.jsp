@@ -20,12 +20,13 @@
 	.flexGrow{-webkit-flex-grow:1;flex-grow:1;flex:1 1 0;-webkit-flex:1 1 0;}
 	.counsel-wrapper{padding:0 5vw}
 	.counsel-wrapper .title-wrapper{display:flow-root;font-weight:bold;font-size:20px}
-	.counsel-wrapper .content-wrapper{display:flow-root;float:left;width:100%;margin-top:3vw}
+	.counsel-wrapper .content-wrapper{width:100%;margin-top:3vw;}
 	.counsel-wrapper .content-wrapper .subject-block{font-weight:bold;font-size:16px;margin-top:4.5vw}
 	.counsel-wrapper .content-wrapper .subject-description{color:#EB5757;font-size:12px}
 	.counsel-wrapper .content-wrapper .data-wrapper{display:flow-root;padding:2.5vw 0;font-size:14px}
 	.counsel-wrapper .content-wrapper .data-wrapper textarea{width:100%;height:20vw;font-size:14px;border:0;outline:none;resize:none}
 	.counsel-wrapper .content-wrapper .data-wrapper textarea::placeholder{color:#A2A2A2}
+	.counsel-wrapper .content-wrapper .input-block.line-bottom input[type=text]{width:100%;float:left;padding:4px 0;font-size:16px;line-height:130%;border:none;outline:none}
 	.counsel-wrapper .content-wrapper .data-wrapper .label-block{float:left;width:35%;font-weight:bold}
 	.counsel-wrapper .content-wrapper .data-wrapper .label-block-line{font-weight:bold}
 	.counsel-wrapper .content-wrapper .data-wrapper .label-description{font-size:11px;color:#EB5757}
@@ -68,16 +69,10 @@
 	.counsel-wrapper .content-wrapper .border-bottom{border-bottom:1px solid #BDBDBD}
 	
 	.counsel-wrapper #sangdamcontents{display:flow-root;width:100%;border-top:1px solid #BDBDBD}
+	.bottom-btn-wrapper{margin-top: 30px;}
+	.bottom-btn-wrapper .bottom-block-btn{left:0;width:100%;height:40px;color:white;font-weight:bold;font-size:16px;background-color:#006CBA}
+	#smart_editor2{width: 100% !important;}
 	
-	.submit_doc_button {
-	    height: 11.1111vw;
-	    width: 100%;
-	    background-color: #006CBA;
-	    color: white;
-	    font-size: 4.4444vw;
-	    font-weight: bold;
-	    margin-top: 5.5556vw;
-	}
 	/* file wrapper */
 	.file_wrapper {
 		font-size: 3.6111vw;
@@ -353,12 +348,15 @@ $(document).ready(function(){
 			$("#sangdamcontents").css("display","");
 			$("#endLine1").css("display","");
 			$("#endLine3").css("display","");
-			var endResonTypeValue = $("#etc")[0].checked;
-			if(endResonTypeValue){
-				$("#endLine2").css("display","");
-			}else{
-				$("#endLine2").css("display","none");
+			if($("#etc")[0] != undefined && $("#etc")[0] != null){
+				var endResonTypeValue = $("#etc")[0].checked;
+				if(endResonTypeValue){
+					$("#endLine2").css("display","");
+				}else{
+					$("#endLine2").css("display","none");
+				}
 			}
+			
 			var textSpaceHeight = 300; 
 			oEditors.getById["counselFeedBack"].exec("MSG_EDITING_AREA_RESIZE_STARTED", []); 
 			oEditors.getById["counselFeedBack"].exec("RESIZE_EDITING_AREA", [0, textSpaceHeight]); 
@@ -1131,7 +1129,7 @@ j$(function(){
 					</div>
 	    		</c:if>
    				<div class="data-block text">
-	   				<input type="radio" name="endType" id="end" value="end" <c:if test="${record_detail.endType eq 'end'}">checked</c:if>><label for="end">진행 및 종결 : 마지막 회기 진행 및 케이스 종결</label>
+	   				<input type="radio" name="endType" id="end" value="end" <c:if test="${record_detail.endType eq 'end'}">checked</c:if>><label for="end">종결 : 마지막 회기 진행 및 케이스 종결</label>
 				</div>
 			</div>
 		</div>
@@ -1483,6 +1481,9 @@ j$(function(){
 				
 			</div>
 		</div>
+		</div>
+	<div class="bottom-btn-wrapper">
+		<input type="submit" class="bottom-block-btn" value="저장하기">
 	</div>
 	
 <%-- <table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
@@ -1687,11 +1688,6 @@ j$(function(){
 	<!-- 버튼 영역 시작 -->
 </table> --%>
 
-
-
-<div>
-	<button type="submit" class="submit_doc_button" id="mokrokBtn">등록</button>
-</div>
 
 </form>
 </body>
