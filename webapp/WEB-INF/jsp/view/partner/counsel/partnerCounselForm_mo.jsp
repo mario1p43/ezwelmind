@@ -174,7 +174,7 @@
 				success: function(data) {
 					if (data.resultValue == "success") {
 						alert("주문이 완료되었습니다.");
-						
+						location.href = "/partner/pCounselorMgr/counselFixList";
 					} else {
 						alert("주문에 실패하였습니다.");
 					}
@@ -205,11 +205,11 @@
 				if (data.resultValue == "success") {
 					$("#counselOrderPrice").text(data.price);
 					$("#trOrder").show();
+					$(".bottom-fixed-btn").hide();
 					$("#btnCounselConfirm").hide();
-					// location.href = "/partner/pCounselorMgr/counselFixList";
+					
 				} else {
 					alert("포인트가 부족합니다.");
-					// location.href = "/partner/pCounselorMgr/counselFixList";
 				}
 			}
 		});
