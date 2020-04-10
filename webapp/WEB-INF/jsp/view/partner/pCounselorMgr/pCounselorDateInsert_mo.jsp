@@ -20,11 +20,12 @@
 	.flexGrow{-webkit-flex-grow:1;flex-grow:1;flex:1 1 0;-webkit-flex:1 1 0;}
 	.counsel-wrapper{padding:0 5vw}
 	.counsel-wrapper .title-wrapper{display:flow-root;font-weight:bold;font-size:20px}
-	.counsel-wrapper .content-wrapper{display:flow-root;float:left;width:100%;margin-top:3vw}
+	.counsel-wrapper .content-wrapper{width:100%;margin-top:3vw;}
 	.counsel-wrapper .content-wrapper .subject-block{font-weight:bold;font-size:16px;margin-top:4.5vw}
 	.counsel-wrapper .content-wrapper .subject-description{color:#EB5757;font-size:12px}
 	.counsel-wrapper .content-wrapper .data-wrapper{display:flow-root;padding:2.5vw 0;font-size:14px}
 	.counsel-wrapper .content-wrapper .data-wrapper textarea{width:100%;height:20vw;font-size:14px;border:0;outline:none;resize:none}
+	.counsel-wrapper .content-wrapper .input-block.line-bottom input[type=text]{width:100%;float:left;padding:4px 0;font-size:16px;line-height:130%;border:none;outline:none}
 	.counsel-wrapper .content-wrapper .data-wrapper textarea::placeholder{color:#A2A2A2}
 	.counsel-wrapper .content-wrapper .data-wrapper .label-block{float:left;width:35%;font-weight:bold}
 	.counsel-wrapper .content-wrapper .data-wrapper .label-block-line{font-weight:bold}
@@ -62,6 +63,9 @@
 	.counsel-wrapper .content-wrapper .border-bottom{border-bottom:1px solid #BDBDBD}
 	
 	.counsel-wrapper #sangdamcontents{display:flow-root;width:100%;border-top:1px solid #BDBDBD}
+	.bottom-btn-wrapper{margin-top: 30px;}
+	.bottom-btn-wrapper .bottom-block-btn{left:0;width:100%;height:40px;color:white;font-weight:bold;font-size:16px;background-color:#006CBA}
+	
 	
 	/* file wrapper */
 	.file_wrapper {
@@ -1113,6 +1117,7 @@ j$(function(){
 			</div>
 		</div>
 		<div id="sangdamcontents">
+		
 			<div class="content-wrapper">
 				<div class="subject-block">상담의 목표 및 계획</div>
 				<div class="subject-description">* 1회기 작성내용 그대로 이후 회기에 자동으로 작성됩니다.</div>
@@ -1375,6 +1380,10 @@ j$(function(){
 				</div>
 			</div>
 		</div>
+	
+	</div>
+	<div class="bottom-btn-wrapper">
+		<input type="submit" class="bottom-block-btn" value="저장하기">
 	</div>
 <%-- <table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
 

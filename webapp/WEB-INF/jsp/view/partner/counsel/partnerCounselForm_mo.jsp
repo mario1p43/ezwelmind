@@ -42,6 +42,9 @@
 	.popup-wrapper .popup-body{position:absolute;width:88vw;top:50%;left:50%;transform:translate(-50%, -50%);box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);}
 	.popup-wrapper .popup-body .popup-content{padding:4.5vw;font-size:14px;text-align:center;background:white}
 	.popup-wrapper .popup-body #btnCounselConfirm{height:11vw;line-height:11vw;color:white;text-align:center;font-weight:bold;font-size:16px;background-color:#006CBA}
+	
+	.main_section .main_wrap .main_content{padding-bottom: 90px !important;}
+	#trOrder{margin-top: 30px;}
 </style>
 <script type="text/javascript">
 	$(document).ready(function(){
