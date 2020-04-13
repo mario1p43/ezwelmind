@@ -605,7 +605,7 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 					</tr>
 					<tr>
 						<th>임직원명</th>
-						<td>${list.ownerNm }</td>
+						<td>${list.userNm }</td>
 					</tr>
 					<tr>
 						<th>내담자명</th>

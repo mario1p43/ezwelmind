@@ -708,7 +708,7 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 											<td><input type="radio" name="selectUser" class="selectUser"/></td><!-- 선택 -->
 											<%-- <td >${list.counselCd}</td> --%><!-- 상담코드 -->
 											<td >${list.clientNm }</td><!-- 고객사 -->
-											<th >${list.ownerNm }</th><!-- 임직원명 -->
+											<th >${list.userNm }</th><!-- 임직원명 -->
 											<%-- <th >${list.counselMgrNm }</th> --%><!-- 상담 운영 -->
 											<td  class="viewDetail" val="${list.counselCd }" ><!-- 내담자명 -->
 												<a href="javascript:void(0);"><span style="font-weight: bold; color: blue;">
