@@ -578,7 +578,7 @@
 
 <body>
 
-<div class="web">
+<div class="">
 	<div class="counselor_wrapper">
 		
 			<div class="custom-select-wrapper">

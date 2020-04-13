@@ -282,15 +282,14 @@ function updateShowYn(selectYn){
 				type: 'GET',
 				cache:true,
 				success: function(data, textStatus){
-					window.location.reload();
+					//window.location.reload();
 				}
 			});   
 			
 		}
 	} 
 	
-	//window.location.reload();
-	return false;
+	window.location.reload();
 	
 	
 }
