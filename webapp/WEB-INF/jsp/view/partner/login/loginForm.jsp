@@ -96,6 +96,7 @@
 				    e.preventDefault();
 	    			var params = {};
 	    			params.userId = $("#userId_mo").val();
+	    			params.userPwd = $("#pwd_mo").val();
 	    			j$.ajax({
 	    				url: '/login/checkId',
 	    				async: false,

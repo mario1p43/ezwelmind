@@ -940,7 +940,7 @@
 				FROM MIND_MGR
 				WHERE 1=1
 					AND USER_ID = #{userId}
-
+					AND USER_PWD = #{userPwd}
 	</select>
 
 

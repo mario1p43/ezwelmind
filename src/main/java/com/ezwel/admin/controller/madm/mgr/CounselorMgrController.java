@@ -25,6 +25,7 @@ import com.ezwel.admin.service.center.CenterService;
 import com.ezwel.admin.service.center.dto.CenterDto;
 import com.ezwel.admin.service.common.CommonService;
 import com.ezwel.admin.service.common.dto.CommonDto;
+import com.ezwel.admin.service.employee.dto.EmployeeDto;
 import com.ezwel.admin.service.mgr.CounselorInfoMgrService;
 import com.ezwel.admin.service.mgr.MgrCounselService;
 import com.ezwel.admin.service.mgr.MgrService;
@@ -646,8 +647,9 @@ public class CounselorMgrController {
 		counselorInfoMgrService.mgrEvalGrade(mgrSubDto);
 	}
 	@RequestMapping(value="/checkId", method=RequestMethod.GET)
-	public void checkId(@ModelAttribute MgrDto mgrDto, Model model) {
-	
+	public void checkId(@ModelAttribute MgrDto mgrDto,EmployeeDto employeeDto, Model model) {
+		employeeDto.setUserPwd(mgrDto.getUserPwd());
+		mgrDto.setUserPwd(employeeDto.getUserPwd());
 		model.addAttribute("mgr", counselorInfoMgrService.checkId(mgrDto) );
 	}
 	
