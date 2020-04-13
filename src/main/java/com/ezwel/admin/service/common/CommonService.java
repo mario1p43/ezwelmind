@@ -222,8 +222,8 @@ public class CommonService {
 		session.setAttribute("ConfirmNumber", "123456");
 	}
 
-	public boolean checkId(String userId) {
-		int resultCount = commonMapper.isUser(userId);
+	public boolean checkId(EmployeeDto employeeDto) {
+		int resultCount = commonMapper.isUser(employeeDto);
 		if(resultCount > 0) {
 			return true;
 		} else {

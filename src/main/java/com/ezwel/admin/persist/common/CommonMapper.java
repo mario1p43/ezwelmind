@@ -67,6 +67,6 @@ public interface CommonMapper {
 
 	public String getUserMobile(String userId);
 
-	public int isUser(String userId);
+	public int isUser(EmployeeDto employeeDto);
 	
 }

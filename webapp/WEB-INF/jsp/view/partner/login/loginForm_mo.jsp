@@ -128,7 +128,7 @@
 	    						j$("#loginBtn_mo").remove();
 	    						j$('#resendConfirmKey').css("display","none");
 	    						j$('#btn_check_id').css("display","");
-	    						alert("존재하지 않는 계정입니다.");
+	    						alert("계정정보가 일치하지 않습니다.");
 	    					}
 	    				}
 	    			})

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.ezwel.admin.service.common.CommonService;
+import com.ezwel.admin.service.employee.dto.EmployeeDto;
 import com.ezwel.admin.service.security.UserDetailsHelper;
 import com.ezwel.common.commonController;
 import com.ezwel.core.framework.web.GlobalsProperties;
@@ -78,9 +79,15 @@ public class CommonLoginController extends commonController {
 	}
 	
 	@RequestMapping(value="/login/checkId")
-	public void checkId(Model model, HttpServletRequest request) {
+	public void checkId(Model model,EmployeeDto employeeDto, HttpServletRequest request) {
 		String userId = request.getParameter("userId");
-		boolean isUser = commonService.checkId(userId);
+		String userPwd = request.getParameter("userPwd");
+		employeeDto.setUserId(userId);
+		employeeDto.setUserPwd(userPwd);
+		//userPwd = employeeDto.getUserPwd();
+		boolean isUser = commonService.checkId(employeeDto);
+		
+		
 	
 		if(isUser) {
 			String userMobile = commonService.getUserMobile(userId);      
