@@ -284,6 +284,8 @@
 			height: 100vh;
 			display: flex; display: -webkit-flex;
 			-webkit-justify-content: center; justify-content: center; -webkit-align-items: center; align-items: center;
+			flex-direction: column;
+			
 		}
 		body {
 			background: url("${url:resource('/resources/img/login_background.png')}") no-repeat 50% 50% fixed; 
@@ -366,9 +368,9 @@
 		
 		.m_login_footer{
 			display: flex;
-			position: absolute;
 			bottom: 4.4444vw;
 			flex-direction: column;
+			margin-top: 30px;
 		}
 		.m_login_footer span {
 			font-size: 2.7778vw;

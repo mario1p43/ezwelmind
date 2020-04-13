@@ -492,11 +492,7 @@ a.text_deco_none:hover{
 }
 /* //web css 끝 */
 
-@media(max-width:100px) { 
-	.web {
-		 display:none 
-	}
-}
+
 .web {
 	/* width:100%; */
 }
