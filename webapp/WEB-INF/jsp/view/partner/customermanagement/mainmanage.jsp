@@ -246,7 +246,7 @@ j$(document).ready(function(){
 								<th bgcolor="#F5F5F5" align="center">사례위험도</th>
 								<td>${defaultInfo.risks}</td>
 								<th bgcolor="#F5F5F5" align="center">회기정보</th>
-								<td>${customerServiceInfo.intakeNum}</td>
+								<td>${defaultInfo.extensionNum}</td>
 							</tr>
 							<tr>
 								<th bgcolor="#F5F5F5" align="center">서비스 기간</th>

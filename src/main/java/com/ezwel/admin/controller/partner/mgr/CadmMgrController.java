@@ -52,16 +52,14 @@ public class CadmMgrController {
 
 
 	@RequestMapping(value = "/modifyMyInformation")
-	public String myImformation(@ModelAttribute MgrDto mgrDto, @ModelAttribute MgrSubDto mgrSubDto,@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, @ModelAttribute MgrCertDto mgrCertDto, Model model, HttpServletRequest request ) {
+	public String myImformation(@ModelAttribute MgrSubDto mgrSubDto,@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, @ModelAttribute MgrCertDto mgrCertDto, Model model, HttpServletRequest request ) {
 		Manager manager = UserDetailsHelper.getAuthenticatedUser();
-
-		mgrDto.setUserId( Base64Utils.encode(StringUtils.defaultString(manager.getUserId())));
 		
 		setMenu(model);
 		model.addAttribute("loginId", manager.getUserId());
 
-		mgrSubDto.setUserId(mgrDto.getUserId());
-		mgrCertDto.setUserId(mgrDto.getUserId());
+		mgrSubDto.setUserId(manager.getUserId());
+		mgrCertDto.setUserId(manager.getUserId());
 		counselorInfoMgrDto.setUserId(manager.getUserId());
 		
 		
@@ -111,12 +109,11 @@ public class CadmMgrController {
 		if(StringUtils.isNotNull(mgrDto.getUserPwd())){
 			mgrDto.setUserPwd(encryptComponent.encode(mgrDto.getUserPwd()));
 			mgrCounselService.updateMgrPwd(mgrDto);
-			manager.setImsiPwdYn("N");
 		}
 		
 		mgrCounselService.modifyCounselMgrImsi(mgrDto, mgrSubDto, mgrCertDto, request);
 		mgrCounselService.modifyCounselMgrCareerImsi(mgrDto, mgrCareerArray);
-		mgrCounselService.modifyCounselMgrBook(mgrDto, mgrBookArray);
+		mgrCounselService.modifyCounselMgrBookImsi(mgrDto, mgrBookArray);
 				
 		model.addAttribute("alertYn", "Y");
 		

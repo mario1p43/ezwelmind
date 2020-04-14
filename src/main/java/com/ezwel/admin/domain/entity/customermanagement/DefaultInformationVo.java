@@ -39,4 +39,6 @@ public class DefaultInformationVo {
 	
 	private String teamCd;
 	
+	private String extensionNum;
+	
 }
