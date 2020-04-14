@@ -1580,7 +1580,7 @@
 					<input type="checkbox" class="preferredType" name="preferredType"  value="101169"  /> 정신분적적접근
 					<input type="checkbox" class="preferredType" name="preferredType"  value="101170"  /> 인본주의적 접근
 					<input type="checkbox" class="preferredType" name="preferredType"  value="101171"  /> 현상학적접근(게슈탈트)
-					<input type="checkbox" class="preferredType" name="preferredType"  value=""  /> 기타(주관식)
+					/ 기타(주관식)<input type="text" class="preferredTypeEtc" name="preferredTypeEtc"  value="${mgr.counsFavorEtc }" style="width:500px;" /> 
 				</td>
 			</tr>
 			<!-- 상담성향 -->

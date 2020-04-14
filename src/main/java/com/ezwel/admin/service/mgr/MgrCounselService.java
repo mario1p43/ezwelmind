@@ -441,8 +441,8 @@ public class MgrCounselService {
 	}
 	
 	//패스워드를 변경하는 펑션
-	public void updateMgrPwd(MgrDto mgrDto){
-		counselorInfoMgrMapper.updateMgrPwd(mgrDto);
+	public int updateMgrPwd(MgrDto mgrDto){
+		return counselorInfoMgrMapper.updateMgrPwd(mgrDto);
 	}
 	
 	

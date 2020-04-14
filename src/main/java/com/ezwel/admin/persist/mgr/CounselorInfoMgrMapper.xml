@@ -1874,6 +1874,7 @@
 	<update id="updateMgrPwd" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
 		UPDATE	MIND_MGR
 		SET	USER_PWD = #{userPwd}
+		,   IMSI_PWD_YN	= 'N'
 		WHERE	USER_ID = #{userId}
 	</update>
 
