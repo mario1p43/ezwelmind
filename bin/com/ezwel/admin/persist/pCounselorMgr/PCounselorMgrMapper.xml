@@ -303,7 +303,7 @@
 	</insert>
 	
 	<insert id="insertCounselRecordHis" parameterType="com.ezwel.admin.domain.entity.pCounselorMgr.MindCounselCounselDetail">
-		INSERT INTO MIND_COUNSEL_RECORD_HIS (
+		INSERT INTO MIND_COUNSEL_RECORD_HISTORY (
 			RECORD_CD
 			, FILE_NM
 			, FILE_PATH
