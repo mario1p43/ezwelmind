@@ -301,6 +301,18 @@
 			</if>
 		)
 	</insert>
+	
+	<insert id="insertCounselRecordHis" parameterType="com.ezwel.admin.domain.entity.pCounselorMgr.MindCounselCounselDetail">
+		INSERT INTO MIND_COUNSEL_RECORD_HIS (
+			RECORD_CD
+			, FILE_NM
+			, FILE_PATH
+		) VALUES (
+			#{recordCd}
+			,#{fileNm}
+			,#{filePath}
+		)
+	</insert>
 
 	<!-- 	상담 소견 등록  -->
 	<insert id="insertRecordTextDate" parameterType="com.ezwel.admin.service.pCounselorMgr.dto.MindCounselRecordTxtDto">
