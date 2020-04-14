@@ -287,8 +287,9 @@
 					,A.RECORD_STATUS  as recordStatus
 					,A.EXTENSION_STATUS   as extensionStatus
 					,E.USER_NM as counselMgrNm
-					, (SELECT USER_STATUS FROM MIND_USER WHERE USER_KEY = A.USER_KEY) as userStatus
-					, (SELECT USE_YN FROM MIND_USER WHERE USER_KEY = A.USER_KEY) as useYn
+					, U.USER_STATUS as userStatus
+					, U.USER_NM as userNm
+					, U.USE_YN as useYn
 					,C.COUNSEL_RESERV_CHK
 					,C.RELATION
 					,F.RISKS AS risk
@@ -318,6 +319,8 @@
                 AND A.INTAKE_CD = G.INTAKE_CD
 				LEFT JOIN (SELECT AA.USER_NM, BB.CLIENT_CD FROM MIND_MGR AA LEFT JOIN MIND_CLIENT BB ON AA.USER_ID = BB.COUNSEL_MGR_ID ) as E 
 				ON A.CLIENT_CD = E.CLIENT_CD
+				LEFT JOIN MIND_USER U
+				ON A.USER_KEY = U.USER_KEY
 				LEFT JOIN MIND_COUNSEL_RECORD as F
                 ON A.COUNSEL_CD = F.COUNSEL_CD, 
 					MIND_COUNSEL_INTAKE C, MIND_MGR D
@@ -349,7 +352,7 @@
 				AND		A.CLIENT_CD = #{clientCd}
 				</if>
 				<if test="isNotNull(ownerNm) and isNotNull(centerSeq)">
-					AND	CT.OWNER_NM = #{ownerNm}
+					AND	U.USER_NM like CONCAT ( '%',#{ownerNm},'%') 
 				</if>
 				<if test="counselCd != 0">
 				AND		A.COUNSEL_CD = #{counselCd}
