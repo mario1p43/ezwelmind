@@ -320,7 +320,7 @@
                 ON A.INTAKE_CD = G.INTAKE_CD
 				LEFT JOIN (SELECT AA.USER_NM, BB.CLIENT_CD FROM MIND_MGR AA LEFT JOIN MIND_CLIENT BB ON AA.USER_ID = BB.COUNSEL_MGR_ID ) as E 
 				ON A.CLIENT_CD = E.CLIENT_CD
-				JOIN (select MAX(record_cd) as record_cd,COUNSEL_CD from MIND_COUNSEL_RECORD group by counsel_cd )as F
+				JOIN MIND_COUNSEL_RECORD  F
                 ON A.COUNSEL_CD = F.COUNSEL_CD, 
 					MIND_COUNSEL_INTAKE C, MIND_MGR D
 				<if test="isNotNull(centerSeq) and (centerSeq > 0)">
