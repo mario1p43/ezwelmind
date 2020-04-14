@@ -109,6 +109,13 @@ public class CadmMgrController {
 		if(StringUtils.isNotNull(mgrDto.getUserPwd())){
 			mgrDto.setUserPwd(encryptComponent.encode(mgrDto.getUserPwd()));
 			mgrCounselService.updateMgrPwd(mgrDto);
+			int result = mgrService.userImsiPwdUpdate(mgrDto);
+			
+			if(result == 1){
+				model.addAttribute("resultVal", "success");
+			}else{
+				model.addAttribute("resultVal", "fail");
+			}
 		}
 		
 		mgrCounselService.modifyCounselMgrImsi(mgrDto, mgrSubDto, mgrCertDto, request);

@@ -131,6 +131,8 @@
 		, DATE_FORMAT(STR_TO_DATE(A.SCHEDULE_DT, '%Y%m%d'),'%Y-%m-%d') AS scheduleDt 
 		, IFNULL(A.EXTENSION_NUM, '1') AS extensionNum , A.STATUS AS status 
 		, (SELECT USER_NM FROM MIND_MGR WHERE USER_ID = B.COUNSEL_MGR_ID) AS counselMgrNm 
+		, F.risks
+		, A.EXTENSION_NUM as extensionNum
 		FROM MIND_COUNSEL A 
         LEFT OUTER JOIN MIND_CLIENT B 
 		ON A.CLIENT_CD = B.CLIENT_CD 
@@ -141,7 +143,8 @@
 		ON A.INTAKE_CD = D.INTAKE_CD 
 		AND A.CLIENT_CD = D.CLIENT_CD 
 		LEFT OUTER JOIN MIND_MGR E 
-		ON A.COUNSELOR_ID = E.USER_ID        
+		ON A.COUNSELOR_ID = E.USER_ID      
+		LEFT JOIN MIND_COUNSEL_RECORD F on F.COUNSEL_CD = A.COUNSEL_CD  
 		WHERE 1=1 
 		AND A.COUNSEL_CD =  #{counselCd}
 	</select>
@@ -157,6 +160,7 @@
 			, DOC_TYPE
 			, APPR_STATUS
 			, REG_DT
+			, COUNSEL_CD
 		) values (
 			#{recordCd}
 			, #{fileNm}
@@ -168,6 +172,7 @@
 			, #{docType}
 			, '1'
 			, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+			, #{counselCd}
 		)
 	</insert>
 	
