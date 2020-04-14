@@ -290,7 +290,7 @@
 					, (SELECT USE_YN FROM MIND_USER WHERE USER_KEY = A.USER_KEY) as useYn
 					,C.COUNSEL_RESERV_CHK
 					,C.RELATION
-					,F.RISKS AS risk
+					,(select RISKS from MIND_COUNSEL_RECORD where COUNSEL_CD =A.COUNSEL_CD and record_cd =F.record_cd)   AS risk
 					,G.File_NM AS filename1
                     ,G.FILE_PATH AS filefath1
                     ,G.APPR_STATUS AS apprStatus1
@@ -317,9 +317,8 @@
                 AND A.INTAKE_CD = G.INTAKE_CD
 				LEFT JOIN (SELECT AA.USER_NM, BB.CLIENT_CD FROM MIND_MGR AA LEFT JOIN MIND_CLIENT BB ON AA.USER_ID = BB.COUNSEL_MGR_ID ) as E 
 				ON A.CLIENT_CD = E.CLIENT_CD
-				JOIN (SELECT COUNSEL_CD, record_cd, risks FROM MIND_COUNSEL_RECORD ) as F
-				JOIN (select MAX(record_cd) as record_cd,COUNSEL_CD from MIND_COUNSEL_RECORD group by counsel_cd )as FF
-                ON A.COUNSEL_CD = F.COUNSEL_CD and F.record_cd = FF.record_cd and F.COUNSEL_CD =FF.COUNSEL_CD, 
+				JOIN (select MAX(record_cd) as record_cd,COUNSEL_CD from MIND_COUNSEL_RECORD group by counsel_cd )as F
+                ON A.COUNSEL_CD = F.COUNSEL_CD, 
 					MIND_COUNSEL_INTAKE C, MIND_MGR D
 				<if test="isNotNull(centerSeq) and (centerSeq > 0)">
 					JOIN MIND_CENTER CT
