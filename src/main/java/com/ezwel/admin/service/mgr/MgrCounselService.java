@@ -134,16 +134,17 @@ public class MgrCounselService {
 			mgrDto.setUserPwd(encryptComponent.encode(mgrDto.getUserPwd()));
 			counselorInfoMgrService.insertMgrInfo(mgrDto);
 			
-			// 사진파일이 실제 등록되 있을때만 db에 값 매핑
+
+
+			counselorInfoMgrMapper.insertCounselorInfoMgr(mgrSubDto);
+			
+			// 사진파일이 실제 등록되 있을때만 db에 값 매핑			
 			if (mgrCertDto.getMultiMap().get("picAdd").getMulitMultipartFile().getSize() > 0) {
 				mgrSubDto.setFileNm(mgrCertDto.getMultiMap().get("picAdd").getFileNm());
 				mgrSubDto.setFilePath(mgrCertDto.getMultiMap().get("picAdd").getFileFullPath());			
 			}
-
-			counselorInfoMgrMapper.insertCounselorInfoMgr(mgrSubDto);
 			
 			FileUtils.fileAddUpload(mgrCertDto, FileUploadUtils.UPLOAD_DIR_PROP);
-		
 			
 		
 		/*Set<String> set = mgrCertDto.getMultiMap().keySet();

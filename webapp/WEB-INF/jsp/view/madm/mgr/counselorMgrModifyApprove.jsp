@@ -1165,7 +1165,7 @@ function changeCert(num){
 					<table>
 		    			<tr>
 		    				<td>
-								<input type="text" name="userNm" value="${mgr.userNm}"/>
+								<input type="text" name="userNm" value="${mgr.userNm}" readonly/>
 								<input type="hidden" name="userId" id="userId" value="${mgr.userId}"/>(${mgr.userId})
 							</td>
 		    				
@@ -1221,10 +1221,10 @@ function changeCert(num){
 						</tr>
 						<tr>
 							<td align="center">
-								<input type="text" name="university" style="width:95%;" value="${mgr.university}"/>
+								<input type="text" name="university" style="width:95%;" value="${mgr.university}" readonly/>
 							</td>
 							<td align="center">
-								<input type="text" name="department" style="width:95%;" value="${mgr.department}"/>
+								<input type="text" name="department" style="width:95%;" value="${mgr.department}" readonly/>
 							</td>
 							<td align="center">
 								<select name="education" id="education" style="width:95%;">
@@ -1245,10 +1245,10 @@ function changeCert(num){
 						</tr>
 						<tr>
 							<td align="center">
-								<input type="text" name="university2" style="width:95%;" value="${mgr.university2}"/>
+								<input type="text" name="university2" style="width:95%;" value="${mgr.university2}" readonly/>
 							</td>
 							<td align="center">
-								<input type="text" name="department2" style="width:95%;" value="${mgr.department2}"/>
+								<input type="text" name="department2" style="width:95%;" value="${mgr.department2}" readonly/>
 							</td>
 							<td align="center">
 								<select name="education2" id="education2" style="width:95%;">
@@ -1269,10 +1269,10 @@ function changeCert(num){
 						</tr>
 						<tr>
 							<td align="center">
-								<input type="text" name="university3" style="width:95%;" value="${mgr.university3}"/>
+								<input type="text" name="university3" style="width:95%;" value="${mgr.university3}" readonly/>
 							</td>
 							<td align="center">
-								<input type="text" name="department3" style="width:95%;" value="${mgr.department3}"/>
+								<input type="text" name="department3" style="width:95%;" value="${mgr.department3}" readonly/>
 							</td>
 							<td align="center">
 								<select name="education3" id="education3" style="width:95%;">
@@ -1308,8 +1308,8 @@ function changeCert(num){
 						<tbody id="tbl_organization_body">
 							<c:if test="${mgrCareerBefore.size() < 1}">
 							<tr id="organizationRow1">
-								<td align="center"><input type="text" style="width:95%;" id="organizationName1Before" name="organizationNameBefore" /></td>
-								<td align="center"><input type="text" style="width:95%;" id="role1Before" name="roleBefore" /></td>
+								<td align="center"><input type="text" style="width:95%;" id="organizationName1Before" name="organizationNameBefore" readonly/></td>
+								<td align="center"><input type="text" style="width:95%;" id="role1Before" name="roleBefore" readonly/></td>
 								<td align="center">
 									<input type="text" id="roleStartDate1Before" name="roleStartDateBefore" class="startDt cal_box" datetimeonly="true" style="width:93px;" />~
 									<input type="text" id="roleEndDate1Before" name="roleEndDateBefore"  class="endDt cal_box" datetimeonly="true" style="width:93px;" />
@@ -1317,11 +1317,11 @@ function changeCert(num){
 							</c:if>
 							<c:forEach var="list" items="${mgrCareerBefore}" varStatus="listCnt">
 								<tr id="organizationRow${listCnt.index}">
-									<td align="center"><input type="text" style="width:95%;" id="organizationName${listCnt.index}Before" name="organizationNameBefore" value="${list.organizationName}"/></td>
-									<td align="center"><input type="text" style="width:95%;" id="role${listCnt.index}Before" name="roleBefore" value="${list.role}"/></td>
+									<td align="center"><input type="text" style="width:95%;" id="organizationName${listCnt.index}Before" name="organizationNameBefore" value="${list.organizationName}" readonly/></td>
+									<td align="center"><input type="text" style="width:95%;" id="role${listCnt.index}Before" name="roleBefore" value="${list.role}" readonly/></td>
 									<td align="center">
-										<input type="text" id="roleStartDate${listCnt.index}Before" name="roleStartDateBefore" class="startDt cal_box" datetimeonly="true" style="width:93px;" value="${list.roleStartDate}"/>~
-										<input type="text" id="roleEndDate${listCnt.index}Before" name="roleEndDateBefore"  class="endDt cal_box" datetimeonly="true" style="width:93px;" value="${list.roleEndDate}"/>
+										<input type="text" id="roleStartDate${listCnt.index}Before" name="roleStartDateBefore" class="startDt cal_box" datetimeonly="true" style="width:93px;" value="${list.roleStartDate}" readonly/>~
+										<input type="text" id="roleEndDate${listCnt.index}Before" name="roleEndDateBefore"  class="endDt cal_box" datetimeonly="true" style="width:93px;" value="${list.roleEndDate}" readonly/>
 								</tr>		
 							</c:forEach>
 						</tbody>
@@ -1346,17 +1346,17 @@ function changeCert(num){
 								<td align="center"><input type="text" style="width:95%;" id="organizationName1" name="organizationName" /></td>
 								<td align="center"><input type="text" style="width:95%;" id="role1" name="role" /></td>
 								<td align="center">
-									<input type="text" id="roleStartDate1" name="roleStartDate" class="startDt cal_box" datetimeonly="true" style="width:93px;" />~
-									<input type="text" id="roleEndDate1" name="roleEndDate"  class="endDt cal_box" datetimeonly="true" style="width:93px;" />
+									<input type="text" id="roleStartDate1" name="roleStartDate" class="startDt cal_box" datetimeonly="true" style="width:93px;" readonly/>~
+									<input type="text" id="roleEndDate1" name="roleEndDate"  class="endDt cal_box" datetimeonly="true" style="width:93px;" readonly/>
 							</tr>		
 							</c:if>
 							<c:forEach var="list" items="${mgrCareer}" varStatus="listCnt">
 								<tr id="organizationRow${listCnt.index}">
-									<td align="center"><input type="text" style="width:95%;" id="organizationName${listCnt.index}" name="organizationName" value="${list.organizationName}"/></td>
-									<td align="center"><input type="text" style="width:95%;" id="role${listCnt.index}" name="role" value="${list.role}"/></td>
+									<td align="center"><input type="text" style="width:95%;" id="organizationName${listCnt.index}" name="organizationName" value="${list.organizationName}" readonly/></td>
+									<td align="center"><input type="text" style="width:95%;" id="role${listCnt.index}" name="role" value="${list.role}" readonly/></td>
 									<td align="center">
-										<input type="text" id="roleStartDate${listCnt.index}" name="roleStartDate" class="startDt cal_box" datetimeonly="true" style="width:93px;" value="${list.roleStartDate}"/>~
-										<input type="text" id="roleEndDate${listCnt.index}" name="roleEndDate"  class="endDt cal_box" datetimeonly="true" style="width:93px;" value="${list.roleEndDate}"/>
+										<input type="text" id="roleStartDate${listCnt.index}" name="roleStartDate" class="startDt cal_box" datetimeonly="true" style="width:93px;" value="${list.roleStartDate}" readonly/>~
+										<input type="text" id="roleEndDate${listCnt.index}" name="roleEndDate"  class="endDt cal_box" datetimeonly="true" style="width:93px;" value="${list.roleEndDate}" readonly/>
 								</tr>		
 							</c:forEach>
 						</tbody>
@@ -1443,9 +1443,9 @@ function changeCert(num){
 						<tbody id="tbl_organization_body_book">
 							<c:forEach var="list" items="${mgrBookBefore}" varStatus="listCnt">
         					<tr id="mgrBookRow${listCnt.index}">
-								<td align="center"><input type="text" style="width:95%;" id="bookTitle${listCnt.index}Before" name="bookTitleBefore" value="${list.bookTitle}" /></td>
-								<td align="center"><input type="text" style="width:95%;" id="bookOrg${listCnt.index}Before" name="bookOrgBefore" value="${list.bookOrg}" /></td>
-								<td align="center"><input type="text" style="width:95%;" id="author${listCnt.index}Before" name="authorBefore" value="${list.author}" /></td>
+								<td align="center"><input type="text" style="width:95%;" id="bookTitle${listCnt.index}Before" name="bookTitleBefore" value="${list.bookTitle}" readonly/></td>
+								<td align="center"><input type="text" style="width:95%;" id="bookOrg${listCnt.index}Before" name="bookOrgBefore" value="${list.bookOrg}" readonly/></td>
+								<td align="center"><input type="text" style="width:95%;" id="author${listCnt.index}Before" name="authorBefore" value="${list.author}" readonly/></td>
 								<td align="center">
 									<select id="bookYear${listCnt.index}Before" name="bookYearBefore" style="width:95%;">
 									<c:forEach var="i" begin = "0" end="60" step="1" >
@@ -1475,9 +1475,9 @@ function changeCert(num){
 						<tbody id="tbl_organization_body_book">
 							<c:forEach var="list" items="${mgrBook}" varStatus="listCnt">
         					<tr id="mgrBookRow${listCnt.index}">
-								<td align="center"><input type="text" style="width:95%;" id="bookTitle${listCnt.index}" name="bookTitle" value="${list.bookTitle}" /></td>
-								<td align="center"><input type="text" style="width:95%;" id="bookOrg${listCnt.index}" name="bookOrg" value="${list.bookOrg}" /></td>
-								<td align="center"><input type="text" style="width:95%;" id="author${listCnt.index}" name="author" value="${list.author}" /></td>
+								<td align="center"><input type="text" style="width:95%;" id="bookTitle${listCnt.index}" name="bookTitle" value="${list.bookTitle}" readonly/></td>
+								<td align="center"><input type="text" style="width:95%;" id="bookOrg${listCnt.index}" name="bookOrg" value="${list.bookOrg}" readonly/></td>
+								<td align="center"><input type="text" style="width:95%;" id="author${listCnt.index}" name="author" value="${list.author}" readonly/></td>
 								<td align="center">
 									<select id="bookYear${listCnt.index}" name="bookYear" style="width:95%;">
 									<c:forEach var="i" begin = "0" end="60" step="1" >
@@ -1544,7 +1544,7 @@ function changeCert(num){
 			<tr align="left" height="30px">
 				<th class="line" height="30" align="left" >* 한줄소개</th>
 				<td class="line" colspan="3" style="background:${mgrBefore.memo == mgr.memo ? '':'#f9ba7f'}">
-					<input type="text" name="memo" style="width:40%;" value="${mgr.memo}" data-validation="required"  data-validation-error-msg-required="한줄소개를 확인 해주세요."/>
+					<input type="text" name="memo" style="width:40%;" value="${mgr.memo}" data-validation="required"  readonly/>
 				</td>
 			</tr>
 			<tr align="left" height="30px">
@@ -2220,7 +2220,8 @@ function changeCert(num){
 					<input type="checkbox" class="preferredType" name="preferredType"  value="101169" onclick="return false;" /> 정신분적적접근
 					<input type="checkbox" class="preferredType" name="preferredType"  value="101170" onclick="return false;" /> 인본주의적 접근
 					<input type="checkbox" class="preferredType" name="preferredType"  value="101171" onclick="return false;" /> 현상학적접근(게슈탈트)
-					<input type="checkbox" class="preferredType" name="preferredType"  value="" onclick="return false;" /> 기타(주관식)
+					/ 기타(주관식)<input type="text" class="preferredTypeEtc" name="preferredTypeEtc"  value="${mgr.counsFavorEtc }" style="width:500px;" readonly/>
+					
 				</td>
 			</tr>
 			

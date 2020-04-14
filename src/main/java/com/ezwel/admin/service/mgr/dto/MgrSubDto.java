@@ -164,6 +164,9 @@ public class MgrSubDto  extends FileMind {
 	private String coreVal;
 	
 	private String specialHearing;
+	
+	//상담선호 선호접근 주관식(기타)
+	private String preferredTypeEtc;
 
 	@Override
 	public String contextFilePath(String fileNm) {

@@ -239,4 +239,7 @@ public class MgrSub extends PagingVo{
 	
 	//심리적응급처치(위기개입)
 	private String specialHeal;
+	
+	//상담선호 선호접근 기타(주관식)
+	private String counsFavorEtc;
 }
