@@ -161,9 +161,6 @@
 					,E.USER_NM as counselMgrNm
 					,C.COUNSEL_RESERV_CHK
 					,C.RELATION
-					, U.USER_STATUS as userStatus
-					, U.USER_NM as userNm
-					, U.USE_YN as useYn
 					,G.File_NM AS filename1
                     ,G.FILE_PATH AS filefath1
                     ,G.APPR_STATUS AS apprStatus1
