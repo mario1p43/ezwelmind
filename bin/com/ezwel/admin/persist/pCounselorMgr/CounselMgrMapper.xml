@@ -287,12 +287,11 @@
 					,A.RECORD_STATUS  as recordStatus
 					,A.EXTENSION_STATUS   as extensionStatus
 					,E.USER_NM as counselMgrNm
-					, U.USER_STATUS as userStatus
-					, U.USER_NM as userNm
-					, U.USE_YN as useYn
+					, (SELECT USER_STATUS FROM MIND_USER WHERE USER_KEY = A.USER_KEY) as userStatus
+					, (SELECT USE_YN FROM MIND_USER WHERE USER_KEY = A.USER_KEY) as useYn
 					,C.COUNSEL_RESERV_CHK
 					,C.RELATION
-					,(select RISKS from MIND_COUNSEL_RECORD where COUNSEL_CD =A.COUNSEL_CD and record_cd =F.record_cd)   AS risk
+					,F.RISKS AS risk
 					,G.File_NM AS filename1
                     ,G.FILE_PATH AS filefath1
                     ,G.APPR_STATUS AS apprStatus1
@@ -314,13 +313,12 @@
 						</otherwise>
 					</choose>
 				FROM	MIND_COUNSEL A 
-				JOIN MIND_USER U
-				ON A.USER_KEY = U.USER_KEY
 				LEFT JOIN (SELECT File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD,INTAKE_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='1' ) as G 
-                ON A.INTAKE_CD = G.INTAKE_CD
+                ON A.COUNSEL_CD = G.COUNSEL_CD
+                AND A.INTAKE_CD = G.INTAKE_CD
 				LEFT JOIN (SELECT AA.USER_NM, BB.CLIENT_CD FROM MIND_MGR AA LEFT JOIN MIND_CLIENT BB ON AA.USER_ID = BB.COUNSEL_MGR_ID ) as E 
 				ON A.CLIENT_CD = E.CLIENT_CD
-				JOIN MIND_COUNSEL_RECORD  F
+				LEFT JOIN MIND_COUNSEL_RECORD as F
                 ON A.COUNSEL_CD = F.COUNSEL_CD, 
 					MIND_COUNSEL_INTAKE C, MIND_MGR D
 				<if test="isNotNull(centerSeq) and (centerSeq > 0)">
@@ -351,7 +349,7 @@
 				AND		A.CLIENT_CD = #{clientCd}
 				</if>
 				<if test="isNotNull(ownerNm) and isNotNull(centerSeq)">
-					AND	U.USER_NM like CONCAT ( '%',#{ownerNm},'%') 
+					AND	CT.OWNER_NM = #{ownerNm}
 				</if>
 				<if test="counselCd != 0">
 				AND		A.COUNSEL_CD = #{counselCd}
@@ -388,6 +386,7 @@
 		</choose>
 	
 	</select>
+
 
 
 
