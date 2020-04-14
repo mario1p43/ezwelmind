@@ -110,6 +110,7 @@ public class CadmMgrController {
 				
 		if(StringUtils.isNotNull(mgrDto.getUserPwd())){
 			mgrDto.setUserPwd(encryptComponent.encode(mgrDto.getUserPwd()));
+			mgrCounselService.updateMgrPwd(mgrDto);
 		}
 		
 		mgrCounselService.modifyCounselMgrImsi(mgrDto, mgrSubDto, mgrCertDto, request);
