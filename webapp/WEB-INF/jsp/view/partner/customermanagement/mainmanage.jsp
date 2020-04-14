@@ -448,7 +448,7 @@ j$(document).ready(function(){
 					<td height="10px"></td>
 				</tr>
 				<tr>
-					<td height="10px"><a href="javascript:fileDownLoad('/extentiondocuments.zip', 'extentiondocuments.zip');"><span>연장 신청서류 다운로드</span></a></td>
+					<td height="10px"><a href="javascript:fileDownLoad('/customer/2020/4//649bd2d5-9a91-4d7a-a0c2-1cd2f9d64242.zip', 'extentiondocuments.zip');"><span>연장 신청서류 다운로드</span></a></td>
 				</tr>
 				<tr>
 					<td height="10px"></td>

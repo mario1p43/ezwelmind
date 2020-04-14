@@ -23,7 +23,6 @@
 	.submit_btn {width: 100%; height: 11.1111vw; background-color: #006CBA; font-size: 4.4444vw; font-weight: bold; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); color:white;border: none; margin-top:4.4444vw;}
 	.counselDiagnosis {border: none; background-color: #F2F2F2; color:#2F80ED; font-size: 3.6111vw;}
 	.info_content a { color: #2F80ED;}
-
 	/* file wrapper */
 	.file_label {
 		margin-top:2.2222vw;
@@ -104,7 +103,6 @@ j$(document).ready(function(){
 		j$(this).siblings('input[type=file]').trigger('click');
 		return false;
 	});
-
 	j$('.file_chooser_wrapper input').on('change', function() {
 		j$(this).siblings('a').text(this.files[0].name);
 	});
@@ -225,7 +223,6 @@ j$(document).ready(function(){
 	
 	
 });
-
 </script>
 </head>
 
@@ -501,7 +498,7 @@ j$(document).ready(function(){
 	<div class="box_description">연장 신청을 하시려면 아래의 파일을 다운로드 받아 업로드 후 승인요청 해주시기 바랍니다.</div>
 	<div class="doc_donwload_wrapper">
 		<img src="${url:resource('/resources/img/download.png')}"/>
-		<div class="download_file_button"><a href="javascript:fileDownLoad('/extentiondocuments.zip', 'extentiondocuments.zip');">연장 신청서류 다운로드</a></div>
+		<div class="download_file_button"><a href="javascript:fileDownLoad('/customer/2020/4//649bd2d5-9a91-4d7a-a0c2-1cd2f9d64242.zip', 'extentiondocuments.zip');">연장 신청서류 다운로드</a></div>
 	</div>
 	<div class="agreement_wrapper">
 		<form id="addExtendApplyFiles" action="/partner/customermanagement/addAgreementFiles" method="POST" enctype="multipart/form-data">
