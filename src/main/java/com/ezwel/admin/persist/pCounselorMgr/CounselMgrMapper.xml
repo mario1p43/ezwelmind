@@ -317,8 +317,9 @@
                 AND A.INTAKE_CD = G.INTAKE_CD
 				LEFT JOIN (SELECT AA.USER_NM, BB.CLIENT_CD FROM MIND_MGR AA LEFT JOIN MIND_CLIENT BB ON AA.USER_ID = BB.COUNSEL_MGR_ID ) as E 
 				ON A.CLIENT_CD = E.CLIENT_CD
-				LEFT JOIN MIND_COUNSEL_RECORD as F
-                ON A.COUNSEL_CD = F.COUNSEL_CD, 
+				JOIN (SELECT COUNSEL_CD, record_cd, risks FROM MIND_COUNSEL_RECORD ) as F
+				JOIN (select MAX(record_cd) as record_cd,COUNSEL_CD from MIND_COUNSEL_RECORD group by counsel_cd )as FF
+                ON A.COUNSEL_CD = F.COUNSEL_CD and F.record_cd = FF.record_cd and F.COUNSEL_CD =FF.COUNSEL_CD, 
 					MIND_COUNSEL_INTAKE C, MIND_MGR D
 				<if test="isNotNull(centerSeq) and (centerSeq > 0)">
 					JOIN MIND_CENTER CT

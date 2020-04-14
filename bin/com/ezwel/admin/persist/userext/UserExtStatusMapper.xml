@@ -50,15 +50,10 @@
 					WHERE COUNSEL_CD =(select COUNSEL_CD
                     FROM MIND_COUNSEL TT where COUNSEL_CD != '91756' AND  INTAKE_CD =A.INTAKE_CD AND REG_DT <![CDATA[<=]]> date(now())  order by COUNSEL_CD DESC limit 1)) AS risks
                     FROM  MIND_COUNSEL_INTAKE C
-					JOIN (SELECT x.COUNSELOR_ID,x.INTAKE_CD,x.USER_KEY,x.CENTER_SEQ,x.CLIENT_CD,x.schedule_DT 
-							from (select * FROM MIND_COUNSEL
-                            where COUNSEL_CD != '91756' AND schedule_DT <![CDATA[<=]]> date(now())) x
-							INNER JOIN (
-							  SELECT COUNSELOR_ID,INTAKE_CD,USER_KEY,CENTER_SEQ,CLIENT_CD,MAX(schedule_DT) as schedule_DT
-							  FROM MIND_COUNSEL 
-							  GROUP BY INTAKE_CD
-					) AS max USING (schedule_DT)) A
+					JOIN (SELECT COUNSELOR_ID,INTAKE_CD,USER_KEY,CENTER_SEQ,CLIENT_CD,schedule_DT  from MIND_COUNSEL) A
+					JOIN (select MAX(schedule_DT) as schedule_DT,INTAKE_CD FROM MIND_COUNSEL where COUNSEL_CD != '91756' AND schedule_DT <![CDATA[<=]]> date(now())  group by INTAKE_CD ) XB
 					ON		C.INTAKE_CD = A.INTAKE_CD
+                    AND A.INTAKE_CD =XB.INTAKE_CD AND A.schedule_DT = XB.schedule_DT
                     JOIN 
 					(SELECT COUNSEL_FILE_SEQ,File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD,INTAKE_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='1' ) F
 						ON C.INTAKE_CD = F.INTAKE_CD
