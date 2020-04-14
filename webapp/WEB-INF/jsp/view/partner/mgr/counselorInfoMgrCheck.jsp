@@ -399,6 +399,56 @@
 			}	
 			return false;
 		});	
+		
+		
+		
+		for (i = new Date().getFullYear(); i > 1959; i--){
+		    $('#eduYear').append($('<option />').val(i).html(i));
+		    $('#eduYear2').append($('<option />').val(i).html(i));
+		    $('#eduYear3').append($('<option />').val(i).html(i));
+		}
+
+		$('#eduYear option[value=2010]').attr('selected', 'selected');
+		$('#eduYear2 option[value=2010]').attr('selected', 'selected');
+		$('#eduYear3 option[value=2010]').attr('selected', 'selected');
+
+		<c:if test='${not empty mgr.eduYear}'>
+			$("#eduYear option[value='${mgr.eduYear}']").attr('selected', 'selected');
+		</c:if>
+		<c:if test='${not empty mgr.eduYear2}'>
+			$("#eduYear2 option[value='${mgr.eduYear2}']").attr('selected', 'selected');
+		</c:if>
+		<c:if test='${not empty mgr.eduYear3}'>
+			$("#eduYear3 option[value='${mgr.eduYear3}']").attr('selected', 'selected');
+		</c:if>
+
+		<c:if test='${not empty mgr.eduStatus}'>
+			$("#eduStatus option[value='${mgr.eduStatus}']").attr('selected', 'selected');
+		</c:if>
+
+		<c:if test='${not empty mgr.eduStatus2}'>
+			$("#eduStatus2 option[value='${mgr.eduStatus2}']").attr('selected', 'selected');
+		</c:if>
+
+		<c:if test='${not empty mgr.eduStatus3}'>
+			$("#eduStatus3 option[value='${mgr.eduStatus3}']").attr('selected', 'selected');
+		</c:if>
+
+		<c:if test='${not empty mgr.education}'>
+			$("#education option[value='${mgr.education}']").attr('selected', 'selected');
+		</c:if>
+
+		<c:if test='${not empty mgr.education2}'>
+			$("#education2 option[value='${mgr.education2}']").attr('selected', 'selected');
+		</c:if>
+
+		<c:if test='${not empty mgr.education3}'>
+			$("#education3 option[value='${mgr.education3}']").attr('selected', 'selected');
+		</c:if>
+
+		<c:forEach var="list" items="${mgrBook}" varStatus="listCnt">
+			$("#bookYear${listCnt.index} option[value='${list.bookYear}']").attr('selected', 'selected');
+		</c:forEach>
 	});
 
 	function delCertRow(e,h){
