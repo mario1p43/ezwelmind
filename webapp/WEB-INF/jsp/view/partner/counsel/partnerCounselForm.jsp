@@ -21,10 +21,11 @@
 		});
 		
 		
+		
 		/** 상담사 일정 체크 */
 		$("#btnCounselConfirm").click(function () {
 			
-			$("#popupBox").css("display","none");
+			
 			
 			var centerSeq = $("#centerList").val();
 			var userId = $("#counselorList").val();
@@ -94,9 +95,9 @@
 							});
 						}
 					} else if (data.resultValue == "1002") {
-						alert("상담이 가능한 시간입니다.");
+						//alert("상담이 가능한 시간입니다.");
 						$("#scheduleSeq").val(data.scheduleSeq);
-						doPointCheck();
+						popupBoxShow();
 					} else if (data.resultValue == "1003") {
 						alert("상담사 스케줄이 이미 등록되어 있어서, \n주문이 불가능합니다.");
 					} else if (data.resultValue == "1004") {
@@ -151,6 +152,8 @@
 	 * 상담 가격정보
 	 */ 
 	function doPointCheck() {
+		$("#popupBox").css("display","none");
+		
 		var params = {};
 		params.userKey = $("#userKey").val();
 		params.clientCd = $("#clientCd").val();
@@ -210,7 +213,7 @@
     font-size: 13px;
 }
 
-#btnCounselConfirm{
+#popupBoxBtn{
 	border:1px solid gray;
 	width: 100px;
 	padding:5px;
@@ -227,7 +230,7 @@
 즉시 포인트/회기가 차감되며, 내담자용 페이지에서 확인이 가능합니다. 
 <br>
 내담자와 사전 협의된 일정만 등록하십시오.
-	<div id="btnCounselConfirm" onclick="blind();">확인</div>
+	<div id="popupBoxBtn" onclick="doPointCheck();">확인</div>
 </div>
 <table cellpadding="0" align="left" cellspacing="0" border="0" width="95%">
 	<tr>
@@ -300,7 +303,7 @@
 										<option value="2200">22:00</option>
 									</select>
 									
-						    		<input type="button" onclick="popupBoxShow()" value="상담스케줄 확인 / 주문확인">
+						    		<input type="button" id="btnCounselConfirm"  value="상담스케줄 확인 / 주문확인">
 						    		<div style="padding-top:10px;">
 								 		<strong>[중요공지]</strong><br> 
 								 		<span style="color:red;">상담신청은 서비스기간 내</span>에서만 일정등록이 가능합니다.<br>
