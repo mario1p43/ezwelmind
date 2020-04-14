@@ -9,6 +9,8 @@ public interface EducationInfoMapper {
 
 	public List<EducationInfoDto> getEducationInfoList(EducationInfoDto educationInfoDto);
 	
+	public List<EducationInfoDto> getEducationInfoListExcel(EducationInfoDto educationInfoDto);
+	
 	public List<EducationInfoDto> getEducationInfoPartnerList(EducationInfoDto educationInfoDto);
 	
 	public List<EducationInfoDto> getCenterList();

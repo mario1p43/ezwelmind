@@ -42,8 +42,7 @@
 		
 	</insert>
 
-
-	<select id="getEducationInfoList" resultType="com.ezwel.admin.domain.entity.edu.EducationInfoDto">
+<select id="getEducationInfoList" resultType="com.ezwel.admin.domain.entity.edu.EducationInfoDto">
 		<if test="pageCommonFlag == true">
 			SELECT COUNT(*) pageCommonCount
 			  FROM
@@ -73,6 +72,41 @@
 				</when>
 				<otherwise>
 					LIMIT #{firstIndex} , #{pageSize}
+				</otherwise>
+
+		</choose>
+	</select>
+
+
+	<select id="getEducationInfoListExcel" resultType="com.ezwel.admin.domain.entity.edu.EducationInfoDto">
+		<if test="pageCommonFlag == true">
+			SELECT COUNT(*) pageCommonCount
+			  FROM
+				(
+		</if>
+			select 
+				mei.CENTER_SEQ as centerSeq
+				,mei.EDU_SEQ as eduId
+				, mei.edu_type as eduType
+				, mei.EDU_DIV as eduDiv
+				, mei.EDU_START_DT as eduDtFm
+				, mei.EDU_END_DT as eduDtTo
+				, mei.edu_etc as eduEtc
+				, mei.edu_hour as eduHour
+				, mei.EDU_PLACE as eduPlace
+				, mei.EDU_NM as eduNm
+				, mm.USER_NM as userNm
+				, mm.USER_ID as userId
+				, (select GENDER from mind_mgr_sub mms where mm.USER_ID = mms.USER_ID) as gender
+				, (select CENTER_NM from mind_center mc where mm.CENTER_SEQ = mc.CENTER_SEQ )as centerNm
+			from MIND_EDU_COMPLETE mei INNER JOIN mind_mgr mm ON mei.USER_ID = mm.USER_ID
+			where 1=1
+			order by mei.EDU_SEQ desc
+		<choose>
+				<when test="pageCommonFlag == true">
+					) A
+				</when>
+				<otherwise>
 				</otherwise>
 
 		</choose>

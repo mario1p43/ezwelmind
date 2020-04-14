@@ -36,6 +36,15 @@ public class EducationInfoService {
 		return paging;
 	}
 	
+	public Paging<EducationInfoDto> getEducationInfoListExcel(EducationInfoDto educationInfoDto) {
+		Paging<EducationInfoDto> paging = new Paging<EducationInfoDto>();
+		paging.setPaging(educationInfoDto);
+		paging.setList(educationInfoMapper.getEducationInfoListExcel(educationInfoDto));
+		educationInfoDto.setPageCommonFlag(true);
+		paging.setTotalCount(educationInfoMapper.getEducationInfoListExcel(educationInfoDto).get(0).getPageCommonCount());
+		return paging;
+	}
+	
 	public Paging<EducationInfoDto> getEducationInfoPartnerList(EducationInfoDto educationInfoDto) {
 		Paging<EducationInfoDto> paging = new Paging<EducationInfoDto>();
 		paging.setPaging(educationInfoDto);

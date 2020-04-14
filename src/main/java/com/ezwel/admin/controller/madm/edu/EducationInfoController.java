@@ -46,7 +46,7 @@ public class EducationInfoController {
 		setMenu(model);
 		
 		//EducationInfoDto.setExcelFlag("excel");
-		model.addAttribute(educationInfoService.getEducationInfoList(educationInfoDto));
+		model.addAttribute(educationInfoService.getEducationInfoListExcel(educationInfoDto));
 
 		return "madm/edu/archivestatusExcel";
 	}
