@@ -639,6 +639,9 @@ function updateCheckYnManager(){
 												<td >${list.counselorNm }</td>
 
 												<c:choose>
+													<c:when test="${list.recordStatus == 101238}">
+														<td><strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></td>
+													</c:when>
 													<c:when test="${list.recordStatus == 100695}">
 														<td><strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></td>
 													</c:when>

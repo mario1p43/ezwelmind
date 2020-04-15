@@ -669,6 +669,9 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 							<fmt:formatDate value="${userCounselDt }" pattern="yyyyMMddHHmm" var="userCounselDtStr" />
 							
 							<c:choose>
+								<c:when test="${list.recordStatus == 101238}">
+									<strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong>
+								</c:when>
 								<c:when test="${list.recordStatus == 100695}">
 									<strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong>
 								</c:when>
