@@ -1428,40 +1428,9 @@ function changeCert(num){
 					</table>
 				</td>
 			</tr>
+			
 			<tr align="left" height="30px">
 				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 논문 및 저서 (변경전)</td>
-				<td class="line" colspan="3">
-					<table id="careerTable" cellspacing="0" border="0" width="100%">
-						<thead>
-							<tr>
-								<th width="35%">논문제목/책제목</th>
-								<th width="35%">게재학술지명/출판사명</th>
-								<th width="15%">연구자/저자명</th>
-								<th width="10%">연도</th>
-							</tr>
-						</thead>
-						<tbody id="tbl_organization_body_book">
-							<c:forEach var="list" items="${mgrBookBefore}" varStatus="listCnt">
-        					<tr id="mgrBookRow${listCnt.index}">
-								<td align="center"><input type="text" style="width:95%;" id="bookTitle${listCnt.index}Before" name="bookTitleBefore" value="${list.bookTitle}" readonly/></td>
-								<td align="center"><input type="text" style="width:95%;" id="bookOrg${listCnt.index}Before" name="bookOrgBefore" value="${list.bookOrg}" readonly/></td>
-								<td align="center"><input type="text" style="width:95%;" id="author${listCnt.index}Before" name="authorBefore" value="${list.author}" readonly/></td>
-								<td align="center">
-									<select id="bookYear${listCnt.index}Before" name="bookYearBefore" style="width:95%;">
-									<c:forEach var="i" begin = "0" end="60" step="1" >
-										<option value=<c:out value = "${currentYear-i}"/>><c:out value = "${currentYear-i}"/></option>
-									</c:forEach>
-									</select>
-								</td>
-							</tr>
-							</c:forEach>
-						</tbody>
-			
-					</table>
-				</td>
-			</tr>
-			<tr align="left" height="30px">
-				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 논문 및 저서 (변경후)</td>
 				<td class="line" colspan="3">
 					<table id="careerTable" cellspacing="0" border="0" width="100%">
 						<thead>
@@ -1492,7 +1461,38 @@ function changeCert(num){
 					</table>
 				</td>
 			</tr>
+			<tr align="left" height="30px">
+				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">* 논문 및 저서 (변경후)</td>
+				<td class="line" colspan="3">
+					<table id="careerTable" cellspacing="0" border="0" width="100%">
+						<thead>
+							<tr>
+								<th width="35%">논문제목/책제목</th>
+								<th width="35%">게재학술지명/출판사명</th>
+								<th width="15%">연구자/저자명</th>
+								<th width="10%">연도</th>
+							</tr>
+						</thead>
+						<tbody id="tbl_organization_body_book">
+							<c:forEach var="list" items="${mgrBookBefore}" varStatus="listCnt">
+        					<tr id="mgrBookRow${listCnt.index}">
+								<td align="center"><input type="text" style="width:95%;" id="bookTitle${listCnt.index}Before" name="bookTitleBefore" value="${list.bookTitle}" readonly/></td>
+								<td align="center"><input type="text" style="width:95%;" id="bookOrg${listCnt.index}Before" name="bookOrgBefore" value="${list.bookOrg}" readonly/></td>
+								<td align="center"><input type="text" style="width:95%;" id="author${listCnt.index}Before" name="authorBefore" value="${list.author}" readonly/></td>
+								<td align="center">
+									<select id="bookYear${listCnt.index}Before" name="bookYearBefore" style="width:95%;">
+									<c:forEach var="i" begin = "0" end="60" step="1" >
+										<option value=<c:out value = "${currentYear-i}"/>><c:out value = "${currentYear-i}"/></option>
+									</c:forEach>
+									</select>
+								</td>
+							</tr>
+							</c:forEach>
+						</tbody>
 			
+					</table>
+				</td>
+			</tr>
 			
 			
 			<%-- <tr align="left" height="30px">

@@ -11,7 +11,7 @@ j$(document).ready(function(){
 	
 	if(redirectNo != "Y"){
 		if(chkImsiPwdYn == "Y"){
-			alert("임시비밀번호를 변경해야 이용 가능합니다.");
+			alert("임시비밀번호를 변경해야 이용 가능합니다. \n임시비밀번호를 변경하였을 경우 재로그인 해주세요.");
 			if(userType == "2001"){
 				location.href = "/madm/mypage/modifyMyinfo";
 			}else{
