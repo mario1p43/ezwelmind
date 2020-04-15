@@ -1487,7 +1487,7 @@ j$(function(){
 		</div>
 		</div>
 	<div class="bottom-btn-wrapper">
-		<input type="submit" class="bottom-block-btn" value="저장하기">
+		<input type="button" id="insertBtn" class="bottom-block-btn" value="저장하기">
 	</div>
 	
 <%-- <table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
