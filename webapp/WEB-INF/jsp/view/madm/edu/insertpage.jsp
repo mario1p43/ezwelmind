@@ -102,7 +102,10 @@ j$(document).ready(function(){
 	
 	j$("#addBtn").click(function(){
 		var userNm = j$("#userNm").val();
-		if(userNm == null || userNm == ''){
+		var centerSeq = j$("#centerSeq").val();
+		if(centerSeq == null || centerSeq == ''){
+			j$.alert("상담센터를 선택해 주세요.");
+		}else if(userNm == null || userNm == ''){
 			j$.alert("상담사를 선택해 주세요.");
 		} else{
 			if ( confirm('저장하시겠습니까?') ) {
@@ -196,14 +199,16 @@ j$(document).ready(function(){
 								<th width="15%" bgcolor="#F5F5F5" align="center">교육구분</th>
 								<td width="15%">
 									<select id="eduDiv" name="eduDiv" style="height: 20px;width:95%;">
-										<option value="필수">필수</option>
+										<option value="" selected disabled hidden >선택해주세요.</option>
+										<option value="필수" >필수</option>
 										<option value="선택">선택</option>
 									</select>
 								</td>
 								<th width="15%" bgcolor="#F5F5F5" align="center">교육형태</th>
 								<td width="15%">
 									<select id="eduType" name="eduType" style="height: 20px;width:95%;">
-										<option value="집체">집체</option>
+										<option value="" selected disabled hidden >선택해주세요.</option>
+										<option value="집체" >집체</option>
 										<option value="온라인">온라인</option>
 									</select>
 								</td>
