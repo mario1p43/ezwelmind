@@ -65,7 +65,7 @@
 	.counsel-wrapper .content-wrapper .data-wrapper .check-data-block .check-data-radio-wrapper{display:flex;display:-webkit-flex;width:100%}
 	.counsel-wrapper .content-wrapper .data-wrapper .check-data-block .check-data-radio-wrapper:first-child{margin-bottom:2vw}
 	.counsel-wrapper .content-wrapper .data-wrapper .check-data-block .check-data-radio-wrapper .check-data-radio{display:flex;display:-webkit-flex}
-	.counsel-wrapper .content-wrapper .data-wrapper .check-data-block .check-data-radio-wrapper .check-data-radio:not(:last-child){-webkit-flex-grow:1;flex-grow:1;flex:1 1 0;-webkit-flex:1 1 0;}
+	.counsel-wrapper .content-wrapper .data-wrapper .check-data-block .check-data-radio-wrapper .check-data-radio{-webkit-flex-grow:1;flex-grow:1;flex:1 1 0;-webkit-flex:1 1 0;}
 	.counsel-wrapper .content-wrapper .border-bottom{border-bottom:1px solid #BDBDBD}
 	
 	.counsel-wrapper #sangdamcontents{display:flow-root;width:100%;border-top:1px solid #BDBDBD}
@@ -1308,7 +1308,7 @@ j$(function(){
 					<div class="check-data-label">1. 개인적(Individually): 개인적 웰빙, 기분이나 마음상태</div>
 					<div class="check-data-block">
 						<div class="check-data-radio-wrapper">
-							<c:forEach var="i" varStatus="status" begin="0" end="4">
+							<c:forEach var="i" varStatus="status" begin="0" end="5">
 							<div class="check-data-radio">
 								<input type="radio" id="q11${i}" name="q11" value="${i}">
 								<label for="q11${i}">${i}</label>
@@ -1316,18 +1316,19 @@ j$(function(){
 							</c:forEach>
 						</div>
 						<div class="check-data-radio-wrapper">
-							<c:forEach var="i" varStatus="status" begin="5" end="9">
+							<c:forEach var="i" varStatus="status" begin="6" end="10">
 							<div class="check-data-radio">
 								<input type="radio" id="q11${i}" name="q11" value="${i}">
 								<label for="q11${i}">${i}</label>
 							</div>
 							</c:forEach>
+							<div class="check-data-radio"></div>
 						</div>
 					</div>
 					<div class="check-data-label">2. 대인관계(Interpersonally): 가족관계, 가까운 관계</div>
 					<div class="check-data-block">
 						<div class="check-data-radio-wrapper">
-							<c:forEach var="i" varStatus="status" begin="0" end="4">
+							<c:forEach var="i" varStatus="status" begin="0" end="5">
 							<div class="check-data-radio">
 								<input type="radio" id="q12${i}" name="q12" value="${i}">
 								<label for="q12${i}">${i}</label>
@@ -1335,18 +1336,19 @@ j$(function(){
 							</c:forEach>
 						</div>
 						<div class="check-data-radio-wrapper">
-							<c:forEach var="i" varStatus="status" begin="5" end="9">
+							<c:forEach var="i" varStatus="status" begin="6" end="10">
 							<div class="check-data-radio">
 								<input type="radio" id="q12${i}" name="q12" value="${i}">
 								<label for="q12${i}">${i}</label>
 							</div>
 							</c:forEach>
+							<div class="check-data-radio"></div>
 						</div>
 					</div>
 					<div class="check-data-label">3. 사회생활(Socially): 직장생활, 학교생활, 친구관계</div>
 					<div class="check-data-block">
 						<div class="check-data-radio-wrapper">
-							<c:forEach var="i" varStatus="status" begin="0" end="4">
+							<c:forEach var="i" varStatus="status" begin="0" end="5">
 							<div class="check-data-radio">
 								<input type="radio" id="q13${i}" name="q13" value="${i}">
 								<label for="q13${i}">${i}</label>
@@ -1354,18 +1356,19 @@ j$(function(){
 							</c:forEach>
 						</div>
 						<div class="check-data-radio-wrapper">
-							<c:forEach var="i" varStatus="status" begin="5" end="9">
+							<c:forEach var="i" varStatus="status" begin="6" end="10">
 							<div class="check-data-radio">
 								<input type="radio" id="q13${i}" name="q13" value="${i}">
 								<label for="q13${i}">${i}</label>
 							</div>
 							</c:forEach>
+							<div class="check-data-radio"></div>
 						</div>
 					</div>
 					<div class="check-data-label">4. 전반적인 주관적 안녕감(Overall)</div>
 					<div class="check-data-block">
 						<div class="check-data-radio-wrapper">
-							<c:forEach var="i" varStatus="status" begin="0" end="4">
+							<c:forEach var="i" varStatus="status" begin="0" end="5">
 							<div class="check-data-radio">
 								<input type="radio" id="q14${i}" name="q14" value="${i}">
 								<label for="q14${i}">${i}</label>
@@ -1373,12 +1376,13 @@ j$(function(){
 							</c:forEach>
 						</div>
 						<div class="check-data-radio-wrapper">
-							<c:forEach var="i" varStatus="status" begin="5" end="9">
+							<c:forEach var="i" varStatus="status" begin="6" end="10">
 							<div class="check-data-radio">
 								<input type="radio" id="q14${i}" name="q14" value="${i}">
 								<label for="q14${i}">${i}</label>
 							</div>
 							</c:forEach>
+							<div class="check-data-radio"></div>
 						</div>
 					</div>
 				</div>
