@@ -150,7 +150,8 @@
 					, DATE_FORMAT(STR_TO_DATE(A.COUNSELOR_CHECK_DT, '%Y%m%d%H%i%s'),'%Y/%m/%d %H:%i') 	AS counselorDt
 					, A.MGR_CHECK AS managerCheck
 					, DATE_FORMAT(STR_TO_DATE(A.MGR_CHECK_DT, '%Y%m%d%H%i%s'),'%Y/%m/%d %H:%i') 	AS managerDt
-					, B.RECORD_STATUS	as	recordStatus
+					, CASE WHEN ( DATE_FORMAT(DATE_ADD(STR_TO_DATE(B.SCHEDULE_DT, '%Y%m%d%H%i%s'), INTERVAL 3 DAY), '%Y%m%d') <![CDATA[<]]> DATE_FORMAT(NOW(), '%Y%m%d') <![CDATA[&&]]> B.RECORD_STATUS ='100693')  THEN '101238'
+					ELSE B.RECORD_STATUS END as recordStatus
 				FROM 	MIND_PAY_CHECK A
 				LEFT OUTER JOIN MIND_COUNSEL B 
 				ON

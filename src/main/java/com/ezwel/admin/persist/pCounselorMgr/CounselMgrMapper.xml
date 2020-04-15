@@ -284,7 +284,8 @@
 					,A.CLIENT_CD as clientCd
 					, (SELECT CENTER_NM FROM MIND_CENTER WHERE CENTER_SEQ = A.CENTER_SEQ) as centerNm
 					, IF((SELECT ORDER_STATUS FROM MIND_ORDER WHERE COUNSEL_CD = A.COUNSEL_CD) = '100960', 'Y', 'N') as needPay
-					,A.RECORD_STATUS  as recordStatus
+					,CASE WHEN ( DATE_FORMAT(DATE_ADD(STR_TO_DATE(A.SCHEDULE_DT, '%Y%m%d%H%i%s'), INTERVAL 3 DAY), '%Y%m%d') <![CDATA[<]]> DATE_FORMAT(NOW(), '%Y%m%d') <![CDATA[&&]]> A.RECORD_STATUS ='100693')  THEN '101238'
+					ELSE A.RECORD_STATUS END as recordStatus
 					,A.EXTENSION_STATUS   as extensionStatus
 					,E.USER_NM as counselMgrNm
 					, U.USER_STATUS as userStatus
