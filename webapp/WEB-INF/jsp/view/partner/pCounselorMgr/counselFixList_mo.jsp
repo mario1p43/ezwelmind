@@ -669,24 +669,26 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 							<fmt:formatDate value="${userCounselDt }" pattern="yyyyMMddHHmm" var="userCounselDtStr" />
 							
 							<c:choose>
-												<c:when test="${list.recordStatus == 101238}">
-													<td><strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></td><!--  -->
-												</c:when>
-												<c:when test="${list.recordStatus == 100695}">
-													<td><strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></td><!--  -->
-												</c:when>
-
-												<c:otherwise>
-													<c:choose>
-														<c:when test="${userCounselDtStr < nowDate }">
-										<!-- 일지상태 -->			<td><a href="#" class="pCounselorDateModify" value="${list.counselCd}&${list.userKey}&${list.counselType}&${list.intakeCd}" ><strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></a></td>
-														</c:when>
-														<c:otherwise>
-															<td><a href="#none" onclick="alert('상담 완료 후 입력이 가능합니다.')" value="${list.counselCd}&${list.userKey}&${list.counselType}&${list.intakeCd}" ><strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></a></td>
-														</c:otherwise>
-													</c:choose>
-												</c:otherwise>
-											</c:choose>
+								<c:when test="${list.recordStatus == 101238}">
+									<strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong>
+								</c:when>
+								<c:when test="${list.recordStatus == 100695}">
+									<strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong>
+								</c:when>
+								<c:when test="${list.recordStatus == 100696}">
+									<strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong>
+								</c:when>
+								<c:otherwise>
+									<c:choose>
+										<c:when test="${userCounselDtStr < nowDate }">
+											<a href="#" class="pCounselorDateModify" value="${list.counselCd}&${list.userKey}&${list.counselType}&${list.intakeCd}" ><comm:commNmOut option="commCd" code="${list.recordStatus}"/></a>
+										</c:when>
+										<c:otherwise>
+											<a href="#none" onclick="alert('상담 완료 후 입력이 가능합니다.')" value="${list.counselCd}&${list.userKey}&${list.counselType}&${list.intakeCd}" ><comm:commNmOut option="commCd" code="${list.recordStatus}"/></a>
+										</c:otherwise>
+									</c:choose>
+								</c:otherwise>
+							</c:choose>
 						</td>
 					</tr>
 					<tr>
