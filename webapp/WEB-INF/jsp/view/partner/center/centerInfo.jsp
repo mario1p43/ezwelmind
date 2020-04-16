@@ -607,7 +607,7 @@
 										<td rowspan="6" colspan="2"><input type="file"
 											name="file1" id="file1" value="찾아보기"
 											onchange="javascript:getRealPath(this);" /><br> 
-											<img src="<spring:eval expression="@global['upload.http.img']" />${centerInfo.filePath1}" style="width: 280px;height: 150px;">${centerInfo.fileNm1}
+											<img src="/common/file/download?filepath=${centerInfo.filePath1}&amp;filename=${centerInfo.fileNm1}&amp;isImageServer=false" style="width: 280px;height: 150px;">${centerInfo.fileNm1}
 											<span id="path1"></span> <input type="hidden" name="fileNm1"
 											value="${centerInfo.fileNm1 }" /> <input type="hidden"
 											name="filePath1" value="${centerInfo.filePath1}" /></td>
@@ -700,7 +700,7 @@
 											통장사본등록</th>
 										<td class="line" colspan="5"><input type="file"
 											name="file2" size="50" /> 
-											<img src="<spring:eval expression="@global['upload.http.img']" />${centerInfo.filePath2}" style="width: 280px;height: 150px;">
+											<img src="/common/file/download?filepath=${centerInfo.filePath2}&amp;filename=${centerInfo.fileNm2}&amp;isImageServer=false" style="width: 280px;height: 150px;">
 											${centerInfo.fileNm2}
 											<input type="hidden" name="fileNm2"
 											value="${centerInfo.fileNm2 }" /> <input type="hidden"
@@ -711,7 +711,7 @@
 											사업자등록증</th>
 										<td class="line" colspan="5"><input type="file"
 											name="file3" size="50" />
-											<img src="<spring:eval expression="@global['upload.http.img']" />${centerInfo.filePath3}" style="width: 280px;height: 150px;">
+											<img src="/common/file/download?filepath=${centerInfo.filePath3}&amp;filename=${centerInfo.fileNm3}&amp;isImageServer=false" style="width: 280px;height: 150px;">
 											${centerInfo.fileNm3}
 											<input type="hidden" name="fileNm3"
 											value="${centerInfo.fileNm3 }" /> <input type="hidden"
