@@ -799,7 +799,7 @@
 									(CASE WHEN (DATE_FORMAT( Date_add(STR_TO_DATE(SCHEDULE_DT, '%Y%m%d%H%i%s'),interval 1 MONTH),'%Y%m%d') &lt; DATE_FORMAT(NOW(), '%Y%m%d') ) THEN 100695 
 										  WHEN (DATE_FORMAT( Date_add(STR_TO_DATE(SCHEDULE_DT, '%Y%m%d%H%i%s'),interval 3 DAY),'%Y%m%d') &lt; DATE_FORMAT(NOW(), '%Y%m%d') ) THEN 100694
 										  ELSE 100693 END ),
-									(CASE WHEN (DATE_FORMAT( Date_add(STR_TO_DATE(SCHEDULE_DT, '%Y%m%d%H%i%s'),interval 3 DAY),'%Y%m%d') &lt; DATE_FORMAT(NOW(), '%Y%m%d') ) THEN 100696 
+									(CASE WHEN (DATE_FORMAT( Date_add(STR_TO_DATE(SCHEDULE_DT, '%Y%m%d%H%i%s'),interval 3 DAY),'%Y%m%d') &lt; DATE_FORMAT(NOW(), '%Y%m%d') ) THEN 101238 
 										  ELSE 100693 END) )
 		WHERE	RECORD_STATUS != 100692
 	</update>
