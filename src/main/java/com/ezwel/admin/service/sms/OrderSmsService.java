@@ -394,7 +394,7 @@ public class OrderSmsService {
 			} else {
 				message.append("[이지웰니스 상담알림]\n");
 				message.append(smsResult.getCenterNm() + " " + smsResult.getCounselorNm() + " 상담사님");
-				message.append("내일(" + smsResult.getScheduleDtMonth() + ") " + smsResult.getSndNm() + "님의 상담이 있습니다.");
+				message.append("내일(" + smsResult.getSmsDt() + ") " + smsResult.getSndNm() + "님의 상담이 있습니다.");
 			}
 		} else if ("100437".equals(smsResult.getCounselType())) { // 오프라인 진단
 			Template msg = templateService.findMsg(smsResult.getClientCd(), "10", "5");
@@ -404,7 +404,7 @@ public class OrderSmsService {
 			} else {
 				message.append("[이지웰니스(주) 상담알림]\n");
 				message.append(smsResult.getCenterNm() + " " + smsResult.getCounselorNm() + " 상담사님");
-				message.append("내일(" + smsResult.getScheduleDtMonth() + ") " + smsResult.getSndNm() + "님의 검사가 있습니다.");
+				message.append("내일(" + smsResult.getSmsDt() + ") " + smsResult.getSndNm() + "님의 검사가 있습니다.");
 			}
 		} else if ("100434".equals(smsResult.getCounselType())) { // 전화상담
 			Template msg = templateService.findMsg(smsResult.getClientCd(), "10", "2");
@@ -414,7 +414,7 @@ public class OrderSmsService {
 			} else {
 				message.append("[이지웰니스(주) 상담알림]\n");
 				message.append(smsResult.getCenterNm() + " " + smsResult.getCounselorNm() + " 상담사님");
-				message.append("내일(" + smsResult.getScheduleDtMonth() + ") " + smsResult.getSndNm() + "님("+ smsResult.getSndMobile() + ")의 전화상담이 있습니다.");
+				message.append("내일(" + smsResult.getSmsDt() + ") " + smsResult.getSndNm() + "님("+ smsResult.getSndMobile() + ")의 전화상담이 있습니다.");
 			}
 		}
 		if(smsResult.getClientCd().equals("nps")) {
