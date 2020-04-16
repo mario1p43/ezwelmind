@@ -405,7 +405,7 @@ j$(document).ready(function(){
 				<input type="hidden" name="docType" class="docType" value="1">
 				<div class="file_chooser_wrapper">
 					<button class="chooose_file_button">파일 업로드</button>
-					<a href="javascript:fileDownLoad('${customerServiceInfo.filefath2}','${customerServiceInfo.filename101}')">${customerServiceInfo.filename101}</a>
+					<a href="javascript:fileDownLoad('${customerServiceInfo.filefath101}','${customerServiceInfo.filename101}')">${customerServiceInfo.filename101}</a>
 					<input type="file" name="consultAgreement" />
 				</div>
 				<button class="submit_file_button" id="btnConsultAgreement">등록</button>

@@ -289,7 +289,7 @@ j$(document).ready(function(){
 							<tr>
 								<td>
 									<input type="file" name="consultAgreement" style='width: 40%;'>
-									<a href="javascript:fileDownLoad('${customerServiceInfo.filefath2}','${customerServiceInfo.filename101}')">${customerServiceInfo.filename101}</a>
+									<a href="javascript:fileDownLoad('${customerServiceInfo.filefath101}','${customerServiceInfo.filename101}')">${customerServiceInfo.filename101}</a>
 									<input type="button" id="btnConsultAgreement" value="등록">
 								</td>
 							</tr>
