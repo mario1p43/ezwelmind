@@ -88,6 +88,26 @@ public class CadmMgrController {
 		return "partner/mgr/modifyMyInformation";
 	}
 
+	@RequestMapping(value="/updateUserMobile")
+	public String updateUserMobile(@ModelAttribute MgrDto mgrDto, @ModelAttribute MgrSubDto mgrSubDto, @ModelAttribute MgrCertDto mgrCertDto,@ModelAttribute MgrCareerArray mgrCareerArray, @ModelAttribute MgrBookArray mgrBookArray, Model model, HttpServletRequest request,
+			MultipartHttpServletRequest mhsq) throws Exception{
+		setMenu(model);
+		mgrCertDto.init(mhsq, true);
+		
+		Manager manager = UserDetailsHelper.getAuthenticatedUser();
+		mgrDto.setUserId(manager.getUserId());
+		mgrSubDto.setUserId(manager.getUserId());
+		int result = mgrCounselService.updateUserMobile(mgrDto);
+		
+		if(result == 1){
+			model.addAttribute("resultVal", "success");
+		}else{
+			model.addAttribute("resultVal", "fail");
+		}
+		
+		return "redirect:/partner/mgr/modifyMyInformation";
+	}
+	
 
 	@RequestMapping(value="/updateUserPwd")
 	public String updateUserPwd(@ModelAttribute MgrDto mgrDto, @ModelAttribute MgrSubDto mgrSubDto, @ModelAttribute MgrCertDto mgrCertDto,@ModelAttribute MgrCareerArray mgrCareerArray, @ModelAttribute MgrBookArray mgrBookArray, Model model, HttpServletRequest request,

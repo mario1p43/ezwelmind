@@ -443,6 +443,11 @@ public class MgrCounselService {
 		
 	}
 	
+	//모바일 sms를 변경하는 펑션
+	public int updateUserMobile(MgrDto mgrDto){
+		return counselorInfoMgrMapper.updateUserMobile(mgrDto);
+	}
+	
 	//패스워드를 변경하는 펑션
 	public int updateMgrPwd(MgrDto mgrDto){
 		return counselorInfoMgrMapper.updateMgrPwd(mgrDto);

@@ -38,6 +38,7 @@ public interface CounselorInfoMgrMapper {
 	public void updateMyInfoMgr(MgrSubDto mgrSubDto);
 	public void updateMgrInfoImsi(MgrDto mgrDto);
 	public int updateMgrPwd(MgrDto mgrDto);
+	public int updateUserMobile(MgrDto mgrDto);
 	
 	public void updateCounselorInfoMgrImsi(MgrSubDto mgrSubDto);
 	public void updateCounselorInfoMgrImg(MgrSubDto mgrSubDto);

@@ -1877,5 +1877,11 @@
 		,   IMSI_PWD_YN	= 'N'
 		WHERE	USER_ID = #{userId}
 	</update>
+	
+	<update id="updateUserMobile" parameterType="com.ezwel.admin.service.mgr.dto.MgrDto">
+		UPDATE	MIND_MGR
+		SET	AUTH_MOBILE = #{mobileSms}
+		WHERE	USER_ID = #{userId}
+	</update>
 
 </mapper>

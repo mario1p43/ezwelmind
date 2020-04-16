@@ -25,6 +25,123 @@
 		var tbl_cnt_book = ${mgrBook.size()};
 	</c:if>
 	
+	$( document ).ready(function() {
+		for (i = new Date().getFullYear(); i > 1959; i--){
+		    $('#certYear0').append($('<option />').val(i).html(i));
+		}
+
+		$('#certYear0 option[value=2010]').attr('selected', 'selected');  
+	});
+	
+	function selectGradeZero(sel, count){
+		$('#certGrade'+count).children().remove();
+		var markup = '<option value="1급">1급</option>';
+		markup += '<option value="2급">2급</option>';
+		$('#certGrade'+count).append(markup);
+	}
+	
+	
+	function selectCertZero(sel, count){
+		$('#certNameTd'+count).children().remove();
+		$('#certGradeTd'+count).children().remove();
+		if(sel.value === '한국상담심리학회'){
+			var markup = '<select id="certName'+count+'" name="certName" onchange="selectGradeZero(this, '+count+')" style="width:95%;">';
+			markup += '<option value="상담심리사">상담심리사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '<option value="2급">2급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '한국임상심리학회'){
+			var markup = '<select id="certName'+count+'" name="certName" onchange="selectGradeZero(this, '+count+')" style="width:95%;">';
+			markup += '<option value="임상심리사">임상심리사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '한국상담학회'){
+			var markup = '<select id="certName'+count+'" name="certName" onchange="selectGradeZero(this, '+count+')" style="width:95%;">';
+			markup += '<option value="전문상담사">전문상담사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '<option value="2급">2급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '기타한국심리학회'){
+			var markup = '<select id="certName'+count+'" name="certName" onchange="selectGradeZero(this, '+count+')" style="width:95%;">';
+			markup += '<option value="중독심리전문가">중독심리전문가</option>';
+			markup += '<option value="발달심리사">발달심리사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '보건복지부'){
+			var markup = '<select id="certName'+count+'" name="certName" onchange="selectGradeZero(this, '+count+')" style="width:95%;">';
+			markup += '<option value="정신보건임상심리사">정신보건임상심리사</option>';
+			markup += '<option value="언어재활사">언어재활사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '<option value="2급">2급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '산업인력공단'){
+			var markup = '<select id="certName'+count+'" name="certName" onchange="selectGradeZero(this, '+count+')" style="width:95%;">';
+			markup += '<option value="임상심리사">임상심리사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '<option value="2급">2급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '고용노동부'){
+			var markup = '<select id="certName'+count+'" name="certName" onchange="selectGradeZero(this, '+count+')" style="width:95%;">';
+			markup += '<option value="직업상담사">직업상담사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '<option value="2급">2급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '여성가족부'){
+			var markup = '<select id="certName'+count+'" name="certName" onchange="selectGradeZero(this, '+count+')" style="width:95%;">';
+			markup += '<option value="청소년상담사">청소년상담사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '<option value="2급">2급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '한국놀이치료학회'){
+			var markup = '<select id="certName'+count+'" name="certName" onchange="selectGradeZero(this, '+count+')" style="width:95%;">';
+			markup += '<option value="놀이심리상담사">놀이심리상담사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '<option value="2급">2급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '기타'){
+			$('#certNameTd'+count).append('<input type="text" id="certName'+count+'" name="certName" style="width:95%;">');
+			$('#certGradeTd'+count).append('<input type="text" id="certGrade'+count+'" name="certGrade" style="width:95%;">');
+		}
+		
+	}
+	
+	
 	function selectCert(sel, count){
 		$('#certNameTd'+count).children().remove();
 		$('#certGradeTd'+count).children().remove();
@@ -99,7 +216,7 @@
 			markup += '</select>';
 			$('#certGradeTd'+count).append(markup);
 		} else if(sel.value === '여성가족부'){
-			var markup = '<select id="certName'+count+'" name=id="certName'+count+'" onchange="selectGrade(this, '+count+')" style="width:95%;">';
+			var markup = '<select id="certName'+count+'" name="certName'+count+'" onchange="selectGrade(this, '+count+')" style="width:95%;">';
 			markup += '<option value="청소년상담사">청소년상담사</option>';
 			markup += '</select>';
 			$('#certNameTd'+count).append(markup);
@@ -623,15 +740,24 @@
 			
 			var userPwd = $("#userPwd").val();
 			var infoMsg ="";
-			if(userPwd == "" || userPwd == null ){
+			var mobilesms2 = $("#mobilesms2").val();
+			var mobilesms3 = $("#mobilesms3").val();
+			var oldSmsMobile2= $("#oldSmsMobile2").val();
+			var oldSmsMobile3= $("#oldSmsMobile3").val();
+			if(mobilesms2 != oldSmsMobile2 || mobilesms3 != oldSmsMobile3){
+				infoMsg ="SMS 인증용 연락처를 변경하시겠습니까?";
+			}else if(userPwd == "" || userPwd == null ){
 				infoMsg ="승인된 상담사의 상담유형정보는 즉시 변경할 수 없습니다. 수정요청 후 이지웰니스 승인을 받아 최종 수정됩니다.";
 			}else{
 				infoMsg ="비밀번호를 변경하시겠습니까? \n변경후에는 다시 로그인 해야 합니다.";
 			}
 			
+
 			
 			if(confirm(infoMsg)){
-				if(userPwd == "" || userPwd == null ){
+				if(mobilesms2 != oldSmsMobile2 || mobilesms3 != oldSmsMobile3){
+					updateMobile();
+				}else if(userPwd == "" || userPwd == null ){
 					updateExtraExam();
 					if(j$("#centerOwnerYn").is(":checked")){
 						j$("#ownerYn").val("Y");
@@ -720,6 +846,11 @@
 	
 	function updatePwd(){
 		$("#updateCounselorInfoMgr").attr("action","/partner/mgr/updateUserPwd");
+		j$("#updateCounselorInfoMgr").submit();
+	}
+	
+	function updateMobile(){
+		$("#updateCounselorInfoMgr").attr("action","/partner/mgr/updateUserMobile");
 		j$("#updateCounselorInfoMgr").submit();
 	}
 	
@@ -965,6 +1096,8 @@
 <input type="hidden" name="mgrCertCnt" id="mgrCertCnt" value="${mgrCertCnt}">
 <input type="hidden" name="mgrStatus" id="mgrStatus" value="${mgr.mgrStatus}">
 <input type="hidden" name="centerSeq" value="${mgr.centerSeq}"/>
+<input type="hidden" id="oldSmsMobile2" value="${mgr.mobilesms2 }"/>
+<input type="hidden" id="oldSmsMobile3" value="${mgr.mobilesms3 }"/>
 <table cellpadding="5" cellspacing="0" border="0" width="95%" style="border-bottom: 1px solid silver;">
 	<tr>
 		<td height="10px"></td>
@@ -1180,22 +1313,86 @@
 								<th width="5%">삭제</th>
 							</tr>
 						</thead>
+						
 						<tbody id="tbl_organization_body_cert">
 							<c:forEach var="list" items="${mgrCert}" varStatus="listCnt">
         					<tr id="certOrgRow${listCnt.index}">
-        						<td align="center"><input type="hidden" id="certOrg${listCnt.index}" name="certOrg" value="${list.orgNm}"/>${list.orgNm}</td>
-        						<td align="center"><input type="hidden" id="certName${listCnt.index}" name="certName" value="${list.certNm}"/>${list.certNm}</td>
-        						<td align="center"><input type="hidden" id="certGrade${listCnt.index}" name="certGrade" value="${list.grade}"/>${list.grade}</td>
-        						<td align="center"><input type="hidden" id="certYear${listCnt.index}" name="certYear" value="${list.certYear}"/>${list.certYear}</td>
+        						
+        						<td align="center">
+        						<c:choose>
+	        						<c:when test="${list.orgNm eq null}">
+		        						<select id="certOrg${listCnt.index}" name="certOrg" onchange="selectCertZero(this, ${listCnt.index})" style="width:95%;">
+								        	<option value="한국상담심리학회">한국상담심리학회</option>
+								        	<option value="한국임상심리학회">한국임상심리학회</option>
+								        	<option value="한국상담학회">한국상담학회</option>
+								        	<option value="기타한국심리학회">기타한국심리학회</option>
+								        	<option value="보건복지부">보건복지부</option>
+								        	<option value="산업인력공단">산업인력공단</option>
+								        	<option value="고용노동부">고용노동부</option>
+								        	<option value="여성가족부">여성가족부</option>
+								        	<option value="한국놀이치료학회">한국놀이치료학회</option>
+								        	<option value="기타">기타</option>
+							        	</select>
+	        						</c:when>
+	        						<c:otherwise>
+	        							<input type="hidden" id="certOrg${listCnt.index}" name="certOrg" value="${list.orgNm}"/>${list.orgNm}
+        							</c:otherwise>
+        						</c:choose>
+
+        						</td>
+        						<td id="certNameTd${listCnt.index}" align="center">
+									<c:choose>
+        								<c:when test="${list.certNm eq null}">
+        									<select id="certName${listCnt.index}" name="certName" onchange="selectGradeZero(this, ${listCnt.index})" style="width:95%;">
+					        					<option value="상담심리사">상담심리사</option>
+					        				</select>				
+        								</c:when>
+        								<c:otherwise>
+        									<input type="hidden" id="certName${listCnt.index}" name="certName" value="${list.certNm}"/>${list.certNm}
+        								</c:otherwise>
+        							</c:choose>
+        						</td>
+        						<td id="certGradeTd${listCnt.index}" align="center">
+        						<c:choose>
+	        						<c:when test="${list.grade eq null}">
+							        	<select id="certGrade${listCnt.index}" name="certGrade" style="width:95%;">
+							        	<option value="1급">1급</option>
+							        	<option value="2급">2급</option>
+							        	</select>
+						        	</c:when>
+	        						<c:otherwise>					
+	        							<input type="hidden" id="certGrade${listCnt.index}" name="certGrade" value="${list.grade}"/>${list.grade}
+	        						</c:otherwise>
+        						</c:choose>
+        						
+        						</td>
+        						<td align="center">
+	        						<c:choose>
+		        						<c:when test="${list.certYear eq null}">
+		        							<select id="certYear${listCnt.index}" name="certYear" style="width:95%;"></select>
+	        							</c:when>
+		        						<c:otherwise>	
+		        							<input type="hidden" id="certYear${listCnt.index}" name="certYear" value="${list.certYear}"/>${list.certYear}
+		        						</c:otherwise>
+	        						</c:choose>
+        						</td>
         						<td align="left">
-        							<input type="button" value="다운로드" onclick="fileDownLoad('${list.filePath}', '${list.fileNm}')" >&nbsp;${list.fileNm}
-        							<input type="hidden" id="fileName${listCnt.index}" name="fileName" value="${list.fileNm}"/>
-        							<input type="hidden" id="filePath${listCnt.index}" name="filePath" value="${list.filePath}"/>
+        						   <c:choose>
+		        						<c:when test="${list.filePath eq null}">
+		        							<input type="file" name="fileName" data-validation="required" data-validation-error-msg-required="첨부파일은 필수입니다." style="width:95%;"/>
+										</c:when>
+			        					<c:otherwise>	
+				        					<input type="button" value="다운로드" onclick="fileDownLoad('${list.filePath}', '${list.fileNm}')" >&nbsp;${list.fileNm}
+		        							<input type="hidden" id="fileName${listCnt.index}" name="fileName" value="${list.fileNm}"/>
+		        							<input type="hidden" id="filePath${listCnt.index}" name="filePath" value="${list.filePath}"/>
+	        							</c:otherwise>
+	        						</c:choose>
         						</td>
         						<td align="center"><input type="button" name="certDel" id="certDel${listCnt.index}" onclick="certTblRowDel(${listCnt.index});" value="삭제" style="width:95%;"/>
 							</tr>
 							</c:forEach>
 						</tbody>
+						
 						<tr>
 							<td colspan="6" align="center"><input type="button" class="add-row-cert" value="추가"></td>
 						</tr>				
@@ -1752,6 +1949,10 @@
 </tr>
 </table>
 </form>
+<script>
 
+
+
+</script>
 </body>
 </html>

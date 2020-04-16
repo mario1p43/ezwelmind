@@ -96,6 +96,123 @@
 		var tbl_cnt_book = ${mgrBook.size()};
 	</c:if>
 	
+
+	$( document ).ready(function() {
+		for (i = new Date().getFullYear(); i > 1959; i--){
+		    $('#certYear0').append($('<option />').val(i).html(i));
+		}
+
+		$('#certYear0 option[value=2010]').attr('selected', 'selected');  
+	});
+	
+	function selectGradeZero(sel, count){
+		$('#certGrade'+count).children().remove();
+		var markup = '<option value="1급">1급</option>';
+		markup += '<option value="2급">2급</option>';
+		$('#certGrade'+count).append(markup);
+	}
+	
+	
+	function selectCertZero(sel, count){
+		$('#certNameTd'+count).children().remove();
+		$('#certGradeTd'+count).children().remove();
+		if(sel.value === '한국상담심리학회'){
+			var markup = '<select id="certName'+count+'" name="certName" onchange="selectGradeZero(this, '+count+')" style="width:95%;">';
+			markup += '<option value="상담심리사">상담심리사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '<option value="2급">2급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '한국임상심리학회'){
+			var markup = '<select id="certName'+count+'" name="certName" onchange="selectGradeZero(this, '+count+')" style="width:95%;">';
+			markup += '<option value="임상심리사">임상심리사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '한국상담학회'){
+			var markup = '<select id="certName'+count+'" name="certName" onchange="selectGradeZero(this, '+count+')" style="width:95%;">';
+			markup += '<option value="전문상담사">전문상담사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '<option value="2급">2급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '기타한국심리학회'){
+			var markup = '<select id="certName'+count+'" name="certName" onchange="selectGradeZero(this, '+count+')" style="width:95%;">';
+			markup += '<option value="중독심리전문가">중독심리전문가</option>';
+			markup += '<option value="발달심리사">발달심리사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '보건복지부'){
+			var markup = '<select id="certName'+count+'" name="certName" onchange="selectGradeZero(this, '+count+')" style="width:95%;">';
+			markup += '<option value="정신보건임상심리사">정신보건임상심리사</option>';
+			markup += '<option value="언어재활사">언어재활사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '<option value="2급">2급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '산업인력공단'){
+			var markup = '<select id="certName'+count+'" name="certName" onchange="selectGradeZero(this, '+count+')" style="width:95%;">';
+			markup += '<option value="임상심리사">임상심리사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '<option value="2급">2급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '고용노동부'){
+			var markup = '<select id="certName'+count+'" name="certName" onchange="selectGradeZero(this, '+count+')" style="width:95%;">';
+			markup += '<option value="직업상담사">직업상담사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '<option value="2급">2급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '여성가족부'){
+			var markup = '<select id="certName'+count+'" name="certName" onchange="selectGradeZero(this, '+count+')" style="width:95%;">';
+			markup += '<option value="청소년상담사">청소년상담사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '<option value="2급">2급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '한국놀이치료학회'){
+			var markup = '<select id="certName'+count+'" name="certName" onchange="selectGradeZero(this, '+count+')" style="width:95%;">';
+			markup += '<option value="놀이심리상담사">놀이심리상담사</option>';
+			markup += '</select>';
+			$('#certNameTd'+count).append(markup);
+			var markup = '<select id="certGrade'+count+'" name="certGrade" style="width:95%;">';
+			markup += '<option value="1급">1급</option>';
+			markup += '<option value="2급">2급</option>';
+			markup += '</select>';
+			$('#certGradeTd'+count).append(markup);
+		} else if(sel.value === '기타'){
+			$('#certNameTd'+count).append('<input type="text" id="certName'+count+'" name="certName" style="width:95%;">');
+			$('#certGradeTd'+count).append('<input type="text" id="certGrade'+count+'" name="certGrade" style="width:95%;">');
+		}
+		
+	}
+	
 	function selectCert(sel, count){
 		$('#certNameTd'+count).children().remove();
 		$('#certGradeTd'+count).children().remove();
@@ -170,7 +287,7 @@
 			markup += '</select>';
 			$('#certGradeTd'+count).append(markup);
 		} else if(sel.value === '여성가족부'){
-			var markup = '<select id="certName'+count+'" name=id="certName'+count+'" onchange="selectGrade(this, '+count+')" style="width:95%;">';
+			var markup = '<select id="certName'+count+'" name="certName'+count+'" onchange="selectGrade(this, '+count+')" style="width:95%;">';
 			markup += '<option value="청소년상담사">청소년상담사</option>';
 			markup += '</select>';
 			$('#certNameTd'+count).append(markup);
