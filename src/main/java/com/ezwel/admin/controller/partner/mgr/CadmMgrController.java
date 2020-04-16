@@ -114,13 +114,14 @@ public class CadmMgrController {
 			}else{
 				model.addAttribute("resultVal", "fail");
 			}
+			model.addAttribute("alertYn", "Y");
 		}
 		
 		mgrCounselService.modifyCounselMgrImsi(mgrDto, mgrSubDto, mgrCertDto, request);
 		mgrCounselService.modifyCounselMgrCareerImsi(mgrDto, mgrCareerArray);
 		mgrCounselService.modifyCounselMgrBookImsi(mgrDto, mgrBookArray);
 				
-		model.addAttribute("alertYn", "Y");
+		
 		
 		return "redirect:/partner/mgr/modifyMyInformation";
 	}
