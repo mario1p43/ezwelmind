@@ -631,31 +631,36 @@
 			
 			
 			if(confirm(infoMsg)){
-				updateExtraExam();
-				if(j$("#centerOwnerYn").is(":checked")){
-					j$("#ownerYn").val("Y");
-					if('${loginId}' == '${mgr.userId}'){
-					
-						j$("#num").val(num);
-						j$("#count").val(count);
-						j$("#updateCounselorInfoMgr").submit();
-					}else{
-						j$.alert('이미 등록된 대표 센터장을 교체하시겠습니까?',function(){
+				if(userPwd == "" || userPwd == null ){
+					updateExtraExam();
+					if(j$("#centerOwnerYn").is(":checked")){
+						j$("#ownerYn").val("Y");
+						if('${loginId}' == '${mgr.userId}'){
+						
 							j$("#num").val(num);
 							j$("#count").val(count);
 							j$("#updateCounselorInfoMgr").submit();
-						 },function(){
-						 	return false;
-						 }
-						);
-					}
+						}else{
+							j$.alert('이미 등록된 대표 센터장을 교체하시겠습니까?',function(){
+								j$("#num").val(num);
+								j$("#count").val(count);
+								j$("#updateCounselorInfoMgr").submit();
+							 },function(){
+							 	return false;
+							 }
+							);
+						}
+					}else{
+						
+						j$("#ownerYn").val("N");
+						j$("#num").val(num);
+						j$("#count").val(count);
+						j$("#updateCounselorInfoMgr").submit();
+					}	
 				}else{
-					
-					j$("#ownerYn").val("N");
-					j$("#num").val(num);
-					j$("#count").val(count);
-					j$("#updateCounselorInfoMgr").submit();
-				}	
+					updatePwd();
+				}
+				
 			
 			
 			}
@@ -712,6 +717,11 @@
 		</c:forEach>
 		
 	});
+	
+	function updatePwd(){
+		$("#updateCounselorInfoMgr").attr("action","/partner/mgr/updateUserPwd");
+		j$("#updateCounselorInfoMgr").submit();
+	}
 	
 	function tblRowDel(rownum){
 		$('#organizationRow'+rownum).remove();

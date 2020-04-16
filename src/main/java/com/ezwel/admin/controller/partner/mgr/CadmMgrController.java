@@ -82,13 +82,35 @@ public class CadmMgrController {
 		
 		String alertYn = (String) request.getParameter("alertYn");
 		if("Y".equals(alertYn)){
-			model.addAttribute("alertMsg", " 개인정보를 변경 하였습니다. \\n임시비밀번호를 변경하였을 경우 재로그인 해주세요.");
+			model.addAttribute("alertMsg", "개인정보를 변경 하였습니다. \\n다시 로그인 해주세요.");
 		}
 		
 		return "partner/mgr/modifyMyInformation";
 	}
 
-	
+
+	@RequestMapping(value="/updateUserPwd")
+	public String updateUserPwd(@ModelAttribute MgrDto mgrDto, @ModelAttribute MgrSubDto mgrSubDto, @ModelAttribute MgrCertDto mgrCertDto,@ModelAttribute MgrCareerArray mgrCareerArray, @ModelAttribute MgrBookArray mgrBookArray, Model model, HttpServletRequest request,
+			MultipartHttpServletRequest mhsq) throws Exception{
+		setMenu(model);
+		mgrCertDto.init(mhsq, true);
+		
+		Manager manager = UserDetailsHelper.getAuthenticatedUser();
+		mgrDto.setUserId(manager.getUserId());
+		mgrSubDto.setUserId(manager.getUserId());
+		if(StringUtils.isNotNull(mgrDto.getUserPwd())){
+			mgrDto.setUserPwd(encryptComponent.encode(mgrDto.getUserPwd()));
+			int result = mgrCounselService.updateMgrPwd(mgrDto);
+			if(result == 1){
+				model.addAttribute("resultVal", "success");
+			}else{
+				model.addAttribute("resultVal", "fail");
+			}
+			model.addAttribute("alertYn", "Y");
+		}
+		
+		return "redirect:/partner/mgr/modifyMyInformation";
+	}
 	
 	@RequestMapping(value="/update")
 	public String updateMyInformation(@ModelAttribute MgrDto mgrDto, @ModelAttribute MgrSubDto mgrSubDto, @ModelAttribute MgrCertDto mgrCertDto,@ModelAttribute MgrCareerArray mgrCareerArray, @ModelAttribute MgrBookArray mgrBookArray, Model model, HttpServletRequest request,
@@ -104,17 +126,6 @@ public class CadmMgrController {
 		}else{
 			mgrSubDto.setFileNm(" ");
 			mgrSubDto.setFilePath(" ");
-		}
-				
-		if(StringUtils.isNotNull(mgrDto.getUserPwd())){
-			mgrDto.setUserPwd(encryptComponent.encode(mgrDto.getUserPwd()));
-			int result = mgrCounselService.updateMgrPwd(mgrDto);
-			if(result == 1){
-				model.addAttribute("resultVal", "success");
-			}else{
-				model.addAttribute("resultVal", "fail");
-			}
-			model.addAttribute("alertYn", "Y");
 		}
 		
 		mgrCounselService.modifyCounselMgrImsi(mgrDto, mgrSubDto, mgrCertDto, request);
