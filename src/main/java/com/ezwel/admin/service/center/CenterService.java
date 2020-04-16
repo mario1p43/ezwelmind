@@ -71,7 +71,7 @@ public class CenterService {
 		centerMapper.modifyCenterUpdate(centerDto);
 		System.out.println(">>>>>>centerDto>>>>>>>>"+centerDto.getFileNm1());
 		System.out.println(">>>>>>centerDto>>>>>>>>"+FileUploadUtils.UPLOAD_DIR_PROP);
-		FileUtils.fileAddUpload(centerDto, FileUploadUtils.UPLOAD_DIR_IMG_PROP);
+		FileUtils.fileAddUpload(centerDto, FileUploadUtils.UPLOAD_DIR_PROP);
 	}	
 	
 	
