@@ -320,7 +320,7 @@
 	
 	<select id="getUserMobile" resultType="String">
 		SELECT 
-			MOBILE
+			AUTH_MOBILE
 		FROM MIND_MGR
 		WHERE 1=1
 			AND USER_ID = #{userId}
