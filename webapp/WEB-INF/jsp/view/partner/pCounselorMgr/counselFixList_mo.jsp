@@ -678,7 +678,14 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 								<c:otherwise>
 									<c:choose>
 										<c:when test="${userCounselDtStr < nowDate }">
-											<a href="#" class="pCounselorDateModify" value="${list.counselCd}&${list.userKey}&${list.counselType}&${list.intakeCd}" ><comm:commNmOut option="commCd" code="${list.recordStatus}"/></a>
+											<a href="#" class="pCounselorDateModify" value="${list.counselCd}&${list.userKey}&${list.counselType}&${list.intakeCd}" ><comm:commNmOut option="commCd" code="${list.recordStatus}"/>
+											<c:choose>
+												<c:when test="${list.status == 100884}">
+												(종결)
+												</c:when>
+										</c:choose>
+											</a>
+										
 										</c:when>
 										<c:otherwise>
 											<a href="#none" onclick="alert('상담 완료 후 입력이 가능합니다.')" value="${list.counselCd}&${list.userKey}&${list.counselType}&${list.intakeCd}" ><comm:commNmOut option="commCd" code="${list.recordStatus}"/></a>

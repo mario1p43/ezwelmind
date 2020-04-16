@@ -112,5 +112,6 @@ public class CounselReservation extends PagingVo{
 	private String filefath1;
 	private String apprStatus1;
 	
+	private String status;
 	
 }

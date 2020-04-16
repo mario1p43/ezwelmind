@@ -153,10 +153,12 @@
 					,A.USER_KEY as userKey
 					,A.CENTER_SEQ as centerSeq
 					,A.CLIENT_CD as clientCd
+					,A.STATUS as status
 					, (SELECT CENTER_NM FROM MIND_CENTER WHERE CENTER_SEQ = A.CENTER_SEQ) as centerNm
 					, IF((SELECT ORDER_STATUS FROM MIND_ORDER WHERE COUNSEL_CD = A.COUNSEL_CD) = '100960', 'Y', 'N') as needPay
 					, (SELECT USER_NM FROM MIND_USER WHERE USER_KEY = A.USER_KEY) as userNm
-					,A.RECORD_STATUS as recordStatus
+					,CASE WHEN ( DATE_FORMAT(DATE_ADD(STR_TO_DATE(A.SCHEDULE_DT, '%Y%m%d%H%i%s'), INTERVAL 3 DAY), '%Y%m%d') <![CDATA[<]]> DATE_FORMAT(NOW(), '%Y%m%d') <![CDATA[&&]]> A.RECORD_STATUS ='100693')  THEN '101238'
+					ELSE A.RECORD_STATUS END as recordStatus
 					,A.EXTENSION_STATUS   as extensionStatus
 					,E.USER_NM as counselMgrNm
 					,C.COUNSEL_RESERV_CHK
@@ -282,6 +284,7 @@
 					,A.USER_KEY as userKey
 					,A.INTAKE_CD as intakeCd
 					,A.CLIENT_CD as clientCd
+					,A.STATUS as status
 					, (SELECT CENTER_NM FROM MIND_CENTER WHERE CENTER_SEQ = A.CENTER_SEQ) as centerNm
 					, IF((SELECT ORDER_STATUS FROM MIND_ORDER WHERE COUNSEL_CD = A.COUNSEL_CD) = '100960', 'Y', 'N') as needPay
 					,CASE WHEN ( DATE_FORMAT(DATE_ADD(STR_TO_DATE(A.SCHEDULE_DT, '%Y%m%d%H%i%s'), INTERVAL 3 DAY), '%Y%m%d') <![CDATA[<]]> DATE_FORMAT(NOW(), '%Y%m%d') <![CDATA[&&]]> A.RECORD_STATUS ='100693')  THEN '101238'

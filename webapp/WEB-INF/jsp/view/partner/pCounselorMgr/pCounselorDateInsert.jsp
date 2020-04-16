@@ -486,7 +486,7 @@ j$(function(){
 			}else if(endType == "end"){
 				// 종결하기 100692
 				$.alert('해당 상담(케이스)을 종결 하시겠습니까?',function(){
-					$("#recordStatus").val("100884");
+					
 					$("#insertGb").val("Y"); //임시저장:T 종결:Y N/S처리:N
 					$("#counselStatus").val("100884"); //종결일때 상담종결
 					var scheduleDtOverdue = "${baseInfo_detail.scheduleDtOverdue}";
@@ -494,6 +494,7 @@ j$(function(){
 						$("input.endResonTypeClass").removeAttr("disabled","disabled");
 						$("#noAgree").attr('checked', true);
 					}		
+
 					$("#counselDtlInsert").submit();
 
 					 },function(){
