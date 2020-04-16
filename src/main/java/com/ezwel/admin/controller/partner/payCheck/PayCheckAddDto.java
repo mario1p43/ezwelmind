@@ -85,6 +85,8 @@ public class PayCheckAddDto extends PagingVo{
 	public String managerDt;		//상담사 체크일 
 	public String recordStatus;   //일지 상태
 	
+	public String status;  //
+	
 	@Override
 	public String toString() {
 		return "payCheckAddDto [clientCd=" + clientCd + ", clientNm=" + clientNm + ", counselCd=" + counselCd + ", scheduleDt=" + scheduleDt 

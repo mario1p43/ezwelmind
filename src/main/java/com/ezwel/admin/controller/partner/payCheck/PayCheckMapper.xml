@@ -144,6 +144,7 @@
 					, A.TAX_TYPE
 					, A.BANK_NM	
 					, A.ACCOUNT_OWNER
+					, B.STATUS AS status
 					, A.OWNER_CHECK AS ownerCheck
 					, DATE_FORMAT(STR_TO_DATE(A.OWNER_CHECK_DT, '%Y%m%d%H%i%s'),'%Y/%m/%d %H:%i') 	AS ownerCheckDt
 					, A.COUNSELOR_CHECK AS counselorCheck

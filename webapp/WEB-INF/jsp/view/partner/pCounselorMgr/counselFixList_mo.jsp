@@ -679,14 +679,7 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 									<c:choose>
 										<c:when test="${userCounselDtStr < nowDate }">
 											<a href="#" class="pCounselorDateModify" value="${list.counselCd}&${list.userKey}&${list.counselType}&${list.intakeCd}" >
-											<c:choose>
-												<c:when test="${list.status == 100884 && list.recordStatus ==100692}">
-												<comm:commNmOut option="commCd" code="${list.status}"/>
-												</c:when>
-												<c:otherwise>
 												<comm:commNmOut option="commCd" code="${list.recordStatus}"/>
-												</c:otherwise>
-											</c:choose>
 											</a>
 										
 										</c:when>
