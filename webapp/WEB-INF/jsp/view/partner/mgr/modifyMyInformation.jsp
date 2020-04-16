@@ -620,7 +620,17 @@
 
 		
 		j$('#updateBtn').click(function() {
-			if(confirm("승인된 상담사의 상담유형정보는 즉시 변경할 수 없습니다. 수정요청 후 이지웰니스 승인을 받아 최종 수정됩니다.")){
+			
+			var userPwd = $("#userPwd").val();
+			var infoMsg ="";
+			if(userPwd == "" || userPwd == null ){
+				infoMsg ="승인된 상담사의 상담유형정보는 즉시 변경할 수 없습니다. 수정요청 후 이지웰니스 승인을 받아 최종 수정됩니다.";
+			}else{
+				infoMsg ="비밀번호를 변경하시겠습니까? \n변경후에는 다시 로그인 해야 합니다.";
+			}
+			
+			
+			if(confirm(infoMsg)){
 				updateExtraExam();
 				if(j$("#centerOwnerYn").is(":checked")){
 					j$("#ownerYn").val("Y");
