@@ -1195,6 +1195,8 @@
 						name="languageType" value="101079" onclick="return false;">프랑스어</input></span>
 				<span class="flex centerH subContentLabel"><input type="checkbox" class="languageType"
 						name="languageType" value="101080" onclick="return false;">기타</input></span>
+						<input class="flex flexGrow content-input height-one-tenth subContentLabel" type="text"
+				name="specialHearing" id="specialHearing" placeholder="기타 언어"></input>
 			</div>
 		</div>
 		<div class="capability flex flexColumn bottomMargin">
@@ -1223,8 +1225,7 @@
 				<span class="flex centerH subContentLabel"><input type="checkbox" class="specialType"
 						name="specialType" value="101091" onclick="return false;">심리적응급처치(위기개입)</input></span>
 			</div>
-			<input class="flex flexGrow content-input height-one-tenth subContentLabel" type="text"
-				name="specialHearing" id="specialHearing" placeholder="기타 특수주제"></input>
+			
 		</div>
 		<div class="flex flexColumn underline">
 			<span class="flex subject height-one-tenth centerH">주요주제</span>

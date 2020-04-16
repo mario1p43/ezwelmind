@@ -1418,6 +1418,7 @@
 					<input type="checkbox" class="languageType" name="languageType" value="101078" /> 스페인어
 					<input type="checkbox" class="languageType" name="languageType" value="101079" /> 프랑스어
 					<input type="checkbox" class="languageType" name="languageType" value="101080" /> 기타
+					<input type="text" name="specialHearing" id="specialHearing" value="${mgr.specialHeal }" style="width:500px;" >  
 				</td>
 			</tr>
 			
@@ -1434,7 +1435,7 @@
 					<input type="checkbox" class="specialType" name="specialType"  value="101089"  /> 내마음보고서 해석상담
 					<input type="checkbox" class="specialType" name="specialType"  value="101090"  /> 수면상담(CBTI)
 					<input type="checkbox" class="specialType" name="specialType"  value="101091"  /> 심리적응급처치(위기개입)
-					<input type="text" name="specialHearing" id="specialHearing" value="${mgr.specialHeal }" style="width:500px;" >  
+					
 				</td>
 			</tr>
 			

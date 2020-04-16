@@ -1549,7 +1549,7 @@ function changeCert(num){
 			</tr>
 			<tr align="left" height="30px">
 				<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">&nbsp;&nbsp;사진 (변경전)</th>
-		    	<td class="line" colspan="3" style="background:${mgrBefore.fileNm == mgr.fileNm ? '':'#f9ba7f'}">
+		    	<td class="line" colspan="3" >
 		    		<a href="javascript:fileDownLoad('${mgrBefore.filePath}', '${mgrBefore.fileNm}');">
 		    		${mgrBefore.fileNm }
 		    		</a>
@@ -1896,6 +1896,7 @@ function changeCert(num){
 					<input type="checkbox" class="languageType" name="languageType" value="101078" onclick="return false;" /> 스페인어
 					<input type="checkbox" class="languageType" name="languageType" value="101079" onclick="return false;" /> 프랑스어
 					<input type="checkbox" class="languageType" name="languageType" value="101080" onclick="return false;" /> 기타
+					<input type="text" name="mentalDivEtcBefore" id="mentalDivEtcBefore" style="width:500px;"  value="${mgrBefore.specialHeal }" readonly >  
 				</td>
 			</tr>
 			<tr class="psyGroup">
@@ -1911,7 +1912,7 @@ function changeCert(num){
 					<input type="checkbox" class="specialType" name="specialTypeBefore"  value="101089"  onclick="return false;"  /> 내마음보고서 해석상담
 					<input type="checkbox" class="specialType" name="specialTypeBefore"  value="101090"  onclick="return false;"  /> 수면상담(CBTI)
 					<input type="checkbox" class="specialType" name="specialTypeBefore"  value="101091"  onclick="return false;"  /> 심리적응급처치(위기개입)
-					<input type="text" name="mentalDivEtcBefore" id="mentalDivEtcBefore" style="width:500px;"  value="${mgrBefore.specialHeal }" readonly >  
+					
 				</td>
 			</tr>
 			<tr class="psyGroup">

@@ -1048,6 +1048,7 @@
 					<input type="checkbox" class="languageType" name="languageType" value="101078" onclick="return false;"/> 스페인어
 					<input type="checkbox" class="languageType" name="languageType" value="101079" onclick="return false;"/> 프랑스어
 					<input type="checkbox" class="languageType" name="languageType" value="101080" onclick="return false;"/> 기타
+					<input type="text" name="mentalDivEtc" id="mentalDivEtc" style="width:500px;" > 
 				</td>
 			</tr>
 			
@@ -1064,7 +1065,7 @@
 					<input type="checkbox" class="specialType" name="specialType"  value="101089" onclick="return false;" /> 내마음보고서 해석상담
 					<input type="checkbox" class="specialType" name="specialType"  value="101090" onclick="return false;" /> 수면상담(CBTI)
 					<input type="checkbox" class="specialType" name="specialType"  value="101091" onclick="return false;" /> 심리적응급처치(위기개입)
-					<input type="text" name="mentalDivEtc" id="mentalDivEtc" style="width:500px;" >  TODO: 추가해야함
+					
 				</td>
 			</tr>
 			
