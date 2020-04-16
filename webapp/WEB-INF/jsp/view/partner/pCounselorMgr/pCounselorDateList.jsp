@@ -268,9 +268,6 @@ j$(document).ready(function(){
 								<c:when test="${list.recordStatus == 100695}">
 									<td><strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></td>
 								</c:when>
-								<c:when test="${list.recordStatus == 100696}">
-									<td><strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></td>
-								</c:when>
 								<c:otherwise>
 									<td><a href="#" class="pCounselorDateModify" value="${list.counselCd}&${list.userKey}&${list.counselType}&${list.intakeCd}" ><strong><comm:commNmOut option="commCd" code="${list.recordStatus}"/></strong></a></td>
 								</c:otherwise>
