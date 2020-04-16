@@ -738,7 +738,7 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 											
 											<td >${list.counselReservChk }</td><!-- 1회기 -->
 											
-											<td >${list.extensionNum }회차</td>
+											<td >${list.extensionNum }회차   ${list.recordStatus}</td>
 											<%-- 데이터 날짜 데이터 --%>
 											<c:set scope="page" var="userCounselDate">${list.ymd } ${list.stTime }</c:set>
 											<fmt:parseDate value="${userCounselDate }" pattern="yyyy-MM-dd HH:mm" var="userCounselDt" />

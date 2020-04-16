@@ -319,7 +319,7 @@ $(document).ready(function(){
 		}else if(endType == "ns"){
 			$("#recordStatus").val("100696");
 		}else if(endType == "end"){
-			$("#recordStatus").val("100692");
+			$("#recordStatus").val("100884");
 		}
 		var recordStatus = $("#recordStatus").val();
 		
