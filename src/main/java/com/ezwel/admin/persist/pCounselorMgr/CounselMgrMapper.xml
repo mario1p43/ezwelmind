@@ -334,6 +334,7 @@
 				AND		A.CENTER_SEQ = #{centerSeq}
 				</if>
 				AND		C.INTAKE_CD = A.INTAKE_CD
+				AND     A.CLIENT_CD = C.CLIENT_CD
 				AND		A.STATUS in ('100520', '100521', '100884')
 				AND		A.COUNSELOR_ID = D.USER_ID
 				<if test="isNotNull(counselNm)">

@@ -399,6 +399,9 @@ public class MgrCounselService {
 			if (mgrCertDto.getMultiMap().get("picAdd").getMulitMultipartFile().getSize() > 0) {
 				mgrSubDto.setFileNm(mgrCertDto.getMultiMap().get("picAdd").getFileNm());
 				mgrSubDto.setFilePath(mgrCertDto.getMultiMap().get("picAdd").getFileFullPath());			
+			} else {
+				mgrSubDto.setFileNm(null);
+				mgrSubDto.setFilePath(null);
 			}
 			
 			FileUtils.fileAddUpload(mgrCertDto, FileUploadUtils.UPLOAD_DIR_PROP);
@@ -441,8 +444,8 @@ public class MgrCounselService {
 	}
 	
 	//패스워드를 변경하는 펑션
-	public int updateMgrPwd(MgrDto mgrDto){
-		return counselorInfoMgrMapper.updateMgrPwd(mgrDto);
+	public void updateMgrPwd(MgrDto mgrDto){
+		counselorInfoMgrMapper.updateMgrPwd(mgrDto);
 	}
 	
 	

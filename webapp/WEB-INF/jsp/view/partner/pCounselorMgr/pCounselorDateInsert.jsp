@@ -456,7 +456,7 @@ j$(function(){
 				//게시판인 경우, N/S처리 못함.
 				if(counselType == '100433' || counselType == '100434'){ //전화나 대면인 경우 N/S처리 가능
 					$.alert('해당 상담을 No Show처리 하시겠습니까?',function(){
-
+						$("#recordStatus").val("100696");
 						$("#insertGb").val("N"); //임시저장:T 종결:Y N/S처리:N
 						var scheduleDtOverdue = "${baseInfo_detail.scheduleDtOverdue}";
 						if(scheduleDtOverdue == "Y"){
@@ -477,7 +477,7 @@ j$(function(){
 			}else if(endType == "end"){
 				// 종결하기 100692
 				$.alert('해당 상담(케이스)을 종결 하시겠습니까?',function(){
-
+					$("#recordStatus").val("100692");
 					$("#insertGb").val("Y"); //임시저장:T 종결:Y N/S처리:N
 					$("#counselStatus").val("100884"); //종결일때 상담종결
 					var scheduleDtOverdue = "${baseInfo_detail.scheduleDtOverdue}";
