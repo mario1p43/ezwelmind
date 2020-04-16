@@ -221,6 +221,15 @@ $(document).ready(function(){
 	
 	// 연장하기 버튼 클릭
 	$("#insertBtn").click(function(){		
+		
+		var endType = $(":input:radio[name=endType]:checked").val();
+		if(endType == "ex"){
+			$("#recordStatus").val("100692");
+		}else if(endType == "ns"){
+			$("#recordStatus").val("100696");
+		}else if(endType == "end"){
+			$("#recordStatus").val("100692");
+		}
 		var recordStatus = $("#recordStatus").val();
 		
 		if( recordStatus == '100692' || recordStatus == '100696' ){
@@ -431,7 +440,7 @@ j$(function(){
 			if(endType == "ex"){
 				// 연장하기 100692
 				$.alert('해당 상담을 다음 회기로 연장하시겠습니까?',function(){
-
+					$("#recordStatus").val("100692");
 					$("#insertGb").val("Y"); //임시저장:T 종결, 연장:Y N/S처리:N
 					$("#extensionStatus").val("100931"); //연장일때 연장승인, 
 					$("#counselStatus").val("100521"); //연장일때 상담완료

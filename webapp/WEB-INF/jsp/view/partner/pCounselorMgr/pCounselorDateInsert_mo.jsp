@@ -313,6 +313,14 @@ $(document).ready(function(){
 	
 	// 연장하기 버튼 클릭
 	$("#insertBtn").click(function(){		
+		var endType = $(":input:radio[name=endType]:checked").val();
+		if(endType == "ex"){
+			$("#recordStatus").val("100692");
+		}else if(endType == "ns"){
+			$("#recordStatus").val("100696");
+		}else if(endType == "end"){
+			$("#recordStatus").val("100692");
+		}
 		var recordStatus = $("#recordStatus").val();
 		
 		if( recordStatus == '100692' || recordStatus == '100696' ){
