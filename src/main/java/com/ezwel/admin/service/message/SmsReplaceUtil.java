@@ -25,7 +25,7 @@ public class SmsReplaceUtil {
 		msg = msg.replace("{사이트명}", StringUtils.nvl(smsResult.getSiteNm(), ""));
 		msg = msg.replace("{내담자명}", StringUtils.nvl(smsResult.getSndNm(), ""));
 		msg = msg.replace("{전화번호}", StringUtils.nvl(smsResult.getSndMobile(), ""));
-		msg = msg.replace("{상담일시}", StringUtils.nvl(smsResult.getScheduleDt(), ""));
+		msg = msg.replace("{상담일시}", StringUtils.nvl(smsResult.getSmsDt(), ""));
 		msg = msg.replace("{센터명}", StringUtils.nvl(smsResult.getCenterNm(), ""));
 		msg = msg.replace("{상담사명}", StringUtils.nvl(smsResult.getCounselorNm(), ""));
 		msg = msg.replace("{센터번호}", StringUtils.nvl(smsResult.getCenterTelNum(), ""));
