@@ -298,6 +298,12 @@ j$(document).ready(function(){
 				</c:choose> 
 			</div>
 		</div>
+		<div class="flex">
+							<div class="info_label">자유기술</div><div class="info_content">${customerServiceInfo.memo}</div>
+		</div>
+		
+		
+		
 	</div>
 	<%-- ${defaultInfo.counselType} --%>
 	<%-- ${customerServiceInfo} --%>

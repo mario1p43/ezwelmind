@@ -71,7 +71,6 @@ public class CustomerManagementController extends commonController{
 		String rrn = svcCustomerManagementVo.getRrn();
 		svcCustomerManagementVo.setRrn(customerManagementService.setFormatDate(rrn));
 		svcCustomerManagementVo.setGoal(customerManagementVo.getGoal());
-		svcCustomerManagementVo.setMemo(customerManagementVo.getMemo());
 		model.addAttribute("customerServiceInfo", svcCustomerManagementVo);
 	}
 	

@@ -202,6 +202,10 @@ j$(document).ready(function(){
 									</c:choose> 
 								</td>
 							</tr>
+							<tr>
+							<th  bgcolor="#F5F5F5" align="center">자유기술</th><td colspan="5">${customerServiceInfo.memo}
+							</td>
+							</tr>
 						</table>
 					</td>
 				</tr>
