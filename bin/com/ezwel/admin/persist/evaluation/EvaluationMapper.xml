@@ -220,6 +220,7 @@
 							FROM mind_evaluation_user
 							
 								WHERE eval_seq in (1,6)
+								and SEARCH_YN ='Y'
 							
 						) SUB
 						GROUP BY sub.target_seq,sub.user_key
@@ -437,9 +438,11 @@
 								eval_seq,
 								reg_dt
 							FROM mind_evaluation_user
+							WHERE 1=1
 							<if test="isNotNull(evalSeq)">
-								WHERE eval_seq = #{evalSeq}
+							and	 eval_seq = #{evalSeq}
 							</if>
+							and SEARCH_YN ='Y'
 						) SUB
 						GROUP BY sub.target_seq,sub.user_key
 				) A			
