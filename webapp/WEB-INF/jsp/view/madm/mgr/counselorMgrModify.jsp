@@ -28,10 +28,12 @@
 
 	$( document ).ready(function() {
 		for (i = new Date().getFullYear(); i > 1959; i--){
-		    $('#certYear0').append($('<option />').val(i).html(i));
+
+		    $('.certYear').append($('<option />').val(i).html(i));
+		    
 		}
 
-		$('#certYear0 option[value=2010]').attr('selected', 'selected');  
+		$('.certYear option[value=2010]').attr('selected', 'selected');  
 	});
 	
 	function selectGradeZero(sel, count){
@@ -1366,7 +1368,7 @@
         						<td align="center">
 	        						<c:choose>
 		        						<c:when test="${list.certYear eq null}">
-		        							<select id="certYear${listCnt.index}" name="certYear" style="width:95%;"></select>
+		        							<select id="certYear${listCnt.index}" class="certYear" name="certYear" style="width:95%;"></select>
 	        							</c:when>
 		        						<c:otherwise>	
 		        							<input type="hidden" id="certYear${listCnt.index}" name="certYear" value="${list.certYear}"/>${list.certYear}

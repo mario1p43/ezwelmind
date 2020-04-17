@@ -99,10 +99,12 @@
 
 	$( document ).ready(function() {
 		for (i = new Date().getFullYear(); i > 1959; i--){
-		    $('#certYear0').append($('<option />').val(i).html(i));
+
+		    $('.certYear').append($('<option />').val(i).html(i));
+		    
 		}
 
-		$('#certYear0 option[value=2010]').attr('selected', 'selected');  
+		$('.certYear option[value=2010]').attr('selected', 'selected');  
 	});
 	
 	function selectGradeZero(sel, count){
