@@ -6,21 +6,6 @@
 <head>
 <title>상담사관리 수정</title>
 <link href="${url:resource('/resources/js/plugin/jquery-ui-1.8.9.custom-datepicker.css')}" rel="stylesheet" type="text/css" />
-<script type="text/javascript">
-function fileDownLoad(path,name){
-    var f = document.downForm;
-
-	f.filepath.value = path;
-	f.filename.value = name;
-	f.action = "/resources/jsp/fileDownload.jsp";
-	f.submit();
-}
-</script>
-
-<form name="downForm" method="post">
-	<input type="hidden" name="filepath" value="">
-	<input type="hidden" name="filename" value="">
-</form>
 
 <script type="text/javascript">
 	var num = 0;
