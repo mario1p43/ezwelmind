@@ -164,9 +164,7 @@
 				FROM	MIND_COUNSEL A 
 				LEFT JOIN MIND_USER U 
 				ON A.CLIENT_CD = U.CLIENT_CD AND A.USER_KEY = U.USER_KEY
-				<if test="isNotNull(ownerNm) and isNotNull(centerSeq)">
-					AND	U.USER_NM like CONCAT ( '%',#{ownerNm},'%') 
-				</if>
+
 				LEFT JOIN (SELECT File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD,INTAKE_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='1' ) as G 
                 ON A.INTAKE_CD = G.INTAKE_CD
                 LEFT JOIN MIND_COUNSEL_RECORD as F
@@ -192,6 +190,9 @@
 				</if>
 				<if test="isNotNull(clientCd)">
 				AND		A.CLIENT_CD = #{clientCd}
+				</if>
+				<if test="isNotNull(ownerNm) and isNotNull(centerSeq)">
+					AND	U.USER_NM like CONCAT ( '%',#{ownerNm},'%') 
 				</if>
 				<if test="counselCd != 0">
 				AND		A.COUNSEL_CD = #{counselCd}
@@ -258,9 +259,7 @@
 				FROM	MIND_COUNSEL A 
 				LEFT JOIN MIND_USER U 
 				ON A.CLIENT_CD = U.CLIENT_CD AND A.USER_KEY = U.USER_KEY
-				<if test="isNotNull(ownerNm) and isNotNull(centerSeq)">
-					AND	U.USER_NM like CONCAT ( '%',#{ownerNm},'%') 
-				</if>
+
 				LEFT JOIN (SELECT File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD,INTAKE_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='1' ) as G 
                 ON A.INTAKE_CD = G.INTAKE_CD
                 LEFT JOIN MIND_COUNSEL_RECORD as F
@@ -290,6 +289,9 @@
 				</if>
 				<if test="isNotNull(clientCd)">
 				AND		A.CLIENT_CD = #{clientCd}
+				</if>
+				<if test="isNotNull(ownerNm) and isNotNull(centerSeq)">
+					AND	U.USER_NM like CONCAT ( '%',#{ownerNm},'%') 
 				</if>
 				<if test="counselCd != 0">
 				AND		A.COUNSEL_CD = #{counselCd}
