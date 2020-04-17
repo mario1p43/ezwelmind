@@ -76,8 +76,7 @@
 			var userId = $("#counselorList").val();
 			var stTime = $("#stTime").val();
 			var smsTime = $("#smsTime").val()+$("#smsTime2").val();
-			alert(smsTime);
-			
+
 			if(smsTime != ""){
 				stTime=smsTime;
 			}else if(smsTime == ""){
@@ -115,7 +114,7 @@
 			params.smsDt = smsTime;
 
 			
-			/* $.ajax({
+			$.ajax({
 				url: '/partner/pCounselorMgr/counselScheduleConfrim',
 				data: params,
 				dataType: 'json',
@@ -149,7 +148,7 @@
 						alert("해당 일자는 계약기간이 지난 시점으로 주문이 불가능합니다.");
 					}
 				}
-			}); */
+			}); 
 			 
 			
 		});
