@@ -850,3 +850,6 @@ a.text_deco_none:hover{
 .main__notice-item .notice_content{margin-top: 5px;line-height:1.25em;}
 .main__notice-item .notice_content p{font-size: 14px;margin:0 !important;}
 .main__notice-item .notice_createdAt{font-size: 12px;text-align: right;margin-top: 5px;color:rgba(0,0,0,0.4);}
+
+
+._is_show{display: block !important;}

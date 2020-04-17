@@ -48,7 +48,6 @@
 		$('td input:file').css("display", "block");
 		$('td button.addrPopUp').attr('disabled', false);
 	}
-
 	function closeModify() {
 		$("td input").attr("readonly", true);
 		$("td input").addClass("border_zero");
@@ -58,7 +57,6 @@
 		$('td input:radio').attr('disabled', true);
 		$('td input:file').css("display", "none");
 		$('td button.addrPopUp').attr('disabled', true);
-
 	}
 
 	
@@ -604,13 +602,17 @@
 									<tr>
 										<th rowspan="6" class="line" width="15%" align="left"
 											bgcolor="#F5F5F5">* 센터사진<br><span style="color:#ff4249">(임직원 공개 정보)</span></th>
-										<td rowspan="6" colspan="2"><input type="file"
-											name="file1" id="file1" value="찾아보기"
-											onchange="javascript:getRealPath(this);" /><br> 
-											<img src="/common/file/download?filepath=${centerInfo.filePath1}&filename=${centerInfo.fileNm1}&isImageServer=false" style="width: 280px;height: 150px;">${centerInfo.fileNm1}
+										<td rowspan="6" colspan="2"><br> 
+											<img src="/common/file/download?filepath=${centerInfo.filePath1}&filename=${centerInfo.fileNm1}&isImageServer=false" style="width: 280px;height: 150px;">
+											<a href="javascript:fileDownLoad('${centerInfo.filePath1}','${centerInfo.fileNm1}')">${centerInfo.fileNm1}</a>
 											<span id="path1"></span> <input type="hidden" name="fileNm1"
 											value="${centerInfo.fileNm1 }" /> <input type="hidden"
-											name="filePath1" value="${centerInfo.filePath1}" /></td>
+											name="filePath1" value="${centerInfo.filePath1}" />
+											</br>
+											<input type="file"
+											name="file1" id="file1"
+											onchange="javascript:getRealPath(this);" />
+											</td>
 										<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">*
 											대표자명</th>
 										<td class="line" colspan="2"><input type="text"
@@ -698,24 +700,29 @@
 									<tr>
 										<th class="line" width="15%" align="left" bgcolor="#F5F5F5">*
 											통장사본등록</th>
-										<td class="line" colspan="5"><input type="file"
-											name="file2" size="50" /> 
+										<td class="line" colspan="5">
+											 
 											<img src="/common/file/download?filepath=${centerInfo.filePath2}&filename=${centerInfo.fileNm2}&isImageServer=false" style="width: 280px;height: 150px;">
-											${centerInfo.fileNm2}
+											<a href="javascript:fileDownLoad('${centerInfo.filePath2}','${centerInfo.fileNm2}')">${centerInfo.fileNm2}</a>
 											<input type="hidden" name="fileNm2"
 											value="${centerInfo.fileNm2 }" /> <input type="hidden"
-											name="filePath2" value="${centerInfo.filePath2}" /></td>
+											name="filePath2" value="${centerInfo.filePath2}" />
+											<br />
+											<input type="file" name="file2" size="50" />											
+											</td>
 									</tr>
 									<tr>
 										<th class="line" width="15%" align="left" bgcolor="#F5F5F5">*
 											사업자등록증</th>
-										<td class="line" colspan="5"><input type="file"
-											name="file3" size="50" />
+										<td class="line" colspan="5">
 											<img src="/common/file/download?filepath=${centerInfo.filePath3}&filename=${centerInfo.fileNm3}&isImageServer=false" style="width: 280px;height: 150px;">
-											${centerInfo.fileNm3}
+											<a href="javascript:fileDownLoad('${centerInfo.filePath3}','${centerInfo.fileNm3}')">${centerInfo.fileNm3}</a>
 											<input type="hidden" name="fileNm3"
 											value="${centerInfo.fileNm3 }" /> <input type="hidden"
-											name="filePath3" value="${url:img('centerInfo.filePath3')}" /></td>
+											name="filePath3" value="${url:img('centerInfo.filePath3')}" />
+											<br />
+											<input type="file" name="file3" size="50" />
+									</td>
 									</tr>
 									<tr>
 										<th class="line" width="15%" align="left" bgcolor="#F5F5F5">*
@@ -918,7 +925,6 @@
 											
 										</td>
 									</tr>
-									
 
 								</table>
 							</td>

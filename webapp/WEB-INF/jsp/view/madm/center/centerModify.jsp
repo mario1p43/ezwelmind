@@ -584,7 +584,8 @@
 										<td rowspan="6" colspan="2"><input type="file"
 											name="file1" id="file1" value="찾아보기"
 											onchange="javascript:getRealPath(this);" /><br> <%-- <img alt="미리보기" src="<spring:eval expression="@global['upload.http.img']" />${centerInfo.filePath1}" style="width: 50%; height: 50%;"> --%>
-											<img src="/common/file/download?filepath=${centerInfo.filePath1}&filename=${centerInfo.fileNm1}&isImageServer=false" style="width: 280px;height: 150px;">${centerInfo.fileNm1}
+											<img src="/common/file/download?filepath=${centerInfo.filePath1}&filename=${centerInfo.fileNm1}&isImageServer=false" style="width: 280px;height: 150px;">
+											<a href="javascript:fileDownLoad('${centerInfo.filePath1}','${centerInfo.fileNm1}')">${centerInfo.fileNm1}</a>
 											<span id="path1"></span> <input type="hidden" name="fileNm1"
 											value="${centerInfo.fileNm1 }" /> <input type="hidden"
 											name="filePath1" value="${centerInfo.filePath1}" /></td>
@@ -678,7 +679,8 @@
 										<td class="line" colspan="5"><input type="file"
 											name="file2" size="50" /> 
 											<img src="/common/file/download?filepath=${centerInfo.filePath2}&filename=${centerInfo.fileNm2}&isImageServer=false" style="width: 280px;height: 150px;">
-											${centerInfo.fileNm2}
+											<a href="javascript:fileDownLoad('${centerInfo.filePath2}','${centerInfo.fileNm2}')">${centerInfo.fileNm2}</a>
+											
 											<input type="hidden" name="fileNm2"
 											value="${centerInfo.fileNm2 }" /> <input type="hidden"
 											name="filePath2" value="${centerInfo.filePath2}" /></td>
@@ -689,7 +691,7 @@
 										<td class="line" colspan="5"><input type="file"
 											name="file3" size="50" /> 
 											<img src="/common/file/download?filepath=${centerInfo.filePath3}&filename=${centerInfo.fileNm3}&isImageServer=false" style="width: 280px;height: 150px;">
-											${centerInfo.fileNm3}
+											<a href="javascript:fileDownLoad('${centerInfo.filePath3}','${centerInfo.fileNm3}')">${centerInfo.fileNm3}</a>
 											<input type="hidden" name="fileNm3"
 											value="${centerInfo.fileNm3 }" /> <input type="hidden"
 											name="filePath3" value="${url:img('centerInfo.filePath3')}" /></td>
