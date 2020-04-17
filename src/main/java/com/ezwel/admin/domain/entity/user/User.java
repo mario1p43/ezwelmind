@@ -93,5 +93,6 @@ public class User extends Vo {
 	private String counselMobile;
 	private String counselFeedBack;
 	private String siteNm; 
+	private String smsDt; 
 	
 }

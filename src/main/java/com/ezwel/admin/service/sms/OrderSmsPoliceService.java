@@ -59,11 +59,13 @@ public class OrderSmsPoliceService {
 			
 			message.append("신청코드:" + smsResult.getCounselCd() + "\n");
 			message.append(smsResult.getSndNm() + "님 안녕하세요? 마음안에 고객센터입니다. \n");
-			message.append("내일(" + smsResult.getScheduleDtMonth() + ") " + smsResult.getCenterNm() + "(" + smsResult.getCounselorNm() + " 상담사)" );
+			//message.append("내일(" + smsResult.getScheduleDtMonth() + ") " + smsResult.getCenterNm() + "(" + smsResult.getCounselorNm() + " 상담사)" );
+			message.append("내일(" + smsResult.getSmsDt() + ") " + smsResult.getCenterNm() + "(" + smsResult.getCounselorNm() + " 상담사)" );
 			message.append("에서 상담이 있습니다. \n\n");
 			
 			message.append("★ 상담센터 안내\n");
-			message.append("·일시:" + smsResult.getScheduleDt() + "\n");
+			//message.append("·일시:" + smsResult.getScheduleDt() + "\n");
+			message.append("·일시:" + smsResult.getSmsDt() + "\n");
 			message.append("·장소:" + smsResult.getCenterNm() + "\n");
 			message.append("·주소:" + smsResult.getCenterAddr1() + " " + smsResult.getCenterAddr2() + "\n");
 			message.append("·센터 연락처:" + smsResult.getCenterTelNum() + "\n");
@@ -81,11 +83,13 @@ public class OrderSmsPoliceService {
 			
 			message.append("신청코드:" + smsResult.getCounselCd() + "\n");
 			message.append(smsResult.getSndNm() + "님 안녕하세요? 마음안에 고객센터입니다. \n");
-			message.append("내일(" + smsResult.getScheduleDtMonth() + ") " + smsResult.getCenterNm() + "(" + smsResult.getCounselorNm() + " 상담사)" );
+			//message.append("내일(" + smsResult.getScheduleDtMonth() + ") " + smsResult.getCenterNm() + "(" + smsResult.getCounselorNm() + " 상담사)" );
+			message.append("내일(" + smsResult.getSmsDt() + ") " + smsResult.getCenterNm() + "(" + smsResult.getCounselorNm() + " 상담사)" );
 			message.append("에서 검사가 있습니다. \n\n");
 			
 			message.append("★ 검사센터 안내\n");
-			message.append("·일시:" + smsResult.getScheduleDt() + "\n");
+			//message.append("·일시:" + smsResult.getScheduleDt() + "\n");
+			message.append("·일시:" + smsResult.getSmsDt() + "\n");
 			message.append("·장소:" + smsResult.getCenterNm() + "\n");
 			message.append("·주소:" + smsResult.getCenterAddr1() + " " + smsResult.getCenterAddr2() + "\n");
 			message.append("·센터 연락처:" + smsResult.getCenterTelNum() + "\n\n");
@@ -102,11 +106,11 @@ public class OrderSmsPoliceService {
 			
 			message.append("신청코드:" + smsResult.getCounselCd() + "\n");
 			message.append(smsResult.getSndNm() + "님 안녕하세요? 마음안에 고객센터입니다. \n");
-			message.append("내일(" + smsResult.getScheduleDtMonth() + ") 에 전화상담이 있습니다.\n\n");
-			
+			//message.append("내일(" + smsResult.getScheduleDtMonth() + ") 에 전화상담이 있습니다.\n\n");
+			message.append("내일(" + smsResult.getSmsDt() + ") 에 전화상담이 있습니다.\n\n");
 			message.append("★ 상담안내\n");
-			message.append("·" + smsResult.getScheduleDt() + " " + smsResult.getSndMobile() + " 번호로 상담사가 직접 연락드릴 예정입니다.\n\n");
-			
+			//message.append("·" + smsResult.getScheduleDt() + " " + smsResult.getSndMobile() + " 번호로 상담사가 직접 연락드릴 예정입니다.\n\n");
+			message.append("·" + smsResult.getSmsDt() + " " + smsResult.getSndMobile() + " 번호로 상담사가 직접 연락드릴 예정입니다.\n\n");
 			message.append("★ 상담 취소 및 이용 제한 규정\n");
 			message.append("·상담시간부터 24시간 전 취소 시 회기 차감 없음\n");
 			message.append("·상담시간부터 24시간 이내 취소 시 회기 사용 처리(상담 이용으로 간주)\n");
@@ -132,15 +136,18 @@ public class OrderSmsPoliceService {
 		if ("100433".equals(smsResult.getCounselType())) { // 대면상담일때
 			message.append("[이지웰니스(주) 상담알림]\n");
 			message.append(smsResult.getCenterNm() + " " + smsResult.getCounselorNm() + " 상담사님");
-			message.append("내일(" + smsResult.getScheduleDtMonth() + ") " + smsResult.getSndNm() + "님의 상담이 있습니다.");
+			//message.append("내일(" + smsResult.getScheduleDtMonth() + ") " + smsResult.getSndNm() + "님의 상담이 있습니다.");
+			message.append("내일(" + smsResult.getSmsDt() + ") " + smsResult.getSndNm() + "님의 상담이 있습니다.");
 		} else if ("100437".equals(smsResult.getCounselType())) { // 오프라인 진단
 			message.append("[이지웰니스(주) 상담알림]\n");
 			message.append(smsResult.getCenterNm() + " " + smsResult.getCounselorNm() + " 상담사님");
-			message.append("내일(" + smsResult.getScheduleDtMonth() + ") " + smsResult.getSndNm() + "님의 검사가 있습니다.");
+			//message.append("내일(" + smsResult.getScheduleDtMonth() + ") " + smsResult.getSndNm() + "님의 검사가 있습니다.");
+			message.append("내일(" + smsResult.getSmsDt() + ") " + smsResult.getSndNm() + "님의 검사가 있습니다.");
 		} else if ("100434".equals(smsResult.getCounselType())) { // 전화상담
 			message.append("[이지웰니스(주) 상담알림]\n");
 			message.append(smsResult.getCenterNm() + " " + smsResult.getCounselorNm() + " 상담사님");
-			message.append("내일(" + smsResult.getScheduleDtMonth() + ") " + smsResult.getSndNm() + "님의 전화상담이 있습니다.");
+			//message.append("내일(" + smsResult.getScheduleDtMonth() + ") " + smsResult.getSndNm() + "님의 전화상담이 있습니다.");
+			message.append("내일(" + smsResult.getSmsDt() + ") " + smsResult.getSndNm() + "님의 전화상담이 있습니다.");
 		}
 		
 		return message.toString();
@@ -179,7 +186,8 @@ public class OrderSmsPoliceService {
 		
 		if ("100433".equals(smsResult.getCounselType())) { // 대면상담일때
 			message.append(smsResult.getSndNm() + "님 안녕하세요? 마음안에 고객센터입니다. \n");
-			message.append(smsResult.getScheduleDt() + "에 " + smsResult.getCenterNm() + "(" + smsResult.getCounselorNm() + ") 에서 진행한 상담은 편안하셨는지요? \n\n");
+			//message.append(smsResult.getScheduleDt() + "에 " + smsResult.getCenterNm() + "(" + smsResult.getCounselorNm() + ") 에서 진행한 상담은 편안하셨는지요? \n\n");
+			message.append(smsResult.getSmsDt() + "에 " + smsResult.getCenterNm() + "(" + smsResult.getCounselorNm() + ") 에서 진행한 상담은 편안하셨는지요? \n\n");
 			message.append("해당 상담사와 이어서 상담을 원하시는 경우에는 마음안에(" + smsResult.getClientCd() + ".sangdam4u.com) > 마이페이지 > 상담내역조회 > 연장하기를 통해 결제해주시기 바랍니다. \n\n");
 		}
 		
@@ -195,7 +203,8 @@ public class OrderSmsPoliceService {
 	private String GetBeforeTwodayMsg(SmsResult smsResult) {
 		StringBuffer sb = new StringBuffer();
 		sb.append(smsResult.getSndNm() + "님, 안녕하세요? 마음안에 고객센터입니다.");
-		sb.append(smsResult.getCenterNm() + " 센터(" + smsResult.getCounselorNm() + "상담사)에서 다음 상담이 " + smsResult.getScheduleDt() + "에 진행될 예정입니다. 상담을 진행하실 경우, 반드시 마음안에 사이트에서 \"연장하기\"기능을 클릭한 후 예약해주십시오. 24시간 이내에 예약하지 않을 경우, 해당 상담이 자동취소될 수 있습니다.\n\n");
+		//sb.append(smsResult.getCenterNm() + " 센터(" + smsResult.getCounselorNm() + "상담사)에서 다음 상담이 " + smsResult.getScheduleDt() + "에 진행될 예정입니다. 상담을 진행하실 경우, 반드시 마음안에 사이트에서 \"연장하기\"기능을 클릭한 후 예약해주십시오. 24시간 이내에 예약하지 않을 경우, 해당 상담이 자동취소될 수 있습니다.\n\n");
+		sb.append(smsResult.getCenterNm() + " 센터(" + smsResult.getCounselorNm() + "상담사)에서 다음 상담이 " + smsResult.getSmsDt() + "에 진행될 예정입니다. 상담을 진행하실 경우, 반드시 마음안에 사이트에서 \"연장하기\"기능을 클릭한 후 예약해주십시오. 24시간 이내에 예약하지 않을 경우, 해당 상담이 자동취소될 수 있습니다.\n\n");
 	
 		sb.append("★문의사항은 마음안에 홈페이지 (" + smsResult.getClientCd() + ".sangdam4u.com)");
 		sb.append("1:1문의 및 고객센터(02-6909-4400)로 문의 주시기 바랍니다.");		
@@ -245,10 +254,12 @@ public class OrderSmsPoliceService {
 		if ("100433".equals(smsResult.getCounselType())) { // 대면상담일때
 			message.append("신청코드:" + smsResult.getCounselCd() + "\n");
 			message.append(smsResult.getSndNm() + "님 안녕하세요? 마음안에 고객센터입니다. \n");
-			message.append("예약하신 상담 일정이 " + smsResult.getScheduleDt() + "로 변경되었습니다. \n\n");
+			//message.append("예약하신 상담 일정이 " + smsResult.getScheduleDt() + "로 변경되었습니다. \n\n");
+			message.append("예약하신 상담 일정이 " + smsResult.getSmsDt() + "로 변경되었습니다. \n\n");
 			
 			message.append("★ 상담센터 안내\n");
-			message.append("·일시:" + smsResult.getScheduleDt() + "\n");
+			//message.append("·일시:" + smsResult.getScheduleDt() + "\n");
+			message.append("·일시:" + smsResult.getSmsDt() + "\n");
 			message.append("·장소:" + smsResult.getCenterNm() + "\n");
 			message.append("·주소:" + smsResult.getCenterAddr1() + " " + smsResult.getCenterAddr2() + "\n");
 			message.append("·연락처:" + smsResult.getCenterTelNum() + "\n");
@@ -265,7 +276,8 @@ public class OrderSmsPoliceService {
 		} else if ("100434".equals(smsResult.getCounselType())) { // 전화상담
 			message.append("신청코드:" + smsResult.getCounselCd() + "\n");
 			message.append(smsResult.getSndNm() + "님 안녕하세요? 마음안에 고객센터입니다. \n");
-			message.append("예약하신 전화상담 일정이 " + smsResult.getScheduleDt() + "로 변경되었습니다. \n\n");
+			//message.append("예약하신 전화상담 일정이 " + smsResult.getScheduleDt() + "로 변경되었습니다. \n\n");
+			message.append("예약하신 전화상담 일정이 " + smsResult.getSmsDt() + "로 변경되었습니다. \n\n");
 			
 			message.append("★ 상담 취소 및 이용 제한 규정\n");
 			message.append("·상담시간부터 24시간 전 취소 시 회기 차감 없음\n");
@@ -290,13 +302,15 @@ public class OrderSmsPoliceService {
 		if ("100433".equals(smsResult.getCounselType())) { // 대면상담일때
 			message.append("[이지웰니스(주) 일정변경]\n");
 			message.append("신청코드:" + smsResult.getCounselCd() + "\n");
-			message.append(smsResult.getSndNm() + "님(" + smsResult.getSndMobile() + ") 상담이 " + smsResult.getScheduleDt() + "로 변경되었습니다.");
+			//message.append(smsResult.getSndNm() + "님(" + smsResult.getSndMobile() + ") 상담이 " + smsResult.getScheduleDt() + "로 변경되었습니다.");
+			message.append(smsResult.getSndNm() + "님(" + smsResult.getSndMobile() + ") 상담이 " + smsResult.getSmsDt() + "로 변경되었습니다.");
 			message.append("자세한 내담자정보 및 상담접수내역은 파트너어드민에서 확인해 주시기 바랍니다.\n");
 			message.append("·개인상담관리 > 예약확정현황");
 		} else if ("100434".equals(smsResult.getCounselType())) { // 전화상담
 			message.append("[이지웰니스(주) 일정변경]\n");
 			message.append("신청코드:" + smsResult.getCounselCd() + "\n");
-			message.append(smsResult.getSndNm() + "님(" + smsResult.getSndMobile() + ") 상담이 " + smsResult.getScheduleDt() + "로 변경되었습니다.");
+			//message.append(smsResult.getSndNm() + "님(" + smsResult.getSndMobile() + ") 상담이 " + smsResult.getScheduleDt() + "로 변경되었습니다.");
+			message.append(smsResult.getSndNm() + "님(" + smsResult.getSndMobile() + ") 상담이 " + smsResult.getSmsDt() + "로 변경되었습니다.");
 			message.append("자세한 내담자정보 및 상담접수내역은 파트너어드민에서 확인해 주시기 바랍니다.\n");
 			message.append("·개인상담관리 > 예약확정현황");
 		}
@@ -314,7 +328,8 @@ public class OrderSmsPoliceService {
 	
 		message.append("신청코드:" + user.getCounselCd() + "\n");
 		message.append(user.getUserNm() + "님 안녕하세요?\n마음안에 고객센터입니다. \n\n");
-		message.append(user.getScheduleDt() +",\n"+ user.getCenterNm() +"("+ user.getCounselorNm() +")에서 진행한 상담은 편안하셨는지요? \n");
+		//message.append(user.getScheduleDt() +",\n"+ user.getCenterNm() +"("+ user.getCounselorNm() +")에서 진행한 상담은 편안하셨는지요? \n");
+		message.append(user.getSmsDt() +",\n"+ user.getCenterNm() +"("+ user.getCounselorNm() +")에서 진행한 상담은 편안하셨는지요? \n");
 		message.append("다음 상담 이용 시 향상된 서비스를 제공하기 위해 만족도조사를 진행합니다. \n\n");
 		
 		message.append("마음안에 홈페이지("+ user.getClientCd() + ".sangdam4u.com) > 마이페이지 >");
@@ -335,7 +350,8 @@ public class OrderSmsPoliceService {
 		StringBuffer message = new StringBuffer();
 	
 		message.append(user.getUserNm() + "님 안녕하세요?\n마음안에 고객센터입니다. \n\n");
-		message.append(user.getScheduleDt() +",\n"+ user.getCenterNm() +"("+ user.getCounselorNm() +")에서 진행하신 법률상담은 만족스러우셨는지요? \n");
+		//message.append(user.getScheduleDt() +",\n"+ user.getCenterNm() +"("+ user.getCounselorNm() +")에서 진행하신 법률상담은 만족스러우셨는지요? \n");
+		message.append(user.getSmsDt() +",\n"+ user.getCenterNm() +"("+ user.getCounselorNm() +")에서 진행하신 법률상담은 만족스러우셨는지요? \n");
 		message.append("도움받으셨던 상담에 대해 한번 더 요약하여 전달드립니다.\n\n");
 
 		message.append("<상담사가 전하는 메시지>\n" + user.getCounselFeedBack() + "\n\n");

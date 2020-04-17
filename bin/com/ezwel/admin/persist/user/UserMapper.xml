@@ -152,6 +152,7 @@
 		         IF(DATE_FORMAT(NOW(),'%Y%m%d') &lt;= b.end_dd, 'Y', 'N') as jedoYn,
 	 			 DATE_FORMAT(STR_TO_DATE(a.scheduleDt, '%Y%m%d%H%i%s'),'%Y년%m월%d일%H시') 	AS scheduleDt,
 				 DATE_FORMAT(STR_TO_DATE(a.scheduleDtMonth, '%Y%m%d%H%i%s'),'%m월%d일 %H시') 		AS scheduleDtMonth,
+				 CASE WHEN a.smsDt is not null then DATE_FORMAT(STR_TO_DATE(a.smsDt, '%Y%m%d%H%i%s'),'%m월%d일 %H시%i분') else DATE_FORMAT(STR_TO_DATE(a.scheduleDtMonth, '%Y%m%d%H%i%s'),'%Y년%m월%d일%H시') end		AS smsDt,
 				 a.centerTelNum,
 				 a.centerNm,
 				 a.centerAddr1,
@@ -175,17 +176,18 @@
 				 mu.MOBILE as mobile,
 				 userInfo.scheduleDt, userInfo.scheduleDtMonth, userInfo.centerTelNum, userInfo.centerNm,
 				 userInfo.centerAddr1, userInfo.centerAddr2, userInfo.counselorNm, userInfo.counselorMobile,
-				 userInfo.counselType, userInfo.cMobile,
+				 userInfo.counselType, userInfo.cMobile,userInfo.smsDt,
 				 userInfo.siteNm
 		from 
 			(select a.user_key, a.client_cd, b.counsel_nm, a.counsel_cd, b.MOBILE as cMobile, b.email,
 					  a.scheduleDt, a.scheduleDtMonth, a.centerTelNum, a.centerNm,
 					  a.centerAddr1, a.centerAddr2, a.counselorNm, a.counselorMobile,
-					  a.counselType, a.siteNm
+					  a.counselType, a.siteNm,a.smsDt
 			 from	
 			 	(select b.user_key, b.CLIENT_CD, b.intake_cd, b.counsel_cd,
 			 			  B.SCHEDULE_DT 		AS scheduleDt,
 						  B.SCHEDULE_DT 		AS scheduleDtMonth,
+						  B.SMS_DT				AS smsDt,
 						  C.TEL_NUM 			as centerTelNum,
 						  C.CENTER_NM			as centerNm,
 						  C.ADDR1 				as centerAddr1,
