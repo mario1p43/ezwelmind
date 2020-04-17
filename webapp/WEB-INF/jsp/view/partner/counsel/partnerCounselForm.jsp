@@ -31,8 +31,12 @@
 			var userId = $("#counselorList").val();
 			var stTime = $("#stTime").val();
 			var smsTime = $("#smsTime").val()+$("#smsTime2").val();
-			if(smsTime==""){
-				smsTime=stTime;
+			
+			alert(smsTime);
+			if(smsTime != ""){
+				stTime=smsTime;
+			}else if(smsTime == ""){
+				smsTime =stTime;
 			}
 			console.log(smsTime);
 			var ymd = $("#counselYmd").val();
@@ -53,9 +57,7 @@
 				alert("상담시간을 선택해주세요.");
 				return;
 			}
-			if(smsTime == ""){
-				smsTime =stTime;
-			}
+			
 			/* if(stTime < smsTime){
 				alert("상담시간보다 sms문자시간이 늦을 수 없습니다.");
 				return;
@@ -70,7 +72,7 @@
 			params.smsDt = smsTime;
 
 			
-			$.ajax({
+			/* $.ajax({
 				url: '/partner/pCounselorMgr/counselScheduleConfrim',
 				data: params,
 				dataType: 'json',
@@ -104,7 +106,7 @@
 						alert("해당 일자는 계약기간이 지난 시점으로 주문이 불가능합니다.");
 					}
 				}
-			});
+			});  */
 			 
 			
 		});
@@ -377,7 +379,7 @@
 										<option value="22">22</option>
 									</select>
 									<select id="smsTime2">
-										<option value="">= 분 선택 =</option>
+										<option value="00">= 분 선택 =</option>
 										<option value="00">00</option>
 										<option value="05">05</option>
 										<option value="10">10</option>
