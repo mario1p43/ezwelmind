@@ -695,7 +695,7 @@ function checkCounselExtendsJedo(clientCd, counselDate, nowDate){
 						<th>다음회기등록</th>
 						<td class="viewDetail2">
 							<c:if test="${list.extensionStatus eq '100932'}">
-								연장완료
+								등록완료
 							</c:if>
 							<c:if test="${list.extensionStatus eq '100931' or empty list.extensionStatus}">
 								<a><span class="btnExtend" style="color:#ffffff" userKey="${list.userKey}" counselCd="${list.counselCd}" clientCd="${list.clientCd}" userStatus="${list.userStatus}" userUseYn="${list.useYn}" counselDate="${list.ymd}" channelType="${list.channelType }">다음회기등록</span></a>

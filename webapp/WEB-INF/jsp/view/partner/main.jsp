@@ -246,7 +246,7 @@ if(iTMonth2<10){
 												</tr>
 												<tr>
 											    	<td>
-											    	<a href="/partner/bbsNotice/noticeDetailForm?dataSeq=${notice.dataSeq}"><b>${notice.content }</b></a>
+											    	<b>${notice.content }</b>
 											    		
 											    	</td>
 												</tr>
@@ -285,7 +285,7 @@ if(iTMonth2<10){
 												</tr>
 												<tr>
 											    	<td>
-											    	<a href="/partner/bbsNotice/noticeDetailForm?dataSeq=${recruit.dataSeq}"><b>${recruit.content }</b></a>
+											    	<b>${recruit.content }</b>
 											    		
 											    	</td>
 												</tr>

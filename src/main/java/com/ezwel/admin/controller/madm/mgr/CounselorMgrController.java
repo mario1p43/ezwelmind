@@ -274,6 +274,31 @@ public class CounselorMgrController {
 		return "redirect:/madm/mgr/counselorMgrList";
 	}
 	
+	
+	@RequestMapping(value="/updateCounselorMgrApprove")
+	public String updateCounselorMgrApprove(@ModelAttribute MgrDto mgrDto, @ModelAttribute MgrSubDto mgrSubDto, @ModelAttribute MgrCertDto mgrCertDto, @ModelAttribute MgrCareerArray mgrCareerArray, @ModelAttribute MgrBookArray mgrBookArray, Model model, HttpServletRequest request,
+			MultipartHttpServletRequest mhsq){
+		setMenu(model);
+		mgrCertDto.init(mhsq, true);
+		
+		
+		if(request.getParameter("delPhoto").equals("")){
+		}else{
+			mgrSubDto.setFileNm(" ");
+			mgrSubDto.setFilePath(" ");
+		}
+		mgrCertDto.init(mhsq, true);
+		mgrDto.setCenterOwnerYn(request.getParameter("ownerYn"));
+		mgrCounselService.modifyCounselMgr(mgrDto, mgrSubDto, mgrCertDto, request);
+		mgrCounselService.modifyCounselMgrCareer(mgrDto, mgrCareerArray);
+		mgrCounselService.modifyCounselMgrBook(mgrDto, mgrBookArray);
+		
+		
+		
+		return "redirect:/madm/info/reqmodify";
+	}
+	
+	
 	@RequestMapping(value="/getCounselorMgrDetail")
 	public String getCounselorMgrDetail(@ModelAttribute CounselorInfoMgrDto counselorInfoMgrDto, @ModelAttribute MgrCertDto mgrCertDto, Model model){
 		if (logger.isDebugEnabled()){

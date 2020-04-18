@@ -104,7 +104,7 @@ public class BBSNoticeController {
 
 		model.addAttribute("clientList", bbsService.getClientList(bbsDto));
 
-		return "madm/bbs/addNotice";
+		return "madm/bbs/modifyNotice";
 
 	}
 

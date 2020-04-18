@@ -154,6 +154,7 @@
 					, IF((SELECT ORDER_STATUS FROM MIND_ORDER WHERE COUNSEL_CD = A.COUNSEL_CD) = '100960', 'Y', 'N') as needPay
 					,A.RECORD_STATUS as recordStatus
 					,A.EXTENSION_STATUS   as extensionStatus
+					, IFNULL(A.EXTENSION_NUM, '1')   AS  extensionNum
 					,E.USER_NM as counselMgrNm
 					,C.COUNSEL_RESERV_CHK
 					,F.RISKS AS risk

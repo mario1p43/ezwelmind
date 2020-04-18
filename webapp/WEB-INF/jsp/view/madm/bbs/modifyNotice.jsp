@@ -45,18 +45,7 @@ j$(document).ready(function(){
 		}
 	}
 	</c:if> 
-	
-	//CHANNEL_TYPE         |AREA1                                                                                                                  |AREA2  
-/* 	<c:if test='${not empty mgr.lawDiv}'>
-	var chkValue = '${mgr.lawDiv}';
-	var chkArr = chkValue.split(',');
-	for (var i = 0; i < chkArr.length; i++) {
-		if(chkArr[i] != ""){
-		$('[name=lawDiv][value=' + chkArr[i] + ']').attr('checked',true);
-		}
-	}
-	</c:if> */
-	
+		
 	
 	j$("#addNotice").validate({
 		onkeyup:false,
@@ -415,26 +404,26 @@ j$(function(){
 		        <tr align="left" height="30px">
 					<td align="center"  bgcolor="#F5F5F5">지역구분</td>
 			    	<td colspan="3" align="left">
-			    					<input type="checkbox" id="checkAreaAll" onclick="checkArea()" checked="checked">전체
+			    					<input type="checkbox" id="checkAreaAll" onclick="checkArea()" >전체
 			    					</br>
-					    			<input type="checkbox" name="area1" value="100007" checked="checked">강원도
-					    			<input type="checkbox" name="area1" value="100008" checked="checked">경기도
-					    			<input type="checkbox" name="area1" value="100009" checked="checked">경상남도
-					    			<input type="checkbox" name="area1" value="100010" checked="checked">경상북도
-					    			<input type="checkbox" name="area1" value="100011" checked="checked">광주광역시
-					    			<input type="checkbox" name="area1" value="100012" checked="checked">대구광역시
-					    			<input type="checkbox" name="area1" value="100013" checked="checked">대전광역시
-					    			<input type="checkbox" name="area1" value="100014" checked="checked">부산광역시
+					    			<input type="checkbox" name="area1" value="100007" >강원도
+					    			<input type="checkbox" name="area1" value="100008" >경기도
+					    			<input type="checkbox" name="area1" value="100009" >경상남도
+					    			<input type="checkbox" name="area1" value="100010" >경상북도
+					    			<input type="checkbox" name="area1" value="100011" >광주광역시
+					    			<input type="checkbox" name="area1" value="100012" >대구광역시
+					    			<input type="checkbox" name="area1" value="100013" >대전광역시
+					    			<input type="checkbox" name="area1" value="100014" >부산광역시
 					    			</br>
-					    			<input type="checkbox" name="area1" value="100015" checked="checked">서울특별시
-					    			<input type="checkbox" name="area1" value="100016" checked="checked">세종특별자치시
-					    			<input type="checkbox" name="area1" value="100017" checked="checked">울산광역시
-					    			<input type="checkbox" name="area1" value="100018" checked="checked">인천광역시
-					    			<input type="checkbox" name="area1" value="100019" checked="checked">전라남도
-					    			<input type="checkbox" name="area1" value="100020" checked="checked">전라북도
-					    			<input type="checkbox" name="area1" value="100021" checked="checked">제주특별자치도
-					    			<input type="checkbox" name="area1" value="100022" checked="checked">충청남도
-					    			<input type="checkbox" name="area1" value="100023" checked="checked">충청북도
+					    			<input type="checkbox" name="area1" value="100015" >서울특별시
+					    			<input type="checkbox" name="area1" value="100016" >세종특별자치시
+					    			<input type="checkbox" name="area1" value="100017" >울산광역시
+					    			<input type="checkbox" name="area1" value="100018" >인천광역시
+					    			<input type="checkbox" name="area1" value="100019" >전라남도
+					    			<input type="checkbox" name="area1" value="100020" >전라북도
+					    			<input type="checkbox" name="area1" value="100021" >제주특별자치도
+					    			<input type="checkbox" name="area1" value="100022" >충청남도
+					    			<input type="checkbox" name="area1" value="100023" >충청북도
 					    			</td>
 		   				
 	   			<tr>
@@ -443,21 +432,21 @@ j$(function(){
 					</td>
 	 					<td align="left" colspan="3">
 	 					
-	 					<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_ADMIN" checked="checked"/>제휴사관리자
-						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_CENTER" checked="checked"/>센터장
-						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_SANGDAM" checked="checked"/>상담
-						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_SEND" checked="checked"/>파견
-						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_GROUP" checked="checked"/>집단
-						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_TEACHER" checked="checked"/>강사
+	 					<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_ADMIN" />제휴사관리자
+						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_CENTER" />센터장
+						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_SANGDAM" />상담
+						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_SEND" />파견
+						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_GROUP" />집단
+						<input type="checkbox" name="sAuthCd" value="ROLE_PARTNER_TEACHER" />강사
 					</td> 
 				</tr> 
 				<tr>
 		        	<td align="center" width="13%"  bgcolor="#F5F5F5">상담유형</td>
 					<td width="40%">
-						<input type="checkbox" name="channelType" data-validation-qty="1-4" value="100001" checked="checked"></input>심리
-						<input type="checkbox" name="channelType" data-validation-qty="1-4" value="100002" checked="checked"></input>법률
-						<input type="checkbox" name="channelType" data-validation-qty="1-4" value="100003" checked="checked"></input>재무
-						<input type="checkbox" name="channelType" data-validation-qty="1-4" value="100004" checked="checked"></input>심리검사
+						<input type="checkbox" name="channelType" data-validation-qty="1-4" value="100001" ></input>심리
+						<input type="checkbox" name="channelType" data-validation-qty="1-4" value="100002" ></input>법률
+						<input type="checkbox" name="channelType" data-validation-qty="1-4" value="100003" ></input>재무
+						<input type="checkbox" name="channelType" data-validation-qty="1-4" value="100004" ></input>심리검사
 					</td>
 				</tr>
 		        

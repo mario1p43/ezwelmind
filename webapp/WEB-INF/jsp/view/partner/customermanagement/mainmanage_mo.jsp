@@ -392,7 +392,7 @@ j$(document).ready(function(){
 		</div>
 		<div class="big_label">고객사 주요정책</div>
 		<div class="text_content">
-			${customerServiceInfo.memoTt}
+			<textarea rows="5" cols="10" id="ir1" name="memo" style="width:99%; height:100px;border: 0px;" readonly="readonly">${customerServiceInfo.memoTt}</textarea>
 		</div>
 	</div>
 	<div class="box_title">동의서 등록</div>

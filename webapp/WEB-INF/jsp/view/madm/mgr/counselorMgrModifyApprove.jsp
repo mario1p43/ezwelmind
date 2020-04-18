@@ -1131,7 +1131,7 @@ function changeCert(num){
 </script>
 </head>
 <body>
-<form id="updateCounselorMgr" name="updateCounselorMgr"  action="/madm/mgr/updateCounselorMgr" method="POST" enctype="multipart/form-data">
+<form id="updateCounselorMgr" name="updateCounselorMgr"  action="/madm/mgr/updateCounselorMgrApprove" method="POST" enctype="multipart/form-data">
 <input type="hidden" name="num" id="num">
 <input type="hidden" name="count" id="count">
 <input type="hidden" name="delPhoto" id="delPhoto">
