@@ -375,13 +375,13 @@ j$(document).ready(function(){
 		<div class="flex">
 			<div class="info_label">서비스기간</div>
 			<div class="info_content">
-				${defaultInfo.period}
+				${jedo.startDd } ~ ${jedo.endDd }
 			</div>
 		</div>
 		<div class="flex">
 			<div class="info_label">잔여/전체 포인트</div>
 			<div class="info_content">
-				${defaultInfo.point}
+				${privateRemainPoint} / ${ceiling } 
 			</div>
 		</div>
 		<div class="flex">

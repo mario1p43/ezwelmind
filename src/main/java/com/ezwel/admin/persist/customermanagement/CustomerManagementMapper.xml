@@ -186,6 +186,10 @@
 		select client_cd as clientCd from mind_counsel where counsel_cd = #{counselCd}
 	</select>
 	
+	<select id="getUserKey" resultType="String">
+		select USER_KEY as userKey from mind_counsel where counsel_cd = #{counselCd}
+	</select>
+	
 	
 	<select id="getTeamCd" parameterType="String" resultType="String">
 		select team_cd from mind_mgr where user_id = #{userId}

@@ -18,6 +18,8 @@ public interface CustomerManagementMapper {
 
 	public String getClientCd(String counselCd);
 	
+	public String getUserKey(String counselCd);
+	
 	public String getTeamCd(String userId);
 	
 	public void saveStatusInfo(CustomerManagementVo customerManagementVo);

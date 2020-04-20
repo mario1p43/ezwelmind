@@ -59,6 +59,10 @@ public class CustomerManagementService {
 		return customerManagementMapper.getClientCd(counselCd);
 	}
 	
+	public String getUserKey(String counselCd) {
+		return customerManagementMapper.getUserKey(counselCd);
+	}
+	
 	public String getTeamCd(String userId) {
 		return customerManagementMapper.getTeamCd(userId);
 	}

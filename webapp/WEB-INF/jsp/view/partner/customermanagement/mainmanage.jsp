@@ -250,13 +250,13 @@ j$(document).ready(function(){
 								<th bgcolor="#F5F5F5" align="center">사례위험도</th>
 								<td>${defaultInfo.risks}</td>
 								<th bgcolor="#F5F5F5" align="center">회기정보</th>
-								<td>${defaultInfo.extensionNum}</td>
+								<td>${jedo.startDd } ~ ${jedo.endDd }</td>
 							</tr>
 							<tr>
 								<th bgcolor="#F5F5F5" align="center">서비스 기간</th>
 								<td >${defaultInfo.period}</td>
 								<th bgcolor="#F5F5F5" align="center">잔여/전체 포인트</th>
-								<td>${defaultInfo.point}</td>
+								<td>${privateRemainPoint} / ${ceiling } </td>
 								<th class="line" align="center"></th>
 								<td>
 								</td>
