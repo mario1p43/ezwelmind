@@ -30,14 +30,8 @@
 			var centerSeq = $("#centerList").val();
 			var userId = $("#counselorList").val();
 			var stTime = $("#stTime").val();
-			var smsTime = $("#smsTime").val()+$("#smsTime2").val();
+			//var smsTime = $("#smsTime").val()+$("#smsTime2").val();
 			
-			if(smsTime != ""){
-				stTime=smsTime;
-			}else if(smsTime == ""){
-				smsTime =stTime;
-			}
-			console.log(smsTime);
 			var ymd = $("#counselYmd").val();
 			
 			if ($("#intakeCd").val() == "") {
@@ -68,7 +62,7 @@
 			params.stTime = stTime;
 			params.centerSeq = centerSeq;
 			params.clientCd = $("#clientCd").val();
-			params.smsDt = smsTime;
+			//params.smsDt = smsTime;
 
 			
 			$.ajax({
@@ -353,7 +347,7 @@
 									&nbsp;&nbsp;&nbsp;★  SMS를 전송하지 않으려면 체크를 해제 해주세요.
 						    	</td>
 							</tr>
-							<tr align="left" height="30px">
+							<!-- <tr align="left" height="30px">
 								<td width="20%" bgcolor="#F5F5F5" align="center">
 									<strong>SMS발송용 상담시간</strong>
 								</td>
@@ -394,7 +388,7 @@
 									</select>
 									<span>*입력하지 않으면 변경할 시간으로 문자가 전송됩니다.</span>
 						    	</td>
-							</tr>
+							</tr> -->
 						</table>
 						<!-- 검색 영역 종료 -->
 					</td>
