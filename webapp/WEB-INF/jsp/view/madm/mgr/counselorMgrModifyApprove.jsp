@@ -1235,8 +1235,10 @@ function changeCert(num){
 							</td>
 							<td align="center">
 								<select name="eduStatus" id="eduStatus" style="width:95%;">
-									<option value="졸업">졸업</option>
 									<option value="재학">재학</option>
+									<option value="졸업">졸업</option>
+									<option value="졸업예정">졸업예정</option>
+									<option value="수료">수료</option>
 								</select>
 							</td>
 							<td align="center">

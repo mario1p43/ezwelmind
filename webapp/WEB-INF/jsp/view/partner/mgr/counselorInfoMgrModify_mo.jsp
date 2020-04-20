@@ -1335,8 +1335,10 @@
 					<option value="S">박사</option>
 				</select>
 				<select class="flexGrow height-one-tenth contentLabel" name="eduStatus" id="eduStatus">
-					<option value="졸업">졸업</option>
 					<option value="재학">재학</option>
+					<option value="졸업">졸업</option>
+					<option value="졸업예정">졸업예정</option>
+					<option value="수료">수료</option>
 				</select>
 				<select class="flexGrow height-one-tenth contentLabel" name="eduYear" id="eduYear"></select>
 			</div>
