@@ -109,7 +109,10 @@
 		// 주문하기
 		$("#doOrder").click(function () {
 			$("#trOrder").hide();
+			var smsTime = $("#smsTime").val()+$("#smsTime2").val();
 			var params = {};
+			
+			params.smsDt = smsTime;
 			params.userKey = $("#userKey").val();
 			params.clientCd = $("#clientCd").val();
 			params.intakeCd = $("#intakeCd").val();

@@ -951,8 +951,10 @@
 					<option value="S">박사</option>
 				</select>
 				<select class="flexGrow height-one-tenth contentLabel" name="eduStatus" id="eduStatus">
-					<option value="졸업">졸업</option>
 					<option value="재학">재학</option>
+					<option value="졸업">졸업</option>
+					<option value="졸업예정">졸업예정</option>
+					<option value="수료">수료</option>
 				</select>
 				<select class="flexGrow height-one-tenth contentLabel" name="eduYear" id="eduYear"></select>
 			</div>
@@ -969,8 +971,10 @@
 					<option value="S">박사</option>
 				</select>
 				<select class="flexGrow height-one-tenth contentLabel" name="eduStatus2" id="eduStatus2">
-					<option value="졸업">졸업</option>
 					<option value="재학">재학</option>
+					<option value="졸업">졸업</option>
+					<option value="졸업예정">졸업예정</option>
+					<option value="수료">수료</option>
 				</select>
 				<select class="flexGrow height-one-tenth contentLabel" name="eduYear2" id="eduYear2"></select>
 			</div>
@@ -987,8 +991,10 @@
 					<option value="S">박사</option>
 				</select>
 				<select class="flexGrow height-one-tenth contentLabel" name="eduStatus3" id="eduStatus3">
-					<option value="졸업">졸업</option>
 					<option value="재학">재학</option>
+					<option value="졸업">졸업</option>
+					<option value="졸업예정">졸업예정</option>
+					<option value="수료">수료</option>
 				</select>
 				<select class="flexGrow height-one-tenth contentLabel" name="eduYear3" id="eduYear3"></select>
 			</div>

@@ -1224,8 +1224,10 @@
 							</td>
 							<td align="center">
 								<select name="eduStatus2" id="eduStatus2" style="width:95%;">
-									<option value="졸업">졸업</option>
 									<option value="재학">재학</option>
+									<option value="졸업">졸업</option>
+									<option value="졸업예정">졸업예정</option>
+									<option value="수료">수료</option>
 								</select>
 							</td>
 							<td align="center">
@@ -1248,8 +1250,10 @@
 							</td>
 							<td align="center">
 								<select name="eduStatus3" id="eduStatus3" style="width:95%;">
-									<option value="졸업">졸업</option>
 									<option value="재학">재학</option>
+									<option value="졸업">졸업</option>
+									<option value="졸업예정">졸업예정</option>
+									<option value="수료">수료</option>
 								</select>
 							</td>
 							<td align="center">
@@ -1321,8 +1325,9 @@
         						
         						<td align="center">
         						<c:choose>
-	        						<c:when test="${list.orgNm eq null}">
+	        						<c:when test="${list.orgNm eq null || list.orgNm eq ''}">
 		        						<select id="certOrg${listCnt.index}" name="certOrg" onchange="selectCertZero(this, ${listCnt.index})" style="width:95%;">
+		        						<option value="">선택하세요</option>
 								        	<option value="한국상담심리학회">한국상담심리학회</option>
 								        	<option value="한국임상심리학회">한국임상심리학회</option>
 								        	<option value="한국상담학회">한국상담학회</option>
@@ -1343,9 +1348,9 @@
         						</td>
         						<td id="certNameTd${listCnt.index}" align="center">
 									<c:choose>
-        								<c:when test="${list.certNm eq null}">
+        								<c:when test="${list.certNm eq null || list.certNm eq '' }">
         									<select id="certName${listCnt.index}" name="certName" onchange="selectGradeZero(this, ${listCnt.index})" style="width:95%;">
-					        					<option value="상담심리사">상담심리사</option>
+					        					<option value="">선택하세요</option>
 					        				</select>				
         								</c:when>
         								<c:otherwise>
@@ -1355,7 +1360,7 @@
         						</td>
         						<td id="certGradeTd${listCnt.index}" align="center">
         						<c:choose>
-	        						<c:when test="${list.grade eq null}">
+	        						<c:when test="${list.grade eq null || list.grade eq ''}">
 							        	<select id="certGrade${listCnt.index}" name="certGrade" style="width:95%;">
 							        	<option value="1급">1급</option>
 							        	<option value="2급">2급</option>
@@ -1369,7 +1374,7 @@
         						</td>
         						<td align="center">
 	        						<c:choose>
-		        						<c:when test="${list.certYear eq null}">
+		        						<c:when test="${list.certYear eq null  || list.certYear eq ''}">
 		        							<select id="certYear${listCnt.index}" class="certYear" name="certYear" style="width:95%;"></select>
 	        							</c:when>
 		        						<c:otherwise>	
