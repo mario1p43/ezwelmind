@@ -377,7 +377,7 @@ public class CounselController extends commonController{
 			@RequestParam String intakeCd,
 			@RequestParam String scheduleSeq,
 			@RequestParam String ceilingCategoryCd,
-			@RequestParam String smsYn, Model model) {
+			@RequestParam String smsYn,@RequestParam String smsDt, Model model) {
 		
 		Map<String, Object> params = new HashMap<>();
 		params.put("userKey", userKey);
@@ -386,6 +386,7 @@ public class CounselController extends commonController{
 		params.put("scheduleSeq", scheduleSeq);
 		params.put("ceilingCategoryCd", ceilingCategoryCd);
 		params.put("smsYn", smsYn);
+		params.put("smsDt", smsDt);
 		params.put("regId", UserDetailsHelper.getAuthenticatedUser().getUserId());
 		
 		Map<String, Object> resultMap = apiService.doApi(params, "/api/admin/adminOrder", false);

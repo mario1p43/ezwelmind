@@ -75,7 +75,7 @@
 			var centerSeq = $("#centerList").val();
 			var userId = $("#counselorList").val();
 			var stTime = $("#stTime").val();
-			//var smsTime = $("#smsTime").val()+$("#smsTime2").val();
+			var smsTime = $("#smsTime").val()+$("#smsTime2").val();
 
 			var ymd = $("#counselYmd").val();
 			
@@ -103,7 +103,7 @@
 			params.stTime = stTime;
 			params.centerSeq = centerSeq;
 			params.clientCd = $("#clientCd").val();
-			//params.smsDt = smsTime;
+			params.smsDt = smsTime;
 
 			
 			$.ajax({
@@ -295,7 +295,7 @@
 		</div>
 		<div class="description">* SMS를 전송하지 않으려면 체크를 해제 해주세요.</div>
 	</div>
-	<!-- <div class="content-wrapper">
+	<div class="content-wrapper">
 		<div class="title-block">SMS발송용 상담시간</div>
 		<div class="input-block">
 			<select id="smsTime" disabled="disabled">
@@ -334,7 +334,7 @@
 			</select>
 		</div>
 		<div class="description">* 입력하지 않으면 변경할 시간으로 문자가 전송됩니다.</div>
-	</div> -->
+	</div>
 </div>
 <div class="bottom-btn-wrapper" id="trOrder" style="display: none;">
 	<input type="button" class="bottom-block-btn" id="doOrder" value="주문하기">
