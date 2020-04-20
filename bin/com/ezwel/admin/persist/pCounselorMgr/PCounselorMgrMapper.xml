@@ -697,12 +697,6 @@
 				</if>
 	</select>
 	
-
-
-
-
-
-	
 	<select id="pCounselFirstRecordDetail" resultType="com.ezwel.admin.domain.entity.pCounselorMgr.MindCounselCounselDetail">
 		 SELECT AA.SUBJECT_ITEM_CD1,
 		        AA.SUBJECT_ITEM_CD2,
