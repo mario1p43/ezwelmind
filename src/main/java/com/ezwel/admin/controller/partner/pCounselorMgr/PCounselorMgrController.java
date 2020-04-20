@@ -111,6 +111,7 @@ public class PCounselorMgrController extends commonController {
 
 		Manager manager = UserDetailsHelper.getAuthenticatedUser();
 
+		
 //		if(manager.getCenterOwnerYn().equals("N")){
 			mindCounselIntakeDto.setLoginId(manager.getUserId());
 //		}
