@@ -369,7 +369,7 @@ j$(document).ready(function(){
 		<div class="flex">
 			<div class="info_label">회기정보</div>
 			<div class="info_content">
-				${customerServiceInfo.intakeNum}
+				${defaultInfo.extensionNum}
 			</div>
 		</div>
 		<div class="flex">
