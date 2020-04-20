@@ -11,7 +11,7 @@
 			  FROM
 				(
 		</if>
-				SELECT
+		SELECT
 					A.COUNSEL_CD		AS	counselCd
 					, A.USER_KEY		AS	userKey
 					, B.CLIENT_NM		AS	clientNm
@@ -21,9 +21,7 @@
 					, D.COUNSEL_TYPE	AS	counselType
 					, E.USER_NM			AS	counselorNm
 					, D.INTAKE_NUM		AS	intakeNum
-					, A.STATUS			AS status
-					, CASE WHEN ( DATE_FORMAT(DATE_ADD(STR_TO_DATE(A.SCHEDULE_DT, '%Y%m%d%H%i%s'), INTERVAL 3 DAY), '%Y%m%d') <![CDATA[<]]> DATE_FORMAT(NOW(), '%Y%m%d') <![CDATA[&&]]> A.RECORD_STATUS ='100693')  THEN '101238'
-					ELSE A.RECORD_STATUS END as recordStatus
+					, A.RECORD_STATUS	as	recordStatus
 					, A.INTAKE_CD 		AS  intakeCd
 					, IFNULL(A.EXTENSION_NUM, '1')   AS  extensionNum
 					, DATE_FORMAT(STR_TO_DATE(A.SCHEDULE_DT, '%Y%m%d%H%i%s'),'%Y년%m월%d일%H시') 		as scheduleDt
@@ -36,7 +34,7 @@
 					AND A.USER_KEY = C.USER_KEY
 					AND A.INTAKE_CD = D.INTAKE_CD
 					AND A.CANCEL_DT IS NULL
-					AND A.COUNSEL_CD NOT IN ('91756', '105785')
+					AND A.COUNSEL_CD != '91756'
 				<if test="centerSeq !=0">
 					AND E.CENTER_SEQ = #{centerSeq}
 				</if>
