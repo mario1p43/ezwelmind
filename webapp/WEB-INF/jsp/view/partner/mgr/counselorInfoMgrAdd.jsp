@@ -699,8 +699,8 @@
 			<tr align="left" height="30px">
 				<th class="line" height="30" align="left" bgcolor="#F5F5F5">* 생년월일</th>
 				<td>
-				    <input type="number" maxlength="6" id="rrn1" style="width: 20%;" data-validation="length number" data-validation-length="6-6"  data-validation-error-msg="생년월일을 확인 해주세요." />-
-		    		<input type="number" maxlength="1" id="rrn2" style="width: 10%;" data-validation="length number" data-validation-length="1-1"  data-validation-error-msg="생년월일을 확인 해주세요." />
+				    <input type="text" maxlength="6" id="rrn1" style="width: 20%;" data-validation="length number" data-validation-length="6-6"  data-validation-error-msg="생년월일을 확인 해주세요." onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"/>-
+		    		<input type="text" maxlength="1" id="rrn2" style="width: 10%;" data-validation="length number" data-validation-length="1-1"  data-validation-error-msg="생년월일을 확인 해주세요." onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"/>
 		    		<input type="hidden" name="rrn"> ㆍ예) 901234-1
 				</td>
 				<th class="line" height="30" align="left" bgcolor="#F5F5F5">* 성별</th>
