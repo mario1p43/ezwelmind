@@ -153,7 +153,7 @@ public class PCounselorMgrController extends commonController {
 				recordList.setSubjectItemCd1(firstRecordData.getSubjectItemCd1());
 				recordList.setSubjectItemCd2(firstRecordData.getSubjectItemCd2());
 				recordList.setSubjectItemCd3(firstRecordData.getSubjectItemCd3());
-				recordList.setMainIssue(firstRecordData.getMainIssue());
+				//recordList.setMainIssue(firstRecordData.getMainIssue());
 				
 				// 회기는 등록을 했으나 데이터가 없을 경우
 				if(firstRecordData.getSubjectItemCd1() == null || firstRecordData.getSubjectItemCd2() == null) {
