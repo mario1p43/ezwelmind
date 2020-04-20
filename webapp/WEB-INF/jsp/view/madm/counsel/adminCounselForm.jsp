@@ -12,6 +12,13 @@
 			timepicker:false
 		});
 		
+		$("#stTime").change(function (){
+			var str = $("#stTime").val();
+			var dd = str.substring( 0, 2);
+			
+			$("#smsTime").val(dd);
+		});
+		
 		/* 센터 변경시 상담사 셀렉트 */
 		$("#centerList").change(function() {
 			$.ajax({
@@ -92,7 +99,7 @@
 			var userId = $("#counselorList").val();
 			var stTime = $("#stTime").val();
 			var ymd = $("#counselYmd").val();
-			
+			var smsTime = $("#smsTime").val()+$("#smsTime2").val();
 			if ($("#intakeCd").val() == "") {
 				alert("인테이크를 먼저 등록해주세요.");
 				return;
@@ -115,7 +122,7 @@
 			params.ymd = replaceAll(ymd, ".", "");
 			params.stTime = stTime;
 			params.centerSeq = centerSeq;
-			
+			params.smsDt = smsTime;
 			$.ajax({
 				url: '/madm/counselor/counselScheduleConfrim',
 				data: params,
@@ -269,7 +276,10 @@
 		// 주문하기
 		$("#doOrder").click(function () {
 			$("#trOrder").hide();
+			var smsTime = $("#smsTime").val()+$("#smsTime2").val();
 			var params = {};
+			
+			params.smsDt = smsTime;
 			params.userKey = $("#userKey").val();
 			params.clientCd = $("#clientCd").val();
 			params.intakeCd = $("#intakeCd").val();
@@ -1077,7 +1087,6 @@
 					<td height="30px"></td>
 				</tr>
 				
-				
 				<tr>
 					<td>
 						<!-- 검색 영역 시작 -->
@@ -1099,6 +1108,48 @@
 									&nbsp;&nbsp;&nbsp;★  SMS를 전송하지 않으려면 체크를 해제 해주세요.
 						    	</td>
 							</tr>
+							<tr align="left" height="30px">
+								<td width="20%" bgcolor="#F5F5F5" align="center">
+									<strong>SMS발송용 상담시간</strong>
+								</td>
+						    	<td width="40%" align="left">
+									<select id="smsTime" disabled="disabled">
+										<option value="">== 시간 선택 ==</option>
+										<option value="07">07</option>
+										<option value="08">08</option>
+										<option value="09">09</option>
+										<option value="10">10</option>
+										<option value="11">11</option>
+										<option value="12">12</option>
+										<option value="13">13</option>
+										<option value="14">14</option>
+										<option value="15">15</option>
+										<option value="16">16</option>
+										<option value="17">17</option>
+										<option value="18">18</option>
+										<option value="19">19</option>
+										<option value="20">20</option>
+										<option value="21">21</option>
+										<option value="22">22</option>
+									</select>
+									<select id="smsTime2">
+										<option value="00">= 분 선택 =</option>
+										<option value="00">00</option>
+										<option value="05">05</option>
+										<option value="10">10</option>
+										<option value="15">15</option>
+										<option value="20">20</option>
+										<option value="25">25</option>
+										<option value="30">30</option>
+										<option value="35">35</option>
+										<option value="40">40</option>
+										<option value="45">45</option>
+										<option value="50">50</option>
+										<option value="55">55</option>
+									</select>
+									<span>*입력하지 않으면 변경할 시간으로 문자가 전송됩니다.</span>
+						    	</td>
+							</tr> 
 						</table>
 						<!-- 검색 영역 종료 -->
 					</td>
