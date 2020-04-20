@@ -1383,19 +1383,13 @@
 	<select id="getCenterCount" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
 		SELECT 
 		(SELECT count(*) as cnt
-				FROM	MIND_COUNSEL A , 
+				FROM	(select * from MIND_COUNSEL where STATUS in ('100520', '100521', '100884') and COUNSEL_CD NOT IN ('91756', '105785') ) A , 
 					MIND_COUNSEL_INTAKE C, MIND_MGR D
-				LEFT JOIN MIND_CENTER CT
-				<if test="isNotNull(centerSeq)  and (centerSeq > 0)">
-				ON CT.CENTER_SEQ = #{centerSeq}
-				</if>
 				WHERE	1=1			
-				AND A.COUNSEL_CD NOT IN ('91756', '105785')
 				<if test="isNotNull(centerSeq)  and (centerSeq > 0)">
 				AND		A.CENTER_SEQ = #{centerSeq}			 
 				</if>
 				AND		C.INTAKE_CD = A.INTAKE_CD
-				AND		A.STATUS in ('100520', '100521', '100884')
 				AND		A.COUNSELOR_ID = D.USER_ID
 				AND 	DATE_FORMAT(A.SCHEDULE_DT, '%Y%m%d') = curdate()
 		) as todayCsCnt,
@@ -1403,20 +1397,13 @@
 		from
 		(
 			SELECT	distinct A.INTAKE_CD as intakeCd
-				FROM	MIND_COUNSEL A , 
+				FROM	(select * from MIND_COUNSEL where STATUS in ('100520', '100521', '100884') and COUNSEL_CD NOT IN ('91756', '105785') ) A , 
 					MIND_COUNSEL_INTAKE C, MIND_MGR D
-				 <if test="isNotNull(centerSeq) and (centerSeq > 0)">
-					JOIN MIND_CENTER CT
-					ON CT.CENTER_SEQ = #{centerSeq}
-				</if>
-				 
 				WHERE	1=1		
-				AND A.COUNSEL_CD NOT IN ('91756', '105785')
 				 <if test="isNotNull(centerSeq) and (centerSeq > 0)">
 				AND		A.CENTER_SEQ = #{centerSeq}
 				 </if>
 				AND		C.INTAKE_CD = A.INTAKE_CD
-				AND		A.STATUS in ('100520', '100521', '100884')
 				AND		A.COUNSELOR_ID = D.USER_ID
 				 
 				 ) as intk
@@ -1462,24 +1449,19 @@
 		)AS waitAppCnt,
 		(
 		SELECT	count(*) as cnt
-				FROM	MIND_COUNSEL A 
+				FROM	(select * from MIND_COUNSEL where STATUS in ('100520', '100521', '100884') and COUNSEL_CD NOT IN ('91756', '105785') ) A 
 				LEFT JOIN (SELECT File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD,INTAKE_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='1' ) as G 
                 ON A.COUNSEL_CD = G.COUNSEL_CD
+                AND		G.APPR_STATUS in ('1','2','3','4','5')
                 AND A.INTAKE_CD = G.INTAKE_CD, 
 					MIND_COUNSEL_INTAKE C, MIND_MGR D
-				<if test="isNotNull(centerSeq) and (centerSeq > 0)">
-					JOIN MIND_CENTER CT
-					ON CT.CENTER_SEQ = #{centerSeq}
-				</if> 
 				WHERE	1=1			
-				AND A.COUNSEL_CD NOT IN ('91756', '105785')
 				<if test="isNotNull(centerSeq) and (centerSeq > 0)"> 
 				AND		A.CENTER_SEQ = #{centerSeq}
 				 </if>
 				AND		C.INTAKE_CD = A.INTAKE_CD
-				AND		A.STATUS in ('100520', '100521', '100884')
 				AND		A.COUNSELOR_ID = D.USER_ID
-				AND		G.APPR_STATUS in ('1','2','3','4','5')
+				
 		) AS extenCsCnt
 		FROM MIND_BBS_DATA MIND_BBS_DATA Limit 1
 	</select>
@@ -1487,21 +1469,15 @@
 	<select id="getSangdamCount" resultType="com.ezwel.admin.domain.entity.bbs.BBSData">
 		SELECT 
 		(SELECT count(*) as cnt
-				FROM	MIND_COUNSEL A ,
+				FROM	(select * from MIND_COUNSEL where STATUS in ('100520', '100521', '100884') and COUNSEL_CD NOT IN ('91756', '105785') ) A ,
 				MIND_SCHEDULE B, MIND_COUNSEL_INTAKE C, MIND_MGR D
-				<if test="isNotNull(centerSeq)  and (centerSeq > 0)">
-					JOIN MIND_CENTER CT
-					ON CT.CENTER_SEQ = #{centerSeq}
-				</if>
 				WHERE	1=1
 				<if test="isNotNull(userId)">
 				AND		A.COUNSELOR_ID = #{userId}
 				</if>
 				AND		C.INTAKE_CD = A.INTAKE_CD
 				AND		A.COUNSEL_CD = B.COUNSEL_CD
-				AND		A.STATUS in ('100520', '100521', '100884')
 				AND		A.COUNSELOR_ID = D.USER_ID
-				AND		A.COUNSEL_CD NOT IN ('91756', '105785')
 				AND		B.YMD = curdate()
 		) as todayCsCnt,
 		(select count(* ) as cnt
@@ -1509,12 +1485,7 @@
 			(
 			SELECT	distinct A.INTAKE_CD as intakeCd
 				FROM	MIND_COUNSEL A , 
-					MIND_COUNSEL_INTAKE C, MIND_MGR D
-				 <if test="isNotNull(centerSeq) and (centerSeq > 0)">
-					JOIN MIND_CENTER CT
-					ON CT.CENTER_SEQ = #{centerSeq}
-				</if>
-				 
+					MIND_COUNSEL_INTAKE C, MIND_MGR D		 
 				WHERE	1=1
 				<if test="isNotNull(userId)">
 				AND		A.COUNSELOR_ID = #{userId}
@@ -1575,24 +1546,22 @@
 					AND B.MGR_STATUS in ('S')
 		)AS waitAppCnt,
 		(SELECT	count(*) as cnt
-				FROM	MIND_COUNSEL A 
+				FROM	(select * from MIND_COUNSEL where STATUS in ('100520', '100521', '100884') and COUNSEL_CD NOT IN ('91756', '105785') ) A 
 				LEFT JOIN (SELECT File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD,INTAKE_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='1' ) as G 
                 ON A.COUNSEL_CD = G.COUNSEL_CD
+                AND		G.APPR_STATUS in ('1','2','3','4','5')
                 AND A.INTAKE_CD = G.INTAKE_CD, 
 					MIND_COUNSEL_INTAKE C, MIND_MGR D
-				<if test="isNotNull(centerSeq) and (centerSeq > 0)">
-					JOIN MIND_CENTER CT
-					ON CT.CENTER_SEQ = #{centerSeq}
-				</if> 
 				WHERE	1=1			
-				AND A.COUNSEL_CD NOT IN ('91756', '105785')
 				<if test="isNotNull(centerSeq) and (centerSeq > 0)"> 
 				AND		A.CENTER_SEQ = #{centerSeq}
 				 </if>
+				<if test="isNotNull(userId)">
+					AND	D.USER_ID = #{userId}
+				</if>
 				AND		C.INTAKE_CD = A.INTAKE_CD
-				AND		A.STATUS in ('100520', '100521', '100884')
 				AND		A.COUNSELOR_ID = D.USER_ID
-				AND		G.APPR_STATUS in ('1','2','3','4','5')
+				
 		) AS extenCsCnt
 		FROM MIND_BBS_DATA MIND_BBS_DATA Limit 1
 	</select>
