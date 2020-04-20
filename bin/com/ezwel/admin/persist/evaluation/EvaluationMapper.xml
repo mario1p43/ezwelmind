@@ -396,14 +396,14 @@
 	<select id="getSurveyAnsAverage" resultType="com.ezwel.admin.domain.entity.evaluation.Evaluation">
 			SELECT
 				<if test="evalSeq == '1'.toString()">
-					ROUND(AVG(a.item01Ans), 2) as itemAvg,
-					MIN(a.item01Ans) as itemMin,
-					MAX(a.item01Ans) as itemMax
+					ROUND(AVG(ifnull(a.item01Ans,0)), 2) as itemAvg,
+					MIN(ifnull(a.item01Ans,0)) as itemMin,
+					MAX(ifnull(a.item01Ans,0)) as itemMax
 				</if>
 				<if test="evalSeq == '6'.toString()">
-					ROUND(AVG(a.item02Ans), 2) as itemAvg,
-					MIN(a.item02Ans) as itemMin,
-					MAX(a.item02Ans) as itemMax
+					ROUND(AVG(ifnull(a.item02Ans,0)), 2) as itemAvg,
+					MIN(ifnull(a.item02Ans,0)) as itemMin,
+					MAX(ifnull(a.item02Ans,0)) as itemMax
 				</if>
 			FROM (			
 						SELECT 
