@@ -37,16 +37,13 @@
 	});
 	
 	function scheduleConfirm() {
-		var dt = "${counsel.scheduleDt}";
-		var year = dt.substring(0, 4);
-		var month = dt.substring(4, 6);
-		var day = dt.substring(6, 8);
+
 		var params = {};
 		params.userId = $("#popCounselorList").val();
 		params.ymd = replaceAll($("#popYmd").val(), ".", "");
 		params.stTime = $("#popStTime").val();
 		params.clientCd = $("#clientCd").val();
-		params.smsDt = year+month+day+$("#smsTime").val()+$("#smsTime2").val();
+		params.smsDt = params.ymd +$("#smsTime").val()+$("#smsTime2").val();
 		
 		if ($("input:checkbox[id='smsYn']").is(":checked")) {
 			params.smsYn = "Y";

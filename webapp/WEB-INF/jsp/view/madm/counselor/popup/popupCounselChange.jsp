@@ -85,26 +85,15 @@
 		params.ymd = replaceAll($("#popYmd").val(), ".", "");
 		params.stTime = $("#popStTime").val();
 		
-		
-		
-		
-		
-		
-		
-		var dt = "${counsel.scheduleDt}";
-		var year = dt.substring(0, 4);
-		var month = dt.substring(4, 6);
-		var day = dt.substring(6, 8);
 		var params = {};
 		params.userId = $("#popCounselorList").val();
 		params.ymd = replaceAll($("#popYmd").val(), ".", "");
 		params.stTime = $("#popStTime").val();
 		params.clientCd = $("#clientCd").val();
-		params.smsDt = year+month+day+$("#smsTime").val()+$("#smsTime2").val();
+		params.smsDt = params.ymd+$("#smsTime").val()+$("#smsTime2").val();
 		params.counselCd = $("#counselCd").val();
 		
-		
-		
+		console.log(params.smsDt);
 		
 		
 		if (params.ymd == "") {
@@ -134,7 +123,7 @@
 					alert("상담사 스케줄이 이미 등록되어 있어서, \n변경이 불가능합니다.");
 				}
 			}
-		});
+		}); 
 	}
 	
 	
