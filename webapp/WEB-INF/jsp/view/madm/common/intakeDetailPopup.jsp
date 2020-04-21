@@ -168,6 +168,7 @@
 				<td>
 					<input type="hidden" name="mobile" value="${baseInfo_detail.mobile}"/>${baseInfo_detail.mobile}
 				</td>
+				
 				<th class="line" align="center">사례위험도</th>
 				<td>
 					<input type="hidden" name="risksSelect" value="${baseInfo_detail.risks}"/>${baseInfo_detail.risks}

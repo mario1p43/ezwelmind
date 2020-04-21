@@ -263,7 +263,7 @@ j$(document).ready(function(){
 							</tr>
 							<tr>
 								<th bgcolor="#F5F5F5" align="center">고객사 상담운영 담당자</th>
-								<td  colspan="5">${defaultInfo.clientMgrNm}</td>
+								<td  colspan="5">${defaultInfo.counselMgrNm}</td>
 							</tr>
 							<tr align="left" height="30px" >
 								<th class="line" align="center">고객사<br>주요정책</td>

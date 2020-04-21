@@ -414,7 +414,9 @@
 									</tr>
 									<tr align="left" height="30px">
 										<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">*센터명<br><span style="color:#ff4249">(임직원 공개 정보)</span></th>
-										<td class="line" colspan="2">${centerInfo.centerNm}</td>
+										<td class="line" colspan="2" >
+					    		<input type="text" name="centerNm"  style="width: 300px;" value="${centerInfo.centerNm}" data-validation="required"  data-validation-error-msg-required="센터명을 확인 해주세요." />
+					    	</td>
 										<th class="line" colspan="1" align="left" bgcolor="#F5F5F5">*홈페이지<br><span style="color:#ff4249">(임직원 공개 정보)</span></th>
 										<td class="line" colspan="2"><input type="text"	name="homepage" value="${centerInfo.homepage }" style="width: 300px;" /></td>
 									</tr>

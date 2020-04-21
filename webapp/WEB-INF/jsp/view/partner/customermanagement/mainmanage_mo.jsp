@@ -387,7 +387,7 @@ j$(document).ready(function(){
 		<div class="flex">
 			<div class="info_label">고객사 담당자</div>
 			<div class="info_content">
-				${defaultInfo.clientMgrNm}
+				${defaultInfo.counselMgrNm}
 			</div>
 		</div>
 		<div class="big_label">고객사 주요정책</div>
