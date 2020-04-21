@@ -64,7 +64,7 @@
 			$('#certGradeTd'+count).append(markup);
 		} else if(sel.value === '한국임상심리학회'){
 			var markup = '<select id="certName'+count+'" name="certName" onchange="selectGradeZero(this, '+count+')" style="width:95%;">';
-			markup += '<option value="임상심리사">임상심리사</option>';
+			markup += '<option value="임상심리전문가">임상심리전문가</option>';
 			markup += '</select>';
 			$('#certNameTd'+count).append(markup);
 			var markup = '<select id="certGrade'+count+'" name="certGrade" style="width:95%;">';
@@ -165,7 +165,7 @@
 			$('#certGradeTd'+count).append(markup);
 		} else if(sel.value === '한국임상심리학회'){
 			var markup = '<select id="certName'+count+'" name="certName'+count+'" onchange="selectGrade(this, '+count+')" style="width:95%;">';
-			markup += '<option value="임상심리사">임상심리사</option>';
+			markup += '<option value="임상심리전문가">임상심리전문가</option>';
 			markup += '</select>';
 			$('#certNameTd'+count).append(markup);
 			var markup = '<select id="certGrade'+count+'" name="certGrade'+count+'" style="width:95%;">';
