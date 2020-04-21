@@ -62,7 +62,7 @@
 			params.stTime = stTime;
 			params.centerSeq = centerSeq;
 			params.clientCd = $("#clientCd").val();
-			params.smsDt = smsTime;
+			params.smsDt = ymd+smsTime;
 
 			 $.ajax({
 				url: '/partner/pCounselorMgr/counselScheduleConfrim',
@@ -110,9 +110,11 @@
 		$("#doOrder").click(function () {
 			$("#trOrder").hide();
 			var smsTime = $("#smsTime").val()+$("#smsTime2").val();
+			var ymd = $("#counselYmd").val();
+			
 			var params = {};
 			
-			params.smsDt = smsTime;
+			params.smsDt = ymd+smsTime;
 			params.userKey = $("#userKey").val();
 			params.clientCd = $("#clientCd").val();
 			params.intakeCd = $("#intakeCd").val();
