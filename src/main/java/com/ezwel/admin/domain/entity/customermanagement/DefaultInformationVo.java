@@ -41,4 +41,5 @@ public class DefaultInformationVo {
 	
 	private String extensionNum;
 	
+	private String counselMgrNm;
 }
