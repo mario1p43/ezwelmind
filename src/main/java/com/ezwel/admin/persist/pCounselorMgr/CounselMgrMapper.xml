@@ -198,7 +198,24 @@
 				<if test="counselCd != 0">
 				AND		A.COUNSEL_CD = #{counselCd}
 				</if>
-				ORDER BY A.SCHEDULE_DT DESC
+				<trim prefix="ORDER BY">
+                  	<choose>
+						<when test="orderByNm =='counselor' ">
+							C.COUNSEL_NM
+						</when>
+			 			<otherwise>
+							A.SCHEDULE_DT
+						</otherwise>
+					</choose>
+					<choose>
+						<when test="orderByType =='ASC' ">
+							ASC
+						</when>
+			 			<otherwise>
+							DESC
+						</otherwise>
+					</choose>
+                </trim>
 		<choose>
 			<when test="pageCommonFlag == true">
 				) A
@@ -297,7 +314,24 @@
 				<if test="counselCd != 0">
 				AND		A.COUNSEL_CD = #{counselCd}
 				</if>
-				ORDER BY A.SCHEDULE_DT DESC
+				<trim prefix="ORDER BY">
+                  	<choose>
+						<when test="orderByNm =='counselor' ">
+							C.COUNSEL_NM
+						</when>
+			 			<otherwise>
+							A.SCHEDULE_DT
+						</otherwise>
+					</choose>
+					<choose>
+						<when test="orderByType =='ASC' ">
+							ASC
+						</when>
+			 			<otherwise>
+							DESC
+						</otherwise>
+					</choose>
+                </trim>
 				
 		<choose>
 			<when test="pageCommonFlag == true">

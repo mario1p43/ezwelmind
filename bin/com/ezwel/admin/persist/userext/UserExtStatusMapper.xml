@@ -45,12 +45,14 @@
                     ,H.APPR_STATUS AS apprStatus3
                     ,H.REG_ID AS regId3
                     ,DATE_FORMAT(CONVERT(H.REG_DT, DATE), '%Y-%m-%d') AS regDt3
-                    ,CT.OWNER_NM as ownerNm
+                    ,U.USER_NM as ownerNm
                     ,(select risks from MIND_COUNSEL_RECORD
 					WHERE COUNSEL_CD =(select COUNSEL_CD
                     FROM MIND_COUNSEL TT where COUNSEL_CD != '91756' AND  INTAKE_CD =A.INTAKE_CD AND REG_DT <![CDATA[<=]]> date(now())  order by COUNSEL_CD DESC limit 1)) AS risks
                     FROM  MIND_COUNSEL_INTAKE C
 					JOIN (SELECT COUNSELOR_ID,INTAKE_CD,USER_KEY,CENTER_SEQ,CLIENT_CD,schedule_DT  from MIND_COUNSEL) A
+					LEFT JOIN MIND_USER U 
+					ON A.CLIENT_CD = U.CLIENT_CD AND A.USER_KEY = U.USER_KEY
 					JOIN (select MAX(schedule_DT) as schedule_DT,INTAKE_CD FROM MIND_COUNSEL where COUNSEL_CD != '91756' AND schedule_DT <![CDATA[<=]]> date(now())  group by INTAKE_CD ) XB
 					ON		C.INTAKE_CD = A.INTAKE_CD
                     AND A.INTAKE_CD =XB.INTAKE_CD AND A.schedule_DT = XB.schedule_DT
@@ -64,8 +66,6 @@
 					(SELECT COUNSEL_FILE_SEQ,File_NM,FILE_PATH,APPR_STATUS,REG_ID,REG_DT,CLIENT_CD,COUNSEL_CD,INTAKE_CD FROM MIND_COUNSEL_FILE WHERE DOC_TYPE ='2' AND DOC_STS ='3' ) H
 						ON C.INTAKE_CD = H.INTAKE_CD
 
-	                JOIN MIND_CENTER CT
-						ON		A.CENTER_SEQ = CT.CENTER_SEQ
 	                JOIN MIND_MGR D
 						ON		A.COUNSELOR_ID = D.USER_ID
 					ORDER BY regDt1 DESC
