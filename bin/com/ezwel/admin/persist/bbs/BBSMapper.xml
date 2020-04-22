@@ -1424,7 +1424,7 @@
 				 	<if test="isNotNull(centerSeq) and (centerSeq > 0)">
 						AND E.CENTER_SEQ = #{centerSeq}
 					</if>
-					AND A.RECORD_STATUS IN ('100696')
+					AND A.RECORD_STATUS IN ('101238')
 					AND (A.COUNSEL_TYPE = 100435 OR A.RECORD_CHECK_YN = 'Y')
 		) AS unWritenCsCnt,
 		(SELECT count(*) AS	cnt 
@@ -1527,7 +1527,7 @@
 				 	<if test="isNotNull(centerSeq) and (centerSeq > 0)">
 						AND E.CENTER_SEQ = #{centerSeq}
 					</if>
-					AND A.RECORD_STATUS IN ('100696')
+					AND A.RECORD_STATUS IN ('101238')
 					AND (A.COUNSEL_TYPE = 100435 OR A.RECORD_CHECK_YN = 'Y')
 					<if test="isNotNull(userId)">
 					AND		A.COUNSELOR_ID = #{userId}
