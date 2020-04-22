@@ -1,7 +1,7 @@
 var filter = "win16|win32|win64|mac";
 
  
-$(document).ready(function(){
+/*$(document).ready(function(){
 
 	if(navigator.platform){
 
@@ -18,7 +18,7 @@ $(document).ready(function(){
 	}
 
 });
-
+*/
  
 
 document.onkeydown = function () {
