@@ -137,6 +137,7 @@ j$(document).ready(function(){
    	var markup = '<tr id="certOrgRow'+tbl_cnt_cert+'">';
    	markup += '<td align="center">';
    	markup += '<select id="certOrg'+tbl_cnt_cert+'" name="certOrg'+tbl_cnt_cert+'" onchange="selectCert(this, '+tbl_cnt_cert+')" style="width:95%;">';
+   	markup += '<option value="">선택하세요</option>';
    	markup += '<option value="한국상담심리학회">한국상담심리학회</option>';
    	markup += '<option value="한국임상심리학회">한국임상심리학회</option>';
    	markup += '<option value="한국상담학회">한국상담학회</option>';
@@ -151,11 +152,13 @@ j$(document).ready(function(){
    	markup += '</td>';
    	markup += '<td id="certNameTd'+tbl_cnt_cert+'" align="center">';
    	markup += '<select id="certName'+tbl_cnt_cert+'" name="certName'+tbl_cnt_cert+'" onchange="selectGrade(this, '+tbl_cnt_cert+')" style="width:95%;">';
+   	markup += '<option value="">선택하세요</option>';
    	markup += '<option value="상담심리사">상담심리사</option>';
    	markup += '</select>';
    	markup += '</td>';
    	markup += '<td id="certGradeTd'+tbl_cnt_cert+'" align="center">';
    	markup += '<select id="certGrade'+tbl_cnt_cert+'" name="certGrade'+tbl_cnt_cert+'" style="width:95%;">';
+   	markup += '<option value="">선택하세요</option>';
    	markup += '<option value="1급">1급</option>';
    	markup += '<option value="2급">2급</option>';
    	markup += '</select>';
@@ -792,7 +795,7 @@ function delRowExam(){
 								<select name="education" id="education" style="width:95%;">
 									<option value="M">학사</option>
 									<option value="D">석사</option>
-									<option value="S">전문학사</option>
+									<option value="S">박사</option>
 								</select>
 							</td>
 							<td align="center">
@@ -818,7 +821,7 @@ function delRowExam(){
 								<select name="education2" id="education2" style="width:95%;">
 									<option value="M">학사</option>
 									<option value="D">석사</option>
-									<option value="S">전문학사</option>
+									<option value="S">박사</option>
 								</select>
 							</td>
 							<td align="center">
@@ -844,7 +847,7 @@ function delRowExam(){
 								<select name="education3" id="education3" style="width:95%;">
 									<option value="M">학사</option>
 									<option value="D">석사</option>
-									<option value="S">전문학사</option>
+									<option value="S">박사</option>
 								</select>
 							</td>
 							<td align="center">
