@@ -177,7 +177,7 @@
 				AND		A.COUNSELOR_ID = #{counselorId}
 				AND		C.INTAKE_CD = A.INTAKE_CD
 				AND		A.COUNSEL_CD = B.COUNSEL_CD
-				AND		A.STATUS in ('100520', '100521')
+				AND		A.STATUS in ('100520', '100521', '100884')
 				AND		A.COUNSELOR_ID = D.USER_ID
 				AND A.COUNSEL_CD != '91756'
 				<if test="isNotNull(counselNm)">
