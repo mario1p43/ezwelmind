@@ -168,10 +168,10 @@
 	<br>
 	<br>
 	<input id="smsYn" type="checkbox" checked>SMS전송여부
-	<br>
+
+	<div style="border:1px solid #666666;padding: 12px;">
 	SMS발송용 상담시간
-	<br>
-						    	
+	<br>					    	
 	<select id="smsTime" disabled="disabled">
 		<option value="">== 시간 선택 ==</option>
 		<option value="07">07</option>
@@ -206,11 +206,14 @@
 		<option value="50">50</option>
 		<option value="55">55</option>
 	</select>
-	<br>
+		<br>
 	<br>
 	<span>*입력하지 않으면 변경할 시간으로 문자가 전송됩니다.</span>
 	<br>					
 	<input type="button" onclick="scheduleConfirm();" value="변경가능여부 확인"/>
+	
+	</div>
+
 	<div style="padding-top:20px;">
  		<strong>[중요공지]</strong><br> 
  		<span style="color:red;">상담신청은 서비스기간 내</span>에서만 일정등록이 가능합니다.<br>

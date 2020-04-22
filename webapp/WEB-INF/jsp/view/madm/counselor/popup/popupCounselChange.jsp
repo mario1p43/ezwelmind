@@ -201,7 +201,7 @@
 		<br>
 	<br>
 	<input id="smsYn" type="checkbox">SMS전송여부
-	<br>
+	<div style="border:1px solid #666666;padding: 12px;">
 	SMS발송용 상담시간
 	<br>
 						    	
@@ -244,4 +244,5 @@
 	<span>*입력하지 않으면 변경할 시간으로 문자가 전송됩니다.</span>
 	<br>	
 	<input type="button" onclick="scheduleConfirm();" value="변경가능여부 확인"/>
+	</div>
 </div>
