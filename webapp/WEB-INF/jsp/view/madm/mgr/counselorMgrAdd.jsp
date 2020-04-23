@@ -974,7 +974,8 @@ function delRowExam(){
 			<tr align="left" height="30px">
 				<th width="10%" class="line" height="30" align="left" bgcolor="#F5F5F5">* 접속권한</th>
 				<td >
-					<input type="radio" name="authCd" value="ROLE_PARTNER_SANGDAM" data-validation="required" data-validation-error-msg-required="접속권한을 확인해주세요."/> 상담
+					<input type="radio" name="authCd" value="ROLE_PARTNER_CENTER" data-validation="required" data-validation-error-msg-required="접속권한을 확인해주세요."/> 센터장
+					<input type="radio" name="authCd" value="ROLE_PARTNER_SANGDAM" /> 상담
 					<input type="radio" name="authCd" value="ROLE_PARTNER_SEND" /> 파견
 					<input type="radio" name="authCd" value="ROLE_PARTNER_GROUP" /> 집단
 					<input type="radio" name="authCd" value="ROLE_PARTNER_TEACHER" /> 강사
