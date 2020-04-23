@@ -153,6 +153,7 @@
 					, (SELECT CENTER_NM FROM MIND_CENTER WHERE CENTER_SEQ = A.CENTER_SEQ) as centerNm
 					, IF((SELECT ORDER_STATUS FROM MIND_ORDER WHERE COUNSEL_CD = A.COUNSEL_CD) = '100960', 'Y', 'N') as needPay
 					,A.RECORD_STATUS as recordStatus
+					,A.STATUS as status
 					,A.EXTENSION_STATUS   as extensionStatus
 					, IFNULL(A.EXTENSION_NUM, '1')   AS  extensionNum
 					,E.USER_NM as counselMgrNm
@@ -177,7 +178,7 @@
 				AND		A.COUNSELOR_ID = #{counselorId}
 				AND		C.INTAKE_CD = A.INTAKE_CD
 				AND		A.COUNSEL_CD = B.COUNSEL_CD
-				AND		A.STATUS in ('100520', '100521', '100884')
+				AND		A.STATUS in ('100520', '100521', '100884','101238')
 				AND		A.COUNSELOR_ID = D.USER_ID
 				AND A.COUNSEL_CD != '91756'
 				<if test="isNotNull(counselNm)">
@@ -263,6 +264,7 @@
 					, (SELECT CENTER_NM FROM MIND_CENTER WHERE CENTER_SEQ = A.CENTER_SEQ) as centerNm
 					, IF((SELECT ORDER_STATUS FROM MIND_ORDER WHERE COUNSEL_CD = A.COUNSEL_CD) = '100960', 'Y', 'N') as needPay
 					,A.RECORD_STATUS  as recordStatus
+					,A.STATUS as status
 					,A.EXTENSION_STATUS   as extensionStatus
 					,E.USER_NM as counselMgrNm
 					, (SELECT USER_STATUS FROM MIND_USER WHERE USER_KEY = A.USER_KEY) as userStatus
@@ -291,7 +293,7 @@
 				AND		A.CENTER_SEQ = #{centerSeq}
 				</if>
 				AND		C.INTAKE_CD = A.INTAKE_CD
-				AND		A.STATUS in ('100520', '100521', '100884')
+				AND		A.STATUS in ('100520', '100521', '100884','101238')
 				AND		A.COUNSELOR_ID = D.USER_ID
 				<if test="isNotNull(counselNm)">
 				AND		C.COUNSEL_NM like CONCAT ( '%',#{counselNm},'%')

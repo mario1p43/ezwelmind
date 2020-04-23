@@ -242,7 +242,8 @@
 	<br>
 	<br>
 	<span>*입력하지 않으면 변경할 시간으로 문자가 전송됩니다.</span>
+	</div>
 	<br>	
 	<input type="button" onclick="scheduleConfirm();" value="변경가능여부 확인"/>
-	</div>
+	
 </div>
