@@ -674,6 +674,35 @@
 		});
 	} 
 
+	 function tblRowDel(rownum){
+			$('#organizationRow'+rownum).remove();
+		}
+		
+		function certTblRowDel(rownum){
+			$('#certOrgRow'+rownum).remove();
+		}
+		
+		function bookTblRowDel(rownum){
+			$('#mgrBookRow'+rownum).remove();
+		}
+			
+		
+		function delCertRow(e,h){
+			var certCnt = '${mgrCertCnt}';
+			if(certCnt == delCnt){
+				alert("최소 1개 이상 등록 해야합니다.");
+				return false;
+			}
+			de += e+",";
+			
+			document.getElementById("d").innerHTML = "<input type='hidden' name='D' value='"+de+"' /> "
+			count++;
+			delCnt++
+			document.getElementById(h).style.display = "none";
+		}
+		
+	 
+	 
 	function delRow(e){
 		if(num == 0){
 			alert("최소1개 이상 등록 하셔야 합니다.");
