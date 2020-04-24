@@ -397,29 +397,29 @@
 			<tr>
 				<th class="line" align="center">상담동의서</th><td>
 					<c:if test="${intakeDetail.filename1 ne null }">
-						${intakeDetail.filename1} <a href="javascript:fileDownLoad('${list.filefath1}','${intakeDetail.filename1}');"><div class="downBtn">다운로드</div></a>
+						${intakeDetail.filename1} <a href="javascript:fileDownLoad('${intakeDetail.filefath1}','${intakeDetail.filename1}');"><div class="downBtn">다운로드</div></a>
 					</c:if> 
 				</td>
 				<th class="line" align="center">개인정보 동의서</th><td>
 					<c:if test="${intakeDetail.filename2 ne null }">
-						${intakeDetail.filename2}<a href="javascript:fileDownLoad('${list.filefath2}','${intakeDetail.filename2}');"><div class="downBtn">다운로드</div></a>
+						${intakeDetail.filename2}<a href="javascript:fileDownLoad('${intakeDetail.filefath2}','${intakeDetail.filename2}');"><div class="downBtn">다운로드</div></a>
 					</c:if>
 				</td>
 				<th class="line" align="center">생명존중 서약서</th><td>
 					<c:if test="${intakeDetail.filename3 ne null }">
-						${intakeDetail.filename3}<a href="javascript:fileDownLoad('${list.filefath3}','${intakeDetail.filename3}');"><div class="downBtn">다운로드</div></a>
+						${intakeDetail.filename3}<a href="javascript:fileDownLoad('${intakeDetail.filefath3}','${intakeDetail.filename3}');"><div class="downBtn">다운로드</div></a>
 					</c:if>
 				</td>
 			</tr>
 			<tr>
 				<th class="line" align="center">심리검사동의서</th><td>
 					<c:if test="${intakeDetail.filename4 ne null }">
-						${intakeDetail.filename4} <a href="javascript:fileDownLoad('${list.filefath4}','${intakeDetail.filename4}');"><div class="downBtn">다운로드</div></a>
+						${intakeDetail.filename4} <a href="javascript:fileDownLoad('${intakeDetail.filefath4}','${intakeDetail.filename4}');"><div class="downBtn">다운로드</div></a>
 					</c:if>
 				</td>
 				<th class="line" align="center">상담회기동의서</th><td>${intakeDetail.filename5} 
 					<c:if test="${intakeDetail.filename5 ne null }">
-						<a href="javascript:fileDownLoad('${list.filefath5}','${intakeDetail.filename5}');"><div class="downBtn">다운로드</div></a>
+						<a href="javascript:fileDownLoad('${intakeDetail.filefath5}','${intakeDetail.filename5}');"><div class="downBtn">다운로드</div></a>
 					</c:if>
 				</td>
 				<td colspan="2"></td>
