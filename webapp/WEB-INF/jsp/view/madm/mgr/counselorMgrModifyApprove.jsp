@@ -819,38 +819,38 @@ j$(document).ready(function(){
 	$('#eduYear2 option[value=2010]').attr('selected', 'selected');
 	$('#eduYear3 option[value=2010]').attr('selected', 'selected');
 
-	<c:if test='${not empty mgrBefore.eduYear}'>
-		$("#eduYear option[value='${mgrBefore.eduYear}']").attr('selected', 'selected');
+	<c:if test='${not empty mgr.eduYear}'>
+		$("#eduYear option[value='${mgr.eduYear}']").attr('selected', 'selected');
 	</c:if>
-	<c:if test='${not empty mgrBefore.eduYear2}'>
-		$("#eduYear2 option[value='${mgrBefore.eduYear2}']").attr('selected', 'selected');
+	<c:if test='${not empty mgr.eduYear2}'>
+		$("#eduYear2 option[value='${mgr.eduYear2}']").attr('selected', 'selected');
 	</c:if>
-	<c:if test='${not empty mgrBefore.eduYear3}'>
-		$("#eduYear3 option[value='${mgrBefore.eduYear3}']").attr('selected', 'selected');
-	</c:if>
-	
-	<c:if test='${not empty mgrBefore.eduStatus}'>
-		$("#eduStatus option[value='${mgrBefore.eduStatus}']").attr('selected', 'selected');
+	<c:if test='${not empty mgr.eduYear3}'>
+		$("#eduYear3 option[value='${mgr.eduYear3}']").attr('selected', 'selected');
 	</c:if>
 	
-	<c:if test='${not empty mgrBefore.eduStatus2}'>
-		$("#eduStatus2 option[value='${mgrBefore.eduStatus2}']").attr('selected', 'selected');
+	<c:if test='${not empty mgr.eduStatus}'>
+		$("#eduStatus option[value='${mgr.eduStatus}']").attr('selected', 'selected');
 	</c:if>
 	
-	<c:if test='${not empty mgrBefore.eduStatus3}'>
-		$("#eduStatus3 option[value='${mgrBefore.eduStatus3}']").attr('selected', 'selected');
+	<c:if test='${not empty mgr.eduStatus2}'>
+		$("#eduStatus2 option[value='${mgr.eduStatus2}']").attr('selected', 'selected');
 	</c:if>
 	
-	<c:if test='${not empty mgrBefore.education}'>
-		$("#education option[value='${mgrBefore.education}']").attr('selected', 'selected');
+	<c:if test='${not empty mgr.eduStatus3}'>
+		$("#eduStatus3 option[value='${mgr.eduStatus3}']").attr('selected', 'selected');
 	</c:if>
 	
-	<c:if test='${not empty mgrBefore.education2}'>
-		$("#education2 option[value='${mgrBefore.education2}']").attr('selected', 'selected');
+	<c:if test='${not empty mgr.education}'>
+		$("#education option[value='${mgr.education}']").attr('selected', 'selected');
 	</c:if>
 	
-	<c:if test='${not empty mgrBefore.education3}'>
-		$("#education3 option[value='${mgrBefore.education3}']").attr('selected', 'selected');
+	<c:if test='${not empty mgr.education2}'>
+		$("#education2 option[value='${mgr.education2}']").attr('selected', 'selected');
+	</c:if>
+	
+	<c:if test='${not empty mgr.education3}'>
+		$("#education3 option[value='${mgr.education3}']").attr('selected', 'selected');
 	</c:if>
 	
 	<c:forEach var="list" items="${mgrBook}" varStatus="listCnt">
@@ -1230,7 +1230,7 @@ function changeCert(num){
 								<select name="education" id="education" style="width:95%;">
 									<option value="M">학사</option>
 									<option value="D">석사</option>
-									<option value="S">전문학사</option>
+									<option value="S">박사</option>
 								</select>
 							</td>
 							<td align="center">
@@ -1256,7 +1256,7 @@ function changeCert(num){
 								<select name="education2" id="education2" style="width:95%;">
 									<option value="M">학사</option>
 									<option value="D">석사</option>
-									<option value="S">전문학사</option>
+									<option value="S">박사</option>
 								</select>
 							</td>
 							<td align="center">
@@ -1282,7 +1282,7 @@ function changeCert(num){
 								<select name="education3" id="education3" style="width:95%;">
 									<option value="M">학사</option>
 									<option value="D">석사</option>
-									<option value="S">전문학사</option>
+									<option value="S">박사</option>
 								</select>
 							</td>
 							<td align="center">
